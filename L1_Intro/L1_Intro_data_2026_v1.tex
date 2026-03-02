@@ -1,20 +1,42 @@
 \documentclass[hyperref={pdfpagelabels=false}]{beamer}
-\usepackage{ragged2e}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
 \renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
 \usepackage{lmodern}
 \usepackage{fontspec}
 \usepackage{xeCJK}
-\setCJKmainfont{Noto Sans CJK TC}   % Overleaf 可用的楷體
+\setCJKmainfont{Noto Sans CJK TC}
+%（可選）若你會用到無襯線中文或等寬中文，建議補上：
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
 \usepackage[english]{babel}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
-\hypersetup{colorlinks=true, citecolor=blue, urlcolor=blue, pdfborder={0 0 0}}
-\usepackage{listings}
-\usepackage{accsupp}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
 \newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
 \usepackage{tikz}
 \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+
+
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
 \beamertemplatefootpagenumber
 
 
