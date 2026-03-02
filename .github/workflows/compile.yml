@@ -17,7 +17,7 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           # 指向你指定的檔案路徑
-          root_file: Coureses_Teaching/L1_Intro/L1_Intro_data_2026_v1.tex
+          root_file: Courses_Teaching/L1_Intro/L1_Intro_data_2026_v1.tex
           compiler: xelatex
           args: "-pdf -interaction=nonstopmode -halt-on-error"
 
@@ -25,5 +25,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Coureses_Teaching/L1_Intro/ # 只發布這個資料夾下的結果
+          publish_dir: ./Courses_Teaching/L1_Intro/ # 只發布這個資料夾下的結果
           publish_branch: gh-pages
