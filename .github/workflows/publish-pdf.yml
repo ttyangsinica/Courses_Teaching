@@ -4,26 +4,41 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
-  build:
+  build_pdfs:
+    name: Build PDFs (${{ matrix.dir }})
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dir: L1_Intro
+            root_files: |
+              L1_Intro_data_2026_v1.tex
+              L1_Intro_labor_2026_v1.tex
+              L1_Intro_metrics_2026_v1.tex
+          - dir: L3_SB_RCT
+            root_files: |
+              L3_selection_bias_RCT_labor_2026_v1.tex
+          # 之後你新增資料夾/主檔，只要在這裡再加一個 block 即可
+          # - dir: L4_xxx
+          #   root_files: |
+          #     L4_xxx_2026_v1.tex
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
+      - name: Compile PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
-          working_directory: L1_Intro
-          root_file: |
-            L1_Intro_data_2026_v1.tex
-            L1_Intro_labor_2026_v1.tex
-            L1_Intro_metrics_2026_v1.tex
+          working_directory: ${{ matrix.dir }}
+          root_file: ${{ matrix.root_files }}
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
@@ -31,46 +46,77 @@ jobs:
             font-noto-cjk
           continue_on_error: true
 
-      - name: Show LaTeX log tails (always)
-        if: always()
-        run: |
-          set +e
-          echo "=== Find log files ==="
-          find . -maxdepth 4 -type f \( -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" \) -print
-          echo "=== Tail .log files ==="
-          for f in $(find . -maxdepth 4 -type f -name "*.log"); do
-            echo "----- $f (tail) -----"
-            tail -n 80 "$f" || true
-          done
-          exit 0
-
-      - name: Upload LaTeX logs (always)
+      - name: Upload PDFs artifact (always)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: latex_logs
+          name: pdf_${{ matrix.dir }}
           path: |
-            **/*.log
-            **/*.fls
-            **/*.fdb_latexmk
+            ${{ matrix.dir }}/*.pdf
 
-      - name: Prepare site folder
+      - name: Upload LaTeX logs artifact (always)
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs_${{ matrix.dir }}
+          path: |
+            ${{ matrix.dir }}/*.log
+            ${{ matrix.dir }}/*.fls
+            ${{ matrix.dir }}/*.fdb_latexmk
+
+  assemble_site:
+    name: Assemble site
+    runs-on: ubuntu-latest
+    needs: [ build_pdfs ]
+
+    steps:
+      - name: Checkout repo (main)
+        uses: actions/checkout@v4
+
+      # 重要：先把「上一版 GitHub Pages 的內容」抓回來當 base，
+      # 這樣就算某些 PDF 這次沒編成功/沒列入，也不會從 Pages 消失。
+      - name: Checkout previous gh-pages (if exists)
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: _old_site
+
+      - name: Create public base from old site
         run: |
           mkdir -p public
-          cp -r L1_Intro public/ || true
-          echo "=== PDFs in public/L1_Intro ==="
-          ls -ლა public/L1_Intro/*.pdf 2>/dev/null || true
+          if [ -d "_old_site" ]; then
+            # gh-pages 通常會有 index.html 等，整包先複製回 public
+            cp -r _old_site/* public/ 2>/dev/null || true
+          fi
+
+      - name: Download all PDF artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: _artifacts
+
+      - name: Overlay newly-built PDFs into public
+        run: |
+          # 把這次編出來的 PDF 覆蓋到 public 對應資料夾
+          shopt -s nullglob
+          for d in _artifacts/pdf_*; do
+            dir_name="${d#_artifacts/pdf_}"
+            mkdir -p "public/${dir_name}"
+            cp -v "${d}"/*.pdf "public/${dir_name}/" 2>/dev/null || true
+          done
+
+          echo "=== PDFs in public ==="
+          find public -type f -name "*.pdf" -maxdepth 3 -print || true
 
       - name: Upload Pages artifact
-        if: always()
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
   deploy:
-    needs: build
+    name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
+    needs: [ assemble_site ]
     environment:
       name: github-pages
     permissions:
@@ -78,6 +124,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
