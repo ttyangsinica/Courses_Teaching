@@ -16,8 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Compile PDFs inside TeXLive Docker image (Alpine-based).
-      # Install CJK fonts inside the container so XeLaTeX can find "Noto Sans CJK TC".
       - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
@@ -30,25 +28,22 @@ jobs:
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
             fontconfig
-            noto-fonts-cjk
-          # If something fails, still let the action proceed so we can upload logs.
+            font-noto-cjk
           continue_on_error: true
 
-      # Print last lines of logs to make the real error visible in Actions UI
       - name: Show LaTeX log tails (always)
         if: always()
         run: |
           set +e
-          echo "=== List possible log files ==="
-          find . -maxdepth 3 -type f \( -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" \) -print
-          echo "=== Tail .log files (if any) ==="
-          for f in $(find . -maxdepth 3 -type f -name "*.log"); do
+          echo "=== Find log files ==="
+          find . -maxdepth 4 -type f \( -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" \) -print
+          echo "=== Tail .log files ==="
+          for f in $(find . -maxdepth 4 -type f -name "*.log"); do
             echo "----- $f (tail) -----"
             tail -n 80 "$f" || true
           done
           exit 0
 
-      # Upload logs even if compilation fails; search both root and subfolders.
       - name: Upload LaTeX logs (always)
         if: always()
         uses: actions/upload-artifact@v4
@@ -59,16 +54,15 @@ jobs:
             **/*.fls
             **/*.fdb_latexmk
 
-      # Only proceed to Pages artifact if PDFs exist
-      - name: Prepare site folder (only if PDFs exist)
+      - name: Prepare site folder
         if: always()
         run: |
           mkdir -p public
-          # Copy the folder regardless, but PDFs may be missing if compilation failed
           cp -r L1_Intro public/ || true
-          ls -la public/L1_Intro || true
+          echo "=== PDFs in public/L1_Intro ==="
+          ls -ლა public/L1_Intro/*.pdf 2>/dev/null || true
 
-      - name: Upload Pages artifact (only if PDFs exist)
+      - name: Upload Pages artifact
         if: always()
         uses: actions/upload-pages-artifact@v3
         with:
