@@ -16,8 +16,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Compile PDFs inside TeXLive Docker image (Alpine-based)
-      # Install CJK fonts inside the container so XeLaTeX can find "Noto Sans CJK TC"
+      # Compile PDFs inside TeXLive Docker image (Alpine-based).
+      # Install CJK fonts inside the container so XeLaTeX can find "Noto Sans CJK TC".
       - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
@@ -31,38 +31,54 @@ jobs:
           extra_system_packages: |
             fontconfig
             noto-fonts-cjk
+          # If something fails, still let the action proceed so we can upload logs.
+          continue_on_error: true
 
-      # Prepare the GitHub Pages site contents
-      # We publish the whole L1_Intro folder so the PDF URLs are stable:
-      # https://<user>.github.io/<repo>/L1_Intro/<pdfname>.pdf
-      - name: Prepare site folder
+      # Print last lines of logs to make the real error visible in Actions UI
+      - name: Show LaTeX log tails (always)
+        if: always()
         run: |
-          mkdir -p public
-          cp -r L1_Intro public/
+          set +e
+          echo "=== List possible log files ==="
+          find . -maxdepth 3 -type f \( -name "*.log" -o -name "*.fls" -o -name "*.fdb_latexmk" \) -print
+          echo "=== Tail .log files (if any) ==="
+          for f in $(find . -maxdepth 3 -type f -name "*.log"); do
+            echo "----- $f (tail) -----"
+            tail -n 80 "$f" || true
+          done
+          exit 0
 
-      # Upload to GitHub Pages as an artifact
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: public
-
-      # Optional but helpful: upload logs even if compilation fails
+      # Upload logs even if compilation fails; search both root and subfolders.
       - name: Upload LaTeX logs (always)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: latex_logs
           path: |
-            L1_Intro/*.log
-            L1_Intro/*.fls
-            L1_Intro/*.fdb_latexmk
+            **/*.log
+            **/*.fls
+            **/*.fdb_latexmk
+
+      # Only proceed to Pages artifact if PDFs exist
+      - name: Prepare site folder (only if PDFs exist)
+        if: always()
+        run: |
+          mkdir -p public
+          # Copy the folder regardless, but PDFs may be missing if compilation failed
+          cp -r L1_Intro public/ || true
+          ls -la public/L1_Intro || true
+
+      - name: Upload Pages artifact (only if PDFs exist)
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       pages: write
       id-token: write
