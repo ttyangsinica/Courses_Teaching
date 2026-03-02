@@ -1,23 +1,8 @@
-name: Auto Compile LaTeX
-on:
-  push:
-    branches: [ main ]  # 或是你的主要分支名稱 (可能是 master)
-
-permissions:
-  contents: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Compile LaTeX
         uses: xu-cheng/latex-action@v3
         with:
-          # 指向你指定的檔案路徑
-          root_file: Courses_Teaching/L1_Intro/L1_Intro_data_2026_v1.tex
+          # 這裡去掉前面的 Courses_Teaching/
+          root_file: L1_Intro/L1_Intro_data_2026_v1.tex
           compiler: xelatex
           args: "-pdf -interaction=nonstopmode -halt-on-error"
 
@@ -25,5 +10,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./Courses_Teaching/L1_Intro/ # 只發布這個資料夾下的結果
+          # 這裡也去掉前面的 Courses_Teaching/
+          publish_dir: ./L1_Intro/ 
           publish_branch: gh-pages
