@@ -1,0 +1,4 @@
+\defaultfontfeatures[KpMath-Sans]
+  { Extension = .otf,
+    BoldFont = KpMath-SansBold
+  }

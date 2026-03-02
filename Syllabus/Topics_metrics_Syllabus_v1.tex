@@ -1,0 +1,251 @@
+
+
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+
+\usepackage{fontspec}
+\usepackage{xeCJK}
+
+% ===== 西文字體 =====
+\setmainfont{Times New Roman}
+
+% ===== 中文字體（Overleaf 內建）=====
+\setCJKmainfont{Noto Serif CJK TC}
+
+
+
+
+% %%% FONT SETTING %%%
+% \PassOptionsToPackage{no-math}{fontspec}
+% \usepackage{unicode-math} % 使用 Unicode 數學字體
+
+
+% % --- 西文主字族：KpRoman（kpfonts-otf 套件） ---
+% \setmainfont[
+%   Path=./fonts/kpfonts-otf/fonts/,
+%   Numbers=OldStyle,
+%   ItalicFont={KpRoman-Italic.otf},
+%   BoldFont={KpRoman-Bold.otf},
+%   BoldItalicFont={KpRoman-BoldItalic.otf}
+% ]{LinLibertine_R.otf}
+
+% % --- CJK 主字族：cwTeX 系列 ---
+% \usepackage{xeCJK}
+% \defaultCJKfontfeatures{Scale=MatchLowercase}
+% \setCJKmainfont[
+%   Path=./fonts/,
+%   Numbers=OldStyle,
+%   BoldFont={cwTeXQHei-Bold.ttf},
+%   BoldFeatures = {Scale=1.03}
+% ]{cwTeXQYuan-Medium.ttf}
+
+% \setCJKfamilyfont{kai}[Path=./fonts/]{cwTeXQKai-Medium.ttf}
+% \newcommand{\kai}[1]{{\CJKfamily{kai}#1}}
+% \setCJKfamilyfont{yuan}[Path=./fonts/]{cwTeXQYuan-Medium.ttf}
+% \newcommand{\yuan}[1]{{\CJKfamily{yuan}#1}}
+% \setCJKfamilyfont{hei}[Path=./fonts/]{cwTeXQHei-Bold.ttf}
+% \newcommand{\hei}[1]{{\CJKfamily{hei}#1}}
+
+% % --- 數學字體：KpMath（kpfonts-otf 套件） ---
+% \setmathfont[
+%  Path=./fonts/kpfonts-otf/fonts/,
+%   BoldFont={KpMath-Bold.otf}
+% ]{KpMath-Regular.otf}
+
+% \usepackage{setspace}
+% \usepackage{amsmath}
+% \DeclareMathOperator{\Var}{Var}
+
+
+\title{NTU Agricultural Economics \\  Topics in Econometrics (I) \\ 	計量經濟學專論一 \\ 因果推論與機器學習}
+\author{Tzu-Ting Yang \\ 楊子霆 \\ Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+\date{Spring 2026}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}         % Palatino needs more leading (space between lines)
+\usepackage[T1]{fontenc}
+
+\usepackage[mmddyyyy]{datetime}% http://ctan.org/pkg/datetime
+\usepackage{advdate}% http://ctan.org/pkg/advdate
+\newdateformat{syldate}{\twodigit{\THEMONTH}/\twodigit{\THEDAY}}
+\newsavebox{\MONDAY}\savebox{\MONDAY}{Mon}% Mon
+
+\newcommand{\week}[1]{%
+%  \cleardate{mydate}% Clear date
+% \newdate{mydate}{\the\day}{\the\month}{\the\year}% Store date
+  \paragraph*{\kern-2ex\quad #1, \syldate{\today} - \AdvanceDate[4]\syldate{\today}:}% Set heading  \quad #1
+%  \setbox1=\hbox{\shortdayofweekname{\getdateday{mydate}}{\getdatemonth{mydate}}{\getdateyear{mydate}}}%
+  \ifdim\wd1=\wd\MONDAY
+    \AdvanceDate[7]
+  \else
+    \AdvanceDate[7]
+  \fi%
+}
+
+
+
+\usepackage{setspace}
+\usepackage{multicol}
+%\usepackage{indentfirst}
+\usepackage{fancyhdr,lastpage}
+\usepackage{url}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{layout}   
+\lhead{}
+\chead{}
+\rhead{\footnotesize Topics in Econometrics  -- Spring 2026}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\usepackage{array, xcolor}
+\usepackage{color,hyperref}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=blue,urlcolor=blue,
+            anchorcolor=blue,citecolor=black}
+
+
+
+
+\begin{document}
+
+
+\maketitle
+
+\blankline
+
+\begin{tabular*}{1.03\textwidth}{@{\extracolsep{\fill}}lr}
+
+
+  E-mail: \texttt{ttyang@g.ntu.edu.tw} & Web: \href{https://sites.google.com/view/cpelab/}{\tt\bf sites.google.com/view/cpelab/}  \\
+
+ Office Hours: by appointment   &  Class Hours: Wed. 3:30-6:00 \\
+
+
+ Office: 中研院經濟所B308 / 台大農業綜合館218-B5  & Class Room: 農經系2樓會議室 \\
+&  \\
+\hline
+\end{tabular*}
+
+\vspace{10 mm}
+
+\section*{Course Description}
+
+This course is a required course for doctoral students and is also suitable for master's students who wish to pursue empirical research in economics and related fields. The objective of this course is to equip students with a comprehensive set of statistical tools and research designs that are pivotal for producing high-quality research in applied microeconomics. The course places a strong emphasis on methods for estimating causal effects and understanding their applications.
+
+Unlike many other econometrics courses aimed at future econometricians, this course is tailored for applied practitioners. It prioritizes research design over statistical technique and focuses on real-world applications rather than theoretical proofs. The curriculum covers an array of cutting-edge empirical methods for causal inference and machine learning, including matching methods, difference-in-differences design, synthetic control, regression discontinuity design, instrumental variables, as well as machine learning techniques such as LASSO, random forests, and causal forests for estimating heterogeneous treatment effects. In addition, the course introduces students to working with geospatial data (GIS) and other emerging data sources beyond standard survey data.
+
+Throughout the course, we place a strong emphasis on the practical implementation of these methods and on best practices in managing real-world data. Students will apply what they learn by writing a term paper, which must be typeset using LaTeX. By the end of the course, students should have built a solid foundation for conducting independent empirical research and for writing future master's and doctoral theses.
+
+
+%This course will survey empirical methods for conducting causal inference and data science in economics. We will focus on recent advances in these methods as well as their empirical applications. The topics will include randomized (field) experiments, matching methods, regression/causal machine learning method, differences-in-differences design, synthetic controls design, regression discontinuity (kink) design, instrumental variables, and GIS data analysis. \\
+
+%We will especially focus on the practical implementation of these methods and tips for data management by writing a term paper. Students need to use \textit{Latex} to type their term paper in English and upload their codes and related files to \textit{GitHub} for replication. After taking this course, students should be able to conduct empirical research independently and know how to write a scientific paper.
+
+
+% \section*{Teaching Assistants}
+% \begin{itemize}
+
+% \item 黎宏濬 (農經碩二) 
+
+% \begin{itemize} 
+
+% \item Email: \texttt{r11627065@ntu.edu.tw}
+% \end{itemize} 
+
+
+% \item 吳子欣 (農經碩二)    
+
+% \begin{itemize} 
+% \item Email: \texttt{r12627007@ntu.edu.tw}
+% \end{itemize} 
+% \end{itemize} 
+
+
+\section*{Suggested Readings}
+\begin{itemize}
+\item Huntington-Klein, N. (2021), The Effect: An Introduction to Research Design and Causality
+\item Scott Cunningham (2020), Causal Inference: The Mixtape 
+\item Alberto Abadie1 and Matias D. Cattaneo (2018), Econometric Methods
+for Program Evaluation	
+\item Angrist and Pischke (2016), Mastering Metrics: The Path from Cause to Effect
+\item Angrist and Pischke (2009), Mostly Harmless Econometrics
+\item Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani (2017), An Introduction to Statistical Learning with Applications in R
+	\item Korinek, A. (2023), Generative AI for Economic Research, \textit{Journal of Economic Literature}
+	\item Korinek, A. (2025), AI Agents for Economic Research
+\end{itemize} 
+
+
+\section*{Statistical Softwares}
+\begin{itemize}
+	\item STATA
+	\item R
+	
+\end{itemize} 
+
+
+
+%\begin{enumerate}
+%\item You'll learn this.
+%\item And also that
+%\item Perhaps some of this too.
+%\end{enumerate}
+\section*{Grading Policy}
+\begin{itemize}
+	\item Two empirical homework \& Two Oral Exams (30\%)
+	\begin{itemize}
+		\item Each homework is followed by an individual oral exam
+		\item The oral exam will assess your understanding of your own code and empirical design
+	\end{itemize}
+	\item Reading group presentation (15\%)
+	\item Term paper presentation (15\%)
+	\item Term paper (40\%): milestones throughout the term
+\end{itemize} 
+
+
+\section*{Important Dates}
+
+\begin{itemize}
+	\item Homework 1: 4/12
+    \begin{itemize}
+
+	\item Oral Exam 1: 4/22
+    \end{itemize} 
+
+	\item Homework 2: 5/17
+        \begin{itemize}
+
+	\item Oral Exam 2: 5/27 week
+    \end{itemize} 
+
+	\item Reading Group Presentation: 5/27 and 6/3
+	\item Term paper presentation: 6/10
+	\item Term paper deadline: 6/17
+\end{itemize} 
+
+\section*{Course Outline}
+
+\begin{itemize}
+\item Course Introduction
+\item Selection Bias
+\item Randomized Experiment 
+\item Matching Methods
+\item Regression and Causal Machine Learning
+\item Fixed Effects Models
+\item Differences-in-Differences Design
+\item Synthetic Control Method
+\item Regression Discontinuity Design
+\item Instrumental Variables
+\item Shift-Share IV Design
+\item Spatial RD Design
+\item Causal Forest
+\item Data Cleaning and Research Workflow
+\item Generative AI in Empirical Research
+\end{itemize}
+
+\end{document}

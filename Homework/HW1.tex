@@ -1,0 +1,247 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Homework 1: R / Stata Practice
+% Based on Short Sectioned Assignment Template (LaTeXTemplates.com)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amssymb} % Math packages
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, default font, small caps
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=red}
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain}
+\fancyhead{} % No page header
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underline
+\renewcommand{\footrulewidth}{0pt} % Remove footer underline
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt} % Removes paragraph indentation
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Horizontal rule command
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge Homework 1: R / Stata Practice \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof. Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	INSTRUCTION
+%----------------------------------------------------------------------------------------
+
+\section*{Instruction}
+\begin{itemize}
+\item[\textbullet] You should submit Homework 1 before 4/21.
+\item[\textbullet] There is no late submission (zero points after the deadline).
+\item[\textbullet] Homework 1 accounts for 10 points in your final grade.
+\item[\textbullet] Total grade of Homework 1 is 100. Question 1 accounts for 5, Question 2 accounts for 15, Question 3 accounts for 10, Question 4 accounts for 10, and Question 5 accounts for 60.
+\item[\textbullet] This homework will help you practice basic data skills and start working on your term paper.
+\item[\textbullet] You may use \textbf{either Stata or R}. Your answers should include the commands you use, explain what they do, and summarize your findings.
+\item[\textbullet] For R users, recommended packages include: \texttt{haven}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{fixest}.
+\item[\textbullet] Please upload your \textbf{answer sheet} and your code output:
+\begin{itemize}
+\item If you use \textbf{Stata}: upload your \texttt{.do} file and \texttt{.log} file.
+\item If you use \textbf{R}: upload your \texttt{.R} or \texttt{.Rmd} file and a rendered output (\texttt{.html/.pdf}) or console log.
+\end{itemize}
+\item[\textbullet] Please upload files using this link: \\ \textbf{\url{https://www.dropbox.com/request/tHC1fXI6jlvN060Oezs1}}.
+\item[\textbullet] Format of the file name: \texttt{StudentID\_YourName}.
+\end{itemize}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 1
+%----------------------------------------------------------------------------------------
+
+\section{Read Data}
+
+\begin{enumerate}
+\item Provide a brief introduction of your dataset. Include details such as the data source, the unit of sample (e.g., individual, household, firm, or regional level), and type of data (e.g., cross-sectional, panel).
+
+\item Please describe how you load the data into your software (Stata or R).
+
+\textit{Hint (Stata):} If your dataset is in Stata format (\texttt{.dta}), use \texttt{use}. If it is in a different format, use \texttt{import delimited}, \texttt{import excel}, \texttt{infix}, etc.
+
+\textit{Hint (R):} Common options include \texttt{haven::read\_dta()} for \texttt{.dta} files, \texttt{readr::read\_csv()} for \texttt{.csv} files, and \texttt{readxl::read\_excel()} for Excel files.
+\end{enumerate}
+
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Examine Data}
+
+\begin{enumerate}
+\item Check if there are any missing values for any variables in the dataset. Describe your findings.
+
+\textit{Hint (Stata):} \texttt{misstable summarize}, \texttt{inspect}, \texttt{codebook}.
+
+\textit{Hint (R):} \texttt{colSums(is.na(df))} \\
+\texttt{dplyr::summarise(across(everything(), \textasciitilde sum(is.na(.))))} \\
+(Optional) \texttt{naniar::miss\_var\_summary(df)}
+
+\item Examine whether there are any exact duplicate observations (based on all variables). Describe your findings.
+
+\textit{Hint (Stata):} \texttt{duplicates report} or \texttt{duplicates list}.
+
+\textit{Hint (R):} \texttt{sum(duplicated(df))} \\
+\texttt{df[duplicated(df), ]}
+
+\item Identify which variable represents the unique ID for each sample. Check whether this variable contains duplicate values and explain your findings.
+
+\textit{Hint (Stata):} \texttt{isid idvar} (if applicable), or \texttt{duplicates report idvar}.
+
+\textit{Hint (R):} \texttt{anyDuplicated(df\$idvar)} or \texttt{sum(duplicated(df\$idvar))}. \\
+If panel data: check uniqueness by \texttt{df[, c("id","time")]}.
+\end{enumerate}
+
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 3
+%----------------------------------------------------------------------------------------
+
+\section{Create Sample for Analysis}
+
+\begin{enumerate}
+\item Describe the current status of sample construction: how you filtered the original data to obtain the sample you will use for estimation.
+
+\item Briefly describe \textbf{three} commands you used during data cleaning (Stata or R).
+
+\textit{Hint:} The following commands/functions could be helpful for creating your estimation sample:
+
+\begin{itemize}
+\item \textbf{Create variables:}
+\begin{itemize}
+\item Stata: \texttt{generate}, \texttt{egen}
+\item R: \texttt{mutate()} (dplyr), \texttt{transform()}, \texttt{ifelse()}
+\end{itemize}
+
+\item \textbf{Modify/recode values:}
+\begin{itemize}
+\item Stata: \texttt{recode}, \texttt{replace}
+\item R: \texttt{case\_when()}, \texttt{ifelse()}, \texttt{recode()} (dplyr)
+\end{itemize}
+
+\item \textbf{Keep/drop observations or variables:}
+\begin{itemize}
+\item Stata: \texttt{keep}, \texttt{drop}
+\item R: \texttt{filter()}, \texttt{select()}
+\end{itemize}
+
+\item \textbf{Merge/append data:}
+\begin{itemize}
+\item Stata: \texttt{merge}, \texttt{append}
+\item R: \texttt{left\_join()}, \texttt{inner\_join()}, \texttt{bind\_rows()}
+\end{itemize}
+
+\item \textbf{Reshape data:}
+\begin{itemize}
+\item Stata: \texttt{reshape}
+\item R: \texttt{pivot\_longer()}, \texttt{pivot\_wider()} (tidyr)
+\end{itemize}
+
+\item \textbf{Collapse/aggregate:}
+\begin{itemize}
+\item Stata: \texttt{collapse}
+\item R: \texttt{group\_by()} + \texttt{summarise()}
+\end{itemize}
+
+\item \textbf{Sort/order:}
+\begin{itemize}
+\item Stata: \texttt{sort}
+\item R: \texttt{arrange()}
+\end{itemize}
+
+\item \textbf{Encode/decode categorical variables:}
+\begin{itemize}
+\item Stata: \texttt{encode}, \texttt{decode}
+\item R: \texttt{factor()}, \texttt{as.numeric(factor())}
+\end{itemize}
+\end{itemize}
+
+\end{enumerate}
+
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 4
+%----------------------------------------------------------------------------------------
+
+\section{Visualize Data}
+
+\begin{enumerate}
+\item Create a graph to display the distribution of a variable you are interested in. Briefly explain your findings.
+
+\textit{Hint (Stata):} \texttt{histogram varname} (use options like \texttt{xtitle()}, \texttt{ytitle()}, \texttt{xlabel()}, \texttt{ylabel()}).
+
+\textit{Hint (R):} \texttt{ggplot(df, aes(x = var)) + geom\_histogram()} \\
+or base R \texttt{hist(df\$var)} (add labels via \texttt{labs(x=..., y=...)} in ggplot).
+
+\item Create a graph to display the relationship between any two variables that you are interested in.
+
+\textit{Hint (Stata):} \texttt{graph twoway (scatter y x)}.
+
+\textit{Hint (R):} \\
+\texttt{ggplot(df, aes(x = x, y = y)) + geom\_point()} \\
+\texttt{+ geom\_smooth(method = "lm")}
+\end{enumerate}
+
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	SECTION 5
+%----------------------------------------------------------------------------------------
+
+\section{Preliminary Analysis}
+
+\begin{enumerate}
+\item Use regression to investigate the relationship between your treatment variable and outcome variable (without controlling any covariates). Write down the regression equation and explain your treatment and outcome variables. What is your finding?
+
+\textit{Hint (Stata):} \texttt{regress y treat} \\
+or \texttt{reghdfe y treat, absorb(...)}.
+
+\textit{Hint (R):} \texttt{lm(y \textasciitilde treat, data = df)} \\
+or fixed effects via \texttt{fixest::feols(y \textasciitilde treat | fe\_var, data = df)}.
+
+\item Do you think the above estimate is a causal effect of treatment? Is there any omitted variable bias (selection bias)? Provide an example to explain how the omitted variable affects both the treatment and outcome variables.
+
+\item Use the \textbf{omitted-variable bias (OVB) formula} to discuss how the omitted variable biases your causal estimate in the regression. Does it lead to an overestimation or underestimation of the effect?
+
+\item List the control variables you plan to include. Incorporate them into the regression model and compare results before and after adding controls (focus on changes in the treatment coefficient).
+
+\item Discuss why the covariates you control for are not bad controls.
+
+\item Add some fixed effects and explain how including fixed effects helps control for confounding factors. Compare results before and after adding fixed effects and discuss the impact on the results.
+
+\textit{Hint (Stata):} \texttt{reghdfe y treat controls, absorb(fe1 fe2)}.
+
+\textit{Hint (R):} \texttt{fixest::feols(y \textasciitilde treat + controls | fe1 + fe2, data = df)}.
+\end{enumerate}
+
+\end{document}

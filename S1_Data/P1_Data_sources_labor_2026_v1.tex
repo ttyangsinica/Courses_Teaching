@@ -1,0 +1,1372 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% By  using hyperref={pdfpagelabels=false} you get rid off:
+% Package hyperref Warning: Option `pdfpagelabels' is turned off
+% (hyperref)                because \thepage is undefined. 
+% Hyperref stopped early 
+%
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}  % 文字向兩邊對齊
+
+
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}   % Overleaf 可用的楷體
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks,urlcolor=blue}
+\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=blue}
+
+\usepackage{listings}
+\usepackage{fontspec}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+
+\title[]  
+{Data Sources}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+ {Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\author 
+ %{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+ {\today}
+
+\usetheme{CambridgeUS}
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+%\usepackage{beamerthemeshadow}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+	
+	
+	\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Data Sources}
+\begin{itemize} 
+	\item Survey data
+	\vspace{0.3cm}
+	\item Administrative data
+	\vspace{0.3cm}
+	\item Firm-level data
+	\vspace{0.3cm}
+	\item Country-level data
+	\vspace{0.3cm}
+	\item Government Open data
+	\vspace{0.3cm}
+	\item Geographical data
+	\vspace{0.3cm}
+	%\item Online data
+	%\vspace{0.3cm}
+	\item Journal data archives
+	\vspace{0.3cm}
+	\item Other data source
+	
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Survey Data: Cross-sectional Data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Survey Data}
+\begin{itemize} 
+\item General information for Taiwan survey data 
+\begin{itemize} 
+	\vspace{0.3cm}
+	\item Survey Research Data Archive (Academia Sinica): \href{https://srda.sinica.edu.tw/}{srda.sinica.edu.tw}
+\end{itemize}
+\item General information for US survey data 
+\begin{itemize} 
+	\vspace{0.3cm}
+	\item IPUMS  (University of Minnesota): \\ \href{https://www.ipums.org/}{www.ipums.org}
+\end{itemize}
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Survey Data}
+\begin{itemize} 
+\item Taiwan (cross-sectional data)
+\begin{itemize} 
+\vspace{0.3cm}
+\item Population and Housing Census (戶口及住宅普查): \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS017}{srda.sinica.edu.tw (Population Census)}
+\vspace{0.3cm}
+\item Firm Census (工業及服務業普查): \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS024}{srda.sinica.edu.tw (Firm Census)}
+\vspace{0.3cm}
+\item Agricultural, Forestry, Fishery and Husbandry Census (農林漁牧業普查): \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS022}{srda.sinica.edu.tw (Agri Census)}
+\vspace{0.3cm}
+
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Survey Data}
+	\begin{itemize} 
+		\item Taiwan (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			
+			\item Manpower Utilization Survey（人力運用調查）: \href{https://srda.sinica.edu.tw/search/metadata/detail/AA020047}{srda.sinica.edu.tw (Manpower Survey)} 
+			\vspace{0.3cm}
+			\item Survey of Family Income and Expenditure（家庭收支調查）: \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS016}{srda.sinica.edu.tw (Family Income Survey)}  
+			\vspace{0.3cm}
+			\item Taiwan Social Change Survey（臺灣社會變遷基本調查）: \href{https://srda.sinica.edu.tw/search/metadata/detail/C00390_1}{srda.sinica.edu.tw (Social Change Survey)}
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Population and Housing Census}{戶口及住宅普查}
+\begin{itemize} 
+\item \textbf{Website}: \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS017}{srda.sinica.edu.tw (Population Census)}
+\vspace{0.2cm}
+
+\item \textbf{Observation unit}: individual
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1960-2010, every 10 year
+\vspace{0.2cm}
+\item \textbf{Key variables}: age, occupation, living township, marital status, disability status, housing size
+\vspace{0.2cm}
+\item It does not have English version. 
+\vspace{0.2cm}
+\item Only faculty member at Academia Sinica can download it. Let me know if you want to use it
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Firm Census}{工業及服務業普查}
+	\begin{itemize} 
+		\item \textbf{Website}: \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS024}{srda.sinica.edu.tw (Firm Census)}
+		\vspace{0.2cm}
+		
+		\item \textbf{Observation unit}: firm / village
+		\vspace{0.2cm}
+		\item \textbf{Frequency}: 1981-2016, every 5 year
+		\vspace{0.2cm}
+		\item \textbf{Key variables}: Number of employees, Payroll expenses,  Land area, and  Total production value
+		\vspace{0.2cm}
+		\item It does not have English version. 
+		\vspace{0.2cm}
+		\item Only faculty member at Academia Sinica can download it. Let me know if you want to use it
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Agricultural, Forestry, Fishery and Husbandry Census}{農林漁牧業普查}
+	\begin{itemize} 
+		\item \textbf{Website}: \\ \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS022}{srda.sinica.edu.tw (Agri Census)}
+		\vspace{0.2cm}
+		
+		\item \textbf{Observation unit}: individual / village
+		\vspace{0.2cm}
+		\item \textbf{Frequency}: 1970-2020, every 5 year
+		\vspace{0.2cm}
+		\item \textbf{Key variables}: gender of agricultural and livestock household managers, their age, educational level, the number of days engaged in personal farming and livestock activities, 
+		\vspace{0.2cm}
+		\item It does not have English version. 
+		\vspace{0.2cm}
+		\item Only faculty member at Academia Sinica can download it. Let me know if you want to use it
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Manpower Utilization Survey}{人力運用調查}
+\begin{itemize} 
+\item \textbf{Website}: \\ \href{https://srda.sinica.edu.tw/search/metadata/detail/AA020047}{srda.sinica.edu.tw (Manpower Survey)}
+\vspace{0.2cm}
+\item \textbf{Observation unit}: individual (above age 15)
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1976-now, every year (May)
+\vspace{0.2cm}
+\item \textbf{Key variables}: age, occupation, industry, monthly wage, working hour, part-time job, firm size, number of children by children's age, employment status, unemployment reason
+\vspace{0.2cm}
+\item Labor force survey
+\vspace{0.2cm}
+\item It has English version. 
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Survey of Family Income and Expenditure}{家庭收支調查}
+\begin{itemize} 
+\item \textbf{Website}:  \href{https://srda.sinica.edu.tw/plan/?idx=SRDA.GS016}{srda.sinica.edu.tw (Family Income Survey)}
+\vspace{0.2cm}
+\item \textbf{Observation unit}: household 
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1976-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: household income, household income by family members, household expenditure
+\vspace{0.2cm}
+\item It has English version. 
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Taiwan Social Change Survey}{臺灣社會變遷基本調查}
+\begin{itemize} 
+\item \textbf{Website}:  \href{https://srda.sinica.edu.tw/search/metadata/detail/C00390_1}{srda.sinica.edu.tw (Social Change Survey)}
+\vspace{0.2cm}
+\item \textbf{Observation unit}: individual
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1980-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: marital status, occupation, industry, monthly wage, birth year, birth month, many questions about an respondent's opinion on politics, social issue, religion
+\vspace{0.2cm}
+\item It has English version. 
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Survey Data}
+\begin{itemize} 
+\item United States (cross-sectional data)
+\begin{itemize} 
+\vspace{0.3cm}
+\item US Census Data: \\ \href{https://usa.ipums.org/usa}{usa.ipums.org}
+\vspace{0.3cm}
+\item Current Population Survey (CPS): \href{https://cps.ipums.org/cps}{cps.ipums.org} 
+\vspace{0.3cm}
+\item American Time Use Survey (ATUS): \href{https://www.atusdata.org/atus}{www.atusdata.org}  \\  \href{https://www.ahtusdata.org/ahtus}{www.ahtusdata.org}
+\vspace{0.3cm}
+\item National Health Interview Survey (NHIS): \href{https://nhis.ipums.org/nhis/}{ihis.ipums.org}
+\vspace{0.3cm}
+\item IPUMS Higher Education Survey: \href{https://highered.ipums.org/highered}{highered.ipums.org}
+\vspace{0.3cm} 
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Current Population Survey (CPS)}
+\begin{itemize} 
+\item \textbf{Website}: \\ \href{https://cps.ipums.org/cps}{cps.ipums.org} 
+\vspace{0.2cm}
+\item \textbf{Observation unit}: individual and household
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1962-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: age, occupation, marital status, migration, wage, disability, tax, health insurance, education
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{American Time Use Survey (ATUS)}
+\begin{itemize} 
+\item \textbf{Website}:  \\ \href{https://www.atusdata.org/atus}{www.atusdata.org}  \\ \href{https://www.ahtusdata.org/ahtus}{www.ahtusdata.org} 
+\vspace{0.2cm}
+\item \textbf{Observation unit}: activity, individual and household
+\vspace{0.2cm}
+\item \textbf{Frequency}: 2003-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: time use on each activity
+\vspace{0.2cm}
+\item Select one family member in CPS household and ask them about their time use (24 hour) on specific date
+\vspace{0.2cm}
+\item This survey can link with CPS to get more information
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{National Health Interview Survey (NHIS)}
+\begin{itemize} 
+\item \textbf{Website}:  \\ \href{https://ihis.ipums.org/ihis}{ihis.ipums.org} 
+\vspace{0.2cm}
+\item \textbf{Observation unit}: individual and household
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1960-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: health condition, mortality, health behavior, healthcare use 
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{IPUMS Higher Education Survey}
+\begin{itemize} 
+\item \textbf{Website}:  \\ \href{https://highered.ipums.org/highered}{highered.ipums.org} 
+\vspace{0.2cm}
+\item \textbf{Observation unit}: individual and household
+\vspace{0.2cm}
+\item \textbf{Frequency}: 1993-now, every year 
+\vspace{0.2cm}
+\item \textbf{Key variables}: education, employment, income, work history
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Survey Data}{Developed Countries}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item Census data from other countries: \\ \href{https://international.ipums.org/international/}{international.ipums.org}
+			\vspace{0.3cm}
+			\item North Atlantic Population Project: \href{https://www.nappdata.org/napp/}{www.nappdata.org} 
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item Census microdata from Canada, Denmark, Great Britain, Germany, Iceland, Norway, Sweden, and the United States from 1703 to 1911
+			\end{itemize}
+			\vspace{0.3cm}
+			\item Multinational Time Use Study: \href{https://www.mtusdata.org/mtus/}{www.mtusdata.org}  
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Survey Data}{Developed Countries}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item Luxembourg Income Study Database (LIS)  \\ \href{https://www.lisdatacenter.org/our-data/lis-database/}{www.lisdatacenter.org (LIS)}
+			\begin{itemize}
+				\item The largest available income database of harmonised microdata collected from about 50 countries spanning five decades.
+			\end{itemize}
+					\vspace{0.3cm}
+		\item Codebook:  \\
+		
+		\href{https://www.lisdatacenter.org/wp-content/uploads/files/data-lis-variables.pdf}{lisdatacenter.org (LIS codebook)}
+		
+							\vspace{0.3cm}
+		\item Labour income, capital income, pensions, public social benefits (excl. pensions) and private transfers, as well as taxes and contributions, demography, employment, and expenditures
+		
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Survey Data}{Developed Countries}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item Luxembourg Wealth Study Database (LWS)  \\ \href{https://www.lisdatacenter.org/our-data/lws-database/}{www.lisdatacenter.org (LWS)}
+			\begin{itemize}
+				\item The first cross-national wealth database in existence. Harmonized into a common framework
+			\end{itemize}
+					\vspace{0.3cm}
+			\item Codebook:  \\
+			
+			\href{https://www.lisdatacenter.org/wp-content/uploads/files/data-lws-variables.pdf}{lisdatacenter.org (LWS codebook)}
+						\vspace{0.3cm}
+			\item Assets and debt, market and government income, household characteristics, labour market outcomes and, in some datasets, expenditures and behavioural indicators
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Survey Data}{Developed Countries}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item The International Social Survey Programme
+			 (ISSP)  \\ \href{https://issp.org/}{issp.org}
+			\begin{itemize}
+							\vspace{0.3cm}
+				\item The ISSP is a cross-national collaboration programme conducting annual surveys on diverse topics relevant to social sciences
+			\end{itemize}
+			\vspace{0.3cm}
+			\item Codebook:  \\
+			
+			\href{https://issp.org/data-download/by-topic/}{issp.org/data-download}
+			\vspace{0.3cm}
+			\item People's opinions about Family and Changing Gender Roles, Social Inequality, Environment, National Identity, and Social Networks
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Survey Data}{Developing Countries}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item World Bank Survey database: \\ 
+			\href{https://microdata.worldbank.org/index.php/home}{microdata.worldbank.org}
+			\vspace{0.3cm}
+			\item Demographic and Health Survey (DHS): \\
+			\href{https://dhsprogram.com/data/}{dhsprogram.com/data} 
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item DHS collect and disseminate accurate, nationally representative data on health and population in developing countries.
+			\end{itemize}
+			%\vspace{0.3cm}
+			%\item Multinational Time Use Study: \href{https://www.mtusdata.org/mtus/}{www.mtusdata.org}  
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Survey Data}{Standardized Test Data}
+	\begin{itemize} 
+		\item Other countries (cross-sectional data)
+		\begin{itemize} 
+			\vspace{0.3cm}
+			\item PISA test database: \\ 
+			\href{https://www.oecd.org/pisa/data/}{www.oecd.org/pisa/data}
+			\vspace{0.3cm}
+			\item TIMSS test database: \\
+			\href{https://timssandpirls.bc.edu/}{timssandpirls.bc.edu} 
+			\vspace{0.3cm}
+			\begin{itemize}
+				\item PISA and TIMSS are databases for international comparative assessments of student achievement 
+			\end{itemize}
+			%\vspace{0.3cm}
+			%\item Multinational Time Use Study: \href{https://www.mtusdata.org/mtus/}{www.mtusdata.org}  
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\title[]  
+{Survey Data: Panel Data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Survey Data}
+	\begin{itemize} 
+		\item Taiwan (panel data)
+		\vspace{0.3cm}
+		\begin{itemize} 
+			\item Panel Survey of Family Dynamics（家庭動態調查）(PSFD): \href{https://psfd.sinica.edu.tw/V2/?page_id=966&lang=en}{psfd.sinica.edu.tw}
+			\vspace{0.3cm}
+			\item Taiwan Education Panel Study（台灣教育長期追蹤資料庫）(TEPS): \href{https://srda.sinica.edu.tw/browsingbydatatype_result.php?category=surveymethod\&type=2\&csid=7}{srda.sinica.edu.tw (TEPS)}
+			%\vspace{0.3cm}
+			%\item Taiwan Youth Project: \href{http://www.typ.sinica.edu.tw/E/?q=node/16}{http://www.typ.sinica.edu.tw/E/?q=node/16}
+			
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Panel Survey of Family Dynamics (PSFD)}{家庭動態調查}
+	\begin{itemize} 
+		\item \textbf{Website}: \\ \href{https://psfd.sinica.edu.tw/V2/?page_id=966&lang=en}{psfd.sinica.edu.tw}
+		\vspace{0.2cm}
+		\item \textbf{Observation unit}: follow the same households over time and follow their offspring's households over time
+		\vspace{0.2cm}
+		\item \textbf{Frequency}: 1999-now, every year 
+		\vspace{0.2cm}
+		\item \textbf{Key variables}: household income, education, working experience, marriage, family value and attitudes, household expenditure, child care
+		\vspace{0.2cm}
+		\item It has English version. 
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Taiwan Education Panel Study (TEPS)}{台灣教育長期追蹤資料庫}
+	\begin{itemize} 
+		\item \textbf{Website}:  \href{https://srda.sinica.edu.tw/browsingbydatatype_result.php?category=surveymethod\&type=2\&csid=7}{srda.sinica.edu.tw (TEPS)}
+		\vspace{0.2cm}
+		\item \textbf{Observation unit}: follow the same students from their junior/senior high school and also have questions for their parents, teachers, and schools
+		\vspace{0.2cm}
+		\item \textbf{Frequency}: 2001-2007 and 2010-2014 
+		\vspace{0.2cm}
+		\item \textbf{Key variables}: test score, friends, part-time work, learning attitude, extracurricular activities, wage
+		\vspace{0.2cm}
+		\item It has English version. 
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Survey Data}
+\begin{itemize} 
+\item United States (panel data)
+\vspace{0.3cm}
+\begin{itemize} 
+\item Panel of Income Dynamics (PSID): \href{https://psidonline.isr.umich.edu}{psidonline.isr.umich.edu}
+\vspace{0.3cm}
+\item Health and Retirement Study (HRS): \href{https://hrs.isr.umich.edu/data-products}{hrs.isr.umich.edu}
+\vspace{0.3cm}
+\item National Longitudinal Surveys (NLS): \href{https://www.nlsinfo.org/content/getting-started/accessing-data}{www.nlsinfo.org}
+\vspace{0.3cm}
+\item Survey of Income and Program Participation (SIPP): \href{https://www.census.gov/programs-surveys/sipp/data/datasets.html}{www.census.gov (SIPP)}
+\vspace{0.3cm}
+\item Medical Expenditure Panel Survey (MEPS): \href{https://www.meps.ahrq.gov/mepsweb/}{www.meps.ahrq.gov}
+
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Survey Data}
+	\begin{itemize} 
+		\item Other countries (panel data)
+		\vspace{0.3cm}
+		\begin{itemize} 
+			\item Cross-National Equivalent File (CNEF): \href{https://www.cnefdata.org/about/about-cnef}{www.cnefdata.org}
+					\vspace{0.3cm}
+			\begin{itemize} 
+			\item The Cross-National Equivalent File is a user package of equivalently defined variables for 9 general population household panel surveys.
+			  		\end{itemize}
+		   					\vspace{0.3cm}
+		   \item Codebook:
+		   
+		   		\href{https://www.cnefdata.org/documentation/codebooks}{cnefdata.org/codebooks}
+		  		
+		  		
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\title[]  
+{Administrative Data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+	\item House transaction data（不動產交易實價登錄）(Taiwan): \href{https://lvr.land.moi.gov.tw/}{lvr.land.moi.gov.tw}  
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item I have bought this dataset. Let me know if you want to use this data for your term paper
+	\end{itemize}
+	\vspace{0.3cm}
+	\item Data on mortgages (US): \href{https://www.fhfa.gov/data/pudb}{www.fhfa.gov/data/pudb}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+\item National Health Insurance Research Database（全民健康保險研究資料庫）(Taiwan): \href{https://dep.mohw.gov.tw/DOHDS/cp-4447-36290-113.html}{dep.mohw.gov.tw (NHIRD)}  
+\vspace{0.3cm}
+\begin{itemize}
+	\item It is a confidential dataset. Let me know if you want to use this data for your term paper
+\end{itemize}
+\vspace{0.3cm}
+\item Tax Return Data（綜合所得稅申報資料）(Taiwan): \href{https://www.econ.sinica.edu.tw/FIA-Data}{www.econ.sinica.edu.tw/FIA-Data}
+\begin{itemize}
+	\vspace{0.3cm}
+	\item It is a confidential dataset. I do not recommend you to use this data for your term paper because you need to spend a lot of time applying for it.
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+	\item Sports Reference (US): \href{https://www.sports-reference.com/}{www.sports-reference.com}  
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item This website contains many statistics about sports
+	\end{itemize}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+	\item Yelp Open Dataset (US): \href{https://www.yelp.com/dataset}{www.yelp.com/dataset}  
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item Yelp is a company, which publishes crowd-sourced reviews about businesses
+			\vspace{0.3cm}
+		\item A subset of data on Yelp's businesses, reviews, and users 
+	\end{itemize}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+	\item Google Mobility Data: \href{https://www.google.com/covid19/mobility/}{google.com/covid19/mobility}  
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item The data shows how visits to places, such as grocery stores and parks, are changing in each geographic region during COVID-19 pandemic
+	\end{itemize}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Administrative Data}
+\begin{itemize} 
+	\item Apple Mobility Data: \href{https://covid19.apple.com/mobility}{covid19.apple.com/mobility}  
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item Similar to Google Mobility Data
+	\end{itemize}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\title[]  
+{Firm-Level Data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Firm-Level Data}
+\begin{itemize} 
+\item Taiwan Economic Journal (TEJ): \href{https://www.tej.com.tw/webtej/doc/index.htm}{www.tej.com.tw}  
+\vspace{0.3cm}
+\begin{itemize}
+\item TEJ is a database of financial and market information on  \textbf{listed company at stock exchange market} in Taiwan, Hong Kong or China	
+\vspace{0.3cm}
+\item Business school should have bought this database
+\end{itemize}
+\vspace{0.3cm}
+\item Compustat (US): \href{https://marketintelligence.spglobal.com/client-solutions/}{marketintelligence.spglobal.com}
+\begin{itemize}
+	\vspace{0.3cm}
+\item Compustat is a database of financial and market information on active and inactive global companies throughout the world	
+\vspace{0.3cm}
+\item Business school should have bought this database
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\title[]  
+{Country-level data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Country-level data}
+\begin{itemize} 
+\item Penn World Table version 10.0: \\ \href{https://www.rug.nl/ggdc/productivity/pwt/}{www.rug.nl/ggdc/productivity/pwt}  
+\vspace{0.2cm}
+\item World Wealth \& Income Database \\ \href{https://wid.world/}{wid.world}
+\vspace{0.2cm}
+\item Work Bank Databank: \\ \href{https://databank.worldbank.org/}{databank.worldbank.org}  
+\vspace{0.2cm}
+\item OECD data \\ \href{https://data.oecd.org/}{data.oecd.org}
+\vspace{0.2cm}
+\item eurostat data \\ \href{https://ec.europa.eu/eurostat/data/database}{ec.europa.eu/eurostat}
+\vspace{0.2cm}
+\item FRED Economic data \\ \href{https://fred.stlouisfed.org/tags/series}{fred.stlouisfed.org}
+
+
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Government open data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Government open data}
+\begin{itemize} 
+\item US open data: \\ \href{https://www.data.gov/local}{www.data.gov}  
+\vspace{0.2cm}
+\item Taiwan open data: \\ \href{https://data.gov.tw/}{data.gov.tw}  
+\vspace{0.2cm}
+\item Taiwan Agri open data:  \\ \href{https://data.moa.gov.tw/}{data.moa.gov.tw}  
+
+
+\vspace{0.2cm}
+
+\item UK open data: \\ \href{https://www.data.gov.uk}{www.data.gov.uk}
+\vspace{0.2cm}
+\item Japan open data: \\ \href{https://www.data.go.jp/}{www.data.go.jp}    
+%\vspace{0.2cm}
+%\item France open data: \\ \href{http://www.data.gov.fr}{http://www.data.gov.fr}  
+%\vspace{0.2cm}
+%\item All government open data: \\ \href{http://https://opengovernmentdata.org/data/catalogues/}{http://https://opengovernmentdata.org/data/catalogues/}  
+
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Government open data}
+	\begin{itemize} 
+		\item 社會經濟資料服務平台: \\ \href{https://segis.moi.gov.tw/STATCloud/Profile}{segis.moi.gov.tw}  
+			\begin{itemize} 
+		
+		
+		\vspace{0.2cm}
+		
+            \item Provides socio-economic variables for various administrative regions in Taiwan
+
+		 
+			\end{itemize}
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\title[]  
+{Geographical data}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Geographical data}
+\begin{itemize} 
+\item GADM \\ \href{https://gadm.org/index.html}{gadm.org}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item It provides map (shapefile) for administrative areas of all countries, at all levels of sub-division
+\end{itemize}
+\vspace{0.2cm}
+\item Geographically based Economic data \\ \href{https://gecon.yale.edu/g-econ-project-yale-university-september-2009}{gecon.yale.edu}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item It develops a geophysically scaled economic data set
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Geographical data}
+\begin{itemize}
+\item Google Earth Engine \\ \href{https://earthengine.google.com/}{earthengine.google.com}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item It collects settlight image data from the following data sources 
+\end{itemize}
+\vspace{0.2cm}
+\item Landsat (土地利用) \\ \href{https://landsat.usgs.gov/}{landsat.usgs.gov}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item Settlight image for land use, land cover, and land condition since 1972 
+\end{itemize}
+\vspace{0.2cm}
+\item MODIS (大氣狀況) \\ \href{https://modis.gsfc.nasa.gov/}{modis.gsfc.nasa.gov}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item Settlight image for atmosphere or ocean since 1999 
+\end{itemize}
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Geographical data}
+\begin{itemize} 
+\item DMSP-OLS (夜間光照) \\ \href{https://eogdata.mines.edu/products/dmsp/}{eogdata.mines.edu/dmsp}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item Settlight image for nightlight from 1992-2013 (annual data) 
+\end{itemize}
+\vspace{0.2cm}
+\item VIIRS (夜間光照) \\ \href{https://eogdata.mines.edu/products/vnl/}{eogdata.mines.edu/vnl}  
+\vspace{0.2cm}
+\begin{itemize} 
+\vspace{0.2cm}
+\item Settlight image for nightlight since 2012 (monthly data) 
+\end{itemize}
+\vspace{0.2cm}
+%\item STRM \\ \href{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}  
+%\vspace{0.2cm}
+%\begin{itemize} 
+%	\vspace{0.2cm}
+%	\item Settlight image for nightlight since 2012 (monthly data) 
+%\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item Dynamic World V1 (土地利用) \\ \href{https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_DYNAMICWORLD_V1}{earthengine (Dynamic World)}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item A 10m near-real-time Land Use/Land Cover dataset that includes class probabilities and label information for nine classes 
+		\end{itemize}
+		\vspace{0.2cm}
+		\item ERA5-Land Hourly - ECMWF Climate Reanalysis (溫度) \\ \href{https://developers.google.com/earth-engine/datasets/catalog/ECMWF_ERA5_LAND_HOURLY}{earthengine (ERA5-Land)}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item Providing an accurate description of the climate of the past
+		\end{itemize}
+		\vspace{0.2cm}
+		%\item STRM \\ \href{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}  
+		%\vspace{0.2cm}
+		%\begin{itemize} 
+		%	\vspace{0.2cm}
+		%	\item Settlight image for nightlight since 2012 (monthly data) 
+		%\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item GPM: Global Precipitation Measurement (GPM) v6 (雨量)
+		 \\ \href{https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_V06}{earthengine (GPM)}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item Provide observations of rain and snow worldwide every three hours
+		\end{itemize}
+		\vspace{0.2cm}
+		\item  MERIT DEM: Multi-Error-Removed Improved-Terrain DEM (地形坡度)
+		 \\ \href{https://developers.google.com/earth-engine/datasets/catalog/MERIT_DEM_v1_0_3}{earthengine (MERIT DEM)}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item A high accuracy map of global terrain elevations
+		\end{itemize}
+		\vspace{0.2cm}
+		%\item STRM \\ \href{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}{https://ngdc.noaa.gov/eog/viirs/download_dnb_composites.html}  
+		%\vspace{0.2cm}
+		%\begin{itemize} 
+		%	\vspace{0.2cm}
+		%	\item Settlight image for nightlight since 2012 (monthly data) 
+		%\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item Sentinel-5P NRTI AER (空氣品質)
+		\\ \href{https://developers.google.com/earth-engine/datasets/tags/air-quality}{earthengine (Air Quality)}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item Provide near real-time high-resolution imagery of air quality index
+		\end{itemize}
+	
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item Startup Cartography Project (創業地理分布資料)
+		\\ \href{https://www.startupcartography.com/home}{www.startupcartography.com}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item Utilizes population-level business registration records
+						\vspace{0.2cm}
+				 \item create innovative measures of entrepreneurial quantity, quality, and performance at various geographic and temporal levels
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item Social and Economic Statistics (台灣社會經濟統計地理資訊網)
+		\\ \href{https://moisagis.moi.gov.tw/moiap/gis2010/index.cfm}{moisagis.moi.gov.tw}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+            \item Provides various socio-economic variables for different regions in Taiwan (townships, smallest statistical areas)
+
+		
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Geographical data}
+	\begin{itemize} 
+		\item 臺灣氣候變遷推估資料 
+		\\ \href{https://tccip.ncdr.nat.gov.tw/ds_intro.aspx}{tccip.ncdr.nat.gov.tw}  
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\vspace{0.2cm}
+            \item Constructs long-term climate data for various regions in Taiwan using various observational data and estimation methods
+
+			
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\title[]  
+{Journal Data Archives}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Journal Data Archives}
+\begin{itemize} 
+\item American Economic Review: \\ \href{https://www.aeaweb.org/journals/aer/issues}{www.aeaweb.org/journals/aer}
+\vspace{0.2cm}
+\item AEJ Economic Policy: \\ \href{https://www.aeaweb.org/journals/pol/issues}{www.aeaweb.org/journals/pol}
+\vspace{0.2cm}
+\item AEJ Applied Economics: \\ \href{https://www.aeaweb.org/journals/app/issues}{www.aeaweb.org/journals/app}
+\vspace{0.2cm}
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Other data source}
+\begin{itemize}
+\item Goodle Trend: \\ \href{https://trends.google.com/trends/}{trends.google.com}
+\vspace{0.2cm}
+\item Kaggel: \\ \href{https://www.kaggle.com/datasets}{www.kaggle.com/datasets}
+\vspace{0.2cm}
+% \item Jerry Smith dataset collection: \\ \href{https://datascientistinsights.com/2013/02/02/data-monetization-road-paved-on-top-of-data-sets/}{datascientistinsights.com} (link may be unavailable)
+% \vspace{0.2cm}
+\item Our World in Data: \\ \href{https://ourworldindata.org/}{ourworldindata.org}
+
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+\end{document}

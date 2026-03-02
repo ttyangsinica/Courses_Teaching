@@ -1,0 +1,178 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in,headheight=3ex,headsep=3ex]{geometry}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}   % Overleaf 可用的楷體\newcommand{\blankline}{\quad\pagebreak[2]}
+
+\title{NTU Econ \\ Topics in Labor Economics: Empirical Methods and Applications}
+\author{Tzu-Ting Yang  \\ Institute of Economics, Academia Sinica}
+\date{Spring 2026}
+
+\usepackage[sc]{mathpazo}
+\linespread{1.05}         % Palatino needs more leading (space between lines)
+\usepackage[T1]{fontenc}
+
+\usepackage[mmddyyyy]{datetime}% http://ctan.org/pkg/datetime
+\usepackage{advdate}% http://ctan.org/pkg/advdate
+\newdateformat{syldate}{\twodigit{\THEMONTH}/\twodigit{\THEDAY}}
+\newsavebox{\MONDAY}\savebox{\MONDAY}{Mon}% Mon
+
+\newcommand{\week}[1]{%
+  \paragraph*{\kern-2ex\quad #1, \syldate{\today} - \AdvanceDate[4]\syldate{\today}:}%
+  \ifdim\wd1=\wd\MONDAY
+    \AdvanceDate[7]
+  \else
+    \AdvanceDate[7]
+  \fi%
+}
+
+
+
+\usepackage{setspace}
+\usepackage{multicol}
+\usepackage{fancyhdr,lastpage}
+\usepackage{url}
+\pagestyle{fancy}
+\usepackage{hyperref}
+\usepackage{lastpage}
+\usepackage{amsmath}
+\usepackage{layout}   
+\lhead{}
+\chead{}
+\rhead{\footnotesize Topics in Labor Economics: Empirical Methods and Applications  -- Spring 2026}
+\lfoot{}
+\cfoot{\small \thepage/\pageref*{LastPage}}
+\rfoot{}
+
+\usepackage{array, xcolor}
+\usepackage{color,hyperref}
+\definecolor{clemsonorange}{HTML}{EA6A20}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=blue,urlcolor=blue,
+            anchorcolor=blue,citecolor=black}
+
+
+
+
+\begin{document}
+
+
+\maketitle
+
+\blankline
+
+\begin{tabular*}{1.03\textwidth}{@{\extracolsep{\fill}}lr}
+
+
+  E-mail: \texttt{ttyang@g.ntu.edu.tw} & Web: \href{https://sites.google.com/view/cpelab/}{\tt\bf https://sites.google.com/view/cpelab/}  \\
+
+ Office Hours: by appointment  &  Class Hours: Mon. 10:20-12:10 \\
+
+
+Office: 中研院經濟所B308 / 台大社科院724 & Class Room: 台大社科院609 \\
+
+&  \\
+\hline
+\end{tabular*}
+
+\vspace{10 mm}
+
+\section*{Course Description}
+This course will survey empirical methods in labor economics. We will focus on recent advances in causal inference as well as their applications. The topics will include randomized (field) experiments, matching methods, regression/machine learning method, differences-in-differences design, synthetic controls method, synthetic differences-in-differences design, regression discontinuity (kink) design, instrumental variables design, shift-share design, and GIS data analysis. The applications in labor economics include AI impact on labor market, human capital and earnings, labor market discrimination, life-cycle labor supply, social insurance, labor demand, and tax incidence.  \\
+
+We will especially focus on the practical implementation of these empirical methods and tips for data management by writing a term paper. Students need to use \textit{Latex} to type their term paper. After taking this course, students should be able to conduct empirical research independently and know how to write a scientific paper.
+
+
+\section*{Suggested Readings}
+\begin{itemize}
+	\item Huntington-Klein, N. (2021), The Effect: An Introduction to Research Design and Causality
+	\item Scott Cunningham (2020), Causal Inference: The Mixtape 
+	\item Alberto Abadie and Matias D. Cattaneo (2018), Econometric Methods for Program Evaluation	
+	\item Angrist and Pischke (2016), Mastering Metrics: The Path from Cause to Effect
+	\item Angrist and Pischke (2009), Mostly Harmless Econometrics
+	\item George Borjas (2016), Labor Economics, 7th Edition
+	\item Pierre Cahuc, Stephane Carcillo and Andre Zylberberg (2018), Labor Economics, 2nd Edition 
+	\item Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani (2017), An Introduction to Statistical Learning with Applications in R
+	\item Korinek, A. (2023), Generative AI for Economic Research, \textit{Journal of Economic Literature}
+	\item Korinek, A. (2025), AI Agents for Economic Research
+\end{itemize} 
+
+
+\section*{Statistical Softwares}
+\begin{itemize}
+	\item STATA
+	\item R
+	
+\end{itemize} 
+
+
+\section*{Grading Policy}
+\begin{itemize}
+	\item Two empirical homework \& Two Oral Exams (30\%)
+	\begin{itemize}
+		\item Each homework is followed by an individual oral exam
+		\item The oral exam will assess your understanding of your own code and empirical design
+	\end{itemize}
+	\item Reading group presentation (15\%)
+	\item Term paper presentation (15\%)
+	\item Term paper (40\%): milestones throughout the term
+\end{itemize} 
+
+
+\section*{Important Dates}
+
+\section*{Important Dates}
+
+\begin{itemize}
+	\item Homework 1: 4/12
+    \begin{itemize}
+
+	\item Oral Exam 1: 4/22
+    \end{itemize} 
+
+	\item Homework 2: 5/17
+        \begin{itemize}
+
+	\item Oral Exam 2: 5/27 week
+    \end{itemize} 
+
+	\item Reading Group Presentation: 5/27 and 6/3
+	\item Term paper presentation: 6/10
+	\item Term paper deadline: 6/17
+\end{itemize} 
+
+\section*{Course Outline}
+
+\begin{itemize}
+ \item[1] \textbf{Empirical Methods}
+\begin{itemize}
+\item Selection Bias
+\item Randomized Experiment
+\item Matching Methods
+\item Causal Machine Learning
+\item Differences-in-Differences Design
+\item Synthetic Control Method
+\item Regression Discontinuity Design
+\item Instrumental Variables
+\item Advanced Topic: Causal Forest
+\item Advanced Topic: Staggered DID Design
+\item Advanced Topic: Synthetic DID Design
+\item Advanced Topic: Shift-Share IV Design
+\item Advanced Topic: Geographical RD Design
+\end{itemize}
+ \item[2] \textbf{Applications in Labor Economics}
+\begin{itemize}
+\item AI Impact on Labor Market
+\item Human Capital and Earnings
+\item Corporate Tax and Labor Demand
+\item Minimum Wage and Labor Demand
+\item Unemployment Insurance and Job Search
+\item Pension and Labor Supply
+\item Fertility and Female Labor Supply
+\end{itemize}
+
+\end{itemize}
+
+
+\end{document}

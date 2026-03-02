@@ -1,0 +1,4 @@
+\defaultfontfeatures[KpMath-Regular]
+  { Extension = .otf,
+    BoldFont = KpMath-Bold
+  }

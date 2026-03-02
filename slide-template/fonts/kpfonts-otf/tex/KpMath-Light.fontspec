@@ -1,0 +1,4 @@
+\defaultfontfeatures[KpMath-Light]
+  { Extension = .otf,
+    BoldFont = KpMath-Semibold
+  }
