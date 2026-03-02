@@ -1,4 +1,4 @@
-name: Build and Publish PDFs
+name: Build and Publish PDFs (GitHub Pages)
 
 on:
   push:
@@ -16,15 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ① 安裝 Noto CJK 字型
-      - name: Install fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
-          fc-cache -fv
-
-      # ② 編譯 L1_Intro
-      - name: Compile PDFs
+      # Compile PDFs inside TeXLive Docker image (Alpine-based)
+      # Install CJK fonts inside the container so XeLaTeX can find "Noto Sans CJK TC"
+      - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
           working_directory: L1_Intro
@@ -34,18 +28,34 @@ jobs:
             L1_Intro_metrics_2026_v1.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            noto-fonts-cjk
 
-      # ③ 建立發佈資料夾
-      - name: Prepare site
+      # Prepare the GitHub Pages site contents
+      # We publish the whole L1_Intro folder so the PDF URLs are stable:
+      # https://<user>.github.io/<repo>/L1_Intro/<pdfname>.pdf
+      - name: Prepare site folder
         run: |
-          mkdir public
+          mkdir -p public
           cp -r L1_Intro public/
 
-      # ④ 上傳到 Pages
-      - name: Upload artifact
+      # Upload to GitHub Pages as an artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
+      # Optional but helpful: upload logs even if compilation fails
+      - name: Upload LaTeX logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex_logs
+          path: |
+            L1_Intro/*.log
+            L1_Intro/*.fls
+            L1_Intro/*.fdb_latexmk
 
   deploy:
     needs: build
@@ -58,6 +68,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
