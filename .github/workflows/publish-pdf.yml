@@ -45,6 +45,30 @@ jobs:
           path: |
             L1_Intro/*.pdf
 
+      # ---- L2_PO ----
+      - name: Compile L2_PO PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L2_PO
+          root_file: |
+            L2_Potential_Outcome_labor_2026_v1.tex
+            L2_Potential_Outcome_metrics_2026_v1.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L2_PO)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L2_PO
+          path: |
+            L2_PO/*.pdf
+      
+      
       # ---- L3_SB_RCT ----
       - name: Compile L3_SB_RCT PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
@@ -52,6 +76,7 @@ jobs:
           working_directory: L3_SB_RCT
           root_file: |
             L3_selection_bias_RCT_labor_2026_v1.tex
+            L3_selection_bias_RCT_metrics_2026_v1.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

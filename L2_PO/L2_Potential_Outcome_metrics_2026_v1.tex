@@ -1,0 +1,1566 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+%（可選）若你會用到無襯線中文或等寬中文，建議補上：
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{colortbl} 
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+
+\title[]  
+%{Introduction to Causal Inference and Big Data}
+{Potential Outcomes Framework}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+%\author 
+ %{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+ {\today}
+
+
+% \usetheme{CambridgeUS}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
+
+\usetheme{Boadilla}
+%\useinnertheme{rectangles}
+
+%\usetheme{CambridgeUS}
+\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+%\usepackage{beamerthemeshadow}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+%\usecolortheme[named=Blue]{structure}
+%\usetheme{CambridgeUS}
+%\usepackage{beamerthemeshadow}
+%\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+ \titlepage
+\end{frame}
+
+
+
+
+
+\begin{frame}{Causal Effect and Potential Outcomes Framework}
+	\begin{itemize} 
+		\item Estimating causal effect of treatment is a challenging task
+		\vspace{0.2cm} 
+		\begin{itemize} 	
+		\item Because \textbf{we can NOT observe counterfactual outcomes} if one had chosen different treatments
+		\vspace{0.2cm}
+			\end{itemize}
+		\item In order to obtain causal effect, we need to compare \textbf{observed outcomes} with \textbf{counterfactual outcomes}
+		\vspace{0.2cm}
+		\item The \textbf{potential outcomes framework} provides a way to think about causal effects in a structured way
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Potential Outcomes Framework}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Treatment Status}
+	\begin{itemize} 
+		\item The potential outcomes framework is developed by statistician Donald Rubin
+		\vspace{0.2cm}	
+			\begin{itemize} 
+		\item Rubin, Donald. 1974. \textbf{Estimating Causal Effects of Treatments in Randomized and Nonrandomized Studies}. \textit{Journal of Educational Psychology}, 66(5).
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Treatment Status}
+\begin{itemize} 
+
+\item \textcolor{blue}{Treatment}: the intervention/variable whose effect we are interested in
+\vspace{0.2cm}		
+\item $D_i$: a dummy that indicate whether individual $i$ receive treatment or not
+\begin{equation*}
+D_i=\left\lbrace
+\begin{array}{l}
+1\quad \text{if individual $i$ received the treatment} \\
+0\quad \text{otherwise.}
+\end{array} \right.
+\end{equation*}
+\item Examples:
+\vspace{0.2cm}
+\begin{itemize}
+\item Attend graduate school or not
+\vspace{0.2cm}
+\item Have health insurance or not
+\vspace{0.2cm}
+\item Win a lottery or not
+\vspace{0.2cm}
+\item Increase corporate tax rate or not
+\vspace{0.2cm}
+\item Democracy v.s. Dictatorship
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Treatment Status}
+\begin{itemize} 
+\item $D_i$ can be a multiple valued (continuous) variable
+
+\begin{equation*}
+D_i= s
+\end{equation*}
+\item Examples:
+\vspace{0.2cm}
+\begin{itemize}
+\item Schooling years
+\vspace{0.2cm}
+\item Number of children
+\vspace{0.2cm}
+\item Number of polices
+\vspace{0.2cm}
+\item Number of advertisements
+\vspace{0.2cm}
+\item Money supply 
+\vspace{0.2cm}
+\item Income tax rate
+\end{itemize}
+\vspace{0.2cm}
+\item \textbf{In the following slides, we focus on the case when a treatment $D_i$ is a binary variable}
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Potential Outcome}
+\begin{itemize} 	
+\item A \textcolor{blue}{potential outcome} is the outcome that would be realized according to which treatment an individual received
+\vspace{0.2cm}
+\item Suppose there are \textbf{two treatments} for each individual: 
+\vspace{0.2cm}
+\begin{itemize} 	
+\item $D_i=1$
+\vspace{0.2cm}
+\item $D_i=0$ 
+\end{itemize}
+\vspace{0.2cm}
+\item Thus, each individual $i$ has \textbf{two potential outcomes} and one for each value of the treatment	$\mathrm{Y}^{D}_{i}$
+\begin{itemize}
+\vspace{0.2cm}
+\item $\mathrm{Y}^{1}_{i}$: Potential outcome for an individual $i$ if getting treatment
+\vspace{0.2cm}
+\item $\mathrm{Y}^{0}_{i}$: Potential outcome for an individual  $i$ if not getting treatment
+\vspace{0.2cm}
+\end{itemize}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Potential Outcome}
+\begin{itemize} 	
+\item \textbf{Example:}
+\vspace{0.2cm}
+\begin{itemize} 
+\item Annual earnings if attending graduate school
+\vspace{0.2cm}
+\item Annual earnings if not attending graduate school
+\vspace{0.2cm}
+\end{itemize}
+%\vspace{0.2cm}
+%\item Each potential outcome corresponds to the various levels of a treatment
+
+\vspace{0.2cm}
+\item Again, potential outcome can be $\mathrm{Y}^{s}_{i}$:
+\begin{itemize}
+	\vspace{0.2cm}
+\item $s$ can be continuous	
+	 \vspace{0.2cm}
+\item More than two potential outcomes
+\vspace{0.2cm}
+\end{itemize}
+\item \textbf{How many treatments we have, how many potential outcomes will be}
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{Observed Outcome}
+
+%\textcolor{blue}{Treatment Effect} \\
+%\begin{itemize} 
+%\item The treatment effect or causal effect of the treatment on the outcome for unit $i$ is the difference between its two potential outcomes:
+%\end{itemize}
+%	\begin{equation*}
+%	\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}
+%	\end{equation*}	
+%\item No one can be treated and untreated at the same time
+\begin{itemize} 
+\item \textcolor{blue}{Observed outcome}: for each particular individual, we only can observe one potential outcome
+\vspace{0.2cm}
+\item Observed outcome $\mathrm{Y}_i$ is realized as 
+
+\begin{gather*}
+	\mathrm{Y}_i = \mathrm{Y}^{1}_{i}D_i+\mathrm{Y}^{0}_{i}(1-D_i) \\
+	\text{or} \\
+	\mathrm{Y}_i = \left\lbrace
+	\begin{array}{l}
+		\mathrm{Y}^{1}_{i}\quad \text{if $D_i=1$} \\
+		\mathrm{Y}^{0}_{i}\quad \text{if $D_i=0$}
+	\end{array} \right.
+\end{gather*}
+
+
+\item \textbf{Only one potential outcome can be realized}	
+\vspace{0.2cm}
+\item The unobserved outcome is called the ``\textbf{counterfactual}" outcome
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+\title[]  
+{Casual Effects}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Casual Effect}
+\begin{itemize} 
+%\item What are we trying to estimate? 
+%\vspace{0.2cm}
+\item \textbf{Causal effect:} the comparisons between the
+potential outcomes under each treatment
+\vspace{0.2cm}  
+\begin{itemize} 
+\item The differences between \textbf{observed (potential) outcome} and \textbf{counterfactual (potential) outcome} 
+\vspace{0.2cm}  
+\end{itemize}
+
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\title[]  
+{Casual Effect for an Individual}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Casual Effect for an Individual}
+\begin{itemize} 
+
+\item \textcolor{blue} {Individual Treatment Effect (ITE)}:
+\begin{equation*}
+\tau_i = \mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i}
+\end{equation*}		
+
+\begin{itemize} 
+\vspace{0.2cm}
+%\item Also call  \textcolor{blue} {Individual Causal Effect}
+%\vspace{0.2cm}
+%\item The difference between an individual $i$'s two potential outcomes
+%\vspace{0.2cm}
+\item \textbf{Interpretation:}  The difference between an individual $i$'s potential outcome under treatment v.s. without treatment
+
+\vspace{0.2cm}	
+\item \textbf{Example:}
+\vspace{0.2cm}	
+\begin{itemize} 
+\item The difference in individual $i$'s earnings if he/she attends graduate school v.s. not attending graduate school
+\end{itemize}		
+
+\vspace{0.2cm}
+\item We usually cannot identify the ITE
+
+
+%\item Almost always unidentified without strong assumptions
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Individual Treatment Effect (ITE)}{An Example}
+\begin{itemize}
+\item Imagine a population with 4 people
+\vspace{0.2cm}
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_{i}$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_{i}$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+			David & 1 & 3 & \textcolor{red}? & 3 & \textcolor{red}? \\
+			Tina & 1 & 2 & \textcolor{red}? & 2 & \textcolor{red}? \\
+			Mary & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+			Bill & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+			\midrule
+			$\color{white}E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{1}_{i}|D_i=1]$ &   &     &  &  &  \\
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+
+
+\item We want to evaluate the effect of attending graduate school on the annual earnings
+\begin{itemize}
+\vspace{0.2cm}
+\item $D_{i}$: Attending graduate school $D_{i}=1$, otherwise $D_{i}=0$
+\vspace{0.2cm}
+\item $\mathrm{Y}^{1}_{i}$: (Potential) annual earnings if individual $i$ attend graduate school
+\vspace{0.2cm}
+\item $\mathrm{Y}^{0}_{i}$: (Potential) annual earnings if individual $i$ do not attend graduate school
+\item $Y_{i}$: Observed annual earnings for individual $i$
+\vspace{0.2cm}
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Individual Treatment Effect (ITE)}{An Example}
+\begin{itemize}
+\item What is Individual causal effect (ITE) of attending graduate school for David?
+\vspace{0.2cm}
+\begin{itemize}
+
+\item We only observe the annual earnings for David who attended graduate school
+\vspace{0.2cm}
+\item Only observe $\mathrm{Y}^{1}$
+\vspace{0.2cm}
+\end{itemize}
+
+\item What is Individual causal effect (ITE) of attending graduate school for Bill?
+\vspace{0.2cm}
+\begin{itemize}
+\item We only observe the annual earnings for Bill who did not attend graduate school
+\vspace{0.2cm}
+\item Only observe $\mathrm{Y}^{0}$
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Individual Treatment Effect (ITE)}{An Example}
+\begin{itemize}
+\item Suppose \textbf{we can observe counterfactual outcomes}
+\vspace{0.2cm} 
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+			David & 1 & 3 & \textcolor{red} 2 & 3 & \textcolor{red} 1 \\
+			Tina & 1 & 2 & \textcolor{red} 1 & 2 & \textcolor{red} 1 \\
+			Mary & 0 & \textcolor{red} 1 & 1 & 1 & \textcolor{red} 0 \\
+			Bill & 0 & \textcolor{red} 1 & 1 & 1 & \textcolor{red} 0 \\
+			\midrule
+			$\color{white}E[Y_1-Y_0|D=1]$ &   &   &   &  &  \\
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+
+\item The ITE for David: $\alpha_{David}=1$
+\vspace{0.2cm}
+\item The ITE for Bill: $\alpha_{Bill}=0$
+
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Causal Effect for General Population}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Effect for General Population}
+%\textcolor{blue}{Problem}\\
+\begin{itemize}
+\item People might be more interested in the \textbf{causal effect for general population}
+\vspace{0.2cm}	
+%\item ITE might not represent causal effect for general population
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item We usually cannot rule out that the ITE differs across individuals
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item Heterogeneous treatment effects
+%\end{itemize}
+%\end{itemize}
+\vspace{0.2cm}
+\item Understand the treatment effect (causal effect) for general population: 
+\vspace{0.2cm}
+\begin{itemize}
+\item Estimate the \textbf{population average of the individual treatment effects} 
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Review: Expectation}
+\begin{itemize} 
+\item We usually use $\mathrm{E}[Y_{i}]$ (the expectation of a variable $Y_{i}$) to denote \textbf{population average} of $Y_{i}$ 
+
+\item Suppose we have a population with N individuals
+
+\begin{equation*}
+\mathrm{E}[\mathrm{Y}_{i}] = \dfrac{1}{N} \sum^N_{i=1} \mathrm{Y}_{i}
+\end{equation*}
+
+\vspace{0.2cm}
+%\item If $Y_{i}$ is a variable from a sample survey, $\mathrm{E}[Y_{i}]$ is the average obtained if everyone in the population is surveyed
+%\vspace{0.2cm}
+%\item For example: average income for whole population in Taiwan
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Causal Effect for General Population}
+\begin{itemize} 
+
+%\item Assume we have a population with $N$ individuals
+%\vspace{0.2cm}
+\item \textcolor{blue} {Average Treatment Effect (ATE)}:
+\begin{equation*}
+\alpha_{\text{ATE}} = \mathrm{E}[\tau_i] =  \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}] = \dfrac{1}{N} \sum^N_{i=1} [\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+\end{equation*}
+
+\begin{itemize} 
+\vspace{0.2cm}
+\item \textbf{Interpretation:} 
+\vspace{0.3cm}
+\begin{itemize} 
+\item Average difference in potential outcomes for the whole population
+
+\end{itemize}
+\vspace{0.2cm}
+\item \textbf{Example:}
+\vspace{0.2cm}
+\begin{itemize} 
+	\item Average effect of attending graduate school on annual earnings for whole population
+	\vspace{0.2cm}
+\item Average difference between the earnings of the same individuals if they attend graduate schools v.s. if not attending graduate schools 
+\end{itemize}
+\vspace{0.2cm}	
+\item We'll spend a lot time trying to identify/estimate ATE
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Average Treatment Effect (ATE)}{An Example}
+\begin{itemize}
+\item Missing data problem also arises when we estimate ATE
+\vspace{0.2cm} 
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+			\textcolor{red}{David} & 1 & 3 & \textcolor{red}? & 3 & \textcolor{red}? \\
+			\textcolor{red}{Tina} & 1 & 2 & \textcolor{red}? & 2 & \textcolor{red}? \\
+			\textcolor{red}{Mary} & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+			\textcolor{red}{Bill} & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}]$     &  & \textcolor{red}? &     &  &     \\
+			$E[\mathrm{Y}^{0}_{i}]$     &  &     & \textcolor{red}? &  &     \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]$ &  &     &     &  & \textcolor{red}? \\
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+
+\vspace{0.2cm}
+\item What is the effect of attending graduate school on average annual earnings of whole population (ATE)?
+\vspace{0.2cm}
+\item $\alpha_{\text{ATE}}=E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]=?$
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}{Average Treatment Effect (ATE)}{An Example}
+\begin{itemize}
+\item Suppose \textbf{we can observe counterfactual outcomes}
+\vspace{0.2cm}
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+		\textcolor{red}{David} & 1 & 3 & \textcolor{red}{2} & 3 & \textcolor{red}{1} \\
+		\textcolor{red}{Tina} & 1 & 2 & \textcolor{red}{1} & 2 & \textcolor{red}{1} \\
+		\textcolor{red}{Mary} & 0 & \textcolor{red}{1} & 1 & 1 & \textcolor{red}{0} \\
+		\textcolor{red}{Bill} & 0 & \textcolor{red}{1} & 1 & 1 & \textcolor{red}{0} \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}]$     & & 1.75 &     &  &     \\
+			$E[\mathrm{Y}^{0}_{i}]$     &     & & 1.25 &  &     \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]$ &     &     &  &  & 0.5 \\
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+\vspace{0.2cm}
+\item What is the effect of attending graduate school on average annual earnings of whole population (ATE)?
+\vspace{0.2cm}
+
+\item $\alpha_{\text{ATE}}= \dfrac{1+1+0+0}{4} = 0.5$
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\title[]  
+{Causal Effect for a Specific Sub-population}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Review: Conditional Expectation}
+	\begin{itemize} 
+		\item We usually use $\mathrm{E}[Y_{i}|X_{i}=1]$ to denote the average of $Y_{i}$ in the population that has $X_{i}=1$
+		
+		\item Suppose the population has $N_{1}$ individuals with $X=1$
+		
+		\begin{equation*}
+		\mathrm{E}[Y_{i}|X_{i}=1] = \dfrac{1}{N_{1}} \sum_{i:X=1} \mathrm{Y}_{i}
+		\end{equation*}
+		
+		
+		\vspace{0.2cm}
+		%\item If $Y_{i}$ is a variable from a sample survey, $\mathrm{E}[Y_{i}|D_{i}=d]$ is the average computed when everyone in the population who has $X_{i}=d$ is surveyed
+		%\vspace{0.2cm}
+%		\item \textbf{Example:} 
+%				\vspace{0.2cm}
+%			\begin{itemize} 
+%		\item  Average income for those who have master degree in Taiwan 
+%		\vspace{0.2cm}
+%			\end{itemize}
+%		\item The above quantities are unique for specific population
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Causal Effect for a Specific Sub-population}
+\begin{itemize}
+\item \textcolor{blue} {Conditional average treatment effect (CATE)} for a subpopulation:
+\begin{equation*}
+\alpha_{\text{CATE}} = \mathrm{E}[\tau_i|X_i=f] = \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_i=f] = \dfrac{1}{\color{red}N_f} \sum_{\color{red}i:X_i=f}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+\end{equation*}
+
+\begin{itemize}
+%\vspace{0.2cm}
+\item $N_f$ is the number of units in the subpopulation
+\vspace{0.2cm}
+\item \textbf{Interpretation:} 
+\vspace{0.2cm}
+\begin{itemize}
+\item Average difference in potential outcomes for the specific subgroup
+\vspace{0.2cm}
+\end{itemize}
+\item \textbf{Example:}
+\vspace{0.2cm}
+\begin{itemize} 
+
+	\item Average effect of attending graduate school on annual earnings for \textbf{female} ($X_{i}=f$)
+	\vspace{0.2cm}
+\item  Average difference between the earnings of \textbf{female} if they attend graduate schools v.s. if not attending graduate schools
+\end{itemize}
+
+
+\end{itemize}
+
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Effect for Treatment Group}
+\begin{itemize}	
+\item \textcolor{blue} {Average treatment effect on the treated (ATT)}:
+\begin{equation*}
+\alpha_{\text{ATT}} = \mathrm{E}[\tau_i|D_i=1]= \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=1] = \dfrac{1}{\color{red}N_1} \sum_{\color{red}i:D_i=1}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+\end{equation*}
+%where $N_1 = \sum_i \oldstylenums{1}(D_i=1)$
+%\vspace{0.2cm}
+\begin{itemize}
+
+\item Note that ATT is a special case of CATE
+	\vspace{0.2cm}
+\item \textbf{Interpretation:} 
+	\vspace{0.2cm}
+\begin{itemize}
+\item Average difference in potential outcomes for those who were treated
+\vspace{0.2cm}
+\end{itemize}
+\begin{itemize} 
+
+\end{itemize}
+
+\item \textbf{Example:}
+\vspace{0.2cm}
+\begin{itemize} 
+	\item Average effect of attending graduate school on annual earnings for those attending graduate school ($D_{i}=1$)
+\vspace{0.2cm}	
+\item Average difference between the earnings of those attending graduate schools v.s. earnings if they had not attended graduate schools 
+\end{itemize}
+%\vspace{0.2cm}
+%\item We'll also spend a lot time trying to identify/estimate ATT
+
+\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Average Treatment Effect on Treated (ATT)}
+\begin{itemize}
+\item Missing data problem also arises when we estimate ATT
+\vspace{0.2cm} 
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+			\textcolor{red}{David} & 1 & 3 & \textcolor{red}? & 3 & \textcolor{red}? \\
+			\textcolor{red}{Tina} & 1 & 2 & \textcolor{red}? & 2 & \textcolor{red}? \\
+			Mary & 0 & ? & 1 & 1 & ? \\
+			Bill & 0 & ? & 1 & 1 & ? \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i} | D_i=1]$     &  & 2.5 &     &  &     \\
+			$E[\mathrm{Y}^{0}_{i} | D_i=1]$     &     & & \textcolor{red}? &  &     \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | D_i=1]$ &     &     &  &  & \textcolor{red}? \\
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+
+\vspace{0.2cm}
+\item What is the effect of attending graduate school on average annual earnings for those who choose to attend graduate school (ATT)?
+\vspace{0.2cm}
+\item $\alpha_{\text{ATT}}=E[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | D_i=1]=?$
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Average Treatment Effect on Treated (ATT)}
+\begin{itemize}
+\item Suppose \textbf{we can observe counterfactual outcomes}
+\vspace{0.2cm}
+\begin{center}
+	\begin{threeparttable}
+		\centering\footnotesize
+		\begin{tabular}{cccccc}
+			\toprule
+			$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+			\midrule
+			\textcolor{red}{David} & 1 & 3 & \textcolor{red}2 & 3 & \textcolor{red}1 \\
+			\textcolor{red}{Tina} & 1 & 2 & \textcolor{red}1 & 2 & \textcolor{red}1 \\
+			Mary & 0 & 1 & 1 & 1 & 0 \\
+			Bill & 0 & 1 & 1 & 1 & 0 \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}| D_i=1]$     & & 2.5 &     &  &     \\
+			$E[\mathrm{Y}^{0}_{i}| D_i=1]$     &     & & \textcolor{red}{1.5} &  &     \\
+			\midrule
+			$E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}| D_i=1]$ &     &     &  &  & \textcolor{red}1 \\
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{center}
+
+\vspace{0.2cm}
+\item What is the effect of attending graduate school on average annual earnings of those who choose to attend graduate school (ATT)?
+\vspace{0.2cm}
+\item $\alpha_{\text{ATT}}= \dfrac{1+1}{2} = 1$
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Causal Effect for a Control Group}
+	\begin{itemize}	
+		\item \textcolor{blue} {Average treatment effect on the untreated (ATU)}:
+		\begin{equation*}
+			\alpha_{\text{ATU}} = \mathrm{E}[\tau_i|D_i=0]= \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0] = \dfrac{1}{\color{red}N_0} \sum_{\color{red}i:D_i=0}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+	%	where $N_0 = \sum_i \oldstylenums{1}(D_i=0)$
+	%	\vspace{0.2cm}
+		\begin{itemize}
+			
+			\item Note that ATU is a special case of CATE
+			\vspace{0.2cm}
+	\item \textbf{Interpretation:} 
+			\begin{itemize}
+				\vspace{0.2cm}
+	\item Average difference in potential outcomes for those who were untreated
+				\end{itemize}
+			\begin{itemize} 
+			
+			\end{itemize}
+			\vspace{0.2cm}
+			\item \textbf{Example:}
+
+			\begin{itemize} 
+				\item Average effect of attending graduate school on annual earnings for those NOT attending graduate school ($D_{i}=0$)	
+							\vspace{0.2cm}
+				\item Average difference between the earnings of those NOT attending graduate schools v.s. earnings if they had attended graduate schools 
+			\end{itemize}
+			%\vspace{0.2cm}
+			%\item We'll also spend a lot time trying to identify/estimate ATT
+			
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Average Treatment Effect on Untreated (ATU)}
+	\begin{itemize}
+		\item Missing data problem also arises when we estimate ATU
+		\vspace{0.2cm} 
+	\begin{center}
+		\begin{threeparttable}
+			\centering\footnotesize
+			\begin{tabular}{cccccc}
+				\toprule
+				$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+				\midrule
+				David & 1 & 3 & ? & 3 & ? \\
+				Tina & 1 & 2 & ? & 2 & ? \\
+				\textcolor{red}{Mary} & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+				\textcolor{red}{Bill} & 0 & \textcolor{red}? & 1 & 1 & \textcolor{red}? \\
+				\midrule
+				$E[\mathrm{Y}^{1}_{i} | D_i=0]$     & & \textcolor{red}? &     &  &     \\
+				$E[\mathrm{Y}^{0}_{i} | D_i=0]$     & &     & 1 &  &     \\
+				\midrule
+				$E[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | D_i=0]$ & &     &     &  & \textcolor{red}? \\
+				\bottomrule
+			\end{tabular}
+		\end{threeparttable}
+	\end{center}
+	
+		\vspace{0.2cm}
+		\item What is the effect of attending graduate school on average annual earnings for those who choose NOT to attend graduate school (ATU)?
+		\vspace{0.2cm}
+		\item $\alpha_{\text{ATU}}=E[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | D_i=0]=?$
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Average Treatment Effect on Untreated (ATU)}
+	\begin{itemize}
+		\item Suppose \textbf{we can observe counterfactual outcomes}
+		\vspace{0.2cm}
+		\begin{center}
+			\begin{threeparttable}
+				\centering\footnotesize
+				\begin{tabular}{cccccc}
+					\toprule
+					$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$  \\
+					\midrule
+					David & 1 & 3 & 2 & 3 & 1 \\
+					Tina & 1 & 2 & 1 & 2 & 1 \\
+				 \textcolor{red}{Mary} & 0 & \textcolor{red}1 & 1 & 1 & \textcolor{red}0 \\
+				 \textcolor{red}{Bill} & 0 & \textcolor{red}1 & 1 & 1 & \textcolor{red}0 \\
+					\midrule
+					$E[\mathrm{Y}^{1}_{i}| D_i=0]$     & & \textcolor{red}1 &     &  &     \\
+					$E[\mathrm{Y}^{0}_{i}| D_i=0]$     & &     & 1 &  &     \\
+					\midrule
+					$E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}| D_i=0]$ & &     &     &  & \textcolor{red}0 \\
+					\bottomrule
+				\end{tabular}
+			\end{threeparttable}
+		\end{center}
+		
+		\vspace{0.2cm}
+		\item What is the effect of attending graduate school on average annual earnings of those who choose NOT to attend graduate school (ATU)?
+		\vspace{0.2cm}
+		\item $\alpha_{\text{ATU}}= \dfrac{0+0}{2} = 0$
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+\begin{frame}{Selection into Treatment}
+	\begin{itemize}	
+		
+		\item In this numerical example, we have $\alpha_{\text{ATT}} > \alpha_{\text{ATE}} > \alpha_{\text{ATU}}$
+				\vspace{0.2cm}
+		\item This may indicate selection into treatment:
+				\vspace{0.2cm}
+	\begin{itemize}	
+		\item Those who benefit most from the treatment (attending graduate school) are most likely to take it 
+			\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Summary}
+	\begin{itemize}	
+		
+		\item \textcolor{blue} {Individual Treatment Effect (ITE)}:
+		\begin{equation*}
+				\alpha_{\text{ITE}} = \mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i}
+		\end{equation*}	
+		
+		
+		\item \textcolor{blue} {Average treatment effect (ATE)}:
+		\begin{equation*}
+			\alpha_{\text{ATE}} =  \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}] = \dfrac{1}{\color{red}N} \sum_{i}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+		
+		
+		\item \textcolor{blue} {Conditional average treatment effect (CATE)}:
+		\begin{equation*}
+			\alpha_{\text{CATE}} =  \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_i=f] = \dfrac{1}{\color{red}N_f} \sum_{\color{red}i:X_i=f}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Summary}
+	\begin{itemize}	
+		\item \textcolor{blue} {Average treatment effect on the treated (ATT)}:
+		\begin{equation*}
+			\alpha_{\text{ATT}} =  \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=1] = \dfrac{1}{\color{red}N_1} \sum_{\color{red}i:D_i=1}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+		
+		
+		\item \textcolor{blue} {Average treatment effect on the untreated (ATU)}:
+		\begin{equation*}
+			\alpha_{\text{ATU}} =  \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0] = \dfrac{1}{\color{red}N_0} \sum_{\color{red}i:D_i=0}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Which Causal Effect is most Relevant?}
+	\begin{itemize}	
+		
+		\item There is no correct answer to this question
+				\vspace{0.2cm}
+		\item ITE is the most specific effect		
+					\vspace{0.2cm}
+				\begin{itemize}	
+					\item It is hard to identified
+													\vspace{0.2cm}
+				\end{itemize}
+		\item ATE is the most general parameter
+				\vspace{0.2cm}
+			\begin{itemize}	
+		\item What if we give a treatment to the average person/firm/unit 
+			\end{itemize}
+						\vspace{0.2cm}
+		ATT is often interesting for policy evaluation
+								\vspace{0.2cm}
+				\begin{itemize}	
+			\item Policy makers might want to know the effect on those who took up the policy
+		\end{itemize}
+									\vspace{0.2cm}
+	\item ATU is sometimes interesting for policy evaluation
+			\vspace{0.2cm}
+		\begin{itemize}	
+			\item We may be concerned about the people who did not take up the policy
+						\vspace{0.2cm}
+			\item How would they be affected if they took up the policy
+		\end{itemize}
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\title[]  
+{Fundamental Problem of Causal Inference}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Fundamental Problem of Causal Inference}
+%\textcolor{blue}{Fundamental Problem of Causal Inference} \\
+\begin{itemize}
+
+\item We can never \textbf{directly observe} causal effects 
+\vspace{0.2cm}
+\begin{itemize}
+\item ITE, ATE, CATE, ATT or ATU
+\end{itemize}
+
+\vspace{0.2cm}
+\item Because we can never observe both potential outcomes $(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})$ for any individual
+\vspace{0.2cm}
+\item For someone receiving the treatment ($D_i = 1$)
+\vspace{0.2cm}
+\begin{itemize}
+\item $\mathrm{Y}^{1}_{i}$ is observed 
+\vspace{0.2cm}
+\item But $\mathrm{Y}^{0}_{i}$ is the \textbf{unobserved} counterfactual outcome
+\vspace{0.2cm}
+\begin{itemize}
+\item It represents what would have happened to an individual $i$ if assigned to control
+\end{itemize}
+\end{itemize}
+\vspace{0.2cm}
+\item We need to compare \textbf{potential outcomes}, but we only have
+\textbf{observed outcomes}
+\vspace{0.2cm}
+\item Causal inference is a set of statistical tools that deal with a \textbf{missing data problem}
+%\item We do not know:
+%\begin{itemize} 
+%\item $E[\mathrm{Y}^{1}_{i}|D_i=0]$: Average level of outcome with treatment for those who are not treated
+%\item $E[\mathrm{Y}^{0}_{i}|D_i=1]$: Average level of outcome without treatment for those who are treated
+%\end{itemize}
+
+%\item Because no one can be treated and untreated at the same time
+
+
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Potential Outcome Framework in Economics}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Potential Outcome Framework in Economics}{Demand and Supply}
+	
+	
+	\begin{itemize} 
+		\item The concepts of potential and observed outcomes are deeply ingrained in economics
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item A demand function represents the potential quantity demanded as a function of price 
+			\vspace{0.2cm}
+			\item Only the quantity under equilibrium price is realized 
+			\vspace{0.2cm}
+			\item Other quantities along demand curve are counterfactual			
+			
+			
+			
+			
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Potential Outcome Framework in Economics}{Demand and Supply}
+	\begin{center}
+		\begin{tikzpicture}[scale=0.7]
+		\draw[thick,->] (0,0) --node[very near end,above,sloped]{Price}(0,10);
+		\draw[thick,->] (0,0) --node[very near end,below,sloped]{Quantity}(10,0);
+		\draw[draw=blue] (0,1) edge [bend right=20] node[very near end,above,sloped]{Supply}(9,9);
+		\draw[draw=red] (0,9) edge [bend right=20] node[very near start,above,sloped]{Demand}(9,1);
+		\node [below left] at (0,0) {$0$};
+		
+		\node [below] at (2.5,0) {$Q_1$};
+		\node [left] at (0,5.3) {$P_1$};
+		\draw[dashed](0,5.3)--(2.5,5.3)--(2.5,0);
+		\node [circle , fill, inner sep=1.5pt] at (2.5,5.3) {};
+		
+		\node [below] at (5.9,0) {$Q_2$};
+		\node [left] at (0,2.5) {$P_2$};
+		\draw[dashed](0,2.5)--(5.9,2.5)--(5.9,0);
+		\node [circle , fill, inner sep=1.5pt] at (5.9,2.5) {};
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Potential Outcome Framework in Economics}{Demand and Supply}
+	\begin{center}
+		\begin{tikzpicture}[scale=0.7]
+		\draw[thick,->] (0,0) --node[very near end,above,sloped]{Price}(0,10);
+		\draw[thick,->] (0,0) --node[very near end,below,sloped]{Quantity}(10,0);
+		\node [below left] at (0,0) {$0$};
+		\node [below] at (4.5,0) {$Q^*$};
+		\node [left] at (0,3.4) {$P^*$};
+		\draw[draw=blue] (0,1) edge [bend right=20] node[very near end,above,sloped]{Supply}(9,9);
+		\draw[draw=red] (0,9) edge [bend right=20] node[very near start,above,sloped]{Demand}(9,1);
+		\draw[dashed](0,3.4)--(4.5,3.4)--(4.5,0);
+		\tiny{\node [circle , fill, text width=0.5em] at (4.5,3.4) {};}
+		\end{tikzpicture}
+	\end{center}
+\end{frame}
+
+
+
+
+\title[]  
+{Stable Unit Treatment Value Assumption}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Stable Unit Treatment Value Assumption (SUTVA)}
+	\begin{block}{Assumption}
+		Observed outcomes are realized as 
+		\begin{equation*}
+		\mathrm{Y}_i=\mathrm{Y}^{1}_{i}D_i+\mathrm{Y}^{0}_{i}(1-D_i)
+		\end{equation*}
+	\end{block}
+	\begin{itemize} 
+		\item Implies that observed outcomes for an individual $i$ are \textbf{unaffected} by the treatment status of other individual $j$
+		\vspace{0.2cm}
+		
+		\item Individual $i$'s observed outcomes are only affected by his/her own treatment 
+		\vspace{0.2cm}
+		\item Rules out possible treatment effect from other individuals (spillover effect/externality)
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Stable Unit Treatment Value Assumption (SUTVA)}
+	
+	\begin{itemize} 
+		\item  Could write out potential outcomes in a more
+		extensive fashion, taking into account both
+		one's own treatment status and the treatment
+		status of others
+		
+		\begin{equation*}
+		\left\lbrace
+		\begin{array}{l}
+		\mathrm{Y}^{11}_{i}\quad \text{if $D_i=1$ and $D_j=1$} \\
+		\mathrm{Y}^{10}_{i}\quad \text{if $D_i=1$ and $D_j=0$} \\
+		\mathrm{Y}^{01}_{i}\quad \text{if $D_i=0$ and $D_j=1$} \\
+		\mathrm{Y}^{00}_{i}\quad \text{if $D_i=0$ and $D_j=0$}
+		\end{array} \right.
+		\end{equation*}
+		
+		%\begin{equation*}
+		%	\mathrm{Y}_i=\mathrm{Y}^{1}_{i}D_i+\mathrm{Y}^{0}_{i}(1-D_i) + \mathrm{Y}^{2}_{i}D_{j} + \mathrm{Y}^{3}_{i}(1-D_{j})
+		%	\end{equation*}
+		
+		\item \textbf{Example:} 
+				\vspace{0.2cm}
+			\begin{itemize} 
+		\item Your health status depends on whether you smoke and your father/mother smoke
+			\end{itemize}
+		%\item E.g., housemates, friends, relatives, neighbors,
+		%competitors…
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Stable Unit Treatment Value Assumption (SUTVA)}{Examples for Spillover Effect}
+	
+		
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item \textbf{Contagion}: 
+						\vspace{0.2cm}
+					\begin{itemize} 
+			\item The effect of being vaccinated on one's probability of contracting a disease depends on whether others have been vaccinated
+					\end{itemize}		
+			\vspace{0.2cm}
+			\item \textbf{Displacement}: 
+			\vspace{0.2cm}
+			\begin{itemize} 
+			\item Police interventions designed to suppress crime in one location may displace criminal activity to nearby locations.	
+								\end{itemize}				
+			\vspace{0.2cm} 
+			\item \textbf{Communication}:
+				\vspace{0.2cm}
+			\begin{itemize}  
+			\item Interventions that convey information about commercial products, entertainment, or political causes may spread from individuals who receive the treatment to others who are nominally untreated
+			\end{itemize}						
+		\end{itemize}		
+		
+		
+
+\end{frame}
+
+
+
+
+\begin{frame}{Stable Unit Treatment Value Assumption (SUTVA)}
+	\begin{itemize} 
+		
+		\item SUTVA may be problematic, so we should choose the units of analysis to minimize interference across units.
+		\vspace{0.2cm}
+		\item Recent literatures on causal inference are trying to deal with this assumption
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Suggested Readings}
+\begin{itemize} 
+\item Chapter 1, Mastering Metrics: The Path from Cause to Effect
+\vspace{0.2cm}
+\item Chapter 2, Mostly Harmless Econometrics
+\vspace{0.2cm}
+\item Chapter 4, Causal Inference: The Mixtape
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\end{document} 
