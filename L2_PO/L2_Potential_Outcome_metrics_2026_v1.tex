@@ -977,45 +977,32 @@ potential outcomes under each treatment
 
 
 
-
-
 \begin{frame}{Causal Effect for a Control Group}
-	\begin{itemize}	
-		\item \textcolor{blue} {Average treatment effect on the untreated (ATU)}:
-		\begin{equation*}
-			\alpha_{\text{ATU}} = \mathrm{E}[\tau_i|D_i=0]= \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0] = \dfrac{1}{\color{red}N_0} \sum_{\color{red}i:D_i=0}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
-		\end{equation*}
-	%	where $N_0 = \sum_i \oldstylenums{1}(D_i=0)$
-	%	\vspace{0.2cm}
-		\begin{itemize}
-			
-			\item Note that ATU is a special case of CATE
-			\vspace{0.2cm}
-	\item \textbf{Interpretation:} 
-			\begin{itemize}
-				\vspace{0.2cm}
-	\item Average difference in potential outcomes for those who were untreated
-				\end{itemize}
-			\begin{itemize} 
-			
-			\end{itemize}
-			\vspace{0.2cm}
-			\item \textbf{Example:}
+\begin{itemize}
+  \item \textcolor{blue}{Average treatment effect on the untreated (ATU):}
+  \begin{equation*}
+    \alpha_{\text{ATU}} = \mathrm{E}[\tau_i|D_i=0]
+    = \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0]
+    = \dfrac{1}{\color{red}N_0} \sum_{\color{red}i:D_i=0}\bigl[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\bigr]
+  \end{equation*}
 
-			\begin{itemize} 
-				\item Average effect of attending graduate school on annual earnings for those NOT attending graduate school ($D_{i}=0$)	
-							\vspace{0.2cm}
-				\item Average difference between the earnings of those NOT attending graduate schools v.s. earnings if they had attended graduate schools 
-			\end{itemize}
-			%\vspace{0.2cm}
-			%\item We'll also spend a lot time trying to identify/estimate ATT
-			
-		\end{itemize}
-	\end{itemize}
-	
+  \item Note that ATU is a special case of CATE
+  \vspace{0.2cm}
+
+  \item \textbf{Interpretation:}
+  \begin{itemize}
+    \item Average difference in potential outcomes for those who were untreated
+  \end{itemize}
+  \vspace{0.2cm}
+
+  \item \textbf{Example:}
+  \begin{itemize}
+    \item Average effect of attending graduate school on annual earnings for those NOT attending graduate school ($D_i=0$)
+    \vspace{0.2cm}
+    \item Average difference between the earnings of those NOT attending graduate school vs.\ earnings if they had attended graduate school
+  \end{itemize}
+\end{itemize}
 \end{frame}
-
-
 
 
 
