@@ -1,1 +1,223 @@
-name: Build and Publish PDFs (GitHub Pages) on: push: branches: [ main ] permissions: contents: read pages: write id-token: write jobs: # ------------------------------------------------------------ # 1) Build PDFs in each folder, upload as artifacts # ------------------------------------------------------------ build_pdfs: name: Build PDFs runs-on: ubuntu-latest steps: - name: Checkout uses: actions/checkout@v4 # ---- L1_Intro ---- - name: Compile L1_Intro PDFs (XeLaTeX + CJK) uses: xu-cheng/latex-action@v3 with: working_directory: L1_Intro root_file: | L1_Intro_data_2026_v1.tex L1_Intro_labor_2026_v1.tex L1_Intro_metrics_2026_v1.tex latexmk_use_xelatex: true args: -interaction=nonstopmode -file-line-error -halt-on-error extra_system_packages: | fontconfig font-noto-cjk continue_on_error: true - name: Upload PDFs (L1_Intro) if: always() uses: actions/upload-artifact@v4 with: name: pdf_L1_Intro path: | L1_Intro/*.pdf # ---- L2_PO ---- - name: Compile L2_PO PDFs (XeLaTeX + CJK) uses: xu-cheng/latex-action@v3 with: working_directory: L2_PO root_file: | L2_Potential_Outcome_labor_2026_v1.tex L2_Potential_Outcome_metrics_2026_v1.tex latexmk_use_xelatex: true args: -interaction=nonstopmode -file-line-error -halt-on-error extra_system_packages: | fontconfig font-noto-cjk continue_on_error: true - name: Upload PDFs (L2_PO) if: always() uses: actions/upload-artifact@v4 with: name: pdf_L2_PO path: | L2_PO/*.pdf # ---- L3_SB_RCT ---- - name: Compile L3_SB_RCT PDFs (XeLaTeX + CJK) uses: xu-cheng/latex-action@v3 with: working_directory: L3_SB_RCT root_file: | L3_selection_bias_RCT_labor_2026_v1.tex L3_selection_bias_RCT_metrics_2026_v1.tex latexmk_use_xelatex: true args: -interaction=nonstopmode -file-line-error -halt-on-error extra_system_packages: | fontconfig font-noto-cjk continue_on_error: true - name: Upload PDFs (L3_SB_RCT) if: always() uses: actions/upload-artifact@v4 with: name: pdf_L3_SB_RCT path: | L3_SB_RCT/*.pdf # ---- Logs (optional but useful) ---- - name: Upload LaTeX logs (always) if: always() uses: actions/upload-artifact@v4 with: name: latex_logs path: | **/*.log **/*.fls **/*.fdb_latexmk # ------------------------------------------------------------ # 2) Assemble site: keep old PDFs if not rebuilt, overlay new # ------------------------------------------------------------ assemble_site: name: Assemble site runs-on: ubuntu-latest needs: [ build_pdfs ] steps: - name: Checkout repo (main) uses: actions/checkout@v4 - name: Check if gh-pages exists id: ghpages shell: bash run: | set -e if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT" else echo "exists=false" >> "$GITHUB_OUTPUT" fi - name: Checkout previous gh-pages (if exists) if: ${{ steps.ghpages.outputs.exists == 'true' }} uses: actions/checkout@v4 with: ref: gh-pages path: _old_site fetch-depth: 1 - name: Create public base from old site shell: bash run: | mkdir -p public if [ -d "_old_site" ]; then cp -r _old_site/* public/ 2>/dev/null || true fi - name: Download all PDF artifacts uses: actions/download-artifact@v4 with: path: _artifacts - name: Overlay newly-built PDFs into public shell: bash run: | shopt -s nullglob for d in _artifacts/pdf_*; do dir_name="${d#_artifacts/pdf_}" mkdir -p "public/${dir_name}" cp -v "${d}"/*.pdf "public/${dir_name}/" 2>/dev/null || true done echo "=== PDFs in public ===" find public -maxdepth 4 -type f -name "*.pdf" -print || true - name: Generate index.html shell: bash run: | set -e { echo "<!doctype html>" echo "<html><head><meta charset='utf-8'>" echo "<meta name='viewport' content='width=device-width, initial-scale=1'>" echo "<title>Course PDFs</title>" echo "<style>" echo "body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;max-width:960px;margin:24px auto;padding:0 12px;}" echo "h1{font-size:22px;margin:0 0 12px 0;}" echo "h2{font-size:18px;margin:20px 0 8px 0;border-bottom:1px solid #ddd;padding-bottom:6px;}" echo "ul{margin:6px 0 0 18px;}" echo "li{margin:6px 0;}" echo "a{text-decoration:none;} a:hover{text-decoration:underline;}" echo ".muted{color:#666;font-size:13px;margin-top:6px;}" echo "</style>" echo "</head><body>" echo "<h1>Course PDFs</h1>" echo "<div class='muted'>Updated automatically from the repository.</div>" } > public/index.html # 每個資料夾一個 section for dir in $(find public -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort); do pdfs=$(find "public/${dir}" -maxdepth 1 -type f -name "*.pdf" -printf "%f\n" | sort || true) if [ -n "$pdfs" ]; then echo "<h2>${dir}</h2><ul>" >> public/index.html while IFS= read -r f; do [ -n "$f" ] || continue echo "<li><a href='./${dir}/${f}'>${f}</a></li>" >> public/index.html done <<< "$pdfs" echo "</ul>" >> public/index.html fi done echo "</body></html>" >> public/index.html echo "=== index.html generated ===" head -n 40 public/index.html - name: Upload Pages artifact uses: actions/upload-pages-artifact@v3 with: path: public # ------------------------------------------------------------ # 3) Deploy to GitHub Pages # ------------------------------------------------------------ deploy: name: Deploy needs: [ assemble_site ] runs-on: ubuntu-latest environment: name: github-pages permissions: pages: write id-token: write steps: - name: Deploy to GitHub Pages id: deployment uses: actions/deploy-pages@v4
+name: Build and Publish PDFs (GitHub Pages)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  # ------------------------------------------------------------
+  # 1) Build PDFs in each folder, upload as artifacts
+  # ------------------------------------------------------------
+  build_pdfs:
+    name: Build PDFs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---- L1_Intro ----
+      - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L1_Intro
+          root_file: |
+            L1_Intro_data_2026_v1.tex
+            L1_Intro_labor_2026_v1.tex
+            L1_Intro_metrics_2026_v1.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L1_Intro)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L1_Intro
+          path: |
+            L1_Intro/*.pdf
+
+      # ---- L2_PO ----
+      - name: Compile L2_PO PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L2_PO
+          root_file: |
+            L2_Potential_Outcome_labor_2026_v1.tex
+            L2_Potential_Outcome_metrics_2026_v1.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L2_PO)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L2_PO
+          path: |
+            L2_PO/*.pdf
+
+      # ---- L3_SB_RCT ----
+      - name: Compile L3_SB_RCT PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L3_SB_RCT
+          root_file: |
+            L3_selection_bias_RCT_labor_2026_v1.tex
+            L3_selection_bias_RCT_metrics_2026_v1.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L3_SB_RCT)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L3_SB_RCT
+          path: |
+            L3_SB_RCT/*.pdf
+
+      # ---- Logs (optional but useful) ----
+      - name: Upload LaTeX logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex_logs
+          path: |
+            **/*.log
+            **/*.fls
+            **/*.fdb_latexmk
+
+  # ------------------------------------------------------------
+  # 2) Assemble site: keep old PDFs if not rebuilt, overlay new
+  # ------------------------------------------------------------
+  assemble_site:
+    name: Assemble site
+    runs-on: ubuntu-latest
+    needs: [ build_pdfs ]
+
+    steps:
+      - name: Checkout repo (main)
+        uses: actions/checkout@v4
+
+      - name: Check if gh-pages exists
+        id: ghpages
+        shell: bash
+        run: |
+          set -e
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout previous gh-pages (if exists)
+        if: ${{ steps.ghpages.outputs.exists == 'true' }}
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: _old_site
+          fetch-depth: 1
+
+      - name: Create public base from old site
+        shell: bash
+        run: |
+          mkdir -p public
+          if [ -d "_old_site" ]; then
+            cp -r _old_site/* public/ 2>/dev/null || true
+          fi
+
+      - name: Download all PDF artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: _artifacts
+
+      - name: Overlay newly-built PDFs into public
+        shell: bash
+        run: |
+          shopt -s nullglob
+          for d in _artifacts/pdf_*; do
+            dir_name="${d#_artifacts/pdf_}"
+            mkdir -p "public/${dir_name}"
+            cp -v "${d}"/*.pdf "public/${dir_name}/" 2>/dev/null || true
+          done
+
+          echo "=== PDFs in public ==="
+          find public -maxdepth 4 -type f -name "*.pdf" -print || true
+
+      - name: Generate index.html
+        shell: bash
+        run: |
+          set -e
+          {
+            echo "<!doctype html>"
+            echo "<html><head><meta charset='utf-8'>"
+            echo "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+            echo "<title>Course PDFs</title>"
+            echo "<style>"
+            echo "body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;max-width:960px;margin:24px auto;padding:0 12px;}"
+            echo "h1{font-size:22px;margin:0 0 12px 0;}"
+            echo "h2{font-size:18px;margin:20px 0 8px 0;border-bottom:1px solid #ddd;padding-bottom:6px;}"
+            echo "ul{margin:6px 0 0 18px;}"
+            echo "li{margin:6px 0;}"
+            echo "a{text-decoration:none;} a:hover{text-decoration:underline;}"
+            echo ".muted{color:#666;font-size:13px;margin-top:6px;}"
+            echo "</style>"
+            echo "</head><body>"
+            echo "<h1>Course PDFs</h1>"
+            echo "<div class='muted'>Updated automatically from the repository.</div>"
+          } > public/index.html
+
+          # 每個資料夾一個 section
+          for dir in $(find public -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort); do
+            pdfs=$(find "public/${dir}" -maxdepth 1 -type f -name "*.pdf" -printf "%f\n" | sort || true)
+            if [ -n "$pdfs" ]; then
+              echo "<h2>${dir}</h2><ul>" >> public/index.html
+              while IFS= read -r f; do
+                [ -n "$f" ] || continue
+                echo "<li><a href='./${dir}/${f}'>${f}</a></li>" >> public/index.html
+              done <<< "$pdfs"
+              echo "</ul>" >> public/index.html
+            fi
+          done
+
+          echo "</body></html>" >> public/index.html
+          echo "=== index.html generated ==="
+          head -n 40 public/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  # ------------------------------------------------------------
+  # 3) Deploy to GitHub Pages
+  # ------------------------------------------------------------
+  deploy:
+    name: Deploy
+    needs: [ assemble_site ]
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
