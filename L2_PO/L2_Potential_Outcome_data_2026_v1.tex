@@ -75,13 +75,13 @@
  {\today}
 
 
-\usetheme{CambridgeUS}
-%\usecolortheme{seahorse}
-\setbeamertemplate{footline}{%
-	\hfill\usebeamercolor[fg]{page number in head/foot}%
-	\usebeamerfont{page number in head/foot}%
-	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-}
+% \usetheme{CambridgeUS}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
 
 % \usetheme{Boadilla}
 % %\useinnertheme{rectangles}
@@ -95,13 +95,14 @@
 % }
 
 
-% \usepackage{beamerthemeshadow}
-% %\usecolortheme{seahorse}
-% \setbeamertemplate{footline}{%
-% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
-% 	\usebeamerfont{page number in head/foot}%
-% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-% }
+\usepackage{beamerthemeshadow}
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
 %\usepackage{beamerthemeshadow}
 \beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
 
@@ -909,6 +910,7 @@ potential outcomes under each treatment
 
 
 
+
 \begin{frame}{Average Treatment Effect on Treated (ATT)}
 \begin{itemize}
 \item Missing data problem also arises when we estimate ATT
@@ -979,7 +981,6 @@ potential outcomes under each treatment
 \end{itemize}
 
 \end{frame}
-
 
 
 

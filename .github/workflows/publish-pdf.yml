@@ -51,6 +51,7 @@ jobs:
         with:
           working_directory: L2_PO
           root_file: |
+            L2_Potential_Outcome_data_2026_v1.tex
             L2_Potential_Outcome_labor_2026_v1.tex
             L2_Potential_Outcome_metrics_2026_v1.tex
           latexmk_use_xelatex: true
@@ -74,6 +75,7 @@ jobs:
         with:
           working_directory: L3_SB_RCT
           root_file: |
+            L3_selection_bias_RCT_data_2026_v1.tex
             L3_selection_bias_RCT_labor_2026_v1.tex
             L3_selection_bias_RCT_metrics_2026_v1.tex
           latexmk_use_xelatex: true
