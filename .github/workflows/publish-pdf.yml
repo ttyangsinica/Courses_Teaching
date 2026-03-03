@@ -46,7 +46,7 @@ jobs:
             L1_Intro/*.pdf
 
       # ---- L2_PO ----
-      - name: Compile L2_PO PDFs (XeLaTeX + CJK)
+        - name: Compile L2_PO PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
           working_directory: L2_PO
@@ -54,7 +54,7 @@ jobs:
             L2_Potential_Outcome_labor_2026_v1.tex
             L2_Potential_Outcome_metrics_2026_v1.tex
           latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          args: -interaction=nonstopmode -file-line-error -halt-on-error -bibtex-
           extra_system_packages: |
             fontconfig
             font-noto-cjk
