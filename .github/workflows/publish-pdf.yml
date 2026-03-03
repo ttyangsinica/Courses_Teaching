@@ -10,18 +10,17 @@ permissions:
   id-token: write
 
 jobs:
-  # ------------------------------------------------------------
-  # 1) Build PDFs in each folder, upload as artifacts
-  # ------------------------------------------------------------
-  build_pdfs:
-    name: Build PDFs
+  build_and_deploy:
+    name: Build PDFs & Deploy to Pages
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ---- L1_Intro ----
+      # -----------------------------
+      # Build PDFs
+      # -----------------------------
       - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
@@ -31,22 +30,14 @@ jobs:
             L1_Intro_labor_2026_v1.tex
             L1_Intro_metrics_2026_v1.tex
           latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          # no bibtex
+          args: -interaction=nonstopmode -file-line-error -halt-on-error -bibtex-
           extra_system_packages: |
             fontconfig
             font-noto-cjk
-          continue_on_error: true
+          continue_on_error: false
 
-      - name: Upload PDFs (L1_Intro)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L1_Intro
-          path: |
-            L1_Intro/*.pdf
-
-      # ---- L2_PO ----
-        - name: Compile L2_PO PDFs (XeLaTeX + CJK)
+      - name: Compile L2_PO PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
           working_directory: L2_PO
@@ -54,22 +45,13 @@ jobs:
             L2_Potential_Outcome_labor_2026_v1.tex
             L2_Potential_Outcome_metrics_2026_v1.tex
           latexmk_use_xelatex: true
+          # no bibtex
           args: -interaction=nonstopmode -file-line-error -halt-on-error -bibtex-
           extra_system_packages: |
             fontconfig
             font-noto-cjk
-          continue_on_error: true
+          continue_on_error: false
 
-      - name: Upload PDFs (L2_PO)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L2_PO
-          path: |
-            L2_PO/*.pdf
-      
-      
-      # ---- L3_SB_RCT ----
       - name: Compile L3_SB_RCT PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
@@ -78,23 +60,18 @@ jobs:
             L3_selection_bias_RCT_labor_2026_v1.tex
             L3_selection_bias_RCT_metrics_2026_v1.tex
           latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          # no bibtex
+          args: -interaction=nonstopmode -file-line-error -halt-on-error -bibtex-
           extra_system_packages: |
             fontconfig
             font-noto-cjk
-          continue_on_error: true
+          continue_on_error: false
 
-      - name: Upload PDFs (L3_SB_RCT)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L3_SB_RCT
-          path: |
-            L3_SB_RCT/*.pdf
-
-      # ---- Logs (optional but useful) ----
-      - name: Upload LaTeX logs (always)
-        if: always()
+      # -----------------------------
+      # Debug logs (only if build fails)
+      # -----------------------------
+      - name: Upload LaTeX logs (on failure)
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: latex_logs
@@ -103,62 +80,22 @@ jobs:
             **/*.fls
             **/*.fdb_latexmk
 
-  # ------------------------------------------------------------
-  # 2) Assemble site: keep old PDFs if not rebuilt, overlay new
-  # ------------------------------------------------------------
-  assemble_site:
-    name: Assemble site
-    runs-on: ubuntu-latest
-    needs: [ build_pdfs ]
-
-    steps:
-      - name: Checkout repo (main)
-        uses: actions/checkout@v4
-
-      - name: Check if gh-pages exists
-        id: ghpages
-        shell: bash
+      # -----------------------------
+      # Prepare public/ for Pages
+      # -----------------------------
+      - name: Prepare site folder
         run: |
           set -e
-          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Checkout previous gh-pages (if exists)
-        if: ${{ steps.ghpages.outputs.exists == 'true' }}
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: _old_site
-          fetch-depth: 1
-
-      - name: Create public base from old site
-        shell: bash
-        run: |
           mkdir -p public
-          if [ -d "_old_site" ]; then
-            cp -r _old_site/* public/ 2>/dev/null || true
-          fi
 
-      - name: Download all PDF artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: _artifacts
-
-      - name: Overlay newly-built PDFs into public
-        shell: bash
-        run: |
-          shopt -s nullglob
-          for d in _artifacts/pdf_*; do
-            dir_name="${d#_artifacts/pdf_}"
-            mkdir -p "public/${dir_name}"
-            cp -v "${d}"/*.pdf "public/${dir_name}/" 2>/dev/null || true
-          done
+          # copy PDFs into public/<folder>/
+          mkdir -p public/L1_Intro public/L2_PO public/L3_SB_RCT
+          cp -v L1_Intro/*.pdf public/L1_Intro/ || true
+          cp -v L2_PO/*.pdf public/L2_PO/ || true
+          cp -v L3_SB_RCT/*.pdf public/L3_SB_RCT/ || true
 
           echo "=== PDFs in public ==="
-          find public -maxdepth 4 -type f -name "*.pdf" -print || true
+          find public -maxdepth 3 -type f -name "*.pdf" -print || true
 
       - name: Generate index.html
         shell: bash
@@ -183,7 +120,6 @@ jobs:
             echo "<div class='muted'>Updated automatically from the repository.</div>"
           } > public/index.html
 
-          # 每個資料夾一個 section
           for dir in $(find public -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | sort); do
             pdfs=$(find "public/${dir}" -maxdepth 1 -type f -name "*.pdf" -printf "%f\n" | sort || true)
             if [ -n "$pdfs" ]; then
@@ -200,25 +136,17 @@ jobs:
           echo "=== index.html generated ==="
           head -n 40 public/index.html
 
+      # -----------------------------
+      # Deploy to GitHub Pages (official flow)
+      # -----------------------------
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
 
-  # ------------------------------------------------------------
-  # 3) Deploy to GitHub Pages
-  # ------------------------------------------------------------
-  deploy:
-    name: Deploy
-    needs: [ assemble_site ]
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
