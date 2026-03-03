@@ -32,7 +32,9 @@
 
 \usepackage{booktabs}
 \usepackage{threeparttable}
-
+\usepackage{colortbl} 
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
 
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\nindep}{\not\!\perp\!\!\!\perp}
@@ -65,8 +67,32 @@
 	\begin{frame}{}
 		\titlepage
 	\end{frame}
+
+
+
+
+\begin{frame}{Causal Effect and Counterfactual}
+	\begin{itemize}
+		
+		
+		\item In many applications, we might be interested in the ATE or the ATT
+				\vspace{0.2cm}
+		\item These causal effects are defined by \textbf{comparing potential outcomes}
+								\vspace{0.2cm}
+		\item But we only know:	
+						\vspace{0.2cm}					
+				\begin{itemize}
+					\item Whether an individual was treated or not
+													\vspace{0.2cm}
+					\item The \textbf{observed outcome} of the individual
+				\end{itemize}
 	
-\begin{frame}{From Causal Effect to Counterfactual}
+		
+	\end{itemize}
+\end{frame}
+    
+	
+\begin{frame}{Causal Effect and Counterfactual}
 	\begin{itemize}
 		%\item In many applications, we are interested in the \textbf{causal effect} of a treatment
 		%\vspace{0.2cm}
@@ -178,10 +204,9 @@
 % 	\end{itemize}
 % \end{frame}
 	
-
 \begin{frame}{Selection Bias: A Numerical Example}
 	\begin{itemize}
-		\item To compute the \textbf{ATT}, we need $\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]$ --- the counterfactual for the \textcolor{red}{treated group}
+		\item To compute the ATT, we need $\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]$ --- the counterfactual for the \textbf{treated group}
 	\end{itemize}
 	\vspace{0.1cm}
 	\begin{center}
@@ -191,24 +216,32 @@
 				\toprule
 				$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$ \\
 				\midrule
-				\textcolor{red}{David} & \textcolor{red}{1} & \textcolor{red}{3} & \textcolor{red}{?} & \textcolor{red}{3} & \textcolor{red}{?} \\
-				\textcolor{red}{Tina}  & \textcolor{red}{1} & \textcolor{red}{2} & \textcolor{red}{?} & \textcolor{red}{2} & \textcolor{red}{?} \\
-				Mary  & 0 & {?} & 1 & 1 & {?} \\
-				Bill  & 0 & {?} & 1 & 1 & {?} \\
+				\textcolor{red}{David} & 1 & \tikzmark{atl}3\tikzmark{atr} & \tikzmark{btl}?\tikzmark{btr} & 3 & ? \\
+				\textcolor{red}{Tina}  & 1 & \tikzmark{abl}2\tikzmark{abr} & \tikzmark{bbl}?\tikzmark{bbr} & 2 & ? \\
+				Mary  & 0 & ? & 1 & 1 & ? \\
+				Bill  & 0 & ? & 1 & 1 & ? \\
 				\midrule
 				$\mathrm{E}[\mathrm{Y}^{1}_{i}|D_i=1]$ & & 2.5 & & & \\
-				$\textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]}$ & & & \textcolor{red}{?} & & \\
-				%$\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=0]$ & & & 1.0 & & \\
+				$\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]$ & & & ? & & \\
 				\bottomrule
 			\end{tabular}
+			\begin{tikzpicture}[remember picture, overlay]
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:atl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:abr);
+				\draw[thick, rounded corners=2pt]
+					([xshift=-6pt, yshift=8pt]pic cs:btl) rectangle
+					([xshift=6pt,  yshift=-3pt]pic cs:bbr);
+			\end{tikzpicture}
 		\end{threeparttable}
 	\end{center}
 	\vspace{0.2cm}
 	\begin{itemize}
-		\item $\mathrm{E}[\mathrm{Y}^{1}_{i}|D_i=1] = 2.5$ is observed --- but $\textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]}$ is the unobservable counterfactual
+		\item $\mathrm{E}[\mathrm{Y}^{1}_{i}|D_i=1] = 2.5$ is observed --- but $\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]$ is the unobservable counterfactual
 		\item Without it, we \textbf{cannot compute the ATT directly}
 	\end{itemize}
 \end{frame}
+
 
 \begin{frame}{Selection Bias: A Numerical Example}
 	\begin{itemize}
@@ -222,15 +255,23 @@
 				\toprule
 				$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$ \\
 				\midrule
-				\textcolor{red}{David} & \textcolor{red}{1} & \textcolor{red}{3} & \textcolor{red}{?} & \textcolor{red}{3} & \textcolor{red}{?} \\
-				\textcolor{red}{Tina}  & \textcolor{red}{1} & \textcolor{red}{2} & \textcolor{red}{?} & \textcolor{red}{2} & \textcolor{red}{?} \\
-				Mary  & 0 & {?} & 1 & 1 & {?} \\
-				Bill  & 0 & {?} & 1 & 1 & {?} \\
+				\textcolor{red}{David} & 1 & 3 & ? & \tikzmark{dtl}3\tikzmark{dtr} & ? \\
+				\textcolor{red}{Tina}  & 1 & 2 & ? & \tikzmark{dbl}2\tikzmark{dbr} & ? \\
+				Mary  & 0 & ? & 1 & \tikzmark{mtl}1\tikzmark{mtr} & ? \\
+				Bill  & 0 & ? & 1 & \tikzmark{mbl}1\tikzmark{mbr} & ? \\
 				\midrule
 				$\mathrm{E}[\mathrm{Y}_{i} | D_i=1]$ & & & & 2.5 & \\
 				$\mathrm{E}[\mathrm{Y}_{i} | D_i=0]$ & & & & 1.0 & \\
 				\bottomrule
 			\end{tabular}
+			\begin{tikzpicture}[remember picture, overlay]
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:dtl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:dbr);
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:mtl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:mbr);
+			\end{tikzpicture}
 		\end{threeparttable}
 	\end{center}
 	\vspace{0.15cm}
@@ -243,9 +284,11 @@
 	\end{itemize}
 \end{frame}
 
+
+
 \begin{frame}{Selection Bias: A Numerical Example}
 	\begin{itemize}
-		\item Suppose we \emph{could} observe all counterfactuals (shown in \textcolor{red}{red}):
+		\item Suppose we \emph{could} observe all counterfactuals:
 	\end{itemize}
 	\vspace{0.05cm}
 	\begin{center}
@@ -255,34 +298,40 @@
 				\toprule
 				$i$ & $D_i$ & $\mathrm{Y}^{1}_{i}$ & $\mathrm{Y}^{0}_{i}$ & $Y_i$ & $\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$ \\
 				\midrule
-				\textcolor{red}{David} & \textcolor{red}{1} & \textcolor{red}{3} & \textcolor{red}{2} & \textcolor{red}{3} & \textcolor{red}{1} \\
-				\textcolor{red}{Tina}  & \textcolor{red}{1} & \textcolor{red}{2} & \textcolor{red}{1} & \textcolor{red}{2} & \textcolor{red}{1} \\
-				Mary  & 0 & \textcolor{red}{1} & 1 & 1 & \textcolor{red}{0} \\
-				Bill  & 0 & \textcolor{red}{1} & 1 & 1 & \textcolor{red}{0} \\
+				\textcolor{red}{David} & 1 & \tikzmark{atl}3\tikzmark{atr} & \tikzmark{btl}2\tikzmark{btr} & 3 & 1 \\
+				\textcolor{red}{Tina}  & 1 & \tikzmark{abl}2\tikzmark{abr} & \tikzmark{bbl}1\tikzmark{bbr} & 2 & 1 \\
+				Mary  & 0 & 1 & \tikzmark{ctl}1\tikzmark{ctr} & 1 & 0 \\
+				Bill  & 0 & 1 & \tikzmark{cbl}1\tikzmark{cbr} & 1 & 0 \\
 				\midrule
 				$\mathrm{E}[\mathrm{Y}^{1}_{i}|D_i=1]$ & & 2.5 & & & \\
-				$\textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]}$ & & & \textcolor{red}{1.5} & & \\
+				$\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]$ & & & 1.5 & & \\
 				$\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=0]$ & & & 1.0 & & \\
 				\bottomrule
 			\end{tabular}
+			\begin{tikzpicture}[remember picture, overlay]
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:atl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:abr);
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:btl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:bbr);
+				\draw[thick, rounded corners=2pt]
+					([xshift=-8pt, yshift=9pt]pic cs:ctl) rectangle
+					([xshift=8pt,  yshift=-3pt]pic cs:cbr);
+			\end{tikzpicture}
 		\end{threeparttable}
 	\end{center}
 	\vspace{0.1cm}
 	\begin{itemize}
 		\item ATT $= \mathrm{E}[\mathrm{Y}^{1}_{i}|D_i=1] - \textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]} = 2.5 - 1.5 = 1$
-        	\vspace{0.1cm}
-
-		\item Selection Bias $= \textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1]} - \mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=0] = 1.5 - 1.0 = 0.5$
-        	\vspace{0.1cm}
-
-		\item[$\Rightarrow$] $\underbrace{\text{ODO}}_{1.5} = \underbrace{\text{ATT}}_{1} + \underbrace{\text{Selection Bias}}_{0.5}$ 
-	\vspace{0.1cm}
-        
-        \item \textbf{Key:} David \& Tina earn more \emph{even without} treatment
+		\vspace{0.1cm}
+		\item Selection Bias $= \mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=1] - \textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=0]} = 1.5 - 1.0 = 0.5$
+		\vspace{0.1cm}
+		\item[$\Rightarrow$] $\underbrace{\text{ODO}}_{1.5} = \underbrace{\text{ATT}}_{1} + \underbrace{\text{Selection Bias}}_{0.5}$
+		\vspace{0.1cm}
+		\item \textbf{Key:} David \& Tina earn more \emph{even without} treatment
 	\end{itemize}
 \end{frame}
-
-
 
 
 
