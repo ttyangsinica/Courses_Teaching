@@ -259,9 +259,6 @@
 \end{frame}
 
 
-
-
-
 \begin{frame}{Observational Studies}
 	\begin{itemize} 
 		
@@ -1310,11 +1307,6 @@
 \end{frame}
 
 
-
-
-
-
-
 \begin{frame}{Age Distribution: Before Matching}
 		\begin{center}
 		\begin{figure}[p]
@@ -1525,7 +1517,7 @@
 
 
 % -------------------------------------------------------
-% Step 2
+% Step 2  [FIX #1: removed nested $ in \text{}]
 % -------------------------------------------------------
 
 \begin{frame}{Identification Results for Matching}{Step 2: CATT = CATU = CATE}
@@ -1533,7 +1525,7 @@
 	\begin{equation*}
 		\begin{aligned}
 		& 
-			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  \\
+			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given } X_{i}}  \\
 			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} \quad \text{(from Step 1)} \\[6pt]
 			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} \quad \text{(by CIA)} \\[6pt]
 			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}
@@ -1576,7 +1568,7 @@
 
 
 % -------------------------------------------------------
-% Step 3: ATT
+% Step 3: ATT  [FIX #2: removed nested $ in \text{}]
 % -------------------------------------------------------
 
 \begin{frame}{Identification Results for Matching}{Step 3: From CATT to ATT}
@@ -1584,7 +1576,7 @@
 		
 		\item From Step 1, ODO at given $X_i$ identifies CATT:
 		\begin{equation*}
-			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  = \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
+			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given } X_{i}}  = \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
 		\end{equation*}	
 		
 		\item Applying LIE, average CATT over the \textbf{treatment group} distribution of $X$:
@@ -1749,18 +1741,7 @@
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
@@ -1771,18 +1752,8 @@
 \end{frame}
 
 
-
-
-
-
-
-
-
 \begin{frame}{Matching Estimator}
 \begin{itemize}
-	
-%\item Again, if we have population data, we can get the above causal effect	
-%		\vspace{0.2cm}
 	
 \item Suppose our sample is $N$ individuals
 \vspace{0.3cm}
@@ -1794,8 +1765,6 @@
 	\item $N_0$ individuals choose not join it ($N_0=N-N_1$): control group
 \end{itemize}
 
-	
-
 \end{itemize}
 \end{frame}
 
@@ -1804,9 +1773,6 @@
 \begin{frame}{Matching Estimator}{Estimation for ATT}
 	\begin{itemize}
 
-		%\item Perfect matches are often not available 
-		%\vspace{0.3cm}
-		
 		\item Suppose we want to estimate ATT
 		\vspace{0.3cm}
 			\begin{itemize}
@@ -1832,17 +1798,8 @@
 \end{frame}
 
 
-
-
-
-
-
-
-
 \begin{frame}{Matching Estimator}{Estimation for ATT}
 \begin{itemize}
-	
-
 	
 \item We can also use the average:
 	\begin{equation*}
@@ -1860,9 +1817,6 @@
 
 \begin{frame}{Matching Estimator}{Estimation for ATU}
 	\begin{itemize}
-		
-		%\item Perfect matches are often not available 
-		%\vspace{0.3cm}
 		
 		\item Suppose we want to estimate ATU 
 				\vspace{0.3cm}
@@ -1891,9 +1845,6 @@
 \end{frame}
 
 
-
-
-
 \begin{frame}{Matching}{Estimation for ATE}
 \begin{itemize}
 \item We can also use matching to estimate ATE 
@@ -1919,9 +1870,6 @@
 \end{frame}
 
 
-
-
-
 \begin{frame}{Exact Matching}{}
 	\begin{itemize}
 		
@@ -1931,22 +1879,11 @@
 		\item This is called \textbf{exact matching} and can be thought of as the gold standard for
 		matching
 	
-		
-		
 	\end{itemize}
 \end{frame}
 
 
-
-
-
-
-
-
 \begin{frame}{Exact Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -1957,8 +1894,6 @@
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
@@ -1969,7 +1904,6 @@
 		\item This is also true even if we divided each of covariates into coarse categories (subclassification)
 	\end{itemize}
 \end{frame}
-
 
 
 \begin{frame}{Exact Matching and the ``Curse of Dimensionality"}
@@ -1995,15 +1929,8 @@
 			\vspace{0.2cm}
 			\item Violate common support assumption
 		\end{itemize}
-		
-		
-		
-		
 	\end{itemize}
 \end{frame}
-
-
-
 
 
 \begin{frame}{Approximate Matching}{}
@@ -2027,12 +1954,6 @@
 \end{frame}
 
 
-
-
-
-
-
-
 \begin{frame}{Distance Matching}{Measure Closeness}
 \begin{itemize}
 	
@@ -2048,12 +1969,8 @@
 
 \item We need to define a \textbf{distance metric} to measure ``closeness" to construct a matched sample
 
-
 \end{itemize}
 \end{frame}
-
-
-
 
 
 \begin{frame}{Distance Matching}{Measure Closeness}
@@ -2081,10 +1998,6 @@
 \end{frame}
 
 
-
-
-
-
 \begin{frame}{Distance Matching}{Measure Closeness}
 \begin{itemize}
 
@@ -2109,13 +2022,9 @@ where
 \end{frame}
 
 
-
-
-
 \begin{frame}{Distance Matching}{Measure Closeness}
 	\begin{itemize}
 		
-	
 		\item Notice that, the normalized Euclidean distance is equal to:
 		\begin{equation*}
 		||X_i-X_j||=\sqrt{\sum^H_{h=1}\dfrac{(X_{hi}-X_{hj})^2}{\hat{\sigma}^2_h}}.
@@ -2126,8 +2035,6 @@ where
 		
 	\end{itemize}
 \end{frame}
-
-
 
 
 \begin{frame}{Distance Matching}{Criteria for a Good Match}
@@ -2146,23 +2053,13 @@ where
 		\vspace{0.2cm}	
 	\begin{itemize}
 		\item Match with all control units within a certain radius of the treated unit
-		%\vspace{0.2cm}
-		%\item If all control units have equal weight, we call this radius matching
-		%\vspace{0.2cm}
-		%\item If weights decay with distance, we call this kernel matching
 	\end{itemize}
-	
-	
 	
 	\end{itemize}
 \end{frame}
 
 
-
 \begin{frame}{Distance Matching}{k-Nearest-neighbor Matching: k=1}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2173,17 +2070,10 @@ where
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
-
-
 \begin{frame}{Distance Matching}{k-Nearest-neighbor Matching: k=1}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2194,16 +2084,10 @@ where
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
-
 \begin{frame}{Distance Matching}{k-Nearest-neighbor Matching: k=1}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2214,18 +2098,10 @@ where
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
-
-
-
 \begin{frame}{Distance Matching}{k-Nearest-neighbor Matching: k=10}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2236,18 +2112,10 @@ where
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
-
-
-
 \begin{frame}{Distance Matching}{Radius Matching}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2258,60 +2126,32 @@ where
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
-
-
 
 
 \begin{frame}{Matching and the ``Curse of Dimensionality"}
 \begin{itemize}
 \item Matching discrepancies $||X_i-X_{j(i)}||$ tend to increase with number of covariates, the dimension of $X$
 \vspace{0.2cm}
-%\item Matching discrepancies converge to zero 
-%\vspace{0.2cm}
-%\item But they converge very slowly if $k$ is large
-%\vspace{0.2cm}
-%\item Mathematically, it can be shown that $||X_i-X_{j(i)}||$ converges to zero at the same rate as $\dfrac{1}{N^{1/k}}$
-%\vspace{0.2cm}
 \item It is difficult to find good matches in large dimensions: you need many observations if $H$ is large
 \end{itemize}
 \end{frame}
 
 
-
-
 \title[]  
 {Propensity Score Matching \\ Main Idea}
-
 
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
 
-
 \begin{frame}{}
 \titlepage
 \end{frame}
-
-
-
 
 
 \begin{frame}{Propensity Score Matching}
@@ -2328,8 +2168,6 @@ problem to be reduced to a single dimension
 \item Intuitively, propensity score $p(X_{i})$ summarized all information of a set of covariates $X_{i}$ into a single value  
 \vspace{0.2cm}
 \item Then, we can just control (match) $p(X_{i})$ to eliminate selection bias
-
-%\item PSM methods can be adapted to multivalued treatment, through this has yet to catch on: see Imbens (2000)
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -2344,14 +2182,11 @@ problem to be reduced to a single dimension
 	\end{equation*}
 \begin{itemize}
 \item Conditioning on the propensity score $p(X_{i})$ is enough to make treatment status be independent of the potential outcomes
-
-%to have independence between the treatment status and the potential outcomes
 \vspace{0.2cm}
 \item Substantial dimension reduction in the matching variables!
 \end{itemize}
 \end{itemize}
 \end{frame}
-
 
 
 \begin{frame}{Propensity Score Matching}
@@ -2369,8 +2204,6 @@ conditional on a set of covariates $X_{i}$
 \end{frame}
 
 
-
-
 \begin{frame}{Propensity Score Matching}
 		\begin{itemize}
 	\item Goal of Proof: 
@@ -2383,16 +2216,8 @@ conditional on a set of covariates $X_{i}$
 		\item[$\Rightarrow$] $(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|p(X_{i})$
 	\end{itemize}
 	
-	
 		\end{itemize}
-	
-
-	
-	
 \end{frame}
-
-
-
 
 
 \begin{frame}{Propensity Score Matching}
@@ -2413,9 +2238,6 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
-
 \begin{frame}{Propensity Score Matching}
 	
     Using a similar argument, we obtain
@@ -2429,17 +2251,11 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			&= p(X_{i})
 		\end{aligned}
 	\end{equation*}
-	%\end{proof}	
 	\begin{itemize}
 		\item[$\Rightarrow$] $Pr(D_{i}=1|\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i},p(X_{i}))=p(X_{i})=Pr(D_{i}=1|p(X_{i}))$
 		\item[$\Rightarrow$] $(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|p(X_{i})$
 	\end{itemize}
 \end{frame}
-
-
-
-
-
 
 
 \begin{frame}{Propensity Score Matching}
@@ -2453,10 +2269,6 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\end{itemize}
 	\end{itemize}
 \end{frame}
-
-
-
-
 
 
 \begin{frame}{Identification Results or PSM}
@@ -2473,13 +2285,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 		\end{itemize}
 		
 	\end{itemize}
-	
-	
-	
-	
-	
- \end{frame}
-
+\end{frame}
 
 
 \begin{frame}{Identification Results for PSM}
@@ -2574,44 +2380,20 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
-
-
-
 \title[]  
 {Propensity Score Matching \\ Estimation}
-
 
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
 
-
 \begin{frame}{}
 \titlepage
 \end{frame}
-
-
-
-
-
-
 
 
 \begin{frame}{Propensity Score Matching}{Estimation}
@@ -2633,12 +2415,8 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 		\end{itemize}
 				
 			\end{itemize}
-			%\vspace{0.2cm}
-		%\item[2] Skip the cumbersome matching procedure and use weighting approach
-		
 	\end{itemize}
 \end{frame}
-
 
 
 \begin{frame}{Propensity Score Matching}{Estimation: Nearest Neighbor}
@@ -2662,10 +2440,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	%% 2
 	\begin{center}
 		\scalebox{0.75}{
 			\begin{threeparttable}
@@ -2679,7 +2454,6 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 					3 & 0.29 & 14400 &  3 & 0.30 & 21000 &    &  &   \\ 
 					4 & 0.25 & 20800 &  4 & 0.27 & 9300  &    &  &   \\  
 					5 & 0.29 & 6100  &  5 & 0.54 & 41100 &    &  &   \\
-
 					7 & 0.33 & 21900 &  7 & 0.39 & 42000 &    &  &   \\
 					8 & 0.27 & 28800 &  8 & 0.28 & 8800  &    &  &   \\  
 					9 & 0.31 & 20300 &  9 & 0.24 & 25500 &    &  &   \\  
@@ -2703,9 +2477,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	%% 23
 	\begin{center}
 	\scalebox{0.75}{
 			\begin{threeparttable}
@@ -2743,13 +2515,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
-
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2760,16 +2526,10 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
-
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2780,15 +2540,10 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2799,15 +2554,10 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2818,15 +2568,10 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
 
 
 \begin{frame}{Propensity Score Matching}{A Numerical Example}
-	
-	
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -2837,40 +2582,23 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 			\emph{Source:} Ben Elsner's slides
 		\end{minipage}
 	\end{center}
-	
-	
 \end{frame}
-
 
 
 \title[]  
 {Propensity Score Matching \\ Statistical Inference}
 
-
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
 
-
 \begin{frame}{}
 	\titlepage
 \end{frame}
-
 
 
 \begin{frame}{Propensity Score Matching}{Statistical Inference}
@@ -2878,7 +2606,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 		
 		\item A valid method to calculate standard errors has not been known until very recently (see, Abadie and Imbens, 2016)
 		\vspace{0.2cm}
-			\item Abadie, Alberto, and Guido W. Imbens. "\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
+			\item Abadie, Alberto, and Guido W. Imbens. ``\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
 		\vspace{0.2cm}
 		\begin{itemize}		
 		
@@ -2892,15 +2620,12 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
-
 \begin{frame}{Propensity Score Matching}{Statistical Inference}
 	\begin{itemize}
 		
 		\item A valid method to calculate standard errors when using estimated propensity scores was formally derived by Abadie and Imbens (2016)
 		\vspace{0.2cm}
-		\item Abadie, Alberto, and Guido W. Imbens. "\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
+		\item Abadie, Alberto, and Guido W. Imbens. ``\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
 		\vspace{0.2cm}
 		\begin{itemize}		
 			
@@ -2918,8 +2643,6 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-
-
 \begin{frame}{Propensity Score Matching}{Drawback}
 	\begin{itemize}
 		\item  PSM is hugely popular method to estimate treatment effects even if it relies on \textbf{less convincing assumption}: 
@@ -2927,54 +2650,32 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 		\begin{itemize}
 			\item Selection on observables (CIA) 	
 		\end{itemize}
-		
-		
 	\end{itemize}	
 \end{frame}
-
 
 
 \title[]  
 {STATA Example}
 
-
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
-
 
 \begin{frame}{}
 	\titlepage
 \end{frame}
 
 
-
-
 \begin{frame}{STATA Example}{Dehejia et al. (1999)}	Rajeev H. Dehejia; Sadek Wahba (1999)``\textbf{Causal Effects in Nonexperimental Studies: Reevaluating the Evaluation of Training Programs}"Journal of the American Statistical Association 
 	\begin{itemize}
 		\vspace{0.2cm}
-		%\item Use an empirical example in this paper
-		%\vspace{0.2cm}
 		\item The authors wants to examine the effect of job training on workers' earnings
 		\vspace{0.2cm}
 		\item We use this example to go through the procedure of implementing PSM
-		%\vspace{0.2cm}
-		%\item See \textbf{matching.do}
 	\end{itemize}
 \end{frame}
 
@@ -3008,18 +2709,7 @@ global rawdata = "D:\nest\Dropbox\causal_data_course\code\Class_Data\rawdata"
 global workdata = "D:\nest\Dropbox\causal_data_course\code\Class_Data\workdata"
 }
 \end{lstlisting}
-	\begin{itemize}
-	
-		
-		
-	\end{itemize}
 \end{frame}
-
-
-
-
-
-
 
 
 \begin{frame}[fragile]{Install Package (ado file)}{\texttt{ssc install}}
@@ -3029,13 +2719,8 @@ ssc install psmatch2
 	\begin{itemize}
 		\vspace{0.2cm}
         \item Install the \texttt{psmatch2} package using the \texttt{ssc install} command
-
-		
 	\end{itemize}
 \end{frame}
-
-
-
 
 
 \begin{frame}[fragile]{Read Data}{import delimited: reads CSV files}
@@ -3068,7 +2753,6 @@ save "$rawdata/lalonde.dta", replace
 		\vspace{0.2cm}
 	\end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Examine Data}{\texttt{codebook}: Display Summary Statistics}
@@ -3107,7 +2791,6 @@ sum re78, d
 \end{frame}
 
 
-
 \begin{frame}[fragile]{Examine Data}{\texttt{tab}: Produce a frequency table}
 \begin{lstlisting}
 tab treat
@@ -3123,7 +2806,6 @@ tab treat
 		\end{itemize}
 	\end{itemize}
 	\end{frame}
-
 
 
 \begin{frame}[fragile]{Create Sample for Analysis}{\texttt{gen}: Create New Variables}
@@ -3143,7 +2825,6 @@ gen id=_n
 	\end{itemize}
 \end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Examine Data}{\texttt{duplicates}: Detecting Repeated Observations}
@@ -3179,12 +2860,9 @@ ttest re78, by(treat)
 		\item \textbf{by(treat)}: Specifies that the comparison is made between the two groups defined by \texttt{treat}
 		\vspace{0.2cm}
 		\item Tests whether the difference in means is statistically significant before matching
-	%	\vspace{0.2cm}
-	%	\item Useful for assessing baseline balance in outcomes before causal analysis
 	\end{itemize}
 \end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{STATA Example}{Step 1: Test Differences in Outcomes in Pre-matching Data}
@@ -3195,7 +2873,6 @@ ttest re78, by(treat)
 		\end{figure}
 	\end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{STATA Example}{Step 2: Test Differences in Covariates in Pre-matching Data}
@@ -3213,8 +2890,6 @@ ttest educ, by(treat)
 		\item \textbf{ttest educ, by(treat)}: Compares the mean education level between treatment and control groups
 		\vspace{0.2cm}
 		\item Assesses balance in key covariates before matching to detect pre-existing differences
-	%	\vspace{0.2cm}
-	%	\item Helps determine if treatment and control groups are comparable before causal analysis
 	\end{itemize}
 \end{itemize}
 \end{frame}
@@ -3229,8 +2904,9 @@ ttest educ, by(treat)
 	\end{itemize}
 \end{frame}
 
+% FIX #3: \item Syntax: -> \textbf{Syntax:}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
-	\item Syntax:
+	\textbf{Syntax:}
 \begin{lstlisting}
 teffects psmatch (outcome) (treatment covariates, logit), nn(#) ate
 \end{lstlisting}
@@ -3239,10 +2915,6 @@ teffects psmatch (outcome) (treatment covariates, logit), nn(#) ate
 		\item \textbf{nn($\#$)}: specify number of matches per observation; default is nn(1)
 		\vspace{0.2cm}
 			\begin{itemize}
-		%\item \textbf{gen(stub)}: specifies that the observation numbers of the nearest neighbors be stored in the new variables stub1, stub2, ....
-		%\vspace{0.2cm}
-		%\item This option is required if you wish to perform postestimation based on the matching results
-		%\vspace{0.2cm}
 		\item The number of variables generated may be more than nn($\#$) because of tied distances
 			\end{itemize}
 		\vspace{0.2cm}
@@ -3256,10 +2928,9 @@ teffects psmatch (outcome) (treatment covariates, logit), nn(#) ate
 \end{frame}
 
 
-
-
+% FIX #4: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74  re75, logit), nn(1) atet
 teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74  re75, logit), nn(1) ate
@@ -3283,8 +2954,6 @@ teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74 
 \end{frame}
 
 
-
-
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
 	\begin{itemize}
 		\begin{figure}[p]
@@ -3295,11 +2964,11 @@ teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74 
 \end{frame}
 
 
+% FIX #5: \item Understanding the matching process: -> \textbf{...}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
-	\item Understanding the matching process:
+	\textbf{Understanding the matching process:}
 \begin{lstlisting}
 teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74  re75), nn(1)  atet gen(matchnum)
-
 \end{lstlisting}
 	\begin{itemize}
 	\vspace{0.2cm}
@@ -3310,9 +2979,9 @@ teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74 
 \end{frame}
 
 
-
+% FIX #6: \item Understanding the matching process: -> \textbf{...}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
-	\item Understanding the matching process:
+	\textbf{Understanding the matching process:}
 \begin{lstlisting}
 predict ps1, ps
 predict y0 y1, po
@@ -3327,8 +2996,6 @@ predict te
 		\item \textbf{predict te}: get treatment effect for each observation
 	\end{itemize}
 \end{frame}
-
-
 
 
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- teffects psmatch}
@@ -3351,9 +3018,9 @@ predict te
 \end{frame}
 
 
-
+% FIX #7: \item Syntax: -> \textbf{Syntax:}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- psmatch2}
-	\item Syntax:
+	\textbf{Syntax:}
 \begin{lstlisting}
 psmatch2 treatment covariates, out(outcome) n(#) logit ate
 \end{lstlisting}
@@ -3373,12 +3040,9 @@ psmatch2 treatment covariates, out(outcome) n(#) logit ate
 \end{frame}
 
 
-
-
-
-
+% FIX #8: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- psmatch2}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78) logit n(1) ate
 \end{lstlisting}
@@ -3387,9 +3051,6 @@ psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78)
 		\item The PSM estimate is similar to the one using teffects
 	\end{itemize}
 \end{frame}
-
-
-
 
 
 \begin{frame}[fragile]{STATA Example}{Compare teffects psmatch and psmatch2}
@@ -3402,7 +3063,7 @@ psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78)
 				\item \textbf{teffects psmatch} calculates standard errors based on this paper:
 												\vspace{0.2cm}
 							\begin{itemize}		
-\item Abadie, Alberto, and Guido W. Imbens. "\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
+\item Abadie, Alberto, and Guido W. Imbens. ``\textbf{Matching on the Estimated Propensity Score}." Econometrica 84.2 (2016): 781-807.
 								\end{itemize}	
 				
 				\end{itemize}	
@@ -3410,19 +3071,16 @@ psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78)
 \end{frame}
 
 
-
 \begin{frame}[fragile]{STATA Example}{Compare teffects psmatch and psmatch2}
 	\begin{itemize}
 		\item But \textbf{psmatch2} can allow matching without replacement, which is quite useful. 
-		
-		
 	\end{itemize}
 \end{frame}
 
 
-
+% FIX #9: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{STATA Example}{Step 3: PSM Estimation -- psmatch2}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78) logit n(1) noreplace
 \end{lstlisting}
@@ -3433,9 +3091,9 @@ psmatch2 treat age educ  black  hispan  nodegree  married  re74  re75, out(re78)
 \end{frame}
 
 
-
+% FIX #10: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{STATA Example}{Step 4: Post Matching Analysis -- teffects psmatch}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 tebalance box re74
 tebalance density educ
@@ -3456,7 +3114,6 @@ tebalance density
 
 
 \begin{frame}{STATA Example}{Step 4: Post Matching Analysis -- teffects psmatch}
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -3466,9 +3123,7 @@ tebalance density
 \end{frame}
 
 
-
 \begin{frame}{STATA Example}{Step 4: Post Matching Analysis -- teffects psmatch}
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -3478,9 +3133,7 @@ tebalance density
 \end{frame}
 
 
-
 \begin{frame}{STATA Example}{Step 4: Post Matching Analysis -- teffects psmatch}
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -3490,10 +3143,9 @@ tebalance density
 \end{frame}
 
 
-
-
+% FIX #11: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{STATA Example}{Step 4: Post Matching Analysis -- psmatch2}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 pstest age educ  black  hispan  nodegree  married  re74  re75, both
 pstest educ, box both
@@ -3514,9 +3166,7 @@ pstest _pscore, density both
 \end{frame}
 
 
-
 \begin{frame}[fragile]{STATA Example}{Step 4: Post Matching Analysis -- psmatch2}
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -3526,10 +3176,7 @@ pstest _pscore, density both
 \end{frame}
 
 
-
-
 \begin{frame}[fragile]{STATA Example}{Step 4: Post Matching Analysis -- psmatch2}
-	
 	\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -3539,38 +3186,20 @@ pstest _pscore, density both
 \end{frame}
 
 
-
-
-
-
 \title[]  
 {R Example}
-
 
 \author 
 {}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
 
 \date
 {}
 
-
 \begin{frame}{}
 	\titlepage
 \end{frame}
-
 
 
 \begin{frame}{R Example}{Dehejia et al. (1999)}
@@ -3589,9 +3218,7 @@ pstest _pscore, density both
 \end{frame}
 
 
-
 \begin{frame}[fragile]{Path Setup}{}
-	%\item Environment and Path Setup:
 \begin{lstlisting}
 rm(list = ls())
 
@@ -3633,21 +3260,16 @@ library(data.table)
 \end{lstlisting}
 	\begin{itemize}
 		\vspace{0.2cm}
-	
 			\item \textbf{install.packages()}: downloads and installs the package from CRAN
 			\vspace{0.2cm}
 			\item \textbf{library()}: loads the installed package for use in the current R session
-		%	\vspace{0.2cm}
-		%	\item \texttt{Matching} provides functions for propensity score matching
 		\end{itemize}
-
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Read Data}{fread(): reads CSV files}
 \begin{lstlisting}
-lalonde_csv <- fread(paste0(rawdata, "/lalonde.csv"), data.table = FALSE) # Return as data.frame
+lalonde_csv <- fread(paste0(rawdata, "/lalonde.csv"), data.table = FALSE)
 
 fwrite(lalonde, file = paste0(rawdata, "/lalonde.csv"))
 \end{lstlisting}
@@ -3661,12 +3283,11 @@ fwrite(lalonde, file = paste0(rawdata, "/lalonde.csv"))
 \end{frame}
 
 
-
 \begin{frame}[fragile]{Read Data}{read\_dta(): Read the Stata files}
 \begin{lstlisting}
 lalonde <- read_dta(paste0(rawdata, "/lalonde.dta"))
 
-write_dta(lalonde_csv, paste0(rawdata, "/lalonde.dta"), version = 14) # Specify Stata version compatibility
+write_dta(lalonde_csv, paste0(rawdata, "/lalonde.dta"), version = 14)
 \end{lstlisting}
 	
 	\begin{itemize}
@@ -3675,12 +3296,8 @@ write_dta(lalonde_csv, paste0(rawdata, "/lalonde.dta"), version = 14) # Specify 
 					\vspace{0.2cm}
 		\item \textbf{write\_dta:} Saves data to Stata's `.dta` format with specified version compatibility
 		\vspace{0.2cm}
-	
-
-	
 	\end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Examine Data}{\texttt{summary()}: Display Summary Statistics}
@@ -3705,8 +3322,6 @@ summary(lalonde$re78)
 \end{frame}
 
 
-
-
 \begin{frame}[fragile]{Examine Data}{\texttt{table()}: Display Frequency and Percentage Tables}
 \begin{lstlisting}
 # Frequency table
@@ -3717,16 +3332,15 @@ prop.table(table(lalonde$treat)) * 100
 \end{lstlisting}
 \begin{itemize}
 	\vspace{0.2cm}
-	\item Display frequency and percentage tables for the \texttt{race} variable
+	\item Display frequency and percentage tables for the \texttt{treat} variable
 	\vspace{0.2cm}
 	\begin{itemize}
-		\item \textbf{table():} Shows the count for each race category in the dataset
+		\item \textbf{table():} Shows the count for each category
 		\vspace{0.2cm}
 		\item \textbf{prop.table()} combined with \textbf{table()} calculates the percentage for each category
 	\end{itemize}
 \end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Create Sample for Analysis}{\texttt{mutate()}: Create New Variables}
@@ -3744,8 +3358,6 @@ mutate(id = row_number())
 	\vspace{0.2cm}
 	\begin{itemize}
 		\item \textbf{row\_number():} Generates a sequence of numbers based on the current row order
-		%\vspace{0.2cm}
-		%\item Useful for indexing observations, merging datasets, or tracking data transformations
 	\end{itemize}
 	\vspace{0.2cm}
 	\item \textbf{\%>\% (pipe operator):} Passes the left-hand side as the input to the right-hand function
@@ -3759,7 +3371,6 @@ mutate(id = row_number())
 	\end{itemize}
 \end{itemize}
 \end{frame}
-
 
 
 \begin{frame}[fragile]{Examine Data}{\texttt{any(duplicated())}: Check for Duplicates}
@@ -3787,9 +3398,6 @@ sum(duplicated(lalonde$id))
 \end{frame}
 
 
-
-
-
 \begin{frame}[fragile]{R Example}{Step 1: Test Differences in Outcomes in Pre-matching Data}
 \begin{lstlisting}
 t.test(re78 ~ treat, data = lalonde)
@@ -3805,8 +3413,6 @@ t.test(re78 ~ treat, data = lalonde)
 	\end{itemize}
 \end{itemize}
 \end{frame}
-
-
 
 
 \begin{frame}[fragile]{R Example}{Step 2: Test Differences in Covariates in Pre-matching Data}
@@ -3825,8 +3431,9 @@ t.test(educ ~ treat, data = lalonde)
 \end{frame}
 
 
+% FIX #12: \item Example: -> \textbf{Example:}
 \begin{frame}[fragile]{R Example}{Step 3: PSM Estimation}
-	\item Example:
+	\textbf{Example:}
 \begin{lstlisting}
 # Estimate propensity scores
 ps_model <- glm(treat ~ age + educ + black + hispan + nodegree + married + re74 + re75, 
@@ -3864,15 +3471,9 @@ summary(m.out_with_replace)
 		\vspace{0.2cm}
 		\item \textbf{Match:} performs matching and estimates treatment effect directly
 		\vspace{0.2cm}
-		%\item \textbf{replace=TRUE:} matching with replacement
-		%\vspace{0.2cm}
-		%\item \textbf{estimand="ATT":} focuses on treatment effect for treated units
-		%\vspace{0.2cm}
 		\item Uses Abadie \& Imbens variance estimator automatically when matching with replacement
 	\end{itemize}
 \end{frame}
-
-
 
 
 \begin{frame}{Suggested Readings}
@@ -3886,10 +3487,4 @@ summary(m.out_with_replace)
 \end{frame}
 
 
-
-
-
-
-
-
-\end{document} 
+\end{document}

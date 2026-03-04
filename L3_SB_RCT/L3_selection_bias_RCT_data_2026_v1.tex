@@ -161,6 +161,41 @@
 	\end{itemize}
 \end{frame}
 
+
+
+	
+
+\title[]  
+{Selection Bias}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+	
+	
+	
+
 \begin{frame}{Selection Bias}
 	\begin{itemize}
 
@@ -639,8 +674,8 @@
 	
 	
 	
-
 	
+
 	\begin{frame}{Randomized Controlled Trial}
 		\begin{itemize}
 			\item The most credible identification strategy is the \textbf{Randomized Controlled Trial (RCT)}
@@ -747,7 +782,39 @@
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
+
+
+
+
+\title[]  
+{Empricial Example}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
 	
+    
 
 	
 \begin{frame}{Empirical Example}{Noy \& Zhang (2023)}
@@ -759,6 +826,82 @@
 		\item We use this example to illustrate how an RCT eliminates selection bias and identifies the causal effect
 	\end{itemize}
 \end{frame}
+
+
+
+\begin{frame}{AI and the Labor Market}{Theoretical Framework: Task-Based Models}
+	\begin{itemize}
+		\item The dominant theoretical framework in labor economics for analyzing automation is the \textbf{task-based model} (Acemoglu \& Restrepo, 2018, 2022)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Production requires a continuum of \textbf{tasks}; each task can be performed by either labor or capital (including AI)
+			\vspace{0.1cm}
+			\item \textbf{Automation} = AI takes over tasks previously performed by workers
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Automation has \textbf{two opposing effects} on wages:
+		\vspace{0.1cm}
+		\begin{itemize}
+			\item \textbf{Productivity effect ($+$):} AI lowers costs $\Rightarrow$ output expands $\Rightarrow$ labor demand rises
+			\vspace{0.1cm}
+			\item \textbf{Displacement effect ($-$):} Workers are pushed out of automated tasks $\Rightarrow$ labor demand falls
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Net effect on wages and employment is \textbf{ambiguous} --- depends on which effect dominates
+		\vspace{0.1cm}
+		\begin{itemize}
+			\item New task creation (e.g., AI engineer, prompt designer) can offset displacement
+			\item The presumption that all technologies increase labor demand simply because they raise productivity is wrong --- automation can reduce labor demand if displacement effects dominate 
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{AI and the Labor Market}{What Does Theory Predict for Generative AI?}
+	\begin{itemize}
+		\item Acemoglu (2024) applies the task-based framework to AI
+		\vspace{0.2cm}
+		\item AI-based productivity gains can come from three channels:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Automation:} AI takes over tasks previously performed by workers
+			\vspace{0.2cm}
+			\item \textbf{Complementarity:} AI augments worker productivity in remaining tasks
+			\vspace{0.2cm}
+			\item \textbf{New task creation:} AI enables entirely new products and job roles
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Acemoglu's conclusion is \textbf{cautiously pessimistic}:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Even if AI raises productivity significantly within a task, only a small share of all tasks in the economy are currently exposed to AI --- so aggregate effects are limited
+			\vspace{0.2cm}
+			\item Projected aggregate TFP gains over 10 years: less than 0.55\%, well below optimistic forecasts (e.g., Goldman Sachs: $+$15\% over 10 years)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{AI and the Labor Market}{From Theory to Evidence}
+	\begin{itemize}
+		\item Theory gives us the framework --- but the net effect of AI on productivity and wages is ultimately an \textbf{empirical question}
+		\vspace{0.4cm}
+		\item We need \textbf{causal evidence} to quantify:
+		\vspace{0.1cm}
+		\begin{itemize}
+			\item How large are the productivity gains at the task level?
+			\vspace{0.1cm}
+			\item Who benefits --- high-ability or low-ability workers?
+			\vspace{0.1cm}
+			\item Does AI complement or substitute for labor?
+		\end{itemize}
+		\vspace{0.4cm}
+		\item[$\Rightarrow$] \textbf{Noy \& Zhang (2023)} provide exactly this: a randomized controlled trial measuring the causal effect of ChatGPT access on worker productivity in professional writing tasks
+	\end{itemize}
+\end{frame}
+
+
+
+
 
 \begin{frame}{Noy \& Zhang (2023)}{Experimental Design}
 	\begin{itemize}
@@ -931,7 +1074,7 @@
 
 \begin{frame}{Step 1: Balance Test}{From $t$-statistic to $p$-value}
 	\begin{itemize}
-		\item To evaluate whether $t$ is against $H_0$, we need to calculate the \textbf{$p$-value}
+		\item To evaluate whether $t$-statistic is large enough to against $H_0$, we need to calculate the \textbf{$p$-value}
 		\vspace{0.2cm}
 		\begin{itemize}
 			\item \textbf{$p$-value:} the probability of obtaining such $t$-statistic (or a more extreme value) if the null hypothesis were true
@@ -949,7 +1092,7 @@
 
 
 
-\begin{frame}{Step 1: Balance Test}{Visualizing the $p$-value: Employed}
+\begin{frame}{Step 1: Balance Test}{Visualizing the $p$-value}
 	\begin{center}
 		\includegraphics[width=0.90\textwidth]{pvalue_employed.png}
 	\end{center}
@@ -1372,5 +1515,16 @@
 			\item Chapter 4, \textit{Causal Inference: The Mixtape}
 		\end{itemize}
 	\end{frame}
+
+
+    \begin{frame}{References}
+	\begin{itemize}\footnotesize
+		\item Acemoglu, D.\ (2024). ``The Simple Macroeconomics of AI.'' \textit{Economic Journal}, 134(641), 3155--3185.
+\vspace{0.15cm}
+\item Acemoglu, D., \& Restrepo, P.\ (2018). ``The Race between Man and Machine: Implications of Technology for Growth, Factor Shares, and Employment.'' \textit{American Economic Review}, 108(6), 1488--1542.
+\vspace{0.15cm}
+\item Acemoglu, D., \& Restrepo, P.\ (2022). ``Tasks, Automation, and the Rise in U.S.\ Wage Inequality.'' \textit{Econometrica}, 90(5), 1973--2016.
+	\end{itemize}
+\end{frame}
 	
 \end{document}
