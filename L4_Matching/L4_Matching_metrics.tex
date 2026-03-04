@@ -1505,8 +1505,8 @@
 % -------------------------------------------------------
 
 \begin{frame}{Identification Results for Matching}{Step 1: ODO = CATT}
+{\small
 \begin{equation*}
-\small
 \begin{aligned}
 & 
 \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given } X_{i}}  \\
@@ -1519,8 +1519,8 @@
 + \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\scriptstyle\text{Selection Bias} = 0 \text{ by CIA}}  \\
 &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
 \end{aligned}
-\end{equation*}	
-
+\end{equation*}
+}
 \end{frame}
 
 
@@ -2482,31 +2482,24 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 
 
 
-
-\begin{frame}{Identification Results or PSM}
-	\begin{itemize}	
-			
-	\begin{equation*}
-	\begin{aligned}
+\begin{frame}{Identification Results for PSM}
+{\small
+\begin{equation*}
+\begin{aligned}
 & 
-	\underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given $p(X_{i})$}}  \\
-	&=\mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_{i}=0] \\
-	&= \mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]} 
-	\\
-	& + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0] \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} \\
-	&+ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{Selection Bias}} \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}} \\
-		&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}}= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}}
-	
-	\end{aligned}
-	\end{equation*}	
-	
-	\end{itemize}
-	
+\underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given } p(X_{i})}  \\
+&=\mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_{i}=0] \\
+&= \mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]} \\
+&\quad + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0] \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} 
++ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{Selection Bias}} \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}} \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}}
+= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}}
+\end{aligned}
+\end{equation*}
+}
 \end{frame}
-
-
 
 \begin{frame}{Identification Results or PSM}{ATT}
 	\begin{itemize}
