@@ -1505,20 +1505,22 @@
 % -------------------------------------------------------
 
 \begin{frame}{Identification Results for Matching}{Step 1: ODO = CATT}
+\begin{equation*}
+\small
+\begin{aligned}
+& 
+\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given } X_{i}}  \\
+&=\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_{i}=0] \\
+&= \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1]
+-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]} \\
+&\quad + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}
+-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} 
++ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\scriptstyle\text{Selection Bias} = 0 \text{ by CIA}}  \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
+\end{aligned}
+\end{equation*}	
 
-	\begin{equation*}
-	\begin{aligned}
-    & 
-	\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  \\
-	&=\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_{i}=0] \\
-	&= \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]} 
-	+ {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} 
-	+ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias} = 0 \text{ by CIA}}  \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
-	\end{aligned}
-	\end{equation*}	
-	
 \end{frame}
 
 
