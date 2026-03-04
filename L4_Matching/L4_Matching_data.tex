@@ -201,25 +201,25 @@
 % 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
 % }
 
-\usetheme{Boadilla}
-%\useinnertheme{rectangles}
+% \usetheme{Boadilla}
+% %\useinnertheme{rectangles}
 
-%\usetheme{CambridgeUS}
-\usecolortheme{seahorse}
-\setbeamertemplate{footline}{%
-	\hfill\usebeamercolor[fg]{page number in head/foot}%
-	\usebeamerfont{page number in head/foot}%
-	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-}
-
-
-% \usepackage{beamerthemeshadow}
-% %\usecolortheme{seahorse}
+% %\usetheme{CambridgeUS}
+% \usecolortheme{seahorse}
 % \setbeamertemplate{footline}{%
 % 	\hfill\usebeamercolor[fg]{page number in head/foot}%
 % 	\usebeamerfont{page number in head/foot}%
 % 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
 % }
+
+
+\usepackage{beamerthemeshadow}
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
 
 
 
@@ -1350,6 +1350,7 @@
 \end{frame}
 
 
+
 \title[]  
 {Identification}
 
@@ -1357,7 +1358,18 @@
 \author 
 {}
 
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
 
 \date
 {}
@@ -1387,7 +1399,7 @@
 			\item This assumption is also called \textbf{selection on observables}
 		\end{itemize}
 		\vspace{0.2cm}
-		\item Intuition: After controlling for $X_{i}$, treatment assignment becomes ``as good as random"
+		\item Intuition: After controlling for $X_{i}$, treatment assignment becomes "as good as random"
 	\end{itemize}
 \end{frame}
 
@@ -1409,15 +1421,18 @@
 			\item $\textcolor{red}{\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|X_{i}=40, D_i=1]}=\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|X_{i}=40, D_i=0]$
 			\vspace{0.2cm}
 					\begin{itemize}
-			\item Estimate the \textbf{counterfactual} of what trainees would have earned without training using observed earnings of non-trainees
+			\item Let us estimate the \textbf{counterfactual} of what trainees would have earned without training by using observed earnings of non-trainees
 						\vspace{0.2cm}
 			\end{itemize}
 			\item $\textcolor{red}{\mathrm{E}[\mathrm{Y}^{\textbf{1}}_{i}|X_{i}=40, D_i=0]}=\mathrm{E}[\mathrm{Y}^{\textbf{1}}_{i}|X_{i}=40, D_i=1]$
 			\vspace{0.2cm}
 			\begin{itemize}
-				\item Estimate the \textbf{counterfactual} of what non-trainees would have earned with training using observed earnings of trainees
+				\item Let us estimate the \textbf{counterfactual} of what non-trainees would have earned with training by using observed earnings of trainees
 			\end{itemize}
 		\end{itemize}
+		
+		%\item Within the 40-year-old group, the average potential earnings for trained individuals would have been the same as for untrained individuals had they not received training
+		
 		
 	\end{itemize}
 \end{frame}
@@ -1451,18 +1466,18 @@
 
 
 \begin{frame}{Common Support Assumption}
-	\begin{block}{Common Support Assumption}	
-		\begin{equation*}
-		0<\Pr(D_{i}=1|X_{i})<1  	
-		\end{equation*}
-	\end{block}
 	\begin{itemize}
+		\begin{block}{Common Support Assumption}	
+			\begin{equation*}
+			0<\Pr(D_{i}=1|X_{i})<1  	
+			\end{equation*}
+		\end{block}
 		\item For each value of covariates $X_{i}$, there is a positive probability of being both treated and untreated 
 		\vspace{0.2cm}
 		\item In other words, it is NOT possible to perfectly predict one's treatment status by using specific value of $X_{i}$
 		\vspace{0.2cm}
 		\begin{itemize}	
-			\item For example, this excludes:
+			\item For example, this exclude:
 			\vspace{0.2cm}
 					\begin{itemize}	
 			\item All individuals with age 40 are in treatment group: $Pr(D_{i}=1|X_{i}=40)=1$
@@ -1471,7 +1486,7 @@
 				\end{itemize}
 		\end{itemize}
 				\vspace{0.2cm}
-		\item It ensures sufficient overlap in characteristics of treated and untreated units to find adequate matched sample	
+		\item It ensures that there is sufficient overlap in the characteristics of treated and untreated units to find adequate matched sample	
 		
 	\end{itemize}
 \end{frame}
@@ -1479,74 +1494,87 @@
 
 
 
-% -------------------------------------------------------
-% Identification Results: Road Map
-% -------------------------------------------------------
+
 
 \begin{frame}{Identification Results for Matching}
 
-	\begin{itemize}
-		\item Under CIA and Common Support, matching can identify causal effects. We proceed in three steps:
-		\vspace{0.3cm}
-		\begin{itemize}
-			\item[\textbf{Step 1}] Show that ODO at given $X_i$ equals \textbf{CATT} (selection bias = 0)
-			\vspace{0.2cm}
-			\item[\textbf{Step 2}] Under CIA, CATT = CATU = \textbf{CATE}
-			\vspace{0.2cm}
-			\item[\textbf{Step 3}] Apply LIE to average CATE over $X$ $\Rightarrow$ \textbf{ATT, ATU, ATE}
-		\end{itemize}
-	\end{itemize}
 	
-\end{frame}
-
-
-% -------------------------------------------------------
-% Step 1
-% -------------------------------------------------------
-
-\begin{frame}{Identification Results for Matching}{Step 1: ODO = CATT}
-
 	\begin{equation*}
 	\begin{aligned}
     & 
 	\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  \\
 	&=\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_{i}=0] \\
 	&= \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]} 
-	+ {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} 
-	+ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias} = 0 \text{ by CIA}}  \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
+	\\
+	& + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
+	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} \\
+	&+ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
+	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}}  
+
+	
 	\end{aligned}
 	\end{equation*}	
+		\begin{itemize}	
+		\item Remember CIA ensures $\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1] = \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]$
+		
+		
+	\end{itemize}
+	
 	
 \end{frame}
 
 
-% -------------------------------------------------------
-% Step 2
-% -------------------------------------------------------
 
-\begin{frame}{Identification Results for Matching}{Step 2: CATT = CATU = CATE}
 
+
+
+
+\begin{frame}{Identification Results for Matching}
+
+	
 	\begin{equation*}
 		\begin{aligned}
 		& 
 			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  \\
-			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} \quad \text{(from Step 1)} \\[6pt]
-			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} \quad \text{(by CIA)} \\[6pt]
+			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}}  \\
+			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} \\
 			&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}
+			
 		\end{aligned}
 	\end{equation*}	
-	\begin{itemize}
-		\item Under CIA, matching identifies the causal effect for \textbf{any given subgroup} $X_i = x$
-	\end{itemize}
 	
+	
+	\end{frame}
+
+
+
+
+
+\begin{frame}{Identification Results for Matching}
+	\begin{itemize}
+		\item Under CIA, matching estimator can identify CATT, CATU or CATE
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Causal effect for the people with specific value of $X_{i}$
+			\vspace{0.2cm}
+					\begin{itemize}
+			\item Causal effect of job training on annual earnings for people with age 40 (CATE)
+				\vspace{0.2cm}
+			\item Causal effect of job training on annual earnings for treated people with age 40 (CATT)
+					\end{itemize}
+		\end{itemize}
+			\vspace{0.2cm}
+		\item How to obtain ATT, ATU, and ATE?
+			\vspace{0.2cm}
+		\begin{itemize}
+			\item Take average of CATT, CATU, or CATE over all subgroups (all possible X-values)
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 
-% -------------------------------------------------------
-% Review: LIE (merged into one slide)
-% -------------------------------------------------------
+
+
 
 \begin{frame}{Review: The Law of Iterated Expectations (LIE)}
 	
@@ -1557,50 +1585,107 @@
 	\end{block}
 	
 	\begin{itemize}
-		\item Two equivalent ways to compute average earnings in Taiwan:
+		\item Intuitively, there are two ways to compute average outcome $Y$ (e.g. earnings)
 		\vspace{0.2cm}
-		\item[1] Direct average: 40\% earn 1M, 40\% earn 2M, 20\% earn 3M
-		\begin{equation*}
-		\mathrm{E}[\mathrm{Y}_{i}] = 1 \times 0.4 + 2 \times 0.4 + 3 \times 0.2 = 1.8 \text{M}
-		\end{equation*}
-		\item[2] Average of subgroup averages: male avg = 2M, female avg = 1.6M, each 50\%
-		\begin{equation*}
-		\mathrm{E}[\mathrm{E}[\mathrm{Y}_{i}|\mathrm{X}_{i}]] = 2 \times 0.5 + 1.6 \times 0.5 = 1.8\text{M} = \mathrm{E}[\mathrm{Y}_{i}]
-		\end{equation*}
-		\vspace{0.1cm}
-		\item Key insight: \textbf{average of subgroup averages = overall average}
+		\item[1] $\mathrm{E}[\mathrm{Y}_{i}] = \sum_{\mathrm{Y}^{}_{i}} \mathrm{Y}_{i} \times Pr(\mathrm{Y}_{i}=y)$
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item Each value of outcome times its probability
+					\vspace{0.2cm}
+			\end{itemize}
+		\item[2] $\mathrm{E}[\mathrm{E}[\mathrm{Y}_{i} | \mathrm{X}_{i}]] = \sum_{\mathrm{X}^{}_{i}} \mathrm{E}[\mathrm{Y}_{i} | \mathrm{X}_{i}] \times Pr(\mathrm{X}_{i}=x) = \mathrm{E}[\mathrm{Y}_{i}]$ 
+			\begin{itemize}
+							\vspace{0.2cm}
+			\item Average outcome of subgroup times the share of subgroup
+		\end{itemize}
+		
 	\end{itemize}
 \end{frame}
 
 
-% -------------------------------------------------------
-% Step 3: ATT
-% -------------------------------------------------------
 
-\begin{frame}{Identification Results for Matching}{Step 3: From CATT to ATT}
+\begin{frame}{Review: The Law of Iterated Expectations (LIE)}{Example}
+	
+	
 	\begin{itemize}
 		
-		\item From Step 1, ODO at given $X_i$ identifies CATT:
+		\item Suppose we want to compute average income in Taiwan
+		\vspace{0.2cm}
+		\item[1] We know 40\% of people in Taiwan earn 1 million NTD per year, 40\% earn 2 million NTD, and 20\% earn 3 million NTD  
+		\vspace{0.2cm}
+		
 		\begin{equation*}
-			\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  = \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
+		\begin{aligned}
+		\mathrm{E}[\mathrm{Y}_{i}] &= \sum_{\mathrm{Y}^{}_{i}} \mathrm{Y}_{i} \times Pr(\mathrm{Y}_{i}=y) \\
+		&= 1 \times 0.4 + 2 \times 0.4 + 3 \times 0.2 \\ 
+		&= 1.8
+		\end{aligned}
 		\end{equation*}	
 		
-		\item Applying LIE, average CATT over the \textbf{treatment group} distribution of $X$:
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Review: The Law of Iterated Expectations (LIE)}{Example}
+	
+	
+	\begin{itemize}
+		
+		\item[2] Suppose we know the average annual income for male is 2 million and average annual income for female is 1.6 million
+		\vspace{0.2cm}
+		\item The share of male to total population is 50\%
+		\vspace{0.2cm}
+		\begin{equation*}
+		\begin{aligned}
+		\mathrm{E}[\mathrm{E}[\mathrm{Y}_{i} | \mathrm{X}_{i}]] &= \sum_{\mathrm{X}^{}_{i}} \mathrm{E}[\mathrm{Y}_{i} | \mathrm{X}_{i}] \times Pr(\mathrm{X}_{i}=x) \\
+		&= 2 \times 0.5 + 1.6 \times 0.5  \\
+		&= 1.8  \\
+		&= \mathrm{E}[\mathrm{Y}_{i}] 
+		\end{aligned}
+		\end{equation*}	
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Identification Results for Matching: ATT}
+	\begin{itemize}
+		
+		\item Using a matching method, we can also identify CATT
+		\vspace{0.2cm}
+		\begin{equation*}
+			\begin{aligned}
+					\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}
+			\end{aligned}
+		\end{equation*}	
+		
+		
+		\item Applying LIE, we can identify ATT by averaging all of the $X$-specific effects in treatment group (CATT):
+		\vspace{0.2cm}
 		
 	\end{itemize}
 	\begin{equation*}
-		\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}}\Big| D_i=1\Big] 
-		=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=1]}_{\text{ATT}}
+		\begin{aligned}
+			\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1 |D_i=1]}_{\text{CATT}}] 
+			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]|D_i=1]}_{\text{ATT}}
+			
+		\end{aligned}
 	\end{equation*}	
 	
 \end{frame}
 
 
-% -------------------------------------------------------
-% ATT Numerical Example (kept as-is, two slides)
-% -------------------------------------------------------
+
+
 
 \begin{frame}{Identification Results for Matching: ATT}{A Numerical Example}
+	%% 23
 	\begin{center}
 		\scalebox{0.75}{
 			\begin{threeparttable}
@@ -1638,7 +1723,12 @@
 \end{frame}
 
 
+
+
+
+
 \begin{frame}{Identification Results for Matching: ATT}{A Numerical Example}
+	%% 23
 	\begin{center}
 		\scalebox{0.75}{
 			\begin{threeparttable}
@@ -1676,66 +1766,134 @@
 \end{frame}
 
 
-\begin{frame}{Identification Results for Matching: ATT}{A Numerical Example (1/2)}
+
+
+\begin{frame}{Identification Results for Matching: ATT}{A Numerical Example}
 	\begin{itemize}
-		\item CATT for age = 28 and age = 34:
-		\vspace{0.2cm}
-		\begin{equation*}
-			\begin{aligned}
-				& \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=28, D_{i}=1] \\
-				&= \dfrac{(17700-8800)+(11500-8800)+(16300-8800)}{3} \\
-				&= 6366.67 \\[10pt]
-				& \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=34, D_{i}=1] \\
-				&= \dfrac{10200-24200}{1} \\
-				&= -14{,}000 \quad \cdots
-			\end{aligned} 
-		\end{equation*}	
-	\end{itemize}
+
+			\item Using matching methods, we get CATT for all possible ages 
+			
+			\vspace{0.2cm}
+			\begin{equation*}
+				\begin{aligned}
+					& \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=28, D_{i}=1] = \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}=28$}} \\ 
+					&= \dfrac{(17700-8800)+(11500-8800)+ (16300-8800)}{3} \\
+					&= 6366.67 \\
+					& \vdots \\
+					& \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=34, D_{i}=1] = \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}=34$}} \\ 
+					&= \dfrac{10200-24200}{1}  \\
+					&= −14,000
+					
+				\end{aligned} 
+				
+			\end{equation*}	
+			
+			
+			
+			
+		\end{itemize}
+		
+	
+	
 \end{frame}
 
 
-\begin{frame}{Identification Results for Matching: ATT}{A Numerical Example (2/2)}
+
+
+
+\begin{frame}{Identification Results for Matching: ATT}{A Numerical Example}
 	\begin{itemize}
-		\item ATT = weighted average of CATT across all ages \\
-		(weights = share in treatment group):
+		
+	
+	\item Applying LIE, we can identify ATT by averaging CATT over all possible ages:
+	\vspace{0.2cm}
+	
+	
+	\begin{equation*}
+		\begin{aligned}
+			& \mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}, D_{i}=1]}_{\text{CATT}}] \\
+			&= \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=28, D_{i}=1] \times \frac{3}{19}  \\ 
+			&  + \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=34, D_{i}=1] \times \frac{1}{19} + \cdots \\
+			&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}| D_{i}=1]}_{\text{ATT}}
+			
+		\end{aligned}
+	\end{equation*}	
+			\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Identification Results for Matching: ATU}
+	\begin{itemize}
+		
+		\item Note that using a matching method, we can also identify CATU
 		\vspace{0.2cm}
 		\begin{equation*}
 			\begin{aligned}
-				\mathrm{ATT} 
-				&= \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=28, D_{i}=1] \times \frac{3}{19} \\  
-				&\quad + \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}=34, D_{i}=1] \times \frac{1}{19} + \cdots \\[6pt]
-				&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_{i}=1]}_{\text{ATT}}
+	\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}}
 			\end{aligned}
 		\end{equation*}	
+		
+		
+		\item Applying LIE, we can identify ATU by averaging all of the $X$-specific effects in treatment group (CATU):
+		\vspace{0.2cm}
+		
 	\end{itemize}
+	\begin{equation*}
+		\begin{aligned}
+			\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0 |D_i=0]}_{\text{CATU}}] 
+			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]|D_i=0]}_{\text{ATU}}
+			
+		\end{aligned}
+	\end{equation*}	
+	
 \end{frame}
 
 
-% -------------------------------------------------------
-% ATU and ATE (concise)
-% -------------------------------------------------------
 
-\begin{frame}{Identification Results for Matching}{Step 3: ATU and ATE}
+
+
+
+\begin{frame}{Identification Results for Matching: ATE}
 	\begin{itemize}
 		
-		\item \textbf{ATU}: average CATU over the \textbf{control group} distribution of $X$:
-		\begin{equation*}
-			\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}}\Big| D_i=0\Big] 
-			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0]}_{\text{ATU}}
-		\end{equation*}
-		
+		\item Using a matching method, we can identify CATE
 		\vspace{0.2cm}
-		\item \textbf{ATE}: average CATE over the \textbf{full population} distribution of $X$:
 		\begin{equation*}
-			\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}\Big] 
-			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]}_{\text{ATE}}
-		\end{equation*}
+			\begin{aligned}
+				\underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}}  &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}} 
+			\end{aligned}
+		\end{equation*}	
 		
+		
+		\item Applying LIE, we can identify ATE by averaging all of the $X$-specific effects (CATE):
 		\vspace{0.2cm}
-		\item \textbf{Summary}: Under CIA, matching can identify ATT, ATU, and ATE by averaging $X$-specific effects over the appropriate population
 		
 	\end{itemize}
+	\begin{equation*}
+		\begin{aligned}
+			\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}] 
+			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]}_{\text{ATE}}
+			
+		\end{aligned}
+	\end{equation*}	
+	
 \end{frame}
+
+
 
 
 
