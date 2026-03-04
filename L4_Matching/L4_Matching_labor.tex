@@ -119,32 +119,22 @@
 }
 
 \lstdefinestyle{stata-plain}{
-	% comment slanted and keywords bolded.
 	language=Stata,
-	basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,
+	basicstyle=\footnotesize\ttfamily,
 }
 
 \lstdefinestyle{stata-editor}{
 	language=Stata,
-	% size of the fonts for the code
-	basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,  
-	% Color settings to match do-file editor style
-	% Commands that are not included in the defination
+	basicstyle=\footnotesize\ttfamily,  
 	keywordstyle={\color{NavyBlue}},  
-	% Popular add-on commands
 	keywordstyle=[2]{\color{NavyBlue}},
-	% System commands
 	keywordstyle=[3]{\color{NavyBlue}},
-	% Keywords
 	keywordstyle=[4]{\color{NavyBlue}},
-	% Built-in functions like rnormal
 	keywordstyle=[5]{\color{Blue}},
-	% Used by macros, i.e. `lags'  
 	keywordstyle=[9]{\color{TealBlue}},
 	stringstyle=\color{Maroon},
 	commentstyle=\color{OliveGreen},
 }
-
 
 \lstset{
 	language=Stata,
@@ -3475,7 +3465,7 @@ teffects psmatch (re78) (treat age educ  black  hispan  nodegree  married  re74 
 	\begin{itemize}
 		\begin{figure}[p]
 			\centering
-			\includegraphics[width=1.0\textwidth]{tteffects_f1_2.jpg}
+			\includegraphics[width=1.0\textwidth]{figure/tteffects_f1_2.jpg}
 		\end{figure}
 	\end{itemize}
 \end{frame}

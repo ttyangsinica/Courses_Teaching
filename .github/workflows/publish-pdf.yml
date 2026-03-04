@@ -92,6 +92,29 @@ jobs:
           name: pdf_L3_SB_RCT
           path: |
             L3_SB_RCT/*.pdf
+    # ---- L4_Matching ----
+      - name: Compile L4_Matching PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L4_Matching
+          root_file: |
+            L4_Matching_labor.tex
+            L4_Matching_metrics.tex
+  
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L4_Matching)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L4_Matching
+          path: |
+            L4_Matching/*.pdf        
 
       # ---- Logs (optional but useful) ----
       - name: Upload LaTeX logs (always)
