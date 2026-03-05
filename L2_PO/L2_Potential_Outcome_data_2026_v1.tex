@@ -95,7 +95,7 @@
 % }
 
 
-\usepackage{beamerthemeshadow}
+%\usepackage{beamerthemeshadow}
 %\usecolortheme{seahorse}
 \setbeamertemplate{footline}{%
 	\hfill\usebeamercolor[fg]{page number in head/foot}%
@@ -1402,6 +1402,93 @@ potential outcomes under each treatment
 
 
 
+
+
+
+
+
+
+
+\begin{frame}{Potential Outcome Framework in Economics}{Demand and Supply}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+        \draw[thick,->] (0,0) -- node[very near end,above,sloped]{Price} (0,10);
+        \draw[thick,->] (0,0) -- node[very near end,below,sloped]{Quantity} (10,0);
+        \node[below left] at (0,0) {$0$};
+
+        % D1
+        \draw[draw=red, thick]
+            (0,6.4) -- (8,0)
+            node[pos=0.70, anchor=west, xshift=3pt, yshift=2pt, font=\small]{$D_1$};
+
+        % S1
+        \draw[draw=blue, thick]
+            (0,2.2) -- (7.5,6.7)
+            node[pos=0.64, anchor=south west, xshift=2pt, yshift=3pt, font=\small]{$S_1$};
+
+        % D2
+        \draw[draw=red!55, thick]
+            (0,10) -- (9,2.8)
+            node[pos=0.78, anchor=west, xshift=3pt, yshift=-2pt, font=\small]{$D_2$};
+
+        % S2
+        \draw[draw=blue!55, thick]
+            (0,3.75) -- (8.5,7.575)
+            node[pos=0.70, anchor=south west, xshift=2pt, yshift=3pt, font=\small]{$S_2$};
+
+        % D3
+        \draw[draw=red!25, thick]
+            (4,9.9) -- (9,5.9)
+            node[pos=0.62, anchor=west, xshift=3pt, yshift=-2pt, font=\small]{$D_3$};
+
+        % S3
+        \draw[draw=blue!25, thick]
+            (0,5.4) -- (9.5,8.25)
+            node[pos=0.52, anchor=south west, xshift=2pt, yshift=3pt, font=\small]{$S_3$};
+
+        % --- Equilibrium 1 at (3,4) ---
+        \draw[dashed] (0,4) -- (3,4) -- (3,0);
+        \node[left, xshift=-4pt, yshift=0pt]  at (0,4) {$P_1^*$};
+        \node[below, xshift=0pt, yshift=-4pt] at (3,0) {$Q_1^*$};
+        \node[circle,fill,inner sep=1.5pt] at (3,4) {};
+
+        % --- Equilibrium 2 at (5,6) ---
+        \draw[dashed] (0,6) -- (5,6) -- (5,0);
+        \node[left, xshift=-4pt, yshift=0pt]  at (0,6) {$P_2^*$};
+        \node[below, xshift=0pt, yshift=-4pt] at (5,0) {$Q_2^*$};
+        \node[circle,fill,inner sep=1.5pt] at (5,6) {};
+
+        % --- Equilibrium 3 at (7,7.5) ---
+        \draw[dashed] (0,7.5) -- (7,7.5) -- (7,0);
+        \node[left, xshift=-4pt, yshift=0pt]  at (0,7.5) {$P_3^*$};
+        \node[below, xshift=0pt, yshift=-4pt] at (7,0) {$Q_3^*$};
+        \node[circle,fill,inner sep=1.5pt] at (7,7.5) {};
+
+        % --- Observed locus ---
+        \draw[thick, dashed, orange!80!black]
+            (2,3.2) -- (8,8.3)
+            node[pos=0.60, anchor=west, xshift=4pt, yshift=5pt, font=\scriptsize]{Observed locus};
+
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+
+
+
+\begin{frame}{The Identification Problem}{Why Observed Data Are Not Enough}
+	\begin{itemize}
+		\item Each observed $(P^*, Q^*)$ is an \textbf{equilibrium} --- jointly determined by supply \emph{and} demand
+		\vspace{0.3cm}
+		\item When both curves shift simultaneously, the observed price--quantity locus can slope \textbf{upward} --- the opposite of the Law of Demand
+		\vspace{0.3cm}
+		\item Observed data alone \textbf{cannot verify} the downward-sloping demand curve
+		\vspace{0.3cm}
+		\item Causal inference constructs the \textbf{counterfactual}: what quantity would be demanded at a different price, \emph{holding the demand curve fixed}?
+		\vspace{0.3cm}
+		\item A classic solution: use an \textbf{instrumental variable} that shifts supply only $\Rightarrow$ traces out the true demand curve
+	\end{itemize}
+\end{frame}
 
 \title[]  
 {Stable Unit Treatment Value Assumption}
