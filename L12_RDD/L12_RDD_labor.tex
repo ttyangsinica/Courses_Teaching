@@ -1,0 +1,3779 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% By  using hyperref={pdfpagelabels=false} you get rid off:
+% Package hyperref Warning: Option `pdfpagelabels' is turned off
+% (hyperref)                because \thepage is undefined. 
+% Hyperref stopped early 
+%
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{標楷體}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\usepackage{booktabs}
+
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{ragged2e} % 文字向兩邊對齊
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+\usepackage{threeparttable}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+\usepackage{listings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX snippet: language and style definition of Stata for listings package.
+%                [listings](http://www.ctan.org/pkg/listings) 
+%                [Stata](http://www.stata.com/)
+%
+% Usage:
+%     Copy the code into your preamble, or import it by `\include` .
+%     then in your doc:
+%     \lstinputlisting[style=numbers]{DO-SCRIPT}
+%     \lstinputlisting[style=numbers, style=stata-editor]{DO-SCRIPT}
+%     \lstinputlisting[style=nonumbers, frame=none]{DO-SCRIPT}
+% How it works:
+%     - The language is defined by `\lstdefinelanguage{Stata}`
+%     - Four styles is defined by `\lstdefinestyle{STYLE-NAME}`, 
+%       they are: numbers and no numbers, plain(black and white) and colorful
+%       (colored roughly like stata editor.)
+% Tips:
+%     - Generally you only need to set your default in the last part,
+%       that is, code inside of `\lstset`.
+%     - Add more keywords(I can not list all of them) in the `\lstset` part.
+%     - Do NOT leave any blank lines in commands
+%       (`\lstddefinelanguage', `\lstdefinestyle` and `\lstset`)
+%
+% update: 2014-04-16
+% version: 0.1
+% author: kongs
+% licence: MIT
+% url: https://gist.github.com/kongs-sublime/10862838
+%
+% TODO: 
+%       - finish keyword list.
+%       - precise colors that match stata editor?
+%       - make it flexible(fonts and style)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% langugae defination
+\lstdefinelanguage{Stata}{
+	% Left for users to add missing commands,
+	% with possibility of choosing different style.
+	morekeywords=,
+	% Popular add-on commands
+	morekeywords=[2]{cntrade, chinafin, 
+		wbopendata, spmap,
+	},
+	% System commands
+	morekeywords=[3]{regress, summarize, 
+		display,
+	},
+	% Keywords
+	morekeywords=[4]{forvalues, if, foreach, set},
+	% Built-in functions
+	morekeywords=[5]{rnormal, runiform},
+	morecomment=[l]{//},
+	% morecomment=[l]{*},  // `*` maybe used as multiply operator. So use `//` as line comment.
+	morecomment=[s]{/*}{*/},
+	% morecomment=[s]{,}{//},
+	% The following is used by macros, like `lags'.
+	morecomment=[n][keywordstyle9]{`}{'},
+	morestring=[b]",
+	sensitive=true,
+}
+
+\lstdefinestyle{numbers}{
+	numbers=left, 
+	stepnumber=1, 
+	numberstyle=\tiny\emptyaccsupp,
+	xleftmargin=2em,
+}
+
+\lstdefinestyle{nonumbers}{
+	numbers=none,
+}
+
+\lstdefinestyle{stata-plain}{
+	% comment slanted and keywords bolded.
+	language=Stata,
+	basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,
+}
+
+\lstdefinestyle{stata-editor}{
+	language=Stata,
+	% size of the fonts for the code
+	basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,  
+	% Color settings to match do-file editor style
+	% Commands that are not included in the defination
+	keywordstyle={\color{NavyBlue}},  
+	% Popular add-on commands
+	keywordstyle=[2]{\color{NavyBlue}},
+	% System commands
+	keywordstyle=[3]{\color{NavyBlue}},
+	% Keywords
+	keywordstyle=[4]{\color{NavyBlue}},
+	% Built-in functions like rnormal
+	keywordstyle=[5]{\color{Blue}},
+	% Used by macros, i.e. `lags'  
+	keywordstyle=[9]{\color{TealBlue}},
+	stringstyle=\color{Maroon},
+	commentstyle=\color{OliveGreen},
+}
+
+
+\lstset{
+	language=Stata,
+	style=stata-plain,
+	% style=stata-editor,
+	style=numbers,
+	showstringspaces=false,
+	breaklines,
+	frame=single,
+	% To add missing commands
+	% morekeywords={xtreg, xtunitroot},
+}
+
+
+\title[]  
+{Regression Discontinuity Design}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+%{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{\today}
+
+\usetheme{CambridgeUS}
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+% \usetheme{Boadilla}
+% %\useinnertheme{rectangles}
+
+% %\usetheme{CambridgeUS}
+% \usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
+
+
+% \usepackage{beamerthemeshadow}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
+
+
+%\usepackage{beamerthemeshadow}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+	
+	
+	\begin{frame}{}
+		\titlepage
+	\end{frame}
+	
+	
+
+
+
+
+
+\title[]  
+{Main Idea}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+	
+	
+	
+	\begin{frame}{Introduction}{Selection Bias and RCT}
+		\begin{itemize}
+			\item A major problem of estimating causal effect of treatment is the threat of \textbf{selection bias}
+			\vspace{0.2cm}
+			\item In many situations, individuals can \textbf{select into treatment} so those who get treatment could be very different from those who are untreated	
+			\vspace{0.2cm}	
+			\item The best to deal with this problem is conducting a randomized controlled trial (RCT)
+			
+			
+			
+			
+			
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{}
+		\begin{itemize}
+			
+			\item In an RCT, researchers can eliminate selection bias by \textbf{controlling treatment assignment process}
+			\vspace{0.2cm}
+					\begin{itemize}
+			
+			\item An RCT randomizes who receives a treatment – the treatment group - and who does not – the control group
+			\vspace{0.2cm}
+
+			\item Since we randomly assign treatment, the probability of getting treatment is unrelated to other confounding factors 
+								\end{itemize}	
+			\vspace{0.2cm}	
+			\item But conducting an RCT is very expensive and may have ethical issue
+			
+			
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{}
+		\begin{itemize}
+			\item Instead of controlling treatment assignment process, if researchers have \textbf{detailed institutional knowledge of treatment assignment process}
+			\vspace{0.2cm}
+			\item Then we could use this information to create an ``experiment"
+			
+			%adjust for differences in selection to obtain an unbiased estimate of treatment effect
+			
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{}
+	\begin{itemize}
+		\item Regression Discontinuity Design (RDD) exploits the facts that:
+		\vspace{0.2cm}
+		\begin{itemize}	
+			\item Some rules can generate a discontinuity in treatment assignment
+			\vspace{0.2cm}
+			\begin{itemize}	
+				\item The treatment assignment is determined based on whether a unit exceeds some threshold on a variable. 
+				\vspace{0.2cm}
+				\item Such variable is called \textbf{assignment variable}, \textbf{running variable} or \textbf{forcing variable}
+			\end{itemize}
+			\vspace{0.2cm}
+			\item Assume other factors do NOT change abruptly at threshold
+			\vspace{0.2cm}
+			\item Then any change in outcome of interest can be attributed to the assigned treatment
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+	
+	
+	
+	
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+		\begin{itemize}
+			\item A large number of studies have shown that graduates from more
+			selective programs or schools earn more than others
+			\vspace{0.2cm}
+			\begin{itemize}
+				\item In Taiwan, many students want to enter elite schools
+				\vspace{0.2cm}
+				\item Students graduated from NCCU earn more than those graduated from other schools
+			\end{itemize}
+			%\item Lead to sometimes extreme competition in many countries
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+		\begin{itemize}
+			
+			\item But it is difficult to know whether the positive earnings premium is
+			due to
+			\vspace{0.2cm}
+			\begin{itemize}
+				
+				\item true ``causal" impact of human capital acquired in the academic program
+				\vspace{0.2cm}
+				\item a spurious correlation linked to the fact that good students selected in these
+				programs would have earned more no matter what
+				\vspace{0.2cm}
+			\end{itemize}
+			\item The latter point reflects \textbf{selection bias}
+			\vspace{0.2cm}
+			\item We need to untangle the \textbf{causal effect} and \textbf{selection bias}
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+		\begin{itemize}
+			
+			%\item Untangling the causal and selection effects is a difficult challenge
+			
+			\item A great way to answer that question would be to run an experiment:
+			\vspace{0.2cm}
+			\begin{itemize}
+				\item Take students applying both to NCCU and other schools
+				\vspace{0.2cm}
+				\item Instead of admitting them the regular way, just flip a coin to decide whether they
+				get into NCCU or other schools
+				\vspace{0.2cm}
+				\item Follow them up 10 years later to see whether those admitted to NCCU earn more than those admitted to other schools
+				\vspace{0.2cm}
+			\end{itemize}
+			
+			\item Great idea, but nobody will let me run that experiment...
+			
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+	\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+		\begin{itemize}
+			
+			\item But say that the entry cutoff for a score of entrance exam is 400 at NCCU
+			\vspace{0.2cm}
+			\item They would perhaps let me flip a coin for those with scores of 399 or 400
+			\vspace{0.2cm}
+			
+			\item Since the those get 399 and those get 400 are essentially identical
+			\vspace{0.2cm}
+			\item They get different scores due to some random events
+			\vspace{0.2cm}
+			\item \textbf{RD strategy}: I can do ``as well" as in a randomized experiment by tracking down the long term outcomes for the 400 (admitted to NCCU) and the 399 (admitted at other schools)
+			
+			
+		\end{itemize}
+	\end{frame}
+	
+	
+
+\begin{frame}{Test Score and Earnings}
+
+
+
+	\begin{center}
+	\begin{figure}[p]
+		\centering
+\includegraphics[width=1.0\textwidth]{figure/RD_score_f1.jpg}
+	\end{figure}
+	\begin{minipage}{0.9\linewidth}
+		\fontsize{8}{8pt}\selectfont
+		\emph{Source:} Lee and Lemieux (2010)
+	\end{minipage}
+\end{center}
+
+
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+
+Mark Hoekstra (2009) ``\textbf{The Effect of Attending the Flagship State University on Earnings: A Discontinuity-Based Approach}" Review of Economics and Statistics
+
+\begin{itemize}
+
+%\item ``Where there is a cutoff there is a RD"
+%\vspace{0.2cm}
+%\item Fortunately, it is typical for selective schools and programs to use fairly strict grade cutoffs for admission
+\item This paper demonstrates the above RD idea by examining the economic return of attending the most selective public state
+university
+
+\vspace{0.2cm}
+\item In the United States, most schools used SAT (or ACT) scores in
+their admission process
+\vspace{0.2cm}
+\item For example, the flagship state university considered here uses a strict cutoff based on SAT score and high school GPA
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Main Idea of Regression Discontinuity Design}{A Motivating Example}
+\begin{itemize}
+
+\item For the sake of simplicity, Hoekstra just focuses on the SAT score (adjusted depending on GPA)
+\vspace{0.2cm}
+\item The author is then able to match (using social security numbers) students applying to the flagship university in 1986-89 to their
+administrative earnings data for 1998 to 2005
+\vspace{0.2cm}
+\item As in any good RD study, pictures tell it all, so let's just focus on
+those
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{SAT Score and Enrollment}
+
+\includegraphics[width=1.0\textwidth]{figure/college_f1.jpg}
+
+
+\end{frame}
+
+
+
+\begin{frame}{SAT Score and Earnings}
+
+\includegraphics[width=1.0\textwidth]{figure/college_f2.jpg}
+
+
+\end{frame}
+
+
+
+\begin{frame}{More Examples}{}
+\begin{itemize}
+
+\item \textbf{Where there is a cutoff there is a RD}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Public Health}{The Effect of Health Intervention}
+
+Prashant Bharadwaj, Katrine Vellesen Løken, and
+Christopher Neilson (2013) ``\textbf{Early Life Health Interventions and Academic Achievement}" AER
+
+\begin{itemize}
+
+\item The effect of \textbf{health intervention} in early childhood on \textbf{later life outcomes}
+\vspace{0.2cm}
+\item \textbf{Selection bias}: children who need health intervention in early childhood could be very sick and might have bad later life outcome (e.g. low educational attachment)
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Public Health}{The Effect of Health Intervention}
+\begin{itemize}
+
+
+\item \textbf{RDD solution}: 
+\vspace{0.2cm}
+\begin{itemize}
+\item Infants with a birth weight below \textbf{1500 grams} were eligible for additional healthcare while those with a birth weight just above the cutoff were not eligible
+\vspace{0.2cm}
+\end{itemize}
+\item Compares mortality rates and academic achievement between those infants \textbf{just below and above the cutoff of 1500 grams} 
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{}
+
+\includegraphics[width=0.7\textwidth]{figure/RD_health_f1.jpg}
+
+
+\end{frame}
+
+
+\begin{frame}{}
+
+\includegraphics[width=0.7\textwidth]{figure/RD_health_f2.jpg}
+
+
+\end{frame}
+
+
+\begin{frame}{}
+
+\includegraphics[width=0.7\textwidth]{figure/RD_health_f3.jpg}
+
+
+\end{frame}
+
+
+\begin{frame}{Political Science}{The Effect of Incumbency}
+
+David Lee (2007) ``\textbf{Randomized Experiments from Non-random Selection in U.S. House Elections}" Journal of Econometrics
+
+\begin{itemize}
+
+\item  Does \textbf{political incumbency} provide an \textbf{electoral advantage}
+\vspace{0.2cm}
+\item \textbf{Selection bias}: people who win election (incumbency) should be more popular
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Political Science}{The Effect of Incumbency}
+\begin{itemize}
+	
+	\item \textbf{RDD solution}: 
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item Candidates who just \textbf{barely won} an election (barely became the incumbent) are likely to be ex ante comparable in all other ways to candidates who \textbf{barely lost}
+		\vspace{0.2cm}
+		\item So their differential electoral outcomes in the \textbf{next election} should represent a true \textbf{incumbency advantage}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{}
+
+\includegraphics[width=0.9\textwidth]{figure/RD_poli_f1.jpg}
+
+
+\end{frame}
+
+
+
+\begin{frame}{Labor Economics}{Spatial Regression Discontinuity}
+	Rafael Lalive (2008), ``\textbf{How do extended beneﬁts affect unemployment duration?
+		A regression discontinuity approach}", Journal of Econometrics
+	\begin{itemize}
+		\vspace{0.2cm}
+		\item This paper studies a targeted program that extends the maximum duration of unemployment benefits from 30 weeks to 209 weeks in Austria
+		\vspace{0.2cm}
+		\item Sharp discontinuities in treatment assignment at age 50 and at the border between eligible regions and control regions identify the effect of \textbf{extended benefits} on \textbf{unemployment duration}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Labor Economics}{Spatial Regression Discontinuity}
+	\includegraphics[width=.90\textwidth]{figure/srd_ui_f1.jpg}
+	
+\end{frame}
+
+
+\begin{frame}{Labor Economics}{Spatial Regression Discontinuity}
+	\includegraphics[width=.90\textwidth]{figure/srd_ui_f3.jpg}
+	
+\end{frame}
+
+
+
+\begin{frame}{RDD Became Popular since late 1990s }{}
+	
+	\begin{itemize}
+		\item The first RDD paper is Thistlethwaite and Campbell (1960), ``RD Analysis: An Alternative to Ex Post Fact
+		Experiments," Journal of Education Psychology
+		\vspace{0.2cm}
+		\item RDD was not used much in economics until the late 1990s
+		\vspace{0.2cm}
+		\item But hundreds of studies since then, starting with Van der Klaauw (2002)
+		\vspace{0.2cm}
+		\item Two possible explanations:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Cutoff rules are very wide spread…
+			\vspace{0.2cm}
+			\item Much more data available now, especially administrative data sets
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{RDD Became Popular since late 1990s }{}
+	
+	\begin{itemize}
+		\item An important advantage of RD designs is that they are well suited to
+		large administrative data sets with
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Few covariates
+			\vspace{0.2cm}
+			\item Lots of observations and all the relevant information about cutoffs and assignment variables 
+			\vspace{0.2cm}
+			\item Since those have to be used in the administration of programs
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Sharp RDD and Fuzzy RDD}{}
+	
+	\begin{itemize} 
+		
+		\item In general, depending on enforcement of treatment assignment, RDD can be categorized into two types:
+		
+				\begin{itemize} 	
+		\vspace{0.2cm}
+		
+				\item[1] {\color{blue}Fuzzy RDD}: the probability of getting the treatment jumps discontinuously at the cutoff 
+		\vspace{0.2cm}
+		
+		\item[2] {\color{blue}Sharp RDD}: the probability of getting the treatment jumps from 0 to 1 at the cutoff 
+
+%		\vspace{0.2cm}
+%		\begin{itemize}
+%			\item Everyone follows treatment assignment rule (all are compliers) 	
+%			\vspace{0.2cm}	 
+%			\item Local randomized experiment with perfect compliance around cutoff
+%			
+%			
+%		\end{itemize}
+		\vspace{0.2cm}
+		
+
+%		\begin{itemize}
+%			\item Not everyone follows treatment assignment rule  	
+%			\vspace{0.2cm}	 
+%			\item Local randomized experiment with partial compliance around cutoff
+%			\vspace{0.2cm}	 
+%			\item  Using initial assignment as an instrument (IV) for actual treatment
+%			
+%		\end{itemize}
+		
+			\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+%
+%
+%\begin{frame}{Fuzzy RDD}{Overview}
+%	\begin{itemize}
+%		
+%		%\item So far, we focus on sharp RDD
+%		
+%		
+%		\item {\color{blue}Fuzzy RDD}: 
+%		
+%		\begin{itemize}
+%			\vspace{0.2cm}
+%			\item The probability of getting the treatment is no longer a deterministic function of the assignment variable $A_{i}$
+%			\vspace{0.2cm}
+%			\item But there is still a discontinuity in the probability of getting treatment at the threshold
+%		\end{itemize}
+%		
+%		
+%	\end{itemize}
+%\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Fuzzy RDD}{Overview}
+	\begin{itemize}
+		
+		\begin{block}{Fuzzy RDD}
+			\begin{equation*}
+				\lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c-\varepsilon] \neq 0
+			\end{equation*}
+		\end{block}
+		
+	
+			\vspace{0.2cm}
+			\item The probability of getting the treatment jumps discontinuously at the cutoff 
+			\vspace{0.2cm}
+			\begin{itemize}
+				\item Some individuals above cutoff do NOT get treatment and some individuals below cutoff do receive treatment
+			\end{itemize}
+		\end{itemize}
+		
+		
+		%\begin{itemize}		
+		%	\item The probability of being admitted to elite university may jump at a certain test score 
+		% \vspace{0.2cm}
+		%	\item Students still can decide not enroll in that school
+		%\end{itemize}
+		
+
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Treatment Probability and assignment variable}{Fuzzy RDD}
+	\begin{figure}
+		\begin{tikzpicture}[comment/.style={rectangle, text centered}]
+			\centering
+			\draw[very thick,->] (0,0) -- (6,0) node[anchor=north west] {A};
+			\draw[very thick,->] (0,0) -- (0,4.2) node[anchor=south east] {};
+			
+			\draw[very thick, blue] (3,4.2) -- (3,0) node[anchor=south, yshift=-0.7cm](3_0) {cutoff};
+			\draw[very thick, blue] (0,0.7) -- (3,0.7)   node[anchor=south, xshift=-1.2cm] {$\Pr[D_i=1]=0.15$};
+			\draw[very thick, blue] (3,3.3) -- (6,3.3)   node[anchor=north, xshift=-1.2cm] {$\Pr[D_i=1]=0.8$};
+			
+			\draw (0,0) -- (0,0) node[anchor=east](0_0) {$0$};
+			\draw (0,4) -- (0,4) node[anchor=east] {$1$};
+			
+			\node [comment, above of = 3_0, yshift=4.5cm] {Fuzzy Regression Discontinuity};
+			\node [comment, left of  = 0_0, yshift=2.3cm, xshift=-0.5cm] {Probability of};
+			\node [comment, left of  = 0_0, yshift=1.9cm, xshift=-0.5cm] {receiving treatment};
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Sharp RDD}{Overview}
+	\begin{itemize}
+		
+		\begin{block}{Sharp RDD}
+		\begin{equation*}
+			\lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c-\varepsilon] = 1
+		\end{equation*}
+	\end{block}
+
+			\item Sharp RDD is a special case of fuzzy RDD
+			\vspace{0.2cm}		
+			\item It further required the jump in probability to be from 0 to 1
+			\vspace{0.2cm}
+			\begin{itemize}
+				\item Nobody below the cutoff gets the ``treatment", everybody above the cutoff gets it
+			\end{itemize}
+
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Treatment Probability and assignment variable}{Sharp RDD}
+	\begin{figure}
+		\begin{tikzpicture}[comment/.style={rectangle, text centered}]
+			\centering
+			\draw[very thick,->] (0,0) -- (6,0) node[anchor=north west] {A};
+			\draw[very thick,->] (0,0) -- (0,4.2) node[anchor=south east] {};
+			
+			\draw[very thick, blue] (3,4.2) -- (3,0) node[anchor=south, yshift=-0.7cm](3_0) {cutoff};
+			\draw[very thick, blue] (0,0) -- (3,0)   node[anchor=south, xshift=-1.2cm] {$\Pr[D_i=1]=0$};
+			\draw[very thick, blue] (3,4) -- (6,4)   node[anchor=north, xshift=-1.2cm] {$\Pr[D_i=1]=1$};
+			
+			\draw (0,0) -- (0,0) node[anchor=east](0_0) {$0$};
+			\draw (0,4) -- (0,4) node[anchor=east] {$1$};
+			
+			\node [comment, above of = 3_0, yshift=4.5cm] {Sharp Regression Discontinuity};
+			\node [comment, left of  = 0_0, yshift=2.3cm, xshift=-0.5cm] {Probability of};
+			\node [comment, left of  = 0_0, yshift=1.9cm, xshift=-0.5cm] {receiving treatment};
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+\title[]  
+{Identification}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Sharp RDD}
+	
+	Christopher Carpenter and Carlos Dobkin (2009) ``\textbf{The Effect of Alcohol Consumption on Mortality: Regression Discontinuity Evidence from the Minimum Drinking Age}" AEJ:Applied Economics
+	
+	\begin{itemize}
+						\vspace{0.2cm}
+		\item We first discuss sharp RDD, which is less complicated and then move to more general design -- fuzzy RDD
+				\vspace{0.2cm}
+		\item This paper examine the effect of \textbf{legal access to alcohol} on \textbf{mortality} using a sharp RDD
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item I will use this paper as an example to go through the key concept of sharp RDD
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Potential Outcomes Framework}{}
+	
+		\begin{itemize} 
+	\item \textcolor{blue}{Assignment variable} 
+		\vspace{0.2cm}
+				\begin{itemize} 
+		\item Assignment variable (running variable): $A_i\in \mathbb{R}$
+		\vspace{0.2cm}
+		\item Threshold (cutoff) for treatment assignment: $c\in \mathbb{R}$
+		\vspace{0.2cm}
+			\end{itemize}
+		
+	
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{}
+	\begin{itemize}
+		
+		\item \textcolor{blue}{Treatment Eligibility}
+		\begin{align*}
+			Z_{i}=\left\lbrace
+			\begin{array}{l}
+				1\quad \text{if $A_i\geq c$, eligible for a treatment}\\
+				0\quad \text{if $A_i< c$, not eligible for a treatment}
+			\end{array}\right.
+		\end{align*}
+		\begin{itemize}
+			%\item $Z_{i}=1$: those who get treatment eligibility (above cutoff)	
+			% \vspace{0.2cm}
+			%\item $Z_{i}=0$: those who do not get treatment eligibility (below cutoff)	
+			% \vspace{0.2cm}
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Potential Outcomes Framework}{}
+	
+	\begin{itemize} 
+		
+		
+		\item In sharp RDD, treatment assignment is a deterministic function of the assignment variable $A_{i}$ and the threshold $c$	
+		\vspace{0.2cm}
+		\item $D_i$: a dummy that indicate whether individual $i$ receive treatment or not
+		\vspace{0.2cm}
+		\item \textcolor{blue}{Treatment assignment}
+		\begin{align*}
+			D_i&=1\{A_i\geq c\} \quad \forall i \\  
+			D_i&=\left\lbrace
+			\begin{array}{l}
+				D_i=1\quad \text{if $A_i\geq c$}\\
+				D_i=0\quad \text{if $A_i<c$}
+			\end{array}\right.
+		\end{align*}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Potential Outcomes Framework}{}
+	\begin{itemize}
+		
+		\item In sharp RDD, the \textbf{eligible for a treatment $Z_{i}$} is the same as \textbf{getting a treatment $D_{i}$} 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $Z_{i}=D_{i}$
+					\vspace{0.2cm}
+			
+			\item We do not need to distinguish treatment eligibility $Z_{i}$ and treatment assignment $D_{i}$
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item In fuzzy RDD, the \textbf{eligible for a treatment $Z_{i}$} does NOT necessarily represent the \textbf{getting a treatment $D_{i}$} 
+		
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $Z_{i}\neq D_{i}$
+			
+			\vspace{0.2cm}
+			
+			\item We need to estimate how treatment eligibility $Z_{i}$ affects treatment assignment $D_{i}$ (first-stage relationship)
+		\end{itemize}
+		
+		
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}{}
+		\begin{itemize} 
+\item \textcolor{blue}{Potential Outcomes} 
+		\vspace{0.2cm}
+				\begin{itemize} 
+		\item $\mathrm{Y}^{1}_{i}$: Potential outcome for an individual $i$ if he would receive treatment
+		\vspace{0.2cm}
+		\item $\mathrm{Y}^{0}_{i}$: Potential outcome for an individual  $i$ if he would not receive treatment
+	\end{itemize}
+	\vspace{0.2cm}
+	
+\item \textcolor{blue}{Observed Outcomes} 
+		\vspace{0.2cm}
+	\begin{itemize} 
+		
+		\item Observed outcomes $\mathrm{Y}_i$ are realized as: 
+		
+		\begin{align*}
+		\mathrm{Y}_i&=\mathrm{Y}^{1}_{i}D_i+\mathrm{Y}^{0}_{i}(1-D_i)\\
+		\mathrm{Y}_i &= \left\lbrace
+		\begin{array}{l}
+		\mathrm{Y}^{1}_{i}\quad \text{if $D_i=1$ ($A_i\geq c$)} \\
+		\mathrm{Y}^{0}_{i}\quad \text{if $D_i=0$ ($A_i<c$)}
+		\end{array} \right.
+		\end{align*}
+		
+		
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Identification Results for Sharp RDD}{}
+	\begin{itemize}
+		
+		\item Ideally, for each individual $i$, if we could observe two potential outcomes at the same time, we can estimate \textbf{average treatment effect (ATE)}:
+		
+		\begin{equation*}
+		\alpha_{\text{ATE}}=\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}	
+		
+		\item But it is \textbf{impossible} to observe two potential outcomes at the same time		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{}
+	\begin{itemize}
+		
+		%\item Instead, we can examine the change in the outcome at the discontinuity in the treatment assignment
+		%\vspace{0.2cm}
+		\item Instead, we can use sharp RDD to investigate the behavior of the outcome around the threshold:
+		
+		\begin{equation*}
+		\alpha_{\text{SRD}} = \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c-\varepsilon] 
+		\end{equation*}	
+		
+		
+		
+		\item Under certain assumptions, this quantity identifies the \textbf{ATE at the threshold}:
+		\begin{equation*}
+		\alpha_{\text{ATE at c}}=\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|A_i=c]
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Deterministic Assumption}
+	\begin{itemize}
+		\begin{block}{Deterministic Assumption}
+			\begin{equation*}
+			D_i=1\{A_i\geq c\} \quad \forall i
+			\end{equation*}
+		\end{block}
+		
+		\item Treatment assignment is a deterministic function of the assignment variable $A_{i}$ and the threshold $c$	
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item An individual's age is above 21st $\rightarrow$ get legal access to alcohol
+			\vspace{0.2cm}
+			\item An individual's age is below 21st $\rightarrow$ not get legal access to alcohol
+		\end{itemize}
+		\vspace{0.2cm}
+		\item At the threshold, $c$, we only see treated units and below the threshold $c-\varepsilon$, we only see non-treated units:
+		\begin{equation*}
+		\begin{aligned}
+		& \mathrm{Pr}(D_i=1|A_i=c)=1 \\
+		& \mathrm{Pr}(D_i=1|A_i=c-\varepsilon)=0
+		\end{aligned}
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Continuity Assumption}
+	\begin{itemize}
+		
+		\begin{block}{Continuity Assumption}
+			$E[\mathrm{Y}^{1}_{i}|A_{i}]$ and $E[\mathrm{Y}^{0}_{i}|A_{i}]$ are continuous at $A_{i}=c$
+		\end{block}
+		\item Assume potential outcomes do NOT change at cutoff $c$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item This means that except \textbf{treatment assignment}, all other unobserved determinants of $Y_{i}$ are continuous at cutoff $c$
+			\vspace{0.2cm}
+			\item This implies no other confounding factor affects outcomes at cutoff $c$
+			\vspace{0.2cm}
+		\end{itemize}
+		\item \textbf{Any observed discontinuity in the outcome can be attributed to treatment assignment}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Graphical Interpretation}
+\begin{tikzpicture}[scale=1.5]
+	% Axes
+	\draw[->] (0,0) -- (6,0) node[right] {$A$};
+	\draw[->] (0,0) -- (0,4) node[above] {$Y$};
+	
+	% Lines
+	\draw[blue, dashed, thick] (0,1) -- (3,2) node[above left] {$E(Y^1 \mid A_i)$};
+	\draw[red, thick] (0,0.5) -- (3,1.5) node[below right] {$E(Y^0 \mid A_i)$};
+	\draw[blue, thick] (3,2) -- (5.5,3.5);
+	\draw[red, dashed, thick] (3,1.5) -- (5.5,3);
+	
+	% Dotted line
+	\draw[densely dotted] (3,0) -- (3,4);
+	
+	% Labels
+	\node at (1.5,-0.5) {$D=0$};
+	\node at (4.5,-0.5) {$D=1$};
+	\node at (3,-0.5) {$C$};
+\end{tikzpicture}
+\end{frame}
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Graphical Interpretation}
+	\begin{tikzpicture}[scale=1.5]
+		% Axes
+		\draw[->] (0,0) -- (6,0) node[right] {$A$};
+		\draw[->] (0,0) -- (0,4) node[above] {$Y$};
+		
+		% Lines
+		%\draw[blue, dashed, thick] (0,1) -- (3,2) node[above left] {$E(Y^1 \mid A_i)$};
+		%\draw[red, thick] (0,0.5) -- (3,1.5) node[below right] {$E(Y^0 \mid A_i)$};
+		\draw[red, thick] (0,0.5) -- (3,1.5);
+		\draw[blue, thick] (3,2) -- (5.5,3.5);
+		%\draw[red, dashed, thick] (3,1.5) -- (5.5,3);
+		
+		% Dotted line
+		\draw[densely dotted] (3,0) -- (3,4);
+		
+		% Labels
+		\node at (1.5,-0.5) {$D=0$};
+		\node at (4.5,-0.5) {$D=1$};
+		\node at (3,-0.5) {$C$};
+		
+			% Red annotation
+		\draw[black,->] (3,2) -- (3,1.5);
+		\node[black, align=center] at (4.2,1.75) {$E(Y^1 - Y^0 \mid A_i=c)$};
+	\end{tikzpicture}
+\end{frame}
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Graphical Interpretation}
+	\begin{tikzpicture}[scale=1.5]
+		% Axes
+		\draw[->] (0,0) -- (6,0) node[right] {$A$};
+		\draw[->] (0,0) -- (0,4) node[above] {$Y$};
+		
+		% Lines
+		\draw[blue, dashed, thick] (0,1) -- (3,1.5) node[above left] {$E(Y^1 \mid A_i)$};
+		%\draw[red, thick] (0,0.5) -- (3,1.5) node[below right] {$E(Y^0 \mid A_i)$};
+		\draw[blue, thick] (3,2) -- (5.5,3.5);
+		%\draw[red, dashed, thick] (3,1.5) -- (5.5,3);
+		
+		% Dotted line
+		\draw[densely dotted] (3,0) -- (3,4);
+		
+		% Labels
+		\node at (1.5,-0.5) {$D=0$};
+		\node at (4.5,-0.5) {$D=1$};
+		\node at (3,-0.5) {$C$};
+	\end{tikzpicture}
+\end{frame}
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Continuity Assumption}
+	\begin{itemize}
+		\item Remember we want to identify the \textbf{ATE at the threshold}:
+		\begin{equation*}
+		\begin{aligned}
+		\alpha_{\text{ATE at c}} &=\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|A_i=c] \\
+		&= \mathrm{E}[\mathrm{Y}^{1}_{i} |A_i=c] -\mathrm{E}[\mathrm{Y}^{0}_{i} |A_i=c]
+		\end{aligned}
+		\end{equation*}
+		\item But we don't observe $\mathrm{E}[\mathrm{Y}^{0}_{i} |A_i=c]$ ever due to the design, so we're going to extrapolate from $\mathrm{E}[\mathrm{Y}_{i} |A_i=c-\varepsilon]$.
+		\vspace{0.2cm}
+		\item We want to construct counterfactural of $\mathrm{E}[\mathrm{Y}^{0}_{i}|A_i=c]$ using observed data: 
+		\begin{equation*}
+		\mathrm{E}[\mathrm{Y}^{0}_{i}|A_i=c]  = \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c-\varepsilon]
+		\end{equation*}
+		
+		%Extrapolation, even at short distances, requires {\color{blue}smoothness} in the functions we are extrapolating.
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{Continuity Assumption}
+	\begin{itemize}
+		\item The continuity assumption and deterministic assumption imply the following:
+		\begin{equation*}
+		\begin{aligned}
+		\mathrm{E}[\mathrm{Y}^{0}_{i}|A_i=c] &= \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}^{0}_{i}|A_i=c-\varepsilon] &\text{(Conti})\\
+		&= 	
+		\lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}^{0}_{i}|D_i=0, A_i=c-\varepsilon] &\text{(Deter)} \\
+		&= \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c-\varepsilon] 
+		\end{aligned}
+		\end{equation*}
+		\item Note that this is the same for the treated group:
+		\begin{equation*}
+		\mathrm{E}[\mathrm{Y}^{1}_{i}|A_i=c] = \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c+\varepsilon]
+		\end{equation*}
+		\item This allows us to use average outcomes of units just below the cutoff as a valid counterfactual for units right above the cutoff 
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Identification Results for Sharp RDD}{}
+	\begin{itemize}
+		
+		\item The treatment effect is identified at the threshold as:
+		\vspace{0.2cm}
+		\begin{block}{Identification Results for Sharp RDD}
+			
+			\begin{equation*}
+			\begin{aligned}
+			\alpha_{\text{ATE at c}}&=E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|A_{i}=c]  \\
+			&= E[\mathrm{Y}^{1}_{i}|A_{i}=c]-E[\mathrm{Y}^{0}_{i}|A_{i}=c]\\
+			&=\lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c-\varepsilon]  = \alpha_{\text{SRD}}
+			\end{aligned}
+			\end{equation*}
+		\end{block}
+		
+		%\item We can observe the behavior of the outcome around the threshold
+		\vspace{0.2cm}
+		\item Under the above assumptions, we can identify the \textbf{ATE at the threshold (unobserved)} using \textbf{sharp RD estimates (observed)}
+		
+		%observed outcome around the threshold
+		
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\title[]  
+{Estimation}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Overview}
+	\begin{itemize}
+		
+		\item There are two strategies for getting RD estimates:
+		\begin{itemize}
+			\vspace{0.2cm}
+			\item[1] Parametric/global method:
+			\vspace{0.2cm}  
+			\begin{itemize}
+				\item Use all available observations
+				\vspace{0.2cm}
+				\item Estimate treatment effects based on a \textbf{specific functional form} for the outcome and assignment variable relationship
+								\vspace{0.2cm}
+			\end{itemize}
+				\item[2] Nonparametric/local method:
+			\vspace{0.2cm} 
+			\begin{itemize}
+				\item Use the observations around cutoff
+				\vspace{0.2cm}
+				\item Compare the outcome of treated and untreated observations that lie \textbf{within specific bandwidth}
+			\end{itemize}
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Estimate Discontinuity in Outcome}
+	
+	
+	\begin{center}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=0.85\textwidth]{figure/regressiondiscontinuity-linearrdd-1.png}
+		\end{figure}
+		\begin{minipage}{0.9\linewidth}
+			\fontsize{8}{8pt}\selectfont
+			\emph{Source:} Nick Huntington-Klein, The Effect: An Introduction to Research Design and Causality, Chapter 20
+			
+		\end{minipage}
+	\end{center}
+	
+	
+	
+	
+\end{frame}
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Parametric/Global Approach}
+	\begin{itemize}
+		\item To \textbf{estimate the discontinuity at cutoff}, we need to model the relationship between assignment variable $A$ and outcome $Y$
+		\vspace{0.2cm}
+		\item Suppose that potential outcomes can be described by some reasonably smooth function $\mathrm{f}(A_i)$:
+		\begin{align*}
+		E[\mathrm{Y}^{0}_{i}|A_i]=\beta+ \mathrm{f}(A_i) \\
+		\mathrm{Y}^{1}_{i} = \mathrm{Y}^{0}_{i}+\alpha
+		\end{align*}
+		
+		\item We can get RD estimates by fitting:
+		\begin{equation*}
+		Y_i=\beta +\alpha D_i+\mathrm{f}(A_i)+\eta_i
+		\end{equation*}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Parametric/Global Approach}
+	\begin{itemize}
+		
+		\item Assume $\mathrm{f}(A_i)$ is a linear function of $A_{i}$
+		\vspace{0.2cm}
+		\item We usually do the following two settings:
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item[1] Allow the $A_i$ terms to differ on both sides of the threshold 
+				\vspace{0.2cm}
+			\begin{itemize}
+			\item Include $A_{i}$ both individually and interacting them with $D_i$
+			\vspace{0.2cm}
+			\item By doing this, we can estimate $\mathrm{f}(A_i)$ on each side
+						\vspace{0.2cm}
+		\end{itemize}
+			\item[2] Re-center $A_{i}$ at $c$: 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item This step ensures that the treatment effect at $A_i=c$ is the coefficient on $D_i$ in a regression model 
+		\end{itemize}
+		
+			\end{itemize}
+	
+	
+		
+		
+		
+		%\item The treatment effect (ATE) at $R=c$ is $\rho + \beta_1 c + \beta_2 c^{2} + ...+\beta_p c^p_i$
+		%\vspace{0.2cm}
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Parametric/Global Approach}
+	\begin{itemize}
+		
+		
+		\item Therefore, we estimate the following regression model:
+	
+	\begin{equation*}
+		Y_i = \beta +\alpha D_i+ \gamma_1 (A_{i}-c) + \gamma_2 (A_{i}-c) \times D_i +\eta_i
+	\end{equation*}
+		\vspace{0.2cm}
+		\begin{itemize}
+			
+			\item The intercept at untreated side around the cutoff: $\beta$ 
+			\vspace{0.2cm}
+			\item The intercept at treated side around the cutoff: $\beta +\alpha$ 
+			\vspace{0.2cm}
+			\item The discontinuity in outcome at cutoff: $(\beta +\alpha)$ - $\beta$ = $\alpha$
+						\vspace{0.2cm}
+					\begin{itemize}
+			\item $\alpha=\lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\mathrm{E}[\mathrm{Y}_{i}|A_i=c-\varepsilon]$
+				\end{itemize}
+			%The treatment effect (ATE) at $R=c$ is $\rho$
+			%\vspace{0.2cm}
+			%\item[3] The treatment effect (ATE) at $A_i-c=s>0$ is: \\$\rho+\beta^*_1 s+\beta^*_2 s^2+...+\beta^*_p s^p$
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{More Flexible Function}
+	
+	
+	\begin{center}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=0.85\textwidth]{figure/regressiondiscontinuity-poly-1.png}
+		\end{figure}
+		\begin{minipage}{0.9\linewidth}
+			\fontsize{8}{8pt}\selectfont
+			\emph{Source:} Nick Huntington-Klein, The Effect: An Introduction to Research Design and Causality, Chapter 20
+			
+		\end{minipage}
+	\end{center}
+	
+	
+	
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Parametric/Global Approach}
+	\begin{itemize}
+		
+		
+		
+		\item We can use more flexible function $\mathrm{f}(A_i)$ to capture the relationship between assignment variable $A$ and outcome $Y$
+									\vspace{0.2cm}
+			\begin{itemize}
+			\item For example, use second-order polynomial of $A$
+							\vspace{0.2cm}
+		\item However, more flexible function $\mathrm{f}(A_i)$ might not give better estimate of discontinuity  
+					\vspace{0.2cm}
+				\end{itemize}		
+		\item Gelman and Imbens (2019): 
+							\vspace{0.2cm}
+			\begin{itemize}
+		\item It's not a great idea to go above the second-order term when performing RDD
+						\vspace{0.2cm}
+	
+	\item If there's a complex shape that needs fitting, instead try limiting the range of the data with a bandwidth and use a simpler function
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+	\begin{itemize}
+
+		\item The core idea of RDD is to compare outcomes just above and just below the cutoff $c$.
+		\vspace{0.2cm}
+		\item Nonparametric/local method:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item We do \textbf{not} assume a specific global functional form for the relationship between the outcome $Y$ and the assignment variable $A$ over their entire range. 
+						\vspace{0.2cm}
+					\begin{itemize}
+			\item This is what "nonparametric" means in this context.
+			\vspace{0.2cm}
+					\end{itemize}
+			\item Instead, we focus the analysis \textbf{locally}, using only observations close to the cutoff $c$.
+			\vspace{0.2cm}
+			\item We compare treated and untreated observations that fall within a specific \textbf{bandwidth ($h$)} around the cutoff.
+		\end{itemize}
+		
+	\end{itemize}
+		
+		
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+\begin{itemize}
+	%\item As mentioned, the "nonparametric" aspect means we avoid assuming a global functional form for $E[Y_i | A_i = a]$.
+	%\vspace{0.2cm}
+	%\item However, we still need a way to estimate the potential jump in $Y$ precisely *at* the cutoff $c$.
+	%\vspace{0.2cm}
+	\item Key insight: within a \textbf{sufficiently small local window (bandwidth $h$)} around the cutoff $c$, even if the true relationship is complex globally.
+	\begin{itemize}
+		\vspace{0.2cm}
+	\item It can often be well \textbf{approximated by a simple linear function}.
+	\vspace{0.2cm}
+\end{itemize}
+	\item Therefore, we use \textbf{Local linear regression}:
+			\vspace{0.2cm}
+	\begin{itemize}
+		\item This involves fitting separate linear regressions on each side of the cutoff, but \textit{only} using data within the bandwidth $h$.
+		\vspace{0.2cm}
+		%\item This allows for different intercepts and slopes on either side of $c$.
+		%\vspace{0.2cm}
+		\item Optionally, kernel functions can be used to give more weight to observations closer to the cutoff.
+	\end{itemize}
+%	\item This approach is generally preferred over simply comparing means in bins next to the cutoff, as it helps reduce potential bias near the boundary of the bandwidth.
+\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Implementing Local Linear Regression}
+	\begin{itemize}
+		\item Specifically, we estimate the following regression model \textbf{using only observations within the chosen bandwidth $h$}:
+		\begin{equation*}
+			Y_i = \beta +\alpha D_i+ \gamma_1 (A_{i}-c) + \gamma_2 (A_{i}-c) \times D_i +\eta_i
+		\end{equation*}
+		\item This linear model is just a \textbf{local approximation} of the relationship near the cutoff $c$, within the bandwidth $h$. 
+				\vspace{0.2cm}
+			\begin{itemize}
+		\item It is \textit{not} a global assumption about the functional form.
+		\vspace{0.2cm}
+			\end{itemize}
+%		\item Interpretation of coefficients:
+%		\begin{itemize}
+%			\item $D_i$: Treatment indicator (=1 if $A_i \ge c$, 0 if $A_i < c$).
+%			\item $A_i - c$: Assignment variable centered at the cutoff.
+%			\item $\beta$: The estimated intercept for the control group ($D_i=0$) at the cutoff ($A_i = c$).
+%			\item $\alpha$: \textbf{The RDD Treatment Effect}. This estimates the jump (discontinuity) in the outcome $Y$ at the cutoff $c$ comparing the treated ($D_i=1$) to the control ($D_i=0$) group. \textbf{This is the parameter of primary interest.}
+%			\item $\gamma_1$: The estimated slope of the relationship between $Y$ and $(A_i-c)$ for the control group ($D_i=0$) within the bandwidth.
+%			\item $\gamma_2$: The estimated \textit{change} in slope for the treated group ($D_i=1$) compared to the control group, within the bandwidth. (The slope for the treated group is $\gamma_1 + \gamma_2$).
+%		\end{itemize}
+		\item The estimated coefficient $\hat{\alpha}$ provides the RDD estimate of the treatment effect.
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Bandwidth}
+	
+	
+	\begin{center}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=0.85\textwidth]{figure/regressiondiscontinuity-localproblems-1.png}
+		\end{figure}
+		\begin{minipage}{0.9\linewidth}
+			\fontsize{8}{8pt}\selectfont
+			\emph{Source:} Nick Huntington-Klein, The Effect: An Introduction to Research Design and Causality, Chapter 20
+			
+		\end{minipage}
+	\end{center}
+	
+	
+	
+	
+\end{frame}
+
+
+\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+	\begin{itemize}
+		\item The main challenge of nonparametric approach is to \textbf{choose a bandwidth} 
+		\vspace{0.2cm}
+		\item There is essentially a trade-off between \textbf{bias} and \textbf{precision} (efficiency) 
+		\vspace{0.2cm}
+		\item Use a larger bandwidth:  
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Since more data points are used in the regression
+			\vspace{0.2cm}	
+			\item Get more \textbf{precise} treatment effect estimates
+			\vspace{0.2cm}
+			\item But use data points far from cutoff 
+			\vspace{0.2cm}
+			%\item Linear specification is less likely to be accurate
+			%\vspace{0.2cm}
+			\item The estimated treatment effect could be \textbf{biased}
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{How to Choose Bandwidth}
+	\begin{itemize}
+		\item[1.] \textbf{Cross-Validation (CV) Procedure}:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Aims to select $h$ that minimizes prediction errors of the RDD model specifically in the neighborhood of the cutoff $c$.
+			%\vspace{0.2cm}
+			%\item This often involves minimizing a cross-validated criterion, such as the sum of squared residuals, derived from local polynomial RDD model fits.
+		\end{itemize}
+		\vspace{0.3cm} % Adjusted spacing for clarity
+		\item[2.] \textbf{Plug-In Procedure}:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Derives a formula for the optimal bandwidth ($h_{opt}$) by analytically minimizing an (Asymptotic) Mean Squared Error for the RDD treatment effect estimator (e.g., $\hat{\alpha}$)
+			
+			%expression for the RDD treatment effect estimator (e.g., $\hat{\alpha}$).
+			\vspace{0.2cm}
+			\begin{itemize}
+				%\item This AMSE typically reflects a trade-off between the squared bias and the variance of the estimator.
+				%\vspace{0.2cm}
+				\item The $h_{opt}$ formula depends on some unknown data characteristics at the cutoff $c$ (like local trends and data variability). 
+				\vspace{0.2cm}
+				\item These must first be estimated from your data, often using a "pilot" bandwidth.
+				\vspace{0.2cm}
+			\end{itemize}		
+			\item See, e.g., Imbens and Kalyanaraman (2012), Calonico, Cattaneo, and Titiunik (2014).
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+	\begin{itemize}
+		\item In practice, we also use a specific kernel function to weight observations more heavily around cutoff
+		
+					\vspace{0.2cm}
+		\item A very commonly-used kernel in regression discontinuity is the \textbf{triangular kernel}
+		
+\begin{equation}
+	K(A) = 
+	\begin{cases} 
+		1 - \frac{\left| A_{i} - c \right|}{h} & \text{for}\: c - h < A_{i} < c + h, \\
+		0 & \text{otherwise.}
+	\end{cases}
+\end{equation}
+
+%Therefore, we estimate the following local linear regression
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Triangular Kernel Function}
+	
+	
+	\begin{center}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=0.9\textwidth]{figure/regressiondiscontinuity-kernel-1.png}
+		\end{figure}
+		\begin{minipage}{0.9\linewidth}
+			\fontsize{8}{8pt}\selectfont
+			\emph{Source:} Nick Huntington-Klein, The Effect: An Introduction to Research Design and Causality, Chapter 20
+			
+		\end{minipage}
+	\end{center}
+	
+	
+	
+	
+\end{frame}
+
+
+
+
+%\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+%	\begin{itemize}
+%		%\item The standard solution to reduce this bias is to run \textbf{local linear regression}
+%		%\vspace{0.2cm}
+%		\item Therefore, we estimate the following local linear regression 
+%		\begin{equation*}
+%			Y_i = \beta +\alpha D_i+ \gamma_1 (A_{i}-c) + \gamma_2 (A_{i}-c) \times D_i +\eta_i
+%		\end{equation*}
+%		
+%			\begin{itemize}
+%		\item Within a given window of width $h$ around the cutoff
+%		\vspace{0.2cm}
+%		\item Use a triangular kernel as a weight
+%		\vspace{0.2cm}
+%		\item Implement a weighted OLS
+%			\end{itemize}
+%	\end{itemize}
+%\end{frame}
+
+
+
+
+\begin{frame}{Sharp RDD Estimation}{Nonparametric/Local Approach}
+	\begin{itemize}
+		
+		
+		\item In alcohol example, we can estimate the following regression \textbf{within 180 days before and after age 21}:
+		\begin{multline*}
+		Y_i=\beta+\alpha D_{i}+\gamma_{1}(A_{i}-21) +\gamma_{2}D_{i}(A_{i}-21)+\eta_i 
+		\end{multline*}
+	\begin{itemize}		
+		\item $h=180$
+		\vspace{0.2cm}	
+		\item Use a triangular kernel as a weight and implement a weighted OLS
+		\vspace{0.2cm}
+		\item The effect of legal access to alcohol on mortality rate at age 21 is $\alpha$
+		\vspace{0.2cm}
+		\item Usually, we would present the RD estimates by different choices of bandwidth
+		\vspace{0.2cm}	
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{}
+	
+	\includegraphics[width=0.9\textwidth]{figure/RD_drink_t4.jpg}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{}
+	
+	\includegraphics[width=0.9\textwidth]{figure/alcohol_f1.jpg}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{}
+	
+	\includegraphics[width=1.0\textwidth]{figure/RD_drink_f5.jpg}
+	
+	
+\end{frame}
+
+
+
+
+	
+
+
+
+
+
+
+%\begin{frame}{Sharp RDD Estimation}{How to Choose Bandwidth}
+%	\begin{itemize}
+%		\item[1] \textbf{Cross-Validation Procedure}: 
+%		\vspace{0.2cm}
+%		\begin{itemize}
+%			\item Choose bandwidth $h$ that produces the best fit for
+%			the relationship of outcome and assignment variable
+%			\vspace{0.2cm}
+%		\end{itemize}
+%		\vspace{0.2cm}
+%		\item[2] \textbf{Plug-In Procedure}: 
+%		\vspace{0.2cm}
+%		\begin{itemize} 
+%			\item Solve for the optimal bandwidth formula in terms of minimizing mean square error
+%			
+%			\vspace{0.2cm}
+%			\item Plug the parameters into formula to get optimal bandwidth
+%			\vspace{0.2cm}
+%			\item  See, e.g. Imbens and Kalyanaraman (2009), Calonico, Cattaneo, and Titiunik (2014)
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+
+
+
+
+\title[]  
+{Examine Validity of Identification Assumptions}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Test Internal Validity of RDD}{Examine ``Discontinuity" in Nonoutcome Variables}
+	
+	\textbf{1. Examine ``Discontinuity" in Nonoutcome Variables}
+	
+	\begin{itemize}
+		\vspace{0.2cm}	
+		\item Construct a similar graph to the one before but using a covariate as the ``outcome"
+		\vspace{0.2cm}	
+		\item There should be \textbf{NO jump in other covariates}
+		\vspace{0.2cm}	
+		\item If the covariates would jump at the cutoff one would doubt the identifying assumption
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Test Internal Validity of RDD}{Sorting Behavior}
+	
+	\textbf{2. Examine ``Discontinuity" in Density of the assignment variable}
+	
+	\begin{itemize}
+		\vspace{0.2cm}	
+		\item Individuals may invalidate the \textbf{continuity assumption} if they strategically manipulate assignment variable $A$ to be just above or below the cutoff
+		\vspace{0.2cm}
+		\item That is, people just above and just below the cutoff are no longer comparable
+		\vspace{0.2cm}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Consequence of Sorting Behavior}{Example}
+	
+	\includegraphics[width=1.0\textwidth]{figure/manu_f1.jpg}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Sorting Behavior}{Example}
+	\begin{itemize}
+		
+		\item This is a concern especially if the exact value of the cutoff is known to the individuals in advance
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item Such sorting behavior may create a \textbf{discontinuity in the distribution of $A$ at the cutoff}
+		\vspace{0.2cm}
+		\item That is, ``bunching" to the right or to the left of the cutoff
+			\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Sorting Behavior}{Example}
+	
+	Adriana Camacho and Emily Conover (2011) ``\textbf{Manipulation of Social Program Eligibility}" AEJ: Economic Policy
+			\vspace{0.2cm}
+	\begin{itemize}
+		\item Manipulation of a poverty index in Colombia
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item A poverty index is used to decide eligibility for social programs 
+		\vspace{0.2cm}
+			\end{itemize}
+		\item The algorithm to create the poverty index \textbf{becomes public} during the second half of 1997
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Sorting Behavior}{Example}
+	
+	\includegraphics[width=0.9\textwidth]{figure/RD_density_f1.jpg}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Sorting Behavior}{Example}
+	
+	\includegraphics[width=0.9\textwidth]{figure/RD_density_f2.jpg}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Test Internal Validity of RDD}{Examine Discontinuity in Density of the Assignment Variable}
+	
+	\textbf{How to Examine ``Discontinuity" in Density of the assignment variable}
+	
+	\begin{itemize}
+		\vspace{0.2cm}	
+		\item Plot the number of observations in each bin of assignment variable
+		\vspace{0.1cm}	
+		\item Investigate whether there is a \textbf{discontinuity in the distribution of the assignment variable} at the threshold
+		\vspace{0.2cm}	
+			\begin{itemize}
+		\item A discontinuity in the density suggests that people might manipulate the assignment variable around the threshold
+			\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+%\begin{frame}{Test Internal Validity of RDD}{Formal Test for Density Discontinuity (McCrary Test)} % More specific title
+%	
+%	\begin{itemize}
+%		\item A formal statistical test for discontinuity in the density of the assignment variable was proposed by \textbf{McCrary (2008, Journal of Econometrics)}.
+%		\vspace{0.3cm}
+%		\item \textbf{Key Steps of the McCrary Test}:
+%		\vspace{0.1cm}
+%		\begin{itemize}
+%			\item[1.] \textbf{Binning}: Partition the assignment variable ($A$) into discrete bins. Calculate the number of observations (frequency, $N_j$) for each bin $j$.
+%			\vspace{0.2cm}
+%			\item[2.] \textbf{Centering}: Ensure that no bin straddles or overlaps the cutoff point $c$. The running variable for the local regressions will be the midpoint of each bin ($x_j$).
+%			\vspace{0.2cm}
+%			\item[3.] \textbf{Local Linear Regressions}: Run local linear regressions using the bin frequencies ($N_j$) as the outcome variable and bin midpoints ($x_j$) as the covariate. This is done separately for data to the left and to the right of the cutoff $c$.
+%			% Y_bin = N_j (frequency counts)
+%			% X_bin = x_j (bin midpoints)
+%			\vspace{0.2cm}
+%			\item[4.] \textbf{Test Statistic ($\theta$)}: The test statistic is the estimated log difference in the heights of the (smoothed) density at the cutoff. This is derived from the difference in the intercepts of the two local linear regressions at $c$.
+%			% theta = log(f_R(c)) - log(f_L(c))
+%			\vspace{0.2cm}
+%			\item[5.] \textbf{Inference}: A statistically significant $\theta \neq 0$ provides evidence of a discontinuity in the density, suggesting potential manipulation of the assignment variable.
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Test Internal Validity of RDD}{Examine Density of the assignment variable}
+	
+	%\textbf{2. Examine ``Discontinuity" in Density of the assignment variable}
+	
+	\begin{itemize}
+		\vspace{0.2cm}	
+		\item A formal test is provided by McCrary (2008)
+		\vspace{0.2cm}		
+		\begin{itemize}
+			\item[1] Partition the assignment variable into bins and calculate frequencies (number of observations) in each bins
+			\vspace{0.2cm}
+			\item[2] Calculate frequencies (number of observations) in each bin	 
+			\vspace{0.2cm}
+			\item[3] Ensure that no bin overlaps the cutoff
+			\vspace{0.2cm}
+			\item[4] \textbf{Run two local linear regressions}, one to the right and one to the left of the cutoff
+			\vspace{0.2cm}
+			\item[5] In these regressions,  the bin midpoints
+			are the regressors and \textbf{number of observations is outcome}
+			\vspace{0.2cm}
+			\item[6] Test whether log difference of the intercepts of the two regressions
+			is statistically different from zero	
+			
+			
+		\end{itemize}
+		
+		%\item A discontinuity in the density suggests that there is some manipulation of R around the threshold going on
+		% \vspace{0.2cm}	
+		%\item In the first step you partition the assignment variable into bins and calculate frequencies (number of observations) in the bins
+		% \vspace{0.2cm}	
+		%\item In the second step you treat those frequency counts as dependent variable in a local linear regression as before
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{McCrary Test}{}
+	
+	\includegraphics[width=1.0\textwidth]{figure/RD_density_f3.jpg}
+	
+	
+\end{frame}
+
+
+\title[]  
+{STATA Example}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{Overview}
+	David S. Lee, Enrico Moretti, and Matthew J. Butler (2004) ``\textbf{Do Voters Affect or Elect Policies? Evidence from the U.S. House}" QJE
+	\vspace{0.2cm}
+	\begin{itemize}
+		
+		\item They test two different theories of the role of elections in policy formation
+		\vspace{0.2cm}
+			\begin{itemize}
+		\item[1] Voters can affect candidates' policy choices: competition for votes induces politicians to
+		move toward the center
+		\vspace{0.2cm}
+		\item[2] Voters merely elect policies: politicians cannot make credible promises to moderate their policies
+		\vspace{0.2cm}
+	%	\item Elections are merely a means to decide which one of two opposing policy views will be implemented
+			\end{itemize}
+	%			\vspace{0.2cm}
+		\item We will use a part of their paper to implement sharp RDD using STATA
+		\vspace{0.2cm}
+		\item Examine the the effect of \textbf{Democratic membership} on \textbf{congressman's voting behavior} 
+		
+		
+		%\item Do candidates who are elected in close elections tend to moderate their congressional voting? 	
+		%\vspace{0.2cm}
+		%\item Or they just follow their political party	 
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{Identification Strategy}
+	\begin{itemize}
+		\item This study uses a Sharp RDD to test whether voters primarily ``affect policies'' or ``elect policies.''
+		\vspace{0.2cm}
+		\item The strategy compares outcomes in districts where the Democrat candidate barely won (e.g., 50.5\% of the vote) with districts where the Democrat candidate barely lost (e.g., 49.5\% of the vote).
+		\vspace{0.2cm}
+		\item \textbf{Key Idea}: 
+			\begin{itemize}
+		\item In such extremely close elections, the winner is determined by factors that are \textit{as if random} right around the 50\% vote share cutoff
+			\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{Identification Strategy}
+	\begin{itemize}
+		\item \textbf{RDD Core Logic}: 
+				\vspace{0.3cm} % Adjust spacing as needed
+			\begin{itemize}
+		\item ``As-if random'' assignment near the cutoff means districts where Democrats \textbf{barely won} vs. \textbf{barely lost} should, on average, have similar underlying characteristics (e.g., voter preferences).
+			\end{itemize}
+		\vspace{0.3cm} % Adjust spacing as needed
+		\item Any systematic differences in the voting behavior of representatives elected from these comparable districts can be primarily attributed to: 
+		\vspace{0.3cm} % Adjust spacing as needed
+		\begin{itemize}
+		\item The \textbf{effect of the winning candidate's party affiliation}.
+		\vspace{0.3cm}
+			\end{itemize}
+		\item This helps to clarify the ``affect policies'' vs. ``elect policies'' debate.
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{Identification Strategy}
+	
+	\begin{equation*}
+	\begin{aligned}
+	Y_i&=\alpha+\rho D_i+\mathrm{f}(A_i)+\eta_i \\ 
+	D_i&=\left\lbrace
+	\begin{array}{l}
+	D_i=1\quad \text{if $A_i\geq c$}\\
+	D_i=0\quad \text{if $A_i<c$}
+	\end{array}\right.
+	\end{aligned}
+	\end{equation*}
+	
+	
+	\begin{itemize}
+		\item $Y_{i}$ (outcome): a liberal voting score from the Americans for Democratic Action (ADA)
+		\vspace{0.2cm}
+		\item $A_{i}$ (assignment variable): Democratic vote share
+		\vspace{0.2cm}
+		\item $D_{i}$ (treatment variable): If $A_{i}>0.5$ then
+		Democratic candidate is elected
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{STATA Implementation}
+	\begin{itemize}
+		\item See RDD-LMB-data.do
+		\vspace{0.2cm}
+		\item Use RDD-LMB-data.dta
+		\vspace{0.2cm}
+		\item Install the following ado files:
+		\begin{itemize}
+			\vspace{0.2cm}
+			\item binscatter.ado 
+			\item rdrobust.ado 
+			\item cmogram.ado
+			\item DCdensity.ado
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{Step 1: Graphical Analysis}
+	\begin{itemize}
+		\item Plot \textbf{outcome} (ADA score) by \textbf{assignment variable} (Democrat vote share)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item This is the standard graph showing the discontinuity in the outcome
+			variable
+			\vspace{0.2cm}
+			\item Construct bins and average the outcome within bins on both
+			sides of the cutoff 
+			\vspace{0.2cm}
+			\item You may also want to plot a relatively flexible regression line
+			on top of the bin means
+			\vspace{0.2cm}
+			\item Inspect whether there is a discontinuity at cutoff (0.5)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{STATA Command: binscatter}
+	\begin{itemize}
+		\item Syntax:
+\begin{lstlisting}
+binscatter varlist [if] [in] [weight] [, options]
+\end{lstlisting}
+		
+		\item Example:
+\begin{lstlisting}
+binscatter score demvoteshare if demvoteshare>=0.2 & demvoteshare<=0.8, n(100) rd(0.5) linetype(qfit) 
+graph export f1.png, replace
+\end{lstlisting}
+		
+		\vspace{0.2cm}
+		\item  \textbf{varlist}: the list of outcome and assignment variable
+		\vspace{0.2cm}
+		\item \textbf{n()}: number of equal-sized bins to be created
+		\vspace{0.2cm}
+		\item \textbf{rd()}: the cutoff in the assignment variable
+		\vspace{0.2cm}
+		\item \textbf{linetype(linetype)}: type of fit line
+		\vspace{0.2cm}
+		\item \textbf{graph export}: save your graph
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Outcome by assignment variable}{ADA score by Democrat vote share}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f2.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Step 1: Graphical Analysis}
+	\begin{itemize}
+		\item Construct a similar graph but using a \textbf{covariate} as the ``outcome"
+		\vspace{0.2cm}
+		\item There should be no jump in other covariates
+		\vspace{0.2cm}
+		\item If the covariates would jump at the discontinuity one would
+		doubt the continuity assumption
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]{STATA Command: binscatter}
+	\begin{itemize}
+		\item Example:
+\begin{lstlisting}
+binscatter ivy_leg demvoteshare if demvoteshare>=0.2 & demvoteshare<=0.8, n(100) rd(0.5) linetype(qfit) 
+graph export f3.png, replace
+\end{lstlisting}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Covariates by assignment variable}{Ivy league graduate by Democrat vote share}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f3.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Covariates by assignment variable}{Presidential vote share by Democrat vote share}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f4.png}
+	
+	
+\end{frame}
+
+
+\begin{frame}{Covariates by assignment variable}{High school ratio by Democrat vote share}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f5.png}
+	
+	
+\end{frame}
+
+
+\begin{frame}{Covariates by assignment variable}{African American ratio by Democrat vote share}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f6.png}
+	
+	
+\end{frame}
+
+
+\begin{frame}{Step 2: Test Sorting Behavior}
+	\begin{itemize}
+		\item Plot the \textbf{number of observations} in each bin of assignment variable
+		\vspace{0.2cm}
+		\item This graph can investigate whether there is a discontinuity
+		in the \textbf{distribution of the assignment variable} at the threshold
+		\vspace{0.2cm}
+		\item If it is the case, this would imply people can manipulate the assignment
+		variable around the threshold
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{STATA Command: rddensity}
+	\begin{itemize}
+		\item Syntax:
+\begin{lstlisting}
+rddensity runvar [if] [in] [, options]
+\end{lstlisting}
+		
+		\item Example:
+\begin{lstlisting}
+rddensity demvoteshare, c(0.5) all plot 
+graph export f7.png, replace
+\end{lstlisting}
+		
+		\vspace{0.2cm}
+		\item  \textbf{runvar}: assignment variable
+		\vspace{0.2cm}
+		\item \textbf{c()}: the cutoff in the assignment variable
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Test Sorting Behavior}{}
+	
+	\includegraphics[width=0.9\textwidth]{figure/f7.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Step 3: Preparation for Estimation}
+	\begin{itemize}
+		\item Generate treatment variable $D_{i}$
+\begin{lstlisting}
+gen democrat = demvoteshare>=0.5
+\end{lstlisting}
+		
+		\item Generate some Polynomials (recenter to cutoff 0.5)
+\begin{lstlisting}
+gen x_c = demvoteshare - 0.5
+gen x2_c = x_c^2
+\end{lstlisting}
+		
+		
+		\item Generate some Polynomials interacted with $D_{i}$
+\begin{lstlisting}
+gen d_x_c = democrat*x_c 
+gen d_x2_c = democrat*x2_c 
+\end{lstlisting}
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]{Step 4: Estimation}
+	\begin{itemize}
+\item Parametric Approach using all available data
+\begin{lstlisting}
+reg score democrat x_c-x2_c d_x_c-d_x2_c,cl(id2)
+\end{lstlisting}
+		
+		\item Nonparametric Approach using sample around cutoff (local linear regression)
+		\vspace{0.2cm}
+		%\begin{lstlisting}
+		%reg score democrat x_c d_x_c if (demvoteshare>.45 & demvoteshare<.55),cl(id2)
+		%\end{lstlisting}
+		
+		
+\item use ``rdrobust"
+\begin{lstlisting}
+rdrobust score demvoteshare, c(0.5) h(0.05) kernel(tri)
+rdrobust score demvoteshare, c(0.5) bwselect(mserd)
+\end{lstlisting}
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Step 5: Robustness Checks}
+	\begin{itemize}
+
+			\item Try different bandwidth values
+					\vspace{0.2cm}
+			\item Compare results across different polynomial orders
+					\vspace{0.2cm}
+			\item Check sensitivity to kernel choices
+		\end{itemize}
+
+\end{frame}
+
+
+
+
+\title[]  
+{R Example}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Lee, Moretti, and Butler (2004)}{R Implementation}
+	\begin{itemize}
+		\item Install and load required R packages:
+		\begin{itemize}
+			\item rdrobust
+			\item haven (for reading Stata data)
+			\item rdd
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Use RDD-LMB-data.dta
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Package Installation and Data Loading}
+	\begin{itemize}
+		\item Install and load packages:
+\begin{lstlisting}
+install.packages('rdrobust')
+install.packages('haven')
+install.packages('rdd')
+library(rdrobust)
+library(haven)
+library(rdd)
+\end{lstlisting}
+		
+		\item Load data:
+\begin{lstlisting}
+# Read Stata data file
+RDD_LMB_data <- read_dta("RDD-LMB-data.dta")
+summary(RDD_LMB_data)
+\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Step 1: Graphical Analysis}
+	\begin{itemize}
+		\item Plot outcome variable (ADA score):
+\begin{lstlisting}
+rdplot(y = RDD_LMB_data$score, 
+x = RDD_LMB_data$demvoteshare, 
+binselect = "es",
+ci = 95, 
+c = 0.5,
+p = 1,
+h = 0.5, 
+title = "RD Plot: U.S. Senate Election Data")
+\end{lstlisting}
+		
+		\item Key parameters:
+		\begin{itemize}
+			\item \textbf{binselect}: bin selection method
+			\item \textbf{ci}: confidence interval level
+			\item \textbf{c}: cutoff point
+			\item \textbf{p}: order of polynomial
+			\item \textbf{h}: bandwidth
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Step 2: Testing for Sorting Behavior}
+	\begin{itemize}
+		\item Test for manipulation of running variable:
+\begin{lstlisting}
+DC_test <- DCdensity(RDD_LMB_data$demvoteshare, 0.5)
+summary(DC_test)
+\end{lstlisting}
+		
+		\item \textbf{DCdensity}: Implements McCrary (2008) density test
+		\item \textbf{0.5}: Specifies the cutoff point
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Step 3: Data Preparation for Estimation}
+	\begin{itemize}
+		\item Generate treatment and polynomial variables:
+\begin{lstlisting}
+# Create treatment indicator
+RDD_LMB_data$democrat[RDD_LMB_data$demvoteshare >= 0.5] <- 1
+RDD_LMB_data$democrat[RDD_LMB_data$demvoteshare < 0.5] <- 0
+
+# Center running variable
+RDD_LMB_data$x_c <- RDD_LMB_data$demvoteshare - 0.5
+
+# Generate polynomials
+RDD_LMB_data$x2_c <- RDD_LMB_data$x_c^2
+RDD_LMB_data$d_x_c <- RDD_LMB_data$democrat * RDD_LMB_data$x_c
+RDD_LMB_data$d_x2_c <- RDD_LMB_data$democrat * RDD_LMB_data$x2_c
+\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Step 4: RDD Estimation}
+	\begin{itemize}
+		\item Parametric approach using all data:
+\begin{lstlisting}
+# Linear model with quadratic terms
+rdd_lm <- lm(score ~ democrat + x_c + x2_c + 
+d_x_c + d_x2_c, data = RDD_LMB_data)
+summary(rdd_lm)
+\end{lstlisting}
+		
+		\item Nonparametric approach using rdrobust:
+\begin{lstlisting}
+# Default bandwidth selection
+rdd_robust <- rdrobust(y = RDD_LMB_data$score, 
+x = RDD_LMB_data$x_c)
+summary(rdd_robust)
+
+# Specific bandwidth
+rdd_robust_h <- rdrobust(y = RDD_LMB_data$score, 
+x = RDD_LMB_data$x_c,
+h = 0.05)
+summary(rdd_robust_h)
+\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Extension: Fuzzy RDD}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Fuzzy RDD}{Overview}
+	\begin{itemize}
+		
+		\begin{block}{Fuzzy RDD}
+			\begin{equation*}
+				\lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c+\varepsilon] - \lim_{\varepsilon\rightarrow 0}\Pr[D_i=1|A_i=c-\varepsilon] \neq 0
+			\end{equation*}
+		\end{block}
+		
+		
+		\vspace{0.2cm}
+		\item The probability of getting the treatment jumps discontinuously at the cutoff 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Some individuals above cutoff do NOT get treatment and some individuals below cutoff do receive treatment
+		\end{itemize}
+	\end{itemize}
+	
+	
+	%\begin{itemize}		
+	%	\item The probability of being admitted to elite university may jump at a certain test score 
+	% \vspace{0.2cm}
+	%	\item Students still can decide not enroll in that school
+	%\end{itemize}
+	
+	
+\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Treatment Probability and assignment variable}{Fuzzy RDD}
+	\begin{figure}
+		\begin{tikzpicture}[comment/.style={rectangle, text centered}]
+			\centering
+			\draw[very thick,->] (0,0) -- (6,0) node[anchor=north west] {A};
+			\draw[very thick,->] (0,0) -- (0,4.2) node[anchor=south east] {};
+			
+			\draw[very thick, blue] (3,4.2) -- (3,0) node[anchor=south, yshift=-0.7cm](3_0) {cutoff};
+			\draw[very thick, blue] (0,0.7) -- (3,0.7)   node[anchor=south, xshift=-1.2cm] {$\Pr[D_i=1]=0.15$};
+			\draw[very thick, blue] (3,3.3) -- (6,3.3)   node[anchor=north, xshift=-1.2cm] {$\Pr[D_i=1]=0.8$};
+			
+			\draw (0,0) -- (0,0) node[anchor=east](0_0) {$0$};
+			\draw (0,4) -- (0,4) node[anchor=east] {$1$};
+			
+			\node [comment, above of = 3_0, yshift=4.5cm] {Fuzzy Regression Discontinuity};
+			\node [comment, left of  = 0_0, yshift=2.3cm, xshift=-0.5cm] {Probability of};
+			\node [comment, left of  = 0_0, yshift=1.9cm, xshift=-0.5cm] {receiving treatment};
+		\end{tikzpicture}
+	\end{figure}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\title[]  
+{Fuzzy RDD: Identification}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}
+	\begin{itemize}
+		
+		\item \textcolor{blue}{Treatment Eligibility}
+		\begin{align*}
+			Z_{i}=\left\lbrace
+			\begin{array}{l}
+				1\quad \text{if $A_i\geq c$, eligible for a treatment}\\
+				0\quad \text{if $A_i< c$, not eligible for a treatment}
+			\end{array}\right.
+		\end{align*}
+		\begin{itemize}
+			%\item $Z_{i}=1$: those who get treatment eligibility (above cutoff)	
+			% \vspace{0.2cm}
+			%\item $Z_{i}=0$: those who do not get treatment eligibility (below cutoff)	
+			% \vspace{0.2cm}
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}
+	\begin{itemize}
+		
+		\item \textcolor{blue}{Potential Treatments}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $\mathrm{D}^{z}_{i}$: treatment status given the value of $Z$
+			\vspace{0.2cm}
+			\item $\mathrm{D}^{1}_{i}$: treatment status if eligible for a treatment (above cutoff $c$)
+			\vspace{0.2cm}
+			
+			\begin{align*}
+				\mathrm{D}^{1}_{i}=\left\lbrace
+				\begin{array}{l}
+					1\quad \text{if getting a treatment}\\
+					0\quad \text{if not getting a treatment}
+				\end{array}\right.
+			\end{align*}		
+			
+			
+			\item $\mathrm{D}^{0}_{i}$: treatment status if not eligible for a treatment (below cutoff $c$)
+			
+			\begin{align*}
+				\mathrm{D}^{0}_{i}=\left\lbrace
+				\begin{array}{l}
+					1\quad \text{if getting a treatment}\\
+					0\quad \text{if not getting a treatment}
+				\end{array}\right.
+			\end{align*}		
+			
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Potential Outcomes Framework}
+	\begin{itemize}
+		
+		\item \textcolor{blue}{Observed Treatment}
+		\begin{align*}
+			D_{i}=\left\lbrace
+			\begin{array}{l}
+				\mathrm{D}^{1}_{i}\quad \text{if $Z_{i}=1, A_i\geq c$} \\
+				\mathrm{D}^{0}_{i}\quad \text{if $Z_{i}=0, A_i< c$}
+			\end{array}\right
+		\end{align*}
+		\item or, in a more compact notation: 
+		$\mathrm{D}_{i}=Z_{i}\mathrm{D}^{1}_{i}+(1-Z_{i})\mathrm{D}^{0}_{i} $
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Potential Outcomes Framework}
+	\begin{itemize}
+		
+		\item In sharp RDD, the \textbf{eligible for a treatment $Z_{i}$} is the same as \textbf{getting a treatment $D_{i}$} 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $Z_{i}=D_{i}$
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item In fuzzy RDD, the \textbf{eligible for a treatment $Z_{i}$} does NOT represent the \textbf{getting a treatment $D_{i}$} 
+		
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $Z_{i}\neq D_{i}$
+		\end{itemize}
+		
+		
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+%\begin{frame}{Potential Outcomes Framework}
+%	\begin{itemize}
+%		\item The variation in getting a treatment $D_{i}$ (enroll in NCCU) was not entirely from the treatment eligibility $Z_{i}$ (passing test score cutoff) but also from individual choice
+%		\vspace{0.2cm}
+%		\item Thus, $\mathrm{D}^{1}_{i} = 1$ or $\mathrm{D}^{1}_{i}=0$
+%		\vspace{0.2cm}
+%		\begin{itemize}
+%			\item Students whose test score is above threshold can enroll in NCCU or not enroll in NCCU
+%		\end{itemize}
+%		\vspace{0.2cm}
+%		\item Similarly, $\mathrm{D}^{0}_{i} = 1$ or $\mathrm{D}^{0}_{i}=0$
+%		\vspace{0.2cm}
+%		\begin{itemize}
+%			\item Students whose test score is below threshold can enroll in NCCU or not enroll in NCCU
+%		\end{itemize}
+%		
+%	\end{itemize}
+%\end{frame}
+
+
+
+
+
+
+
+
+
+\begin{frame}{Use Passing Cutoff as an IV}{}
+	\begin{itemize}
+		
+		\item The discontinuity in outcome is actually the \textbf{average causal effect} of \textbf{treatment eligibility} $Z_{i}=1(A_i\geq c)$ at cutoff $c$
+		
+		\begin{equation}
+			\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c-\varepsilon]	
+		\end{equation}
+		
+		
+		\item To recover the causal effect of \textbf{receiving treatment} $D_{i}$
+		\vspace{0.2cm}
+		\item Divide (2) by the jump in the treatment probability at cutoff
+		
+		\begin{equation*}
+			\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c-\varepsilon]
+		\end{equation*}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Fuzzy RDD is IV}{}
+	\begin{itemize}
+		
+		\item The the average causal effect of \textbf{receiving treatment} defined in fuzzy RDD :
+		
+		\begin{equation*}
+			\begin{aligned}
+				\alpha_{FRD} &=\dfrac{\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c-\varepsilon]}{	\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c-\varepsilon]} 
+			\end{aligned}
+		\end{equation*} 
+		
+		
+		\item This is a \textbf{Wald estimate} at cutoff $c$
+		\vspace{0.2cm}
+		\item So we can consider fuzzy RDD as an IV estimate
+		\vspace{0.2cm}
+		\item Use treatment eligibility $Z_{i}=1(A_i\geq c)$ as an instrument for treatment received $D_{i}$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use an indicator for the test score above threshold as an instrument for attending NCCU
+		\end{itemize}	
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Fuzzy RDD is IV}{Assumptions}
+	\begin{itemize}
+		
+		\item \textbf{First-Stage Relationship}: $Z_{i}=1(A_i\geq c)$ affects treatment probability
+		
+		\vspace{0.2cm}
+		\item \textbf{Local Independent Assumption}: In a neighborhood of cutoff $c$
+		
+		\begin{equation*}
+			(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i}, \mathrm{D}^{1}_{i},\mathrm{D}^{0}_{i})\indep Z_{i}
+		\end{equation*}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item In a neighborhood of cutoff $c$, the assignment to treatment is random		
+		\end{itemize}		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Fuzzy RDD is IV}{Assumptions}
+	\begin{itemize}
+		
+		
+		\item \textbf{Exclusion Restriction}: $Z_{i}=1(A_i\geq c)$ affects outcome $Y_{i}$ only through changing treatment status $D_{i}$
+		\vspace{0.2cm}
+		\item \textbf{Monotonicity Assumption}: $\mathrm{D}^{1}_{i} \geq \mathrm{D}^{0}_{i}$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item No one is discouraged from taking the treatment by crossing
+			the threshold
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Fuzzy RDD and Compliers}
+	\begin{itemize}
+		
+		\item We can define four types of individuals based on whether they fellow the treatment assignment:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\vspace{0.3cm}
+			\item \textbf{Compliers}: $\mathrm{D}^{1}_{i}>\mathrm{D}^{0}_{i}$ ($\mathrm{D}^{0}_{i}=0$ and $\mathrm{D}^{1}_{i}=1$)
+			\begin{itemize}
+				\item David's test score is above NCCU cutoff and enrolled in NCCU 
+				\vspace{0.2cm}
+				\item David's test score is below NCCU cutoff and did not enroll in NCCU 
+			\end{itemize}
+			\item \textbf{Always-takers}: $\mathrm{D}^{1}_{i}=\mathrm{D}^{0}_{i}=1$
+			\begin{itemize}
+				\item John always can enroll in NCCU (whether or not his test score is above NCCU cutoff)
+				\vspace{0.2cm}
+			\end{itemize}			
+			\item \textbf{Never-takers}: $\mathrm{D}^{1}_{i}=\mathrm{D}^{0}_{i}=0$
+			\begin{itemize}
+				\item Hank never enroll in NCCU (whether or not his test score is above NCCU cutoff)
+				\vspace{0.2cm}
+			\end{itemize}			
+			\item \textbf{Defiers}: $\mathrm{D}^{1}_{i}<\mathrm{D}^{0}_{i}$ ($\mathrm{D}^{0}_{i}=1$ and $\mathrm{D}^{1}_{i}=0$)
+			\begin{itemize}
+				\item Jimmy's test score is above NCCU cutoff and did NOT enroll in NCCU  
+				\vspace{0.2cm}
+				\item Jimmy's test score is below NCCU cutoff but enrolled in NCCU  
+			\end{itemize}
+			
+			
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Fuzzy RDD and Compliers}{}
+	
+	\includegraphics[width=1.0\textwidth]{figure/complier_f1.jpg}
+	
+	
+\end{frame}
+
+
+\begin{frame}{Fuzzy RDD and Compliers}{}
+	
+	\includegraphics[width=1.0\textwidth]{figure/complier_f2.jpg}
+	
+	
+\end{frame}
+
+\begin{frame}{Identification Results for Fuzzy RDD}
+	\begin{itemize}
+		
+		\begin{block}{Fuzzy RDD Identify LATE at cutoff c}
+			\begin{equation*}
+				\begin{aligned}
+					\alpha_{FRD} &=\dfrac{\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=x+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=x-\varepsilon]}{\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=x+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=x-\varepsilon]}  \\
+					&= \mathrm{E}[ \mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | \mathrm{D}^{1}_{i} > \mathrm{D}^{0}_{i}, A_{i}=c]
+				\end{aligned}
+			\end{equation*} 
+		\end{block}
+		
+		
+		\item The estimate in fuzzy RDD represents the \textbf{causal effect for compliers} (local average treatment effect, LATE) at cutoff $c$
+		\vspace{0.2cm}
+		\item \textbf{Compliers} are those who receive the
+		treatment when they follow treatment eligibility rule 
+		($A_i\geq c$), but would not otherwise receive it ($A_i< c$)	
+		%\item Lottery IV can identify the causal effect of military service on lifetime earnings for those who obey the lottery results (e.g. David and Tim)
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\title[]  
+{Fuzzy RDD: Estimation}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Fuzzy RDD}{Estimation}
+	\begin{itemize}
+		\item Fuzzy RDD implies the discontinuity in treatment assignment $Z_{i}$ can act as an instrument for actual receipt of treatment $D_{i}$
+		\vspace{0.2cm}
+		\item Therefore, we can estimate treatment effect in fuzzy RDD by using two-stage least squares (TSLS)
+		
+		\begin{equation*}
+			\begin{aligned}
+				D_i=\alpha_{1}+\rho_{1} Z_i+\mathrm{f}_{1}(A_i)+\upsilon_i   \\
+				Y_i=\alpha_{2}+\rho_{2} D_i+\mathrm{f}_{2}(A_i)+\eta_i
+			\end{aligned}
+		\end{equation*}
+		
+		\item As in the sharp RDD setting, we can use either parametric or nonparametric approaches to estimate treatment effect
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+\title[]  
+{Fuzzy RDD: Empirical Example}
+
+
+\author 
+{}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+\institute{}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+\begin{frame}{Bleemer \& Mehta (2022)}{Motivation}
+	
+	Zachary Bleemer and Aashish Mehta (2022) ``\textbf{Will Studying Economics Make You Rich? A Regression Discontinuity Analysis of the Returns to College Major}", American Economic Journal: Applied Economics
+	
+	\begin{itemize}
+				\vspace{0.2cm}
+		\item Examine the causal effect of majoring in economics on early-career earnings
+		
+		\vspace{0.2cm}
+		\item Key Research Questions:
+				\vspace{0.2cm}
+		\begin{itemize}
+			\item What is the wage return to studying economics?
+					\vspace{0.2cm}
+			\item How does access to economics major affect students' career paths?
+					\vspace{0.2cm}
+			\item Do observational wage differences reflect causal effects?
+		\end{itemize}
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Motivation}
+	\begin{itemize}
+		\item College graduates with economics degrees earn substantially higher wages
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Median wage of \$90,000 for economics majors vs. \$65,000 for other social sciences
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item However, estimating causal effects is challenging due to:
+					\vspace{0.2cm}
+		\begin{itemize}
+			\item Students' nonrandom selection into majors
+			\vspace{0.2cm}
+			\item Universities' admissions and grade requirements
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item Study exploits a GPA threshold policy at UC Santa Cruz that restricted access to the economics major
+		\begin{itemize}
+						\vspace{0.2cm}
+			\item Students needed 2.8 GPA in Economics 1 \& 2 to declare major
+		\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Identification Strategy}
+	\begin{itemize}
+		\item \textbf{Fuzzy RDD}: Exploits GPA threshold (2.8) in Economics 1 and 2 for major access
+		
+		\vspace{0.2cm}
+		\begin{equation*}
+			\begin{aligned}
+				\alpha_{FRD} &=\dfrac{\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[Y_{i}|A_{i}=c-\varepsilon]}{\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c+\varepsilon]-\lim_{\varepsilon\rightarrow 0}\mathrm{E}[D_{i}|A_{i}=c-\varepsilon]} 
+			\end{aligned}
+		\end{equation*} 
+		
+		\item Where:
+		\begin{itemize}
+					\vspace{0.2cm}
+			\item $Y_i$: Early-career wages (2017-2018)
+					\vspace{0.2cm}
+			\item $A_i$: Average GPA in Economics 1 \& 2
+					\vspace{0.2cm}
+			\item $D_i$: Economics major indicator
+					\vspace{0.2cm}
+			\item $c$: GPA threshold (2.8)
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Empirical Specification}
+	\begin{itemize}
+		\item \textbf{First Stage}:
+		\begin{equation*}
+			D_i = \alpha_1 + \rho_1 Z_i + \mathrm{f}_1(A_i) + \upsilon_i
+		\end{equation*}
+		
+		\item \textbf{Reduced Form}:
+		\begin{equation*}
+			Y_i = \alpha_2 + \rho_2 Z_i + \mathrm{f}_2(A_i) + \eta_i
+		\end{equation*}
+		
+		\item Where:
+		\begin{itemize}
+			\item $D_i$: Economics major indicator
+			\item $Z_i = 1(A_i \geq 2.8)$: Treatment eligibility
+			\item $A_i$: Average GPA in Economics 1 \& 2
+			\item $\mathrm{f}_1(.), \mathrm{f}_2(.)$: Linear functions of GPA
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item \textbf{Fuzzy RD Estimate}:
+		\begin{equation*}
+			\alpha_{FRD} = \frac{\rho_2}{\rho_1} = \mathrm{E}[ \mathrm{Y}^1_i - \mathrm{Y}^0_i | \mathrm{D}^1_i > \mathrm{D}^0_i, A_i=2.8]
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{First Stage}
+	
+	\includegraphics[width=0.60\textwidth]{figure/RD_econ_major_f1.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{First Stage}
+	\begin{itemize}
+		\item Students just above 2.8 GPA threshold were:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item 36 percentage points more likely to major in economics
+			\vspace{0.2cm}
+			\item Most would have otherwise majored in other social sciences
+			\vspace{0.2cm}
+		\end{itemize}
+		
+		%		\item Compliers are representative of economics majors:
+		%				\vspace{0.2cm}
+		%		\begin{itemize}
+			%			\item 36\% female (vs. 41\% all econ majors)
+			%					\vspace{0.2cm}
+			%			\item 41\% Asian (vs. 44\% all econ majors)
+			%					\vspace{0.2cm}
+			%			\item SAT scores at 41st percentile of econ majors
+			%		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Second Stage}
+	
+	\includegraphics[width=0.60\textwidth]{figure/RD_econ_major_f2.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Key Findings}
+	\begin{itemize}
+		\item \textbf{Large Returns}: Majoring in economics caused:
+							\vspace{0.2cm}
+		\begin{itemize}
+			\item 46\% increase in early-career wages (\$22,000)
+								\vspace{0.2cm}
+			\item Similar effects for male and female students
+								\vspace{0.2cm}
+			\item Possibly larger effects for URM students
+											\vspace{0.2cm}
+					\begin{itemize}
+			\item URM: Underrepresented Minority includes Black, Hispanic, and Native American students
+					\end{itemize}
+		\end{itemize}
+		
+		\vspace{0.2cm}
+%		\item \textbf{Important Implications}:
+%		\begin{itemize}
+%			\item Major choice is first-order determinant of returns to college
+%			\item Returns primarily through industry sorting
+%			\item University policies affecting major access have important mobility implications
+%			\item Wage differences by major approximate causal effects
+%		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Mechanisms: Educational Investment}
+	
+	\includegraphics[width=0.7\textwidth]{figure/RD_econ_major_f3.png}
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Mechanisms: Industry Effects}
+	
+	\includegraphics[width=0.7\textwidth]{figure/RD_econ_major_f4.png}
+	
+	
+\end{frame}
+
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Mechanisms}
+	\begin{itemize}
+		\item \textbf{Educational Investment}:
+										\vspace{0.2cm}
+		\begin{itemize}
+			\item No effect on graduation rates or graduate school enrollment
+											\vspace{0.2cm}
+			\item No change in study time or course-adjusted grades
+											\vspace{0.2cm}
+			\item 13 more economics courses, 9 fewer other social science courses
+											\vspace{0.2cm}
+		\end{itemize}
+		
+		\vspace{0.2cm}
+		\item \textbf{Industry Effects}:
+										\vspace{0.2cm}
+		\begin{itemize}
+			\item 52 pp more likely to prefer business/finance careers
+											\vspace{0.2cm}
+			\item 25 pp more likely to work in FIRE or accounting
+											\vspace{0.2cm}
+			\item About half (\$10,220) of wage effect explained by industry sorting
+		\end{itemize}
+		
+		\vspace{0.2cm}
+%		\item \textbf{Observational vs. Causal Effects}:
+%		\begin{itemize}
+%			\item OLS estimates slightly underestimate true returns
+%			\item Suggests selection bias is small in this context
+%		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Empirical Example: Bleemer \& Mehta (2022)}{Alternative Specifications}
+	\begin{itemize}
+	
+		\item \textbf{Robustness Checks}:
+		\begin{enumerate}
+			\item Quadratic running variable terms
+			\item Adding controls:
+			\begin{itemize}
+				\item Demographic variables
+				\item High school fixed effects
+			\end{itemize}
+			\item Narrower bandwidth (±0.5 GPA points)
+			%\item Honest RD with optimal bandwidth (Kolesár \& Rothe, 2018)
+		\end{enumerate}
+		
+		\vspace{0.2cm}
+		\item Results robust across all specifications
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Suggested Readings} % Changed title to reflect RDD
+	\begin{itemize} 
+		\item Chapter 4, \textit{Mastering 'Metrics: The Path from Cause to Effect}
+		\vspace{0.2cm}
+		\item Chapter 6, \textit{Mostly Harmless Econometrics: An Empiricist's Companion} % Added "An Empiricist's Companion" for completeness
+		\vspace{0.2cm}
+		\item Chapter 6, \textit{Causal Inference: The Mixtape}
+	\end{itemize}
+\end{frame}
+
+
+
+%\begin{frame}{Robustness Check}{Bandwidth Choice and Order of Polynomial}
+	
+%	\includegraphics[width=1.0\textwidth]{f8.jpg}
+	
+	
+%\end{frame}
+
+
+
+
+%
+%
+%
+%\title[]  
+%{Regression Discontinuity Design: My Own Researches}
+%
+%
+%\author 
+%{}
+%
+%%\institute{Institute of Economics, Academia Sinica  \\ Econ, NCCU}
+%%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+%\institute{}
+%
+%%\author 
+%%{楊子霆 \\ 中研院經濟所}
+%
+%%\institute 
+%%{中正大學國際經濟專題研討}
+%
+%
+%
+%
+%\date
+%{}
+%
+%
+%\begin{frame}{}
+%\titlepage
+%\end{frame}
+%
+%
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to National Health Insurance in Taiwan}
+%
+%Hsing-Wen Han, Hsien-Ming Lien and Tzu-Ting Yang (2017) ``\textbf{Patient Cost-Sharing and Health Care Utilization in Early Childhood: Evidence from a Regression Discontinuity Design}"  \textit{AEJ: Economic Policy}
+%
+%\begin{itemize}
+%\vspace{0.2cm}
+%\item The effect of copayment (部分負擔) on children's healthcare utilization and provider choice (院所選擇)
+%\vspace{0.2cm}
+%\item \textbf{Selection bias}: those who are charged higher copayment could be due to their bad health condition
+%
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to National Health Insurance in Taiwan}
+%
+%\begin{itemize}
+%\item \textbf{RDD solution}: In Taiwan, all children under 3 are completely free, both inpatient (住院) and outpatient (門/急診) services, from copayments (coinsurance) of Taiwanese national health insurance
+%\vspace{0.2cm}
+%\item Compare the healthcare utilization for children \textbf{just before and after their 3rd birthday}
+%\vspace{0.2cm}
+%\item Children's health conditions just before the 3rd birthday should be very similar to those just after the 3rd birthday
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}{Coapyment and Age}
+%
+%\includegraphics[width=1.0\textwidth]{copay_f1.jpg}
+%
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Number of Visit and Age}
+%
+%\includegraphics[width=0.9\textwidth]{copay_f2.jpg}
+%
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Number of Visit and Age by Different Healthcare Providers}
+%
+%\includegraphics[width=0.9\textwidth]{copay_f3.jpg}
+%
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to Unemployment Insurance in Taiwan}
+%
+%Po-Chun Huang and Tzu-Ting Yang (2021) ``\textbf{The Welfare Effects of Extending Unemployment Benefits: Evidence from Re-employment and Unemployment Transfers}" \textit{Journal of Public Economics}
+%
+%\begin{itemize}
+%\vspace{0.2cm}
+%\item The effect of extended unemployment insurance (UI) benefit (延長失業給付) on middle age worker's employment (unemployment duration)
+%\vspace{0.2cm}
+%\item Key parameter for evaluating optimal UI
+%\vspace{0.2cm}
+%\item \textbf{Selection bias}: those who are eligible for more UI benefits usually do not have good working potential
+%
+%
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to Unemployment Insurance in Taiwan}
+%
+%\begin{itemize}
+%\item \textbf{RDD solution}: In Taiwan, workers aged at least 45 when leaving their job involuntarily are eligible for 9
+%months of benefits, rather than 6 months for those under 45
+%\vspace{0.2cm}
+%\item Compare the unemployment duration for those \textbf{lose their job just before and after their 45th birthday}
+%\vspace{0.2cm}
+%\item These workers' employment potential should be quite similar around age cutoff
+%\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{Unemployment Duration and Age at Job Loss}
+%
+%\includegraphics[width=0.9\textwidth]{UI_f1.jpg}
+%
+%
+%\end{frame}
+%
+%
+%\begin{frame}{Re-employed Wage and Age at Job Loss}
+%
+%\includegraphics[width=0.9\textwidth]{UI_f2.jpg}
+%
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to Curriculum Reform in Taiwan}
+%
+%Wei-Lin Chen, Ming-Jen Lin and Tzu-Ting Yang (2023) ``\textbf{Curriculum and national identity: Evidence from the 1997 curriculum reform in Taiwan}" \textit{Journal of Development Economics}
+%
+%\begin{itemize}
+%\vspace{0.2cm}
+%\item The effect of curriculum for junior high school (中學教科書) on individuals' national identity (Taiwanese identity) 
+%\vspace{0.2cm}
+%\item This issue arises many debates in Taiwan
+%\vspace{0.2cm}
+%\item \textbf{Selection bias}: Government could change the content of textbook based on social trend
+%
+%
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}{My Own Researches}{Apply RDD to Curriculum Reform in Taiwan}
+%
+%\begin{itemize}
+%\item \textbf{RDD solution}: In 1997, Taiwanese government implement a new curriculum (認識台灣) for the students who attend junior high school after September 1997
+%\vspace{0.2cm}
+%\item That is, those who were born after September 1984 had to read new textbook, which focused on Taiwanese history, geography, and society.
+%\vspace{0.2cm}
+%\item Those who were born before September 1984 would read old textbook, which exclusively focused on China
+%\vspace{0.2cm}
+%\item Compare the national identity of those born right before and those born after September 1984 
+%
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Taiwanese Identity and School Entry Year}
+%
+%%\includegraphics[width=0.9\textwidth]{TW_f1.jpg}
+%\includegraphics[width=0.9\textwidth]{identity_decade_cohort.pdf}
+%
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Taiwanese Identity and Birth Quarter}
+%
+%\includegraphics[width=0.9\textwidth]{short_run_q_linear.pdf}
+%
+%
+%\end{frame}
+%
+%
+
+%\begin{frame}{Concluding Remark}{Checklist for RDD}
+%
+%\begin{itemize}
+%\item Graphing the raw data
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item Graphs for treatment and outcome by assignment variable 
+%\vspace{0.2cm}
+%\item Density of the assignment variable 
+%\vspace{0.2cm}
+%\end{itemize}
+%\item Estimating the regression
+%\begin{itemize}
+%\vspace{0.2cm}
+%\item Polynomial models
+%\vspace{0.2cm}
+%\item Local linear regressions and choice of bandwidth
+%\vspace{0.2cm}
+%\end{itemize}
+%\item Testing the validity of the RD design
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item Discontinuity in the density of assignment variable 
+%\vspace{0.2cm}
+%\item Testing whether covariates are balanced 
+%\vspace{0.2cm}
+%\end{itemize}
+%
+%\item Robustness check: bandwidth choice and order of polynomial 
+%
+%
+%\end{itemize}
+%\end{frame}
+
+
+
+
+
+
+
+%\begin{frame}{Concluding Remark}{Some References}
+%
+%\begin{itemize}
+%\item More recent methodological developments can be found in:
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item \textbf{Regression Discontinuity Designs: Theory and Applications}, Advances in Econometrics, volume 38
+%\vspace{0.2cm}
+%\item Edited by Matias D. Cattaneo and Juan Carlos Escanciano
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Concluding Remark}{Some References}
+%
+%\begin{itemize}
+%\item Review Papers
+%\vspace{0.2cm}
+%\begin{itemize}
+%\item Christopher Skovron and Rocio Titiunik (2015), \textbf{A Practical Guide to Regression Discontinuity Designs in Political Science}, Working Paper		
+%\vspace{0.2cm}	
+%\item David S. Lee and Thomas Lemieux (2014), \textbf{Regression Discontinuity Designs in Social Sciences}, The SAGE Handbook of Regression Analysis and Causal Inference
+%\vspace{0.2cm}
+%\item David S. Lee and Thomas Lemieux (2010), \textbf{Regression Discontinuity Designs in Economics}, Journal of Economic Literature
+%
+%
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+
+
+
+
+
+
+
+
+\end{document} 

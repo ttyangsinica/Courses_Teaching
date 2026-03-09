@@ -2271,112 +2271,79 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 \end{frame}
 
 
-\begin{frame}{Identification Results or PSM}
-	\begin{itemize}	
-		
-		\item Similar to identification results of matching estimator, the only difference is that we match treated and untreated units based on $p(X_{i})$ instead of a set of covariates $X_{i}$
+% -------------------------------------------------------
+% Identification Results: Road Map (PSM)
+% -------------------------------------------------------
+
+\begin{frame}{Identification Results for PSM}
+	\begin{itemize}
+		\item PSM follows the same three identification steps as matching, but conditions on $p(X_i)$ instead of $X_i$:
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item[\textbf{Step 1}] Show that ODO at given $p(X_i)$ equals \textbf{CATT} (selection bias = 0)
 			\vspace{0.2cm}
-		\item Remember CIA and propensity score theorem ensures:
-					\vspace{0.2cm}
-			\begin{itemize}	
-			\item  $\textcolor{red}{\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]} = \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]$
+			\item[\textbf{Step 2}] Under CIA, CATT = CATU = \textbf{CATE}
 			\vspace{0.2cm}
-			\item  $\textcolor{red}{\mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_i=0]} = \mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_i=1]$
+			\item[\textbf{Step 3}] Apply LIE to average CATE over $p(X)$ $\Rightarrow$ \textbf{ATT, ATU, ATE}
 		\end{itemize}
-		
 	\end{itemize}
 \end{frame}
 
 
-\begin{frame}{Identification Results for PSM}
+% -------------------------------------------------------
+% Steps 1 & 2
+% -------------------------------------------------------
+
+\begin{frame}{Identification Results for PSM}{Steps 1 \& 2: ODO = CATT = CATU = CATE}
 {\small
 \begin{equation*}
 \begin{aligned}
-& 
+&
 \underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given } p(X_{i})}  \\
 &=\mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_{i}=0] \\
 &= \mathrm{E}[\mathrm{Y}^{1}_{i}|p(X_{i}),D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]} \\
 &\quad + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0] \\
-&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} 
-+ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{Selection Bias}} \\
-&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}} \\
-&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}}
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}}
++ \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\scriptstyle\text{Selection Bias} = 0 \text{ by CIA}}  \\
+&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}} \quad \text{(by CIA)}
 = \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}}
 \end{aligned}
 \end{equation*}
 }
 \end{frame}
 
-\begin{frame}{Identification Results for PSM}{ATT}
+
+% -------------------------------------------------------
+% Step 3: ATT, ATU, ATE (concise)
+% -------------------------------------------------------
+
+\begin{frame}{Identification Results for PSM}{Step 3: ATT, ATU, and ATE}
 	\begin{itemize}
-		
-		\item Note that using a matching method, we can also identify CATT
-		\vspace{0.2cm}
+
+		\item \textbf{ATT}: average CATT over the \textbf{treatment group} distribution of $p(X)$:
 		\begin{equation*}
-			\begin{aligned}
-				\underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given } p(X_{i})} &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}}
-			\end{aligned}
-		\end{equation*}	
-		
-		\item Applying LIE, we can identify ATT by averaging all of the $p(X)$-specific effects for treatment group (CATT):
-		\vspace{0.2cm}
-		
-	\end{itemize}
-	\begin{equation*}
-		\begin{aligned}
-			\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1 |D_i=1]}_{\text{CATT}}] 
+			\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=1]}_{\text{CATT}}\Big| D_i=1\Big]
 			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=1]}_{\text{ATT}}
-		\end{aligned}
-	\end{equation*}	
-	
-\end{frame}
+		\end{equation*}
 
-\begin{frame}{Identification Results for PSM}{ATU}
-	\begin{itemize}
-		
-		\item Note that using a matching method, we can also identify CATU
-		\vspace{0.2cm}
+		\vspace{0.1cm}
+		\item \textbf{ATU}: average CATU over the \textbf{control group} distribution of $p(X)$:
 		\begin{equation*}
-			\begin{aligned}
-				\underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given } p(X_{i})} &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}}
-			\end{aligned}
-		\end{equation*}	
-		
-		\item Applying LIE, we can identify ATU by averaging all of the $p(X)$-specific effects for treatment group (CATU):
-		\vspace{0.2cm}
-		
-	\end{itemize}
-	\begin{equation*}
-		\begin{aligned}
-			\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0 |D_i=0]}_{\text{CATU}}] 
+			\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i}),D_i=0]}_{\text{CATU}}\Big| D_i=0\Big]
 			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|D_i=0]}_{\text{ATU}}
-		\end{aligned}
-	\end{equation*}	
-	
-\end{frame}
+		\end{equation*}
 
-\begin{frame}{Identification Results for PSM}{ATE}
-	\begin{itemize}
-		
-		\item Using a matching method, we can identify CATE
-		\vspace{0.2cm}
+		\vspace{0.1cm}
+		\item \textbf{ATE}: average CATE over the \textbf{full population} distribution of $p(X)$:
 		\begin{equation*}
-		\begin{aligned}
-	\underbrace{\mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|p(X_{i}),D_{i}=0]}_{\text{ODO at given } p(X_{i})} &= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}} 
-		\end{aligned}
-		\end{equation*}	
-		
-		\item Applying LIE, we can identify ATE by averaging all of the $p(X)$-specific effects (CATE):
-		\vspace{0.2cm}
-		
+			\mathrm{E}\Big[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}}\Big]
+			=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]}_{\text{ATE}}
+		\end{equation*}
+
+		\vspace{0.1cm}
+		\item \textbf{Summary}: Under CIA, PSM can identify ATT, ATU, and ATE by averaging $p(X)$-specific effects over the appropriate population
+
 	\end{itemize}
-	\begin{equation*}
-	\begin{aligned}
-	\mathrm{E}[\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|p(X_{i})]}_{\text{CATE}}] 
-	=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]}_{\text{ATE}}
-	\end{aligned}
-	\end{equation*}	
-	
 \end{frame}
 
 
@@ -3476,8 +3443,215 @@ summary(m.out_with_replace)
 \end{frame}
 
 
+% ================================================================
+% Coarsened Exact Matching (CEM)
+% ================================================================
+
+\title[]
+{Coarsened Exact Matching \\ (CEM)}
+
+\author
+{}
+
+\institute{}
+
+\date
+{}
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+\begin{frame}{Coarsened Exact Matching (CEM)}
+	\begin{itemize}
+		\item PSM reduces matching to one dimension (the propensity score), but requires a correctly specified model
+		\vspace{0.2cm}
+		\item \textbf{CEM} takes a more direct approach:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Coarsen} each covariate into discrete bins (e.g., age 20--29, 30--39, \ldots)
+			\vspace{0.2cm}
+			\item \textbf{Exact match} on the coarsened values: a treated and a control unit are matched only if they fall in the \emph{same bin for every covariate}
+			\vspace{0.2cm}
+			\item Units with no match in any covariate are \textbf{discarded}
+		\end{itemize}
+		\vspace{0.2cm}
+		\item No propensity score model needed --- covariate balance is \textbf{guaranteed by construction}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{How CEM Works}{Steps 1 \& 2: Coarsen and Match}
+	\begin{itemize}
+		\item[1] \textbf{Coarsen}: bin each continuous covariate $X_k$ into discrete intervals (automatic or user-defined cutpoints)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item E.g., age: $[20,30)$, $[30,40)$, $[40,50)$; earnings: $[0, 5\text{K})$, $[5\text{K}, 15\text{K})$, \ldots
+		\end{itemize}
+		\vspace{0.3cm}
+		\item[2] \textbf{Exact match} on coarsened values:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Two units are matched only if they fall in the \emph{same bin for every covariate}
+			\vspace{0.2cm}
+			\item Each such group of matched units is called a \textbf{stratum}: think of it as a subgroup of ``similar'' units who share the same coarsened covariate profile
+			\vspace{0.2cm}
+			\item Units with no match in any covariate are \textbf{discarded}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{How CEM Works}{Step 3: Estimate ATT}
+	\begin{itemize}
+		\item[3] For each treated unit $i$, impute the counterfactual using the \textbf{average outcome of control units in the same stratum} $s(i)$:
+	\begin{equation*}
+		\hat{\alpha}_{\text{ATT}} = \dfrac{1}{N_1}\sum_{D_i=1}\!\left(Y_i - \bar{Y}_{0,s(i)}\right)
+	\end{equation*}
+	\begin{itemize}
+		\item $N_1$: total number of treated units 
+        
+        %--- same as before; note $\textstyle\sum_s N_{1,s} = N_1$
+		\vspace{0.2cm}
+		\item $s(i)$: the stratum that treated unit $i$ belongs to
+		\vspace{0.2cm}
+		\item $\bar{Y}_{0,s(i)} = \dfrac{1}{N_{0,s(i)}}\!\displaystyle\sum_{D_j=0,\,j\in s(i)}\!Y_j$: average \emph{observed} outcome of control units ($D_j=0$) in $i$'s stratum
+		%\vspace{0.15cm}
+		%\item Compare with the matching estimator: $\hat{\alpha}_{\text{ATT}}=\frac{1}{N_1}\sum_{D_i=1}(Y_i - Y_{j(i)})$ --- the only difference is $Y_{j(i)}$ is replaced by $\bar{Y}_{0,s(i)}$
+        	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Advantages of CEM}
+	\begin{itemize}
+		\item \textbf{No model dependence}: no propensity score to estimate, so no misspecification risk
+		\vspace{0.2cm}
+		\item \textbf{Guaranteed balance}: treated and matched controls share the same covariate bins by construction
+		\vspace{0.2cm}
+		\item \textbf{Transparent}: the coarsening is explicit and easy to interpret
+		\vspace{0.2cm}
+		\item \textbf{Tradeoff}: 
+		\vspace{0.2cm}
+
+        	\begin{itemize}
+
+        \item Finer bins $\Rightarrow$ better balance but fewer matched units 
+        		\vspace{0.2cm}
+
+        \item Coarser bins $\Rightarrow$ more matches but looser balance
+        	\end{itemize}
+
+	\end{itemize}
+\end{frame}
+
+
+% ================================================================
+% CEM: STATA Example
+% ================================================================
+
+\title[]
+{CEM: STATA Example}
+
+\author
+{}
+
+\institute{}
+
+\date
+{}
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+\begin{frame}[fragile]{CEM: Stata Example}{Install Package and Run CEM}
+\begin{lstlisting}
+use $rawdata\lalonde.dta, replace
+
+* Install cem package
+ssc install cem
+
+* Automatic coarsening (Sturges' rule)
+cem age educ black hispan nodegree married re74 re75, ///
+    treatment(treat)
+\end{lstlisting}
+	\begin{itemize}
+		\vspace{0.2cm}
+		\item \textbf{cem varlist, treatment()}: coarsens each variable, exact-matches, and creates \texttt{cem\_weights} and \texttt{cem\_matched}
+		\vspace{0.2cm}
+		\item Without cutpoints, CEM uses automatic (Sturges' rule) coarsening
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{CEM: Stata Example}{Estimate ATT}
+\begin{lstlisting}
+* Estimate ATT on matched sample using CEM weights
+reg re78 treat [iweight=cem_weights] if cem_matched==1, r
+
+* Optional: manual coarsening (specify number of bins)
+cem age (#4) educ (#3) re74 (#5) re75 (#5) ///
+    black hispan nodegree married, treatment(treat)
+
+reg re78 treat [iweight=cem_weights] if cem_matched==1, r
+\end{lstlisting}
+	\begin{itemize}
+		\vspace{0.2cm}
+		\item \textbf{iweight=cem\_weights}: applies CEM weights to balance strata
+		\vspace{0.2cm}
+		\item \textbf{\#k}: specifies $k$ equal-width bins for that variable
+	\end{itemize}
+\end{frame}
+
+
+% ================================================================
+% CEM: R Example
+% ================================================================
+
+\title[]
+{CEM: R Example}
+
+\author
+{}
+
+\institute{}
+
+\date
+{}
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+\begin{frame}[fragile]{CEM: R Example}{Run CEM and Estimate ATT}
+\begin{lstlisting}
+install.packages('cem')
+library(cem)
+
+# Run CEM with automatic coarsening
+m.cem <- cem(treatment = "treat",
+             data      = lalonde,
+             drop      = "re78")   # exclude outcome variable
+summary(m.cem)
+
+# Estimate ATT via weighted regression on matched sample
+est <- att(m.cem, re78 ~ treat, data = lalonde)
+summary(est)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{cem()}: coarsens covariates and creates strata; \texttt{drop} excludes the outcome
+		\vspace{0.1cm}
+		\item \textbf{att()}: estimates ATT using CEM weights
+	\end{itemize}
+\end{frame}
+
+
 \begin{frame}{Suggested Readings}
-	\begin{itemize} 
+	\begin{itemize}
 		\item Chapter 2, Mastering Metrics: The Path from Cause to Effect
 		\vspace{0.2cm}
 		\item Chapter 3, Mostly Harmless Econometrics
