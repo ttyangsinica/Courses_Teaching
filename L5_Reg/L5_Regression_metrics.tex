@@ -1,41 +1,46 @@
-  
-
-
-
 \documentclass[hyperref={pdfpagelabels=false}]{beamer}
-% By  using hyperref={pdfpagelabels=false} you get rid off:
-% Package hyperref Warning: Option `pdfpagelabels' is turned off
-% (hyperref)                because \thepage is undefined. 
-% Hyperref stopped early 
-%
-%\usepackage{framed}
-\usepackage{color}
-\definecolor{shadecolor}{rgb}{0.92,0.92,0.92}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
 \usepackage{listings}
 \usepackage{lmodern}
 \usepackage{fontspec}
 \usepackage{xeCJK}
-%\setCJKmainfont{標楷體}
-\setCJKsansfont{標楷體}
+\setCJKmainfont{Noto Sans CJK TC}
+%（可選）若你會用到無襯線中文或等寬中文，建議補上：
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
 \usepackage[english]{babel}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 
-
-
-\usepackage{listings}
-%\usepackage{fontspec}
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
 
 \usepackage{accsupp}% http://ctan.org/pkg/accsupp
 \newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
 
-
 \usepackage{tikz}
 \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{colortbl} 
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
 
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\nindep}{\not\!\perp\!\!\!\perp}
 
 \beamertemplatefootpagenumber
+
 
 \usepackage{listings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,84 +82,72 @@
 
 % langugae defination
 \lstdefinelanguage{Stata}{
-    % Left for users to add missing commands,
-    % with possibility of choosing different style.
-    morekeywords=,
-    % Popular add-on commands
-    morekeywords=[2]{cntrade, chinafin, 
-                     wbopendata, spmap,
-    },
-    % System commands
-    morekeywords=[3]{regress, summarize, 
-                     display,
-    },
-    % Keywords
-    morekeywords=[4]{forvalues, if, foreach, set},
-    % Built-in functions
-    morekeywords=[5]{rnormal, runiform},
-    morecomment=[l]{//},
-    % morecomment=[l]{*},  // `*` maybe used as multiply operator. So use `//` as line comment.
-    morecomment=[s]{/*}{*/},
-    % morecomment=[s]{,}{//},
-    % The following is used by macros, like `lags'.
-    morecomment=[n][keywordstyle9]{`}{'},
-    morestring=[b]",
-    sensitive=true,
+	% Left for users to add missing commands,
+	% with possibility of choosing different style.
+	morekeywords=,
+	% Popular add-on commands
+	morekeywords=[2]{cntrade, chinafin, 
+		wbopendata, spmap,
+	},
+	% System commands
+	morekeywords=[3]{regress, summarize, 
+		display,
+	},
+	% Keywords
+	morekeywords=[4]{forvalues, if, foreach, set},
+	% Built-in functions
+	morekeywords=[5]{rnormal, runiform},
+	morecomment=[l]{//},
+	% morecomment=[l]{*},  // `*` maybe used as multiply operator. So use `//` as line comment.
+	morecomment=[s]{/*}{*/},
+	% morecomment=[s]{,}{//},
+	% The following is used by macros, like `lags'.
+	morecomment=[n][keywordstyle9]{`}{'},
+	morestring=[b]",
+	sensitive=true,
 }
 
 \lstdefinestyle{numbers}{
-    numbers=left, 
-    stepnumber=1, 
-    numberstyle=\tiny\emptyaccsupp,
-    xleftmargin=2em,
+	numbers=left, 
+	stepnumber=1, 
+	numberstyle=\tiny\emptyaccsupp,
+	xleftmargin=2em,
 }
 
 \lstdefinestyle{nonumbers}{
-    numbers=none,
+	numbers=none,
 }
 
 \lstdefinestyle{stata-plain}{
-    % comment slanted and keywords bolded.
-    language=Stata,
-    basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,
-    %moredelim=**[is][\color{green}]{@}{@},
-    commentstyle=\color{red},
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
 }
 
 \lstdefinestyle{stata-editor}{
-    language=Stata,
-    % size of the fonts for the code
-    basicstyle=\setmonofont{Consolas}\footnotesize\ttfamily,  
-    % Color settings to match do-file editor style
-    % Commands that are not included in the defination
-    keywordstyle={\color{NavyBlue}},  
-    % Popular add-on commands
-    keywordstyle=[2]{\color{NavyBlue}},
-    % System commands
-    keywordstyle=[3]{\color{NavyBlue}},
-    % Keywords
-    keywordstyle=[4]{\color{NavyBlue}},
-    % Built-in functions like rnormal
-    keywordstyle=[5]{\color{Blue}},
-    % Used by macros, i.e. `lags'  
-    keywordstyle=[9]{\color{TealBlue}},
-    stringstyle=\color{Maroon},
-    commentstyle=\color{OliveGreen},
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,  
+	keywordstyle={\color{NavyBlue}},  
+	keywordstyle=[2]{\color{NavyBlue}},
+	keywordstyle=[3]{\color{NavyBlue}},
+	keywordstyle=[4]{\color{NavyBlue}},
+	keywordstyle=[5]{\color{Blue}},
+	keywordstyle=[9]{\color{TealBlue}},
+	stringstyle=\color{Maroon},
+	commentstyle=\color{OliveGreen},
 }
-
 
 \lstset{
-    language=Stata,
-    style=stata-plain,
-    % style=stata-editor,
-    style=numbers,
-    showstringspaces=false,
-    breaklines,
-    frame=single,
-    rulecolor=\color{black},
-    % To add missing commands
-    % morekeywords={xtreg, xtunitroot},
+	language=Stata,
+	style=stata-plain,
+	% style=stata-editor,
+	style=numbers,
+	showstringspaces=false,
+	breaklines,
+	frame=single,
+	% To add missing commands
+	% morekeywords={xtreg, xtunitroot},
 }
+
 
 
 
