@@ -275,4 +275,202 @@ claude
 \end{frame}
 
 
+% ------------------------------------------------------------------
+%  SLIDE 5: Free Alternative --- Gemini CLI
+% ------------------------------------------------------------------
+
+\begin{frame}[fragile]{Free Alternative: Google Gemini CLI}
+
+\begin{itemize}
+	\item \textbf{Gemini CLI} is Google's open-source AI coding agent for the terminal
+	\vspace{0.15cm}
+	\begin{itemize}
+		\item Reads and writes your project files, just like Claude Code
+		\vspace{0.1cm}
+		\item Powered by Gemini 3 Pro with a \textbf{1 million token} context window
+		\vspace{0.1cm}
+		\item \textbf{Free tier}: 60 requests/min, 1,000 requests/day --- just use a Google account
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{Installation} (Windows: PowerShell; Mac/Linux: Terminal)
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Step 1: Install Node.js (version 20 or higher): \url{https://nodejs.org}
+		\vspace{0.1cm}
+		\item Step 2: Install Gemini CLI globally:
+\begin{lstlisting}[style=nonumbers, basicstyle=\small\ttfamily, frame=single]
+npm install -g @google/gemini-cli
+\end{lstlisting}
+		\item Step 3: Navigate to your project folder and launch:
+\begin{lstlisting}[style=nonumbers, basicstyle=\small\ttfamily, frame=single]
+cd C:\your\project\folder
+gemini
+\end{lstlisting}
+		\item Step 4: First launch asks you to \textbf{Login with Google} --- select your account in the browser
+	\end{itemize}
+	\vspace{0.2cm}
+	\item After login, type your task in plain language and Gemini reads your files and edits them
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 6: Gemini Code Assist in VS Code
+% ------------------------------------------------------------------
+
+\begin{frame}{Using Gemini in VS Code: Gemini Code Assist}
+
+\begin{itemize}
+	\item \textbf{Gemini Code Assist} is the VS Code extension that embeds Gemini in your editor
+	\vspace{0.15cm}
+	\begin{itemize}
+		\item Chat with Gemini directly in the VS Code sidebar
+		\vspace{0.1cm}
+		\item \textbf{Agent mode}: give a task, Gemini proposes a plan and edits multiple files
+		\vspace{0.1cm}
+		\item Also free with a personal Google account
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{Installation steps}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Step 1: Open VS Code and go to the \textbf{Extensions} panel (Ctrl+Shift+X)
+		\vspace{0.1cm}
+		\item Step 2: Search for \textbf{``Gemini Code Assist''} and click Install
+		\vspace{0.1cm}
+		\item Step 3: Click the Gemini icon in the sidebar and \textbf{Sign in with Google}
+		\vspace{0.1cm}
+		\item Step 4: Open your project folder in VS Code, then start chatting or switch to \textbf{Agent mode}
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{Gemini CLI} and \textbf{Gemini Code Assist} share the same free quota ---\\
+	      both run on the same Google account; no extra sign-up needed
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 7: Setting Up VS Code for Stata
+% ------------------------------------------------------------------
+
+\begin{frame}[fragile]{Setting Up VS Code for Stata}
+
+\begin{itemize}
+	\item \textbf{Step 1: Install two extensions} (Ctrl+Shift+X to open Extensions panel)
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \textbf{Stata Enhanced} (by Kyle Barron) --- syntax highlighting for .do files
+		\vspace{0.1cm}
+		\item \textbf{stataRun} (by Yeaoh) --- sends code to your running Stata application
+	\end{itemize}
+	\vspace{0.25cm}
+	\item \textbf{Step 2: Configure stataRun} --- click the gear icon next to the extension
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Set \texttt{stataRun.whichApp} to match your version: \texttt{stataMP}, \texttt{stataSE}, etc.
+		\vspace{0.1cm}
+		\item On Windows, also verify the Stata installation path is correct
+	\end{itemize}
+	\vspace{0.25cm}
+	\item \textbf{Step 3: Open your project folder} in VS Code (File $\to$ Open Folder)
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Open a .do file --- it will now display with colour syntax
+		\vspace{0.1cm}
+		\item Make sure Stata is already running in the background
+	\end{itemize}
+	\vspace{0.25cm}
+	\item \textbf{Key shortcuts} (stataRun defaults):
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Ctrl+Shift+S \hspace{0.3cm} Run selected lines (or current line)
+		\vspace{0.05cm}
+		\item Ctrl+Shift+A \hspace{0.3cm} Run entire do-file
+		\vspace{0.05cm}
+		\item Ctrl+Shift+D \hspace{0.3cm} Run from current line to end
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 8: Setting Up VS Code for R
+% ------------------------------------------------------------------
+
+\begin{frame}[fragile]{Setting Up VS Code for R}
+
+\begin{itemize}
+	\item \textbf{Step 1: Install R} from \url{https://cran.r-project.org} if not already installed
+	\vspace{0.2cm}
+	\item \textbf{Step 2: Install two R packages} (run in R or RStudio):
+\begin{lstlisting}[style=nonumbers, basicstyle=\small\ttfamily, frame=single]
+install.packages("languageserver")  # autocomplete & diagnostics
+install.packages("httpgd")          # plot viewer inside VS Code
+\end{lstlisting}
+	\vspace{0.15cm}
+	\item \textbf{Step 3: Install the R extension in VS Code}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Ctrl+Shift+X $\to$ search \textbf{``R''} (by REditorSupport) $\to$ Install
+		\vspace{0.1cm}
+		\item If VS Code cannot find R automatically: go to extension settings $\to$ \texttt{R: Rpath} $\to$ paste the path to your R executable
+	\end{itemize}
+	\vspace{0.2cm}
+	\item \textbf{Step 4: Open an .R file and start coding}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Ctrl+Enter \hfill Run current line or selection
+		\vspace{0.05cm}
+		\item Ctrl+Shift+S \hfill Source (run) the entire file
+		\vspace{0.05cm}
+		\item Plots appear in the \textbf{Viewer} panel on the right (powered by httpgd)
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 9: Combining VS Code with Gemini and Claude
+% ------------------------------------------------------------------
+
+\begin{frame}{Combining VS Code with Gemini and Claude}
+
+\begin{itemize}
+	\item Once Stata and R are working in VS Code, add an AI assistant in the same window
+	\vspace{0.3cm}
+	\item \textbf{Option A: Gemini Code Assist} \hfill {\small (free)}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Extensions $\to$ search \textbf{``Gemini Code Assist''} $\to$ Install
+		\vspace{0.1cm}
+		\item Sign in with Google account in the sidebar $\to$ ready to use
+		\vspace{0.1cm}
+		\item In the chat panel: paste your error, ask Gemini to fix your .do or .R file
+		\vspace{0.1cm}
+		\item Switch to \textbf{Agent mode} to let Gemini read \& edit files autonomously
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{Option B: Claude Code} (terminal mode) \hfill {\small (Pro plan required)}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Open the \textbf{integrated terminal} in VS Code: Ctrl+` (backtick)
+		\vspace{0.1cm}
+		\item Navigate to your project folder and type \texttt{claude}
+		\vspace{0.1cm}
+		\item Claude reads all files in the folder --- ask it to write, fix, or explain your code
+		\vspace{0.1cm}
+		\item Edit the file in VS Code, run it with stataRun/R, all in the same window
+	\end{itemize}
+	\vspace{0.2cm}
+	\item Both tools can see your \textbf{.do files, .R scripts, and output logs}\\
+	      $\Rightarrow$ describe your research question and let AI draft the code for you
+\end{itemize}
+
+\end{frame}
+
+
 \end{document}
