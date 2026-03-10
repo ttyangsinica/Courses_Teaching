@@ -117,197 +117,197 @@ jobs:
           path: |
             L4_Matching/*.pdf
 
-      # ---- L5_Reg ----
-      - name: Compile L5_Reg PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L5_Reg
-          root_file: |
-            L5_Regression_data.tex
-            L5_Regression_labor.tex
-            L5_Regression_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L5_Reg ---- (temporarily disabled: tex not ready)
+      # - name: Compile L5_Reg PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L5_Reg
+      #     root_file: |
+      #       L5_Regression_data.tex
+      #       L5_Regression_labor.tex
+      #       L5_Regression_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L5_Reg)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L5_Reg
-          path: |
-            L5_Reg/*.pdf
+      # - name: Upload PDFs (L5_Reg)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L5_Reg
+      #     path: |
+      #       L5_Reg/*.pdf
 
-      # ---- L6_ML ----
-      - name: Compile L6_ML PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L6_ML
-          root_file: |
-            L6_ML_data.tex
-            L6_ML_labor.tex
-            L6_ML_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L6_ML ---- (temporarily disabled: tex not ready)
+      # - name: Compile L6_ML PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L6_ML
+      #     root_file: |
+      #       L6_ML_data.tex
+      #       L6_ML_labor.tex
+      #       L6_ML_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L6_ML)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L6_ML
-          path: |
-            L6_ML/*.pdf
+      # - name: Upload PDFs (L6_ML)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L6_ML
+      #     path: |
+      #       L6_ML/*.pdf
 
-      # ---- L7_FE ----
-      - name: Compile L7_FE PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L7_FE
-          root_file: |
-            L7_FixedEffect_data.tex
-            L7_FixedEffect_labor.tex
-            L7_FixedEffect_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L7_FE ---- (temporarily disabled: tex not ready)
+      # - name: Compile L7_FE PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L7_FE
+      #     root_file: |
+      #       L7_FixedEffect_data.tex
+      #       L7_FixedEffect_labor.tex
+      #       L7_FixedEffect_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L7_FE)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L7_FE
-          path: |
-            L7_FE/*.pdf
+      # - name: Upload PDFs (L7_FE)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L7_FE
+      #     path: |
+      #       L7_FE/*.pdf
 
-      # ---- L8_DID ----
-      - name: Compile L8_DID PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L8_DID
-          root_file: |
-            L8_DID_data.tex
-            L8_DID_labor.tex
-            L8_DID_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L8_DID ---- (temporarily disabled: tex not ready)
+      # - name: Compile L8_DID PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L8_DID
+      #     root_file: |
+      #       L8_DID_data.tex
+      #       L8_DID_labor.tex
+      #       L8_DID_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L8_DID)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L8_DID
-          path: |
-            L8_DID/*.pdf
+      # - name: Upload PDFs (L8_DID)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L8_DID
+      #     path: |
+      #       L8_DID/*.pdf
 
-      # ---- L9_SCM ----
-      - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L9_SCM
-          root_file: |
-            L9_SyntheticControl_data.tex
-            L9_SyntheticControl_labor.tex
-            L9_SyntheticControl_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L9_SCM ---- (temporarily disabled: tex not ready)
+      # - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L9_SCM
+      #     root_file: |
+      #       L9_SyntheticControl_data.tex
+      #       L9_SyntheticControl_labor.tex
+      #       L9_SyntheticControl_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L9_SCM)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L9_SCM
-          path: |
-            L9_SCM/*.pdf
+      # - name: Upload PDFs (L9_SCM)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L9_SCM
+      #     path: |
+      #       L9_SCM/*.pdf
 
-      # ---- L10_IV ----
-      - name: Compile L10_IV PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L10_IV
-          root_file: |
-            L10_IV_data.tex
-            L10_IV_labor.tex
-            L10_IV_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L10_IV ---- (temporarily disabled: tex not ready)
+      # - name: Compile L10_IV PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L10_IV
+      #     root_file: |
+      #       L10_IV_data.tex
+      #       L10_IV_labor.tex
+      #       L10_IV_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L10_IV)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L10_IV
-          path: |
-            L10_IV/*.pdf
+      # - name: Upload PDFs (L10_IV)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L10_IV
+      #     path: |
+      #       L10_IV/*.pdf
 
-      # ---- L11_SSIV ----
-      - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L11_SSIV
-          root_file: |
-            L11_ShiftShareIV_data.tex
-            L11_ShiftShareIV_labor.tex
-            L11_ShiftShareIV_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L11_SSIV ---- (temporarily disabled: tex not ready)
+      # - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L11_SSIV
+      #     root_file: |
+      #       L11_ShiftShareIV_data.tex
+      #       L11_ShiftShareIV_labor.tex
+      #       L11_ShiftShareIV_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L11_SSIV)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L11_SSIV
-          path: |
-            L11_SSIV/*.pdf
+      # - name: Upload PDFs (L11_SSIV)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L11_SSIV
+      #     path: |
+      #       L11_SSIV/*.pdf
 
-      # ---- L12_RDD ----
-      - name: Compile L12_RDD PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L12_RDD
-          root_file: |
-            L12_RDD_data.tex
-            L12_RDD_labor.tex
-            L12_RDD_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
+      # ---- L12_RDD ---- (temporarily disabled: tex not ready)
+      # - name: Compile L12_RDD PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: L12_RDD
+      #     root_file: |
+      #       L12_RDD_data.tex
+      #       L12_RDD_labor.tex
+      #       L12_RDD_metrics.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
 
-      - name: Upload PDFs (L12_RDD)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L12_RDD
-          path: |
-            L12_RDD/*.pdf
+      # - name: Upload PDFs (L12_RDD)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_L12_RDD
+      #     path: |
+      #       L12_RDD/*.pdf
 
       # ---- Logs (optional but useful) ----
       - name: Upload LaTeX logs (always)
