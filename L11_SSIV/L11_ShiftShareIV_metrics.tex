@@ -874,7 +874,6 @@ of imports from China per worker (measured in \$1,000) during period $t$ and $t-
 
 
 \begin{frame}[fragile]{STATA Command: ivregress}
-	\begin{itemize}
 \begin{lstlisting}
 ivregress 2sls y (x=z)  [aw=wei], cluster(czone) first
 
@@ -884,6 +883,7 @@ ivreghdfe y (x=z) [aw=wei], cluster(czone)
 
 ivreghdfe y (x=z) l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_outsource [aw=wei], cluster(czone)
 \end{lstlisting}
+	\begin{itemize}
 		
 		\vspace{0.2cm}
 		\item  \textbf{aw=wei}: total employment at initial period
@@ -928,7 +928,6 @@ ivreghdfe y (x=z) l_sh_popedu_c l_sh_popfborn l_sh_empl_f l_sh_routine33 l_task_
 
 
 \begin{frame}[fragile]{R Command: ivreg}
-	\begin{itemize}
 \begin{lstlisting}
 # Instrumental variables regression using ivreg
 model3 <- ivreg(y ~ x | z, data = location_level, weights = wei)
@@ -939,6 +938,7 @@ model4 <- ivreg(y ~ x + l_sh_popedu_c + l_sh_popfborn + l_sh_empl_f + l_sh_routi
 data = location_level, weights = wei)
 summary(model4, vcov = vcovCL, cluster = ~czone)
 \end{lstlisting}
+	\begin{itemize}
 		
 		\vspace{0.2cm}
 \item \textbf{z}: Shift-share instrument used for IV regression

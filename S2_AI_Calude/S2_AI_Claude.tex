@@ -1,0 +1,278 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+
+\usepackage{ragged2e}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+\lstdefinelanguage{Stata}{
+	morekeywords=,
+	morekeywords=[2]{cntrade, chinafin, wbopendata, spmap,},
+	morekeywords=[3]{regress, summarize, display,},
+	morekeywords=[4]{forvalues, if, foreach, set},
+	morekeywords=[5]{rnormal, runiform},
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morecomment=[n][keywordstyle9]{`}{'},
+	morestring=[b]",
+	sensitive=true,
+}
+
+\lstdefinestyle{numbers}{
+	numbers=left,
+	stepnumber=1,
+	numberstyle=\tiny\emptyaccsupp,
+	xleftmargin=2em,
+}
+
+\lstdefinestyle{nonumbers}{
+	numbers=none,
+}
+
+\lstdefinestyle{stata-plain}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
+}
+
+\lstdefinestyle{stata-editor}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle={\color{NavyBlue}},
+	keywordstyle=[2]{\color{NavyBlue}},
+	keywordstyle=[3]{\color{NavyBlue}},
+	keywordstyle=[4]{\color{NavyBlue}},
+	keywordstyle=[5]{\color{Blue}},
+	keywordstyle=[9]{\color{TealBlue}},
+	stringstyle=\color{Maroon},
+	commentstyle=\color{OliveGreen},
+}
+
+\lstset{
+	language=Stata,
+	style=stata-plain,
+	style=numbers,
+	showstringspaces=false,
+	breaklines,
+	frame=single,
+}
+
+
+\title[]
+{AI Tools for Empirical Research}
+
+\author
+{Prof. Tzu-Ting Yang \\ 楊子霆}
+
+\institute{Institute of Economics, Academia Sinica \\ 中央研究院經濟研究所}
+
+\date{\today}
+
+
+\usetheme{CambridgeUS}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+% ------------------------------------------------------------------
+%  TITLE PAGE
+% ------------------------------------------------------------------
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 1: Why Use AI Tools?
+% ------------------------------------------------------------------
+
+\begin{frame}{Why Use AI Tools in Empirical Research?}
+\begin{columns}[T]
+
+\begin{column}{0.47\textwidth}
+\textbf{\textcolor{red}{Traditional Workflow}}
+\vspace{0.2cm}
+\begin{itemize}
+	\item Manually read long codebook PDFs
+	\vspace{0.15cm}
+	\item Guess variable meanings from short names
+	\vspace{0.15cm}
+	\item Write data cleaning code from scratch
+	\vspace{0.15cm}
+	\item Debug cryptic error messages alone
+	\vspace{0.3cm}
+	\item[\textcolor{red}{$\Rightarrow$}] \textbf{\textcolor{red}{Time-consuming \& error-prone}}
+\end{itemize}
+\end{column}
+
+\begin{column}{0.47\textwidth}
+\textbf{\textcolor{teal}{With Claude Code}}
+\vspace{0.2cm}
+\begin{itemize}
+	\item Ask AI to summarize key variables
+	\vspace{0.15cm}
+	\item Generate variable labels \& descriptions
+	\vspace{0.15cm}
+	\item Auto-generate cleaning \& merging code
+	\vspace{0.15cm}
+	\item Debug errors with AI explanation
+	\vspace{0.3cm}
+	\item[\textcolor{teal}{$\Rightarrow$}] \textbf{\textcolor{teal}{Focus on research design}}
+\end{itemize}
+\end{column}
+
+\end{columns}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 2: What is Claude Code?
+% ------------------------------------------------------------------
+
+\begin{frame}{What is Claude Code?}
+
+\begin{itemize}
+	\item \textbf{Claude Code} is Anthropic's AI coding assistant
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item Reads and writes your actual project files (do-files, R scripts, datasets)
+		\vspace{0.15cm}
+		\item Understands your codebook, error messages, and Stata/R output
+		\vspace{0.15cm}
+		\item Generates, edits, and debugs code through a conversation
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{What it can do for empirical research:}
+	\vspace{0.15cm}
+	\begin{itemize}
+		\item Explain what each variable means from a codebook
+		\vspace{0.15cm}
+		\item Write Stata or R code for data cleaning, sample construction, and analysis
+		\vspace{0.15cm}
+		\item Translate a Stata do-file into R (or vice versa)
+		\vspace{0.15cm}
+		\item Explain what a command does and why an error occurred
+		\vspace{0.15cm}
+		\item Suggest how to construct variables for a specific research design
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 3: What You Need to Install
+% ------------------------------------------------------------------
+
+\begin{frame}{Getting Started: What to Install First}
+
+\begin{itemize}
+	\item The following tools are needed for \textbf{both} modes of Claude Code:
+	\vspace{0.3cm}
+	\item \textbf{Claude Desktop App}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \url{https://claude.ai/download}
+		\vspace{0.1cm}
+		\item Requires an Anthropic account (Pro plan to use Claude Code mode)
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{Git} --- version control; Claude Code uses it to track file changes
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \url{https://git-scm.com/downloads}
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{VS Code} --- recommended code editor
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \url{https://code.visualstudio.com}
+		\vspace{0.1cm}
+		\item Useful for viewing and editing your do-files and R scripts alongside Claude Code
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+% ------------------------------------------------------------------
+%  SLIDE 4: Two Ways to Use Claude Code
+% ------------------------------------------------------------------
+
+\begin{frame}[fragile]{Two Ways to Use Claude Code}
+
+\begin{itemize}
+	\item \textbf{Option 1: Desktop App} \hfill {\small (recommended for beginners)}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Open the Claude desktop app and switch to \textbf{Claude Code mode}
+		\vspace{0.1cm}
+		\item Graphical interface --- easier to get started
+		\vspace{0.1cm}
+		\item Can read and write your project files, just like the terminal version
+	\end{itemize}
+	\vspace{0.35cm}
+	\item \textbf{Option 2: Terminal} \hfill {\small (more flexible for advanced users)}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Run from the command line directly inside your project folder
+		\vspace{0.1cm}
+		\item On Windows: open \textbf{PowerShell}; on Mac/Linux: open \textbf{Terminal}
+		\vspace{0.1cm}
+		\item First install Node.js if not already present: \url{https://nodejs.org}
+		\vspace{0.1cm}
+		\item Then install Claude Code by typing:
+\begin{lstlisting}[style=nonumbers, basicstyle=\small\ttfamily, frame=single]
+npm install -g @anthropic-ai/claude-code
+\end{lstlisting}
+		\item Navigate to your project folder and launch with:
+\begin{lstlisting}[style=nonumbers, basicstyle=\small\ttfamily, frame=single]
+claude
+\end{lstlisting}
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}

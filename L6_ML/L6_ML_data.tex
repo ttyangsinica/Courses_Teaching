@@ -1438,7 +1438,6 @@
 
 \begin{frame}{\textbf{Example:} 5-fold cross validation}
 
-\begin{itemize}
 			\begin{center}
 		\begin{figure}[p]
 			\centering
@@ -1449,6 +1448,7 @@
 
 	%\item \textbf{Example:} 5-fold cross validation
 	\begin{itemize}
+\begin{itemize}
 		\item[1] Pick 1st part of data as the \textbf{validation data} and use other parts of data as the \textbf{training data}
 		\vspace{0.2cm}
 		\item[2] For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, we do the followings: 
@@ -1594,12 +1594,10 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 
 
 \begin{frame}[fragile]{STATA Example: Test the Convergence Hypothesis}{Control All Covariates}
-	\begin{itemize}
 		\begin{figure}[p]
 			\centering
 			\includegraphics[width=.9\textwidth]{figure/growth_f1.jpg}
 		\end{figure}
-	\end{itemize}
 \end{frame}
 
 
@@ -1781,12 +1779,10 @@ pdslasso Outcome gdpsh465 (bmp1l- tot1),rob
 
 
 \begin{frame}[fragile]{STATA Example: Test the Convergence Hypothesis}{Use Post-Double Selection Method}
-	\begin{itemize}
 		\begin{figure}[p]
 			\centering
 			\includegraphics[width=.8\textwidth]{figure/growth_f2.jpg}
 		\end{figure}
-	\end{itemize}
 \end{frame}
 
 
@@ -1796,12 +1792,10 @@ pdslasso Outcome gdpsh465 (bmp1l- tot1),rob
 
 
 \begin{frame}[fragile]{STATA Example: Test the Convergence Hypothesis}{Use Post-Double Selection Method}
-	\begin{itemize}
 		\begin{figure}[p]
 			\centering
 			\includegraphics[width=.9\textwidth]{figure/growth_f3.jpg}
 		\end{figure}
-	\end{itemize}
 \end{frame}
 
 
@@ -1918,12 +1912,10 @@ graph export "$pic\gdp_scatter.png", replace width(3000)
 \end{frame}
 
 \begin{frame}[fragile]{STATA Example: Visualize Data}{Scatter Plot}
-	\begin{itemize}
 		\begin{figure}[p]
 			\centering
 			\includegraphics[width=.8\textwidth]{figure/gdp_scatter.png}
 		\end{figure}
-	\end{itemize}
 \end{frame}
 
 
@@ -1964,12 +1956,10 @@ graph export "$pic\gdp_scatter_r.png", replace width(3000)
 
 
 \begin{frame}[fragile]{STATA Example: Visualize Data}{Scatter Plot: residuals}
-	\begin{itemize}
 		\begin{figure}[p]
 			\centering
 			\includegraphics[width=.8\textwidth]{figure/gdp_scatter_r.png}
 		\end{figure}
-	\end{itemize}
 \end{frame}
 
 
@@ -2029,13 +2019,12 @@ graph export "$pic\gdp_scatter_r.png", replace width(3000)
 
 
 \begin{frame}[fragile]{R Example: Test the Convergence Hypothesis}{Install Packages}
-	\begin{itemize}
-		
 \begin{lstlisting}
 install.packages("hdm") 
 
 library(hdm)
 \end{lstlisting}
+	\begin{itemize}
 		
 		\item Install and load package \textbf{hdm}
 		\vspace{0.2cm}
@@ -2102,13 +2091,12 @@ varnames = colnames(GrowthData)
 
 
 \begin{frame}[fragile]{R Example: Test the Convergence Hypothesis}{PDS Estimation}
-	\begin{itemize}
-		
 \begin{lstlisting}
 doublesel.effect = rlassoEffect(x = X, y = y, d = d, method = "double selection")
 
 summary(doublesel.effect)
 \end{lstlisting}
+	\begin{itemize}
 		
 		\item Implement double selection estimation and report the treatment effect
 		

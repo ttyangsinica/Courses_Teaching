@@ -2168,12 +2168,12 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 
 
 \begin{frame}[fragile]{Examine Data}{misstable: Examining missing values in your data}
-	\begin{itemize}
 \begin{lstlisting}
 misstable summarize
 misstable summarize inctot
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{misstable summarize:} Displays patterns of missing values for all variables in the dataset
 		\vspace{0.2cm}
 		\item \textbf{misstable summarize varname:} Shows missing value patterns for a specific variable (e.g., inctot)
@@ -2183,13 +2183,13 @@ misstable summarize inctot
 
 
 \begin{frame}[fragile]{Create Sample for Analysis}{generate: Create new variables}
-	\begin{itemize}
 \begin{lstlisting}
 generate college = educ99>= 15
 generate gender = sex == 1
 generate college_gender = college*gender
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 	\item \textbf{generate:} Create a binary variable \texttt{college} indicating if education level is college or above
 	\vspace{0.2cm}
 		\item \textbf{generate:} Create a binary variable \texttt{gender} indicating if gender is male (sex=1)
@@ -2200,12 +2200,12 @@ generate college_gender = college*gender
 
 
 \begin{frame}[fragile]{Create Sample for Analysis}{replace/drop}
-	\begin{itemize}
 \begin{lstlisting}
 replace incwage=. if incwage==9999999
 drop if incwage==.
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{replace:} Replace missing values in \texttt{incwage} with "." if \texttt{incwage} equals 9999999  
 		\vspace{0.2cm}
 		\item \textbf{drop:} Drop observations with missing values in \texttt{incwage}
@@ -2219,7 +2219,6 @@ drop if incwage==.
 
 \begin{frame}[fragile]{Create Sample for Analysis}{recode: Recoding Variable Values}
 	
-\begin{itemize}
 		
 \begin{lstlisting}
 recode sex (1=0 "Male") (2=1 "Female"), gen(female)
@@ -2227,6 +2226,7 @@ recode sex (1=0 "Male") (2=1 "Female"), gen(female)
 		
 		\vspace{0.2cm}
 		
+\begin{itemize}
 		\item \textbf{recode:} Transform the original \texttt{sex} variable by reassigning its values and labels
 		
 		\vspace{0.2cm}
@@ -2250,7 +2250,6 @@ recode sex (1=0 "Male") (2=1 "Female"), gen(female)
 
 \begin{frame}[fragile]{Create Sample for Analysis}{forvalues: Looping Through Numeric Sequences}
 	
-	\begin{itemize}
 		
 \begin{lstlisting}
 forv i=1(1)5{
@@ -2260,6 +2259,7 @@ gen health_`i' = health==`i'
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item \textbf{forvalues:} Loop through values 1 to 5 and create binary variables \texttt{health\_1}, \texttt{health\_2}, ..., \texttt{health\_5} indicating if \texttt{health} equals the corresponding value
 		
 		\vspace{0.2cm}
@@ -2279,7 +2279,6 @@ gen health_`i' = health==`i'
 
 \begin{frame}[fragile]{Create Sample for Analysis}{foreach: Looping Through a List of Variables}
 	
-\begin{itemize}		
 \begin{lstlisting}
 foreach var in age inctot incwage {
 sum `var', detail
@@ -2288,6 +2287,7 @@ sum `var', detail
 		
 		\vspace{0.2cm}
 		
+\begin{itemize}		
 		\item \textbf{foreach:} Loop through a list of variables (\texttt{age}, \texttt{inctot}, \texttt{incwage}) and perform the same operations on each one
 		
 		\vspace{0.2cm}
@@ -2322,7 +2322,6 @@ regress depvar [indepvars] [if] [in] [weight] [,options]
 
 \begin{frame}[fragile]{Reducing OVB by including covariates}
 	
-	\begin{itemize}
 		
 \begin{lstlisting}
 reg incwage college , vce(robust)
@@ -2332,6 +2331,7 @@ reg incwage college health_1 - health_4 age i.race, vce(robust)
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item Regress \texttt{incwage} on \texttt{college} using robust standard errors
 		
 		\vspace{0.2cm}
@@ -2352,18 +2352,15 @@ reg incwage college health_1 - health_4 age i.race, vce(robust)
 
 
 \begin{frame}[fragile]{Reducing OVB by including covariates}{Output}
-	\begin{itemize} 
 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f1.png}
 		
 		
-	\end{itemize}
 \end{frame}
 
 
 
 \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}
 	
-	\begin{itemize}
 		
 \begin{lstlisting}
 reg college health_1 - health_4 age i.race, vce(robust)
@@ -2375,6 +2372,7 @@ reg incwage college_rid, vce(robust)
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item Regress \texttt{college} on all other covariates to obtain residuals \texttt{college\_rid}
 		
 		\vspace{0.2cm}
@@ -2400,30 +2398,26 @@ reg incwage college_rid, vce(robust)
 
 
 \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
-	\begin{itemize} 
 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f3.png}
 		
 		
-	\end{itemize}
 \end{frame}
 
 
 
 \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
-	\begin{itemize} 
 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f4.png}
 		
 		
-	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
-\begin{itemize}
 
 \begin{lstlisting}
 reg incwage college i.health age year i.race if sex==1, vce(robust)
 \end{lstlisting}
 	\vspace{0.2cm}
+\begin{itemize}
 \item Option \textbf{if}: restrict sample to specific subgroup
 
 
@@ -2432,20 +2426,18 @@ reg incwage college i.health age year i.race if sex==1, vce(robust)
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}{Output}
-	\begin{itemize} 
 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f5.png}
 		
 		
-	\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
-	\begin{itemize}
 		
 \begin{lstlisting}
 reg incwage college gender college_gender i.health age year i.race, vce(robust)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Examine differential effect of \texttt{college} by gender 
 		
 		
@@ -2509,7 +2501,6 @@ reg incwage college gender college_gender i.health age year i.race, vce(robust)
 
 
 \begin{frame}[fragile]{Examine Data}{skim(): Check for Missing Values}
-	\begin{itemize}
 		\begin{lstlisting}
 # Load the skimr package
 library(skimr)
@@ -2518,6 +2509,7 @@ library(skimr)
 skim(acs_2015)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{skim()} from the \textbf{skimr} package provides a comprehensive data summary
 		\vspace{0.2cm}
 		\item The function automatically reports:
@@ -2535,7 +2527,6 @@ skim(acs_2015)
 \end{frame}
 
 \begin{frame}[fragile]{Create Sample for Analysis}{Create new variables}
-	\begin{itemize}
 \begin{lstlisting}
 # Create a dummy variable for college education
 acs_2015$college <- ifelse(acs_2015$educ99 >= 15, 1, 0)
@@ -2544,6 +2535,7 @@ acs_2015$college <- ifelse(acs_2015$educ99 >= 15, 1, 0)
 acs_2015$gender <- ifelse(acs_2015$sex == 1, 1, 0)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \texttt{ifelse()} function: 
 				\vspace{0.2cm}
 		\begin{itemize}
@@ -2556,7 +2548,6 @@ acs_2015$gender <- ifelse(acs_2015$sex == 1, 1, 0)
 \end{frame}
 
 \begin{frame}[fragile]{Create Sample for Analysis}{Create new variables}
-	\begin{itemize}
 \begin{lstlisting}
 # Replace missing income wage values and remove NA rows
 acs_2015$incwage[acs_2015$incwage == 9999999] <- NA
@@ -2566,6 +2557,7 @@ acs_2015 <- na.omit(acs_2015, cols = "incwage")
 acs_2015$log_incwage <- log(acs_2015$incwage)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Handle missing values in \texttt{incwage}:
 				\vspace{0.2cm}
 		\begin{itemize}
@@ -2587,7 +2579,6 @@ acs_2015$log_incwage <- log(acs_2015$incwage)
 
 
 \begin{frame}[fragile]{Create Sample for Analysis}{mutate(): Create new variables}
-	\begin{itemize}
 \begin{lstlisting}
 # Generate health dummy variables using dplyr
 acs_2015 <- acs_2015 %>%
@@ -2600,6 +2591,7 @@ health_5 = as.integer(health == 5)
 )
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Use \texttt{dplyr}'s \textbf{mutate()} function to create all dummy variables in one step
 		\vspace{0.2cm}
 			\begin{itemize}
@@ -2650,7 +2642,6 @@ library(estimatr)
 \end{frame}
 
 \begin{frame}[fragile]{Reducing OVB by including covariates}
-	\begin{itemize}
 \begin{lstlisting}
 # Define your models with robust standard errors
 model1 <- lm_robust(incwage ~ college, data = acs_2015, se_type = "HC1")
@@ -2661,6 +2652,7 @@ summary(model1)
 summary(model2)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Regress \texttt{incwage} on \texttt{college} using robust standard errors
 		\vspace{0.2cm}
 		\item Use \textbf{lm\_robust()} with \textbf{se\_type = "HC1"} for direct computation of robust standard errors
@@ -2668,7 +2660,6 @@ summary(model2)
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
-	\begin{itemize}
 \begin{lstlisting}
 model3 <- lm_robust(incwage ~ college + age + factor(race) + health_1 + health_2 + health_3 + health_4, data = acs_2015, subset = (gender == 1), se_type = "HC1")
 
@@ -2676,6 +2667,7 @@ model3 <- lm_robust(incwage ~ college + age + factor(race) + health_1 + health_2
 summary(model3)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \texttt{subset} parameter in \textbf{lm\_robust()}:
 		\vspace{0.2cm}
 		\begin{itemize}
@@ -2690,7 +2682,6 @@ summary(model3)
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
-	\begin{itemize}
 \begin{lstlisting}
 # Create interaction term
 acs_2015$college_gender <- acs_2015$college * acs_2015$gender
@@ -2704,6 +2695,7 @@ age + factor(race), data = acs_2015, se_type = "HC1")
 summary(model_interaction)
 \end{lstlisting}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Create an interaction term between \texttt{college} and \texttt{gender}
 		\vspace{0.2cm}
 		\item Include the interaction term in the regression model with robust standard errors

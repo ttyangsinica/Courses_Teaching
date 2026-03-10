@@ -1674,9 +1674,7 @@ Eissa, Nada, and Jeffrey B. Liebman. (1996) ``\textbf{Labor Supply Responses to
 
 
 \begin{frame}{EITC benefit rule}
-\begin{itemize} 
 \includegraphics[width=0.9\textwidth]{figure/eitc_pict_6R_2.jpg} 
-\end{itemize}
 \end{frame}
 
 
@@ -1786,12 +1784,12 @@ gen treated_post = treated*post
 
 
 \begin{frame}[fragile]{Step 2: Graphical Analysis}{STATA Command}
-\begin{itemize}
 
 \begin{lstlisting}
 collapse (mean) work, by(year treated)
 \end{lstlisting}
 \vspace{0.2cm}
+\begin{itemize}
 \item \textbf{collapse:} This command converts the data into a dataset of summary statistics, such as sums, means, medians, and so on
 \vspace{0.2cm}
 \begin{itemize}
@@ -1806,13 +1804,13 @@ collapse (mean) work, by(year treated)
 
 
 \begin{frame}[fragile]{Step 2: Graphical Analysis}{STATA Command}
-\begin{itemize}
 \begin{lstlisting}			
 graph twoway (line work year if treated==0) (line work year if treated==1), legend(order(1 "Control Group" 2 "Treatment Group")) ///
 graphregion(fcolor(white) lcolor(white) ifcolor(white) ilcolor(white)) ///
 xline(1994, lp(dash) lc(black) lw(medthin)) ///
 ytitle(Labor Force Participation Rates)
 \end{lstlisting}
+\begin{itemize}
 \item Create a twoway gragh ("work" by "year") for treatment and control groups
 \end{itemize}
 \end{frame}
@@ -1960,14 +1958,12 @@ reg work treated placebo treated_placebo if year<1994,r
 
 
 \begin{frame}[fragile]{Step 5: Dynamic DID Design}{STATA Command}
-	\begin{itemize}
 \begin{lstlisting}	
 reg work treated pre_event_3 pre_event_2 post_event_0-post_event_2 pre_dd_3 pre_dd_2 post_dd_0 -post_dd_2 nonwhite age age2 ed finc nonlaborinc,r
 
 outreg2 using "$table\DID_dynamic.xls", replace nocon keep(pre_dd_* post_dd_*)
  year<1994,r
 \end{lstlisting}
-	\end{itemize}
 \end{frame}
 
 
@@ -2073,7 +2069,6 @@ summarise(work_mean = mean(work, na.rm = TRUE))
 
 
 \begin{frame}[fragile]{Step 2: Graphical Analysis}{R Command}
-	\begin{itemize}
 \begin{lstlisting}
 ggplot(data_summary, aes(x = year, y = work_mean, color = factor(treated))) +
 geom_line(size = 1) +
@@ -2090,7 +2085,6 @@ panel.grid.minor = element_blank())
 
 ggsave(paste0(pic, "/eitc_DID.png"), width = 12, height = 8, units = "in")
 \end{lstlisting}
-	\end{itemize}
 \end{frame}
 
 
@@ -2128,7 +2122,6 @@ summary(DID)
 
 
 \begin{frame}[fragile]{Step 4: Placebo Test}{R Command}
-	\begin{itemize}
 \begin{lstlisting}
 eitc_data <- eitc_data %>%
 mutate(placebo = as.numeric(year >= 1992),
@@ -2138,14 +2131,12 @@ treated_placebo = treated * placebo)
 model_placebo <- lm(work ~ treated + placebo + treated_placebo, data = eitc_data, subset = (year < 1994))
 summary(model_placebo)
 \end{lstlisting}
-	\end{itemize}
 \end{frame}
 
 
 
 
 \begin{frame}[fragile]{Step 5: Dynamic DID Design}{R Command}
-	\begin{itemize}
 \begin{lstlisting}	
 eitc_data <- eitc_data %>%
 mutate(treat_year = 1994,
@@ -2161,7 +2152,6 @@ post_dd_0 = as.numeric(event_year == 0) * treated,
 post_dd_1 = as.numeric(event_year == 1) * treated,
 post_dd_2 = as.numeric(event_year == 2) * treated)
 \end{lstlisting}
-	\end{itemize}
 \end{frame}
 
 

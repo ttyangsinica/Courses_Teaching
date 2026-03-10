@@ -2565,11 +2565,11 @@ library(writexl)   # for Excel output
 \end{frame}
 
 \begin{frame}[fragile]{R Commands: ivreg}
-	\begin{itemize}
 \begin{lstlisting}
 # Run IV regression
 ivreg(logpgp95 ~ avexpr + lat_abst | logem4 + lat_abst, data = data)
 \end{lstlisting}
+	\begin{itemize}
 		
 		\vspace{0.2cm}
 		\item \textbf{formula}: outcome ~ endogenous + exogenous | instruments + exogenous
