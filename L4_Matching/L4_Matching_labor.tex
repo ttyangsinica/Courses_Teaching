@@ -2028,9 +2028,9 @@ CIA fails when there are \textbf{unobservable confounders} — even after contro
 		\begin{itemize}
 			\item[1] \textbf{Distance Matching:} minimize distance in covariates $X$
 			\vspace{0.2cm}
-			\item[2] \textbf{Coarsened Exact Matching:}	match within coarsened subgroups
-			\vspace{0.2cm}
-			\item[3] \textbf{Propensity Score Matching:} match on likelihood of being treated
+			\item[2] \textbf{Propensity Score Matching:} match on likelihood of being treated
+            \vspace{0.2cm}
+			\item[3] \textbf{Coarsened Exact Matching:}	match within coarsened subgroups
 						
 		\end{itemize}
 	\end{itemize}
@@ -2718,12 +2718,12 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
   & Set up folder structure, path setup block \\
 2 & \textbf{Read the codebook}
   & Understand variables, units, known data issues \\
-3 & \textbf{Label \& clean data}
+3 & \textbf{Clean data}
   & Label variables/values, handle missing values and outliers \\
-4 & \textbf{Descriptive statistics}
-  & \texttt{summarize}, \texttt{tabulate}, \texttt{inspect} \\
+4 & \textbf{Examine data}
+  & Examine distributions, means, and frequencies of key variables \\
 5 & \textbf{Pre-analysis balance check}
-  & Compare treated vs.\ control \emph{before} any matching \\
+  & Compare treated vs.\ control group \emph{before} any analysis \\
 6 & \textbf{Proceed to analysis}
   & PSM, regression, DiD, \ldots \\
 \bottomrule
@@ -2746,17 +2746,16 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
         \vspace{0.1cm}
         \item \texttt{/workdata} --- cleaned/processed data
         \vspace{0.1cm}
-        \item \texttt{/do} --- all \texttt{.do} files
+        \item \texttt{/code} --- all scripts (\texttt{.do}, \texttt{.R}, \ldots)
         \vspace{0.1cm}
         \item \texttt{/output} --- tables, figures, logs
     \end{itemize}
     \vspace{0.2cm}
     \item Use \textbf{relative paths} or a \textbf{path setup block}
-    at the top of every \texttt{.do} file (as in \texttt{matching.do})
-    so the project runs on any machine
+    at the top of every script so the project runs on any machine
     \vspace{0.2cm}
     \item \textbf{Never overwrite raw data} --- all cleaning steps should
-    be recorded in a \texttt{.do} file and saved to \texttt{/workdata}
+    be recorded in a script and saved to \texttt{/workdata}
     \vspace{0.2cm}
     \item \textbf{Comment your code} --- your future self (and collaborators)
     will thank you
@@ -2784,27 +2783,59 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
     \item \textbf{Label your variables and values} for clarity:
     \vspace{0.1cm}
     \begin{itemize}
-        \item \texttt{label variable re78 "Real earnings in 1978 (USD)"}
-        \vspace{0.2cm}
-        % \item \texttt{label define treat\_lbl 0 "Control" 1 "Treated"}
-        % \vspace{0.1cm}
-        % \item \texttt{label values treat treat\_lbl}
+        \item Give every variable a descriptive name and unit
+        \vspace{0.1cm}
+        \item Label categorical values (e.g., $0 =$ Control, $1 =$ Treated)
     \end{itemize}
     \vspace{0.2cm}
     \item \textbf{Explore the data} systematically:
     \vspace{0.1cm}
     \begin{itemize}
-        \item \texttt{describe}, \texttt{summarize}, \texttt{codebook},
-        \texttt{tabulate}, \texttt{inspect}
+        \item Examine variable types, distributions, and frequencies
         \vspace{0.1cm}
         \item Check for \textbf{missing values}, \textbf{outliers},
         and \textbf{implausible values}
     \end{itemize}
-    % \vspace{0.2cm}
-    % \item AI tools can help: paste your variable list and codebook into
-    % ChatGPT or Claude and ask it to \textbf{suggest labels, flag anomalies,
-    % or draft cleaning code}
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}{How AI Agents Can Help}{}
+\begin{itemize}
+    \item \textbf{Agent-type AI} (e.g.\ Claude Code, Gemini CLI) can operate
+    directly in your project folder --- not just answer questions, but
+    \textbf{read, write, and execute code} on your behalf
+    % \vspace{0.2cm}
+    % \item What you can ask an AI agent to do:
+    % \vspace{0.1cm}
+    % \begin{itemize}
+    %     \item \textbf{Set up the project}: create folder structure,
+    %     write path setup block, initialize scripts
+    %     \vspace{0.1cm}
+    %     \item \textbf{Explore the data}: summarize variables, flag missing
+    %     values, outliers, and implausible values --- and report back to you
+    %     \vspace{0.1cm}
+    %     \item \textbf{Clean the data}: generate labeling and cleaning code
+    %     based on the codebook you provide
+    %     \vspace{0.1cm}
+    %     \item \textbf{Debug}: read your error messages and fix the code
+    %     directly in the file
+    %     \vspace{0.1cm}
+    %     \item \textbf{Translate}: convert a Stata \texttt{.do} file into R,
+    %     or vice versa
+    %     \vspace{0.1cm}
+    %     \item \textbf{Document}: add comments and variable descriptions
+    %     throughout your scripts
+    % \end{itemize}
+    % \vspace{0.2cm}
+    % \item \textbf{Key difference from chatbots}: agents take actions
+    % autonomously across multiple steps --- you describe the goal,
+    % the agent figures out the steps
+\end{itemize}
+% \begin{center}
+% \small \textbf{Important:} Review what the agent did before proceeding ---
+% always stay in control of your own data and code.
+% \end{center}
 \end{frame}
 
 
