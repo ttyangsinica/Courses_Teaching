@@ -213,7 +213,7 @@
 }
 
 
-% \usepackage{beamerthemeshadow}
+% %\usepackage{beamerthemeshadow}
 % %\usecolortheme{seahorse}
 % \setbeamertemplate{footline}{%
 % 	\hfill\usebeamercolor[fg]{page number in head/foot}%
@@ -365,7 +365,12 @@
 		\vspace{0.2cm}
 
 		\item Suppose \textbf{age} is the only confounding factors that affect both earnings and job training decision
-		%\item If all matches are perfect (no matching discrepancies) the resulting estimator is identical to the subclassification estimator.
+		\vspace{0.2cm}
+\begin{itemize}
+    \item Older workers are \emph{less likely to seek job training}
+    \vspace{0.15cm}
+    \item Older workers \emph{also earn more} due to their experience
+\end{itemize}
 					\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1362,21 +1367,17 @@
 
 \begin{frame}{Conditional Independence Assumption}{Intuition}
 
-From the previous example, suppose \textbf{age} is the only confounding factor in evaluating the effect of job training:
-
+From the previous example, we know:
 \vspace{0.2cm}
+
 \begin{itemize}
-    \item Older workers are \emph{more likely to seek job training}
-    \vspace{0.15cm}
-    \item Older workers \emph{also earn more} due to their experience
+
+\item A naive comparison mixes up the \textbf{effect of job training} with the \textbf{effect of age}.
 \end{itemize}
 
-\vspace{0.3cm}
-$\Rightarrow$ A naive comparison mixes up the \textbf{effect of training} with the \textbf{effect of age}.
-
-\vspace{0.3cm}
+\vspace{0.2cm}
 \begin{alertblock}{Solution}
-\textbf{Match by age:} Once we compare people of the \textbf{same age}, the confounding effect of age disappears — treatment assignment becomes \textbf{``as good as random''} within each age group.
+\textbf{Match by age:} Once we compare people of the \textbf{same age}, the confounding effect of age disappears.
 \end{alertblock}
 
 \end{frame}
@@ -1410,56 +1411,71 @@ $\Rightarrow$ A naive comparison mixes up the \textbf{effect of training} with t
 
 
 %% ── 第三頁：反事實的邏輯────────────────────────────────────────────────────
+% \begin{frame}{Conditional Independence Assumption}{Counterfactual Logic}
+
+% \textbf{Key insight:} Once we control for age, treated and untreated groups are comparable $\Rightarrow$ \textbf{apple-to-apple comparison}
+
+% \vspace{0.4cm}
+% This allows us to estimate \textbf{counterfactuals} using the other group (same age):
+
+% \vspace{0.3cm}
+% \begin{itemize}
+%     \item \textcolor{red}{$\mathrm{E}[Y^{0}_{i}\mid X_i{=}40, D_i{=}1]$} $= \mathrm{E}[Y^{0}_{i}\mid X_i{=}40, D_i{=}0]$
+%     \vspace{0.15cm}
+%     \begin{itemize}
+%         \item What would \textbf{trainees} have earned \emph{without} training?\\
+%         $\rightarrow$ Estimated by observed earnings of \textbf{non-trainees} of the same age
+%     \end{itemize}
+%     \vspace{0.3cm}
+%     \item \textcolor{red}{$\mathrm{E}[Y^{1}_{i}\mid X_i{=}40, D_i{=}0]$} $= \mathrm{E}[Y^{1}_{i}\mid X_i{=}40, D_i{=}1]$
+%     \vspace{0.15cm}
+%     \begin{itemize}
+%         \item What would \textbf{non-trainees} have earned \emph{with} training?\\
+%         $\rightarrow$ Estimated by observed earnings of \textbf{trainees} of the same age
+%     \end{itemize}
+% \end{itemize}
+
+% \end{frame}
+
+
+% %% ── 第四頁：視覺總結（2×2 表格）─────────────────────────────────────────────
 \begin{frame}{Conditional Independence Assumption}{Counterfactual Logic}
 
-\textbf{Key insight:} Once we control for age, treated and untreated groups are comparable $\Rightarrow$ \textbf{apple-to-apple comparison}
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{lcc}
+\toprule
+ & \textbf{Trained} ($D=1$) & \textbf{Not Trained} ($D=0$) \\
+\midrule
+\textbf{Observed} &
+  $\mathrm{E}[Y^1_i \mid X_i{=}40, D_i{=}1]$ &
+  $\mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}0]$ \\[0.2cm]
+\textbf{Counterfactual} &
+  \textcolor{red}{$\mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}1]$} &
+  \textcolor{red}{$\mathrm{E}[Y^1_i \mid X_i{=}40, D_i{=}0]$} \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\vspace{0.4cm}
-This allows us to estimate \textbf{counterfactuals} using the other group (same age):
+\vspace{0.2cm}
+Under CIA, \textcolor{red}{red cells} (counterfactuals) can be filled in using the \textbf{observed outcomes of the other group}:
 
-\vspace{0.3cm}
+\vspace{0.2cm}
 \begin{itemize}
     \item \textcolor{red}{$\mathrm{E}[Y^{0}_{i}\mid X_i{=}40, D_i{=}1]$} $= \mathrm{E}[Y^{0}_{i}\mid X_i{=}40, D_i{=}0]$
-    \vspace{0.15cm}
+    \vspace{0.2cm}
     \begin{itemize}
         \item What would \textbf{trainees} have earned \emph{without} training?\\
         $\rightarrow$ Estimated by observed earnings of \textbf{non-trainees} of the same age
     \end{itemize}
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     \item \textcolor{red}{$\mathrm{E}[Y^{1}_{i}\mid X_i{=}40, D_i{=}0]$} $= \mathrm{E}[Y^{1}_{i}\mid X_i{=}40, D_i{=}1]$
-    \vspace{0.15cm}
+    \vspace{0.2cm}
     \begin{itemize}
         \item What would \textbf{non-trainees} have earned \emph{with} training?\\
         $\rightarrow$ Estimated by observed earnings of \textbf{trainees} of the same age
     \end{itemize}
 \end{itemize}
-
-\end{frame}
-
-
-% %% ── 第四頁：視覺總結（2×2 表格）─────────────────────────────────────────────
-% \begin{frame}{Conditional Independence Assumption}{Summary: Observable vs.\ Counterfactual}
-
-% \begin{center}
-% \renewcommand{\arraystretch}{1.6}
-% \begin{tabular}{lcc}
-% \toprule
-%  & \textbf{Trained} ($D=1$) & \textbf{Not Trained} ($D=0$) \\
-% \midrule
-% \textbf{Observed} &
-%   $\mathrm{E}[Y^1_i \mid X_i{=}40, D_i{=}1]$ &
-%   $\mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}0]$ \\[0.2cm]
-% \textbf{Counterfactual} &
-%   \textcolor{red}{$\mathrm{E}[Y^1_i \mid X_i{=}40, D_i{=}0]$} &
-%   \textcolor{red}{$\mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}1]$} \\
-% \bottomrule
-% \end{tabular}
-% \end{center}
-
-% \vspace{0.3cm}
-% Under CIA, \textcolor{red}{red cells} (counterfactuals) can be filled in using the \textbf{observed outcomes of the other group}:
-
-% \vspace{0.2cm}
 % \begin{itemize}
 %     \item \textcolor{red}{$\mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}1]$} $= \mathrm{E}[Y^0_i \mid X_i{=}40, D_i{=}0]$
 %     \vspace{0.1cm}
@@ -1469,7 +1485,7 @@ This allows us to estimate \textbf{counterfactuals} using the other group (same 
 % \vspace{0.2cm}
 % $\Rightarrow$ CIA turns an \textbf{identification problem} into a \textbf{comparison problem}.
 
-% \end{frame}
+\end{frame}
 
 
 
@@ -2028,9 +2044,9 @@ CIA fails when there are \textbf{unobservable confounders} — even after contro
 		\begin{itemize}
 			\item[1] \textbf{Distance Matching:} minimize distance in covariates $X$
 			\vspace{0.2cm}
-			\item[2] \textbf{Propensity Score Matching:} match on likelihood of being treated
-            \vspace{0.2cm}
-			\item[3] \textbf{Coarsened Exact Matching:}	match within coarsened subgroups
+			\item[2] \textbf{Coarsened Exact Matching:}	match within coarsened subgroups
+			\vspace{0.2cm}
+			\item[3] \textbf{Propensity Score Matching:} match on likelihood of being treated
 						
 		\end{itemize}
 	\end{itemize}
@@ -2840,6 +2856,7 @@ Proof: Assume that $ (\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i})\indep D_{i}|X_{i}$.
 
 
 
+
 \title[]  
 {STATA Example}
 
@@ -3397,7 +3414,7 @@ pstest _pscore, density both
 		\item Install the following package:
 		\begin{itemize}
 			\vspace{0.2cm}
-			\item Matching 
+			\item MatchIt 
 		\end{itemize}
 		
 	\end{itemize}
@@ -3618,56 +3635,62 @@ t.test(educ ~ treat, data = lalonde)
 
 
 % FIX #12: \item Example: -> \textbf{Example:}
-\begin{frame}[fragile]{R Example}{Step 3: PSM Estimation}
-	\textbf{Example:}
+\begin{frame}[fragile]{R Example}{Step 3: PSM Estimation via \texttt{MatchIt}}
 \begin{lstlisting}
-# Estimate propensity scores
-ps_model <- glm(treat ~ age + educ + black + hispan + nodegree + married + re74 + re75, 
-family = binomial(link = "logit"), 
-data = lalonde)
+library(MatchIt)
 
-# Extract propensity scores
-lalonde$ps <- predict(ps_model, type = "response")
+# Estimate PS and perform nearest neighbor matching
+m.out <- matchit(treat ~ age + educ + black + hispan +
+                 nodegree + married + re74 + re75,
+                 data     = lalonde,
+                 method   = "nearest",
+                 distance = "logit",
+                 replace  = TRUE,
+                 estimand = "ATT")
+summary(m.out)
 \end{lstlisting}
-	\begin{itemize}
-		\vspace{0.2cm}
-		\item \textbf{glm:} estimate logistic regression for propensity scores
-		\vspace{0.2cm}
-		\item \textbf{predict(..., type = "response"):} extract probability estimates (propensity scores)
-		\vspace{0.2cm}
-		\item Manually estimating PS gives more control over the process
-	\end{itemize}
+\begin{itemize}
+    \vspace{0.2cm}
+    \item \textbf{matchit()}: estimates PS via logistic regression
+    and performs nearest neighbor matching in one step
+    \vspace{0.2cm}
+    \item \textbf{distance = "logit"}: uses logit model to estimate
+    propensity scores
+    \vspace{0.2cm}
+    \item \textbf{replace = TRUE}: matching with replacement
+\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{R Example}{Step 3: PSM Estimation}
+
+\begin{frame}[fragile]{R Example}{Step 3: Estimate ATT}
 \begin{lstlisting}
-# Perform nearest neighbor matching (with replacement)
-m.out_with_replace <- Match(
-Y = lalonde$re78,           # Outcome variable
-Tr = lalonde$treat,         # Treatment variable
-X = lalonde$ps,             # Propensity score
-M = 1,                      # 1:1 matching
-replace = TRUE,             # Matching with replacement
-estimand = "ATT")           # Average Treatment Effect on Treated
+# Extract matched data
+m.data <- match.data(m.out)
 
-# View results
-summary(m.out_with_replace)
+# Estimate ATT on matched sample
+fit <- lm(re78 ~ treat, data = m.data, weights = weights)
+summary(fit)
 \end{lstlisting}
-	\begin{itemize}
-		\vspace{0.2cm}
-		\item \textbf{Match:} performs matching and estimates treatment effect directly
-		\vspace{0.2cm}
-		\item Uses Abadie \& Imbens variance estimator automatically when matching with replacement
-	\end{itemize}
+\begin{itemize}
+    \vspace{0.2cm}
+    \item \textbf{match.data()}: extracts matched sample with
+    \texttt{MatchIt} weights
+    \vspace{0.2cm}
+    \item \textbf{lm()}: estimates ATT on the matched sample;
+    \texttt{weights} is automatically created by \texttt{match.data()}
+    \vspace{0.2cm}
+    \item \textbf{Advantage over \texttt{Match()}}: \texttt{MatchIt}
+    provides a unified framework for PSM, CEM, and other methods
+    with consistent syntax
+\end{itemize}
 \end{frame}
-
 
 % ================================================================
 % Coarsened Exact Matching (CEM)
 % ================================================================
 
 \title[]
-{Coarsened Exact Matching \\ (CEM)}
+{Coarsened Exact Matching }
 
 \author
 {}
@@ -3754,19 +3777,19 @@ Units are matched \emph{only within} the same stratum.
 2 & $[20,30)$ & $[5\text{K},15\text{K})$ & 1 unit  & 0 units $\rightarrow$ \textcolor{red}{discarded} \\
 3 & $[30,40)$ & $[0, 5\text{K})$   & 0 units & 2 units $\rightarrow$ \textcolor{red}{discarded} \\
 4 & $[30,40)$ & $[5\text{K},15\text{K})$ & 3 units & 4 units $\checkmark$ \\
-5 & $[40,50)$ & $[5\text{K},15\text{K})$ & 1 unit  & 2 units $\checkmark$ \\
+%5 & $[40,50)$ & $[5\text{K},15\text{K})$ & 1 unit  & 2 units $\checkmark$ \\
 \bottomrule
 \end{tabular}}
 \end{center}
 
 \vspace{0.3cm}
 \begin{itemize}
-    \item Strata 1, 4, 5: both treated and control units present
+    \item Stratam 1, 4: both treated and control units present
     $\Rightarrow$ \textbf{matched}
-    \vspace{0.15cm}
+    \vspace{0.1cm}
     \item Stratum 2: no control units available
     $\Rightarrow$ treated unit \textcolor{red}{discarded}
-    \vspace{0.15cm}
+    \vspace{0.1cm}
     \item Stratum 3: no treated units
     $\Rightarrow$ control units \textcolor{red}{discarded}
 \end{itemize}
@@ -3905,37 +3928,38 @@ reg re78 treat [iweight=cem_weights] if cem_matched==1, r
 \end{frame}
 
 
-\begin{frame}[fragile]{CEM: R Example}{Run CEM and Estimate ATT}
+\begin{frame}[fragile]{CEM: R Example}{Run CEM}
 \begin{lstlisting}
-install.packages('cem')
-library(cem)
+install.packages("MatchIt")
+library(MatchIt)
 
-# Run CEM with automatic coarsening
-m.cem <- cem(treatment = "treat",
-             data      = lalonde,
-             drop      = "re78")   # exclude outcome variable
-summary(m.cem)
-
-# Estimate ATT via weighted regression on matched sample
-est <- att(m.cem, re78 ~ treat, data = lalonde)
-summary(est)
+# Run CEM
+m.out <- matchit(treat ~ age + educ + black + hisp +
+                 married + nodegree + re74 + re75,
+                 data   = lalonde,
+                 method = "cem")
+summary(m.out)
 \end{lstlisting}
-	\begin{itemize}
-		\item \textbf{cem()}: coarsens covariates and creates strata; \texttt{drop} excludes the outcome
-		\vspace{0.1cm}
-		\item \textbf{att()}: estimates ATT using CEM weights
-	\end{itemize}
+\begin{itemize}
+    \item \textbf{matchit()}: coarsens covariates and creates strata;
+    covariates in the formula are used for matching
+\end{itemize}
 \end{frame}
 
-
-\begin{frame}{Suggested Readings}
-	\begin{itemize}
-		\item Chapter 2, Mastering Metrics: The Path from Cause to Effect
-		\vspace{0.2cm}
-		\item Chapter 3, Mostly Harmless Econometrics
-		\vspace{0.2cm}
-		\item Chapter 5, Causal Inference: The Mixtape
-	\end{itemize}
+\begin{frame}[fragile]{CEM: R Example}{Estimate ATT}
+\begin{lstlisting}
+# Extract matched data and estimate ATT
+m.data <- match.data(m.out)
+fit <- lm(re78 ~ treat, data = m.data, weights = weights)
+summary(fit)
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{match.data()}: extracts the matched sample with
+    CEM weights
+    \item \textbf{lm()}: estimates ATT on the matched sample using
+    CEM weights; \texttt{weights} is automatically created by
+    \texttt{match.data()}
+\end{itemize}
 \end{frame}
 
 
