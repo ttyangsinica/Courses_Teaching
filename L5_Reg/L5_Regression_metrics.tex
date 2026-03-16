@@ -151,8 +151,9 @@
 
 
 
-\title[]  
-{Regression and Causal Inference}
+\title[] 
+{Causal Machine Learning (I): Regression}
+%{Regression and Causal Inference}
 
 %\subtitle
 %{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
@@ -230,21 +231,21 @@
 
 
 
-\title[]  
+\title[]
 {Main Idea}
 
 
-\author 
+\author
 {}
 
 %\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
 %\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
 
-%\author 
+%\author
 %{楊子霆 \\ 中研院經濟所}
 
-%\institute 
+%\institute
 %{中正大學國際經濟專題研討}
 
 
@@ -261,6 +262,93 @@
 
 
 
+\begin{frame}{Causal Machine Learning: Overview}
+	\begin{itemize}
+		\item \textbf{Machine learning (ML)} methods use data-driven algorithms to model the relationship between an outcome \textbf{Y} and covariates \textbf{X}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item There are many ML methods; \textbf{regression} is a fundamental one
+			\vspace{0.2cm}
+			\item The best method depends on the application
+		\end{itemize}
+		\vspace{0.3cm}
+		\item For \textbf{causal inference}, ML methods help us select and control for relevant covariates, enabling credible identification of treatment effects
+		\vspace{0.3cm}
+		\item This lecture series covers three approaches:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Part I (This Lecture):} Regression --- the foundational ML tool for causal inference under selection on observables
+			\vspace{0.2cm}
+			\item \textbf{Part II:} Post-Double Selection --- handling high-dimensional covariates with LASSO
+			\vspace{0.2cm}
+			\item \textbf{Part III:} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Machine Learning as a Prediction Tool}
+	\begin{itemize}
+		\item The primary goal of \textbf{machine learning} is to \textbf{predict} an outcome $Y$ given covariates $X$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Regression:} predict a continuous outcome (e.g., wages, earnings)
+			\vspace{0.2cm}
+			\item \textbf{Classification:} predict a discrete category (e.g., employed vs. unemployed)
+			\vspace{0.2cm}
+			\item Classification is also a prediction task --- predict which category a unit belongs to
+		\end{itemize}
+		\vspace{0.3cm}
+		\item ML methods are evaluated by \textbf{out-of-sample prediction accuracy}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Minimize prediction error on data not used for estimation
+			\vspace{0.2cm}
+			\item This is different from the classical econometrics focus on unbiasedness and consistency
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Key question:} Can these prediction tools be used for \textbf{causal inference}?
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{From Prediction to Counterfactual Prediction}
+	\begin{itemize}
+		\item \textbf{Causal inference} requires answering a fundamentally different question:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Not just ``what is $Y$ likely to be given $X$?''
+			\vspace{0.2cm}
+			\item But ``what would $Y$ have been \textbf{under a different treatment status}?'' $\longrightarrow$ \textbf{counterfactual}
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Fundamental Problem of Causal Inference:} We only observe one potential outcome per individual
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item For treated units ($D_i=1$): observe $Y^{1}_i$, but not $Y^{0}_i$
+			\vspace{0.2cm}
+			\item For untreated units ($D_i=0$): observe $Y^{0}_i$, but not $Y^{1}_i$
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{ML methods help us predict the missing counterfactual:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use $X_i$ to find units with similar characteristics but different treatment status
+			\vspace{0.2cm}
+			\item Under the right assumptions (CIA), the predicted counterfactual is valid
+			\vspace{0.2cm}
+			\item \textbf{Regression} is the simplest ML tool for predicting counterfactual outcomes
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
 
 
 
@@ -268,7 +356,7 @@
 	\begin{itemize}
 		%\item Regression is a way to control observable covariates
 		%\vspace{0.3cm}
-		
+
 		\item A multivariate regression can help us study the relationship between treatment $D_i$ and outcome $\mathrm{Y}_i$
 		
 		
@@ -360,9 +448,7 @@
 
 
 
-
-
-\begin{frame}{Conditional Independence Assumption (CIA)}
+\begin{frame}{Identification Assumption}
 	
 	\begin{block}{Conditional Independence Assumption}
 		\begin{equation*}
@@ -375,34 +461,43 @@
 		\item Both matching and regression require CIA (selection on observable) to get causal affects
 		\vspace{0.3cm}
 		\begin{itemize}
-			%\item We can consider regression is a special case of matching methods 
-			%\vspace{0.2cm}
 			\item But regression implicitly assume a specific functional form of \textbf{potential outcomes}
-							\vspace{0.2cm}
-%				\begin{itemize}
-%				\item $\mathrm{Y}^{0} = \delta + X_{i} \beta $ 
-%				\vspace{0.2cm}
-%				\item $\mathrm{Y}^{1} = \delta + \alpha + X_{i} \beta$ 
-%								\vspace{0.2cm}
-%			\end{itemize}
-%			
-%		\end{itemize}
-%	
-%
-%	
-%		\item Thus, it ensures that selection bias is eliminated:
-%		\begin{itemize} 
-%			\vspace{0.3cm}
-%			\item $\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1] = \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]$
-%			\vspace{0.3cm}
-%			\item $\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1] = \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=0]$
-%		\end{itemize}
-		%\item Based on CIA, including key observed covariates into regression can help us eliminate selection bias 
-		%\vspace{0.3cm}
-		%\item Then, we have that $\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|X_{i}=x^{k}, D_i=1]=\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|X_{i}=x^{k}, D_i=0]$ 	
-			\end{itemize}
+			\vspace{0.2cm}
+			\item Matching additionally requires \textbf{common support}: treated and control units must overlap in their covariate distributions
+			\vspace{0.2cm}
+			\item Regression does \textbf{not} require common support --- it extrapolates outside the region of overlap using the assumed functional form
+		\end{itemize}
 	\end{itemize}
 \end{frame}
+
+
+% \begin{frame}{CIA: What It Implies}
+% 	\begin{itemize}
+% 		\item Under CIA, treatment assignment is \textbf{as good as random} after conditioning on $X_i$
+% 		\vspace{0.3cm}
+% 		\item CIA implies that \textbf{selection bias is eliminated} within cells of $X$:
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item $\mathrm{E}[\mathrm{Y}^{0}_{i}\mid X_{i}, D_i=1] = \mathrm{E}[\mathrm{Y}^{0}_{i}\mid X_{i}, D_i=0]$
+% 			\vspace{0.2cm}
+% 			\item $\mathrm{E}[\mathrm{Y}^{1}_{i}\mid X_{i}, D_i=1] = \mathrm{E}[\mathrm{Y}^{1}_{i}\mid X_{i}, D_i=0]$
+% 		\end{itemize}
+% 		\vspace{0.3cm}
+% 		\item This means treated and control units with the same $X_i$ are \textbf{comparable}:
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item We can use control units' observed $Y^0$ to predict the counterfactual $Y^0$ for treated units
+% 			\vspace{0.2cm}
+% 			\item We can use treated units' observed $Y^1$ to predict the counterfactual $Y^1$ for control units
+% 		\end{itemize}
+% 		\vspace{0.3cm}
+% 		\item Both matching and regression rely on CIA to get causal effects
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Regression additionally imposes a specific \textbf{functional form} on potential outcomes
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
 
 
 
@@ -414,34 +509,27 @@
 
 \begin{frame}{Regression and Potential Outcome}
 	\begin{itemize}
+		\item Regression estimates the causal effect by \textbf{predicting both potential outcomes} and taking the difference
+		\vspace{0.2cm}
 		\item Under the CIA, we can estimate the following regression to get causal effect of $D$ by including all possible confounding factors $X$
 		\begin{equation*}
-			\begin{aligned}
-				\mathrm{Y}_i &= \delta + \alpha D_i + X_{i}\beta + \epsilon_{i}
-			\end{aligned}
-		\end{equation*}	
-		\item We use the regression estimates to "predict" the counterfactual outcomes
-		\vspace{0.3cm}
+			\mathrm{Y}_i = \delta + \alpha D_i + X_{i}\beta + \epsilon_{i}
+		\end{equation*}
+		\item The fitted model predicts \textbf{both} potential outcomes for any unit with covariates $X_i$:
+		\vspace{0.1cm}
 		\begin{itemize}
-			\item For treated units ($D=1$), we can get counterfactual outcome $\mathrm{Y}^{0}$
-			\begin{equation*}
-				\begin{aligned}
-					\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i}] &= \delta + X_{i}\beta 
-				\end{aligned}
-			\end{equation*}
-			
-			\item For untreated units ($D=0$), we can get counterfactual outcome $\mathrm{Y}^{1}$
-			\begin{equation*}
-				\begin{aligned}
-					\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i}] &= \delta + \alpha + X_{i}\beta  
-				\end{aligned}
-			\end{equation*}
-			
-			\item CIA implies $\mathrm{E}[\epsilon_{i}|D_i,X_{i}] = 0$
-			\vspace{0.3cm}
-			
-			\item The causal effect given $X_i$ is $\mathrm{E}[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i}|X_{i}] = \alpha$
+			\item Predicted $\mathrm{Y}^{1}$ (set $D=1$): $\quad\mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i}] = \delta + \alpha + X_{i}\beta$
+			\vspace{0.15cm}
+			\item Predicted $\mathrm{Y}^{0}$ (set $D=0$): $\quad\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i}] = \delta + X_{i}\beta$
+			\vspace{0.15cm}
+			\item CIA implies $\mathrm{E}[\epsilon_{i}|D_i,X_{i}] = 0$, so these predictions are valid
 		\end{itemize}
+		\vspace{0.2cm}
+		\item The \textbf{causal effect} is the difference between the two predicted outcomes:
+		\begin{equation*}
+			\mathrm{E}[\mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i}|X_{i}] = \alpha \quad \text{(constant across all } X_i\text{)}
+		\end{equation*}
+		%\item Note: Regression imposes a \textbf{constant treatment effect} --- $\alpha$ is the same for everyone
 	\end{itemize}
 \end{frame}
 
@@ -525,12 +613,8 @@
 
 
 
-
-
 \begin{frame}{Regression and Matching}{A Graphical Example}
 	\begin{itemize}
-	
-		
 		\item Regression:
 		\vspace{0.2cm}
 		\begin{itemize}
@@ -538,14 +622,14 @@
 			\vspace{0.2cm}
 			\item By relying on the specified regression model to predict counterfactual outcomes
 			\vspace{0.2cm}
-					\begin{itemize}
-			\item Linear term for education: $\mathrm{Y}_{i}= \delta +  \alpha D_i + \beta_{1} X_{i} + \epsilon_{i} $
-						\vspace{0.2cm}
-			\item Quadratic term for education: $\mathrm{Y}_{i}= \delta +  \alpha D_i + \beta_{1} X_{i} + \beta_{2} X^{2}_{i} + \epsilon_{i} $
-									\vspace{0.2cm}	
-			\item Estimated effect of treatment $D$ can be different for these two models
-							\vspace{0.2cm}								
-					\end{itemize}
+			\begin{itemize}
+				\item Linear term for education: $\mathrm{Y}_{i}= \delta +  \alpha D_i + \beta_{1} X_{i} + \epsilon_{i} $
+				\vspace{0.2cm}
+				\item Quadratic term for education: $\mathrm{Y}_{i}= \delta +  \alpha D_i + \beta_{1} X_{i} + \beta_{2} X^{2}_{i} + \epsilon_{i} $
+				\vspace{0.2cm}	
+				\item Estimated effect of treatment $D$ can be different for these two models
+				\vspace{0.2cm}								
+			\end{itemize}
 			\item The extrapolation may be unreliable if:
 			\vspace{0.2cm}
 			\begin{itemize}
@@ -554,16 +638,8 @@
 				\item Extrapolation region is too far from data
 			\end{itemize}
 		\end{itemize}
-		
-		
-		
-		
-		
-		
 	\end{itemize}
 \end{frame}
-
-
 
 \begin{frame}{Regression and Matching}{A Graphical Example}
 	\begin{center}
@@ -578,10 +654,19 @@
 \end{center}
 \end{frame}
 
-
-
-
-
+\begin{frame}{Regression and Matching}{A Graphical Example}
+	\begin{itemize}
+		\item The \textbf{red line} is the fitted regression for the treated group ($D=1$); the \textbf{blue line} for the control group ($D=0$)
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item Under the linear model, both lines have the \textbf{same slope} ($\beta_1$) but different intercepts
+			\vspace{0.2cm}
+			\item The \textbf{vertical gap} between the two lines is the estimated treatment effect $\hat{\alpha}$ --- constant across all values of $X$
+			% \vspace{0.2cm}
+			% \item Even under the linear model, the two lines are extrapolated beyond the common support region --- the gap at any given $X$ relies on the assumed functional form, not just within-support comparisons
+		\end{itemize}
+	\end{itemize}
+\end{frame}
 
 \begin{frame}{Regression and Matching}{A Graphical Example}
 	\begin{center}
@@ -596,32 +681,19 @@
 \end{center}
 \end{frame}
 
-
-
-
-
 \begin{frame}{Regression and Matching}{A Graphical Example}
 	\begin{itemize}
-		
-		
-		\item Regression:
-		\vspace{0.2cm}
+		\item With a \textbf{quadratic} functional form, the two curves have the same shape but are shifted vertically by $\hat{\alpha}$
+		\vspace{0.3cm}
 		\begin{itemize}
-			\item Among these units within common support region, there is no difference in outcomes between treatment and control groups
-
-			\end{itemize}
-		
-		
-		
-		
-		
-		
+			\item The vertical gap between the red and blue curves is still the constant treatment effect $\hat{\alpha}$
+			\vspace{0.2cm}
+			\item However, the \textbf{curvature} of the fitted lines changes how each line extrapolates outside the common support region
+			\vspace{0.2cm}
+			\item This illustrates why the choice of functional form matters: \alert{different models can yield different treatment effect estimates}
+		\end{itemize}
 	\end{itemize}
 \end{frame}
-
-
-
-
 
 
 
@@ -639,117 +711,204 @@
 \end{frame}
 
 
-
-\begin{frame}{Regression and Matching}{Summary}
-	
+\begin{frame}{Regression and Matching}{A Graphical Example}
 	\begin{itemize}
 		
-				
-		%\item The previous slides highlight a problem with regression
-		%\vspace{0.2cm}
-		
-		\item Regression may face challenges due to lack of common support
-				\vspace{0.2cm}
-		\begin{itemize}
-			\item When covariate distributions do not overlap between treated and control groups
-					\vspace{0.2cm}
-			%\item Even if both groups have the same average covariate values (e.g., education)
-			%		\vspace{0.2cm}
-			\item The regression line can be influenced by control units in regions without treated units
-					\vspace{0.2cm}
-		\end{itemize}
-		
-	
-		
+			\item Among these units within common support region, there is no difference in outcomes between treatment and control groups
 	\end{itemize}
-	
 \end{frame}
 
 
 
-
 \begin{frame}{Regression and Matching}{Summary}
-	
 	\begin{itemize}
-		
-		
-	
-		
-		\item Matching avoid this issue by restricting comparisons to common support region
+		\item When covariate distributions do not overlap, regression must \textbf{extrapolate} into regions where one group is not observed
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item The estimated treatment effect relies entirely on the assumed functional form in those regions
+			\vspace{0.2cm}
+			\item Results can be sensitive to model misspecification
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Matching avoids extrapolation by restricting comparisons to the \textbf{common support region}
+		\vspace{0.3cm}
+		\item \textbf{Trade-off between the two approaches:}
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item Only units with similar covariate values are compared
+			\item Matching: no functional form assumptions, but discards observations outside common support
 			\vspace{0.2cm}
-			\item Ensures comparisons are made between fundamentally comparable units
-			\vspace{0.2cm}
-			\item Avoids extrapolation to regions without data support
-			\vspace{0.2cm}
+			\item Regression: uses all data and is more efficient, but risks bias if the functional form is misspecified
 		\end{itemize}
-		
-		\item However, matching may discard useful data outside the common support region
-		\vspace{0.2cm}
-		
-		\begin{itemize}
-			\item Regression can potentially utilize this information, if model is correctly specified
-			\vspace{0.2cm}
-			\item Trade-off between bias and variance/efficiency
-		\end{itemize}
-		
 	\end{itemize}
-	
 \end{frame}
 
 
 \begin{frame}{Identification Results for Regression}
-	
-		\begin{itemize}
-\item We estimate the following regression:	
+	\begin{itemize}
+		\item We estimate the following regression:	
 		\begin{equation*}
-		\begin{aligned}
-			\mathrm{Y}_i &= \delta + \alpha D_i + X_{i}  \beta + \epsilon_{i}
-		\end{aligned}
-	\end{equation*}	
-	
-	
-	
-	\item The estimated coefficient of treatment $D$ is the following:
-
-\begin{equation*}
-\alpha(X) = \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} 
-\end{equation*}
-\vspace{0.3cm}
-	\item Based on CIA, including all relevant covariates $X_{i}$ into regression can help us eliminate selection bias 
-
-	
-		\end{itemize}
+			\mathrm{Y}_i = \delta + \alpha D_i + X_{i}\beta + \epsilon_{i}
+		\end{equation*}	
+		\item The estimated coefficient of treatment $D$ is the following:
+		\begin{equation*}
+			\alpha = \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} 
+		\end{equation*}
+		\vspace{0.1cm}
+		\item Based on CIA, including all relevant covariates $X_{i}$ into regression can help us eliminate selection bias
+		\vspace{0.1cm}
+		\item Note: the linear functional form assumption implies $\alpha$ is \textbf{constant} across all values of $X$
+	\end{itemize}
 \end{frame}
 
-
-
-
-
-
 \begin{frame}{Identification Results for Regression}
-	
-	
 	\begin{equation*}
 	\begin{aligned}
-	\alpha(X) =& \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} \\
-	%&= \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]} 
-	%\\
-	%& + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
-	%&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{Causal Effect (CATT)}} + \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} \\ 
-	&+\underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
-	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}}  \\
-	&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} \\
-	&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}
+	\alpha =& \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} \\
+	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} 
+	+\underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
+	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias = 0 by CIA}}  \\
+	&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} 
+	=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}
 	\end{aligned}
-	\end{equation*}	
-	
-	
-	
+	\end{equation*}
+	\vspace{0.2cm}
+	%\begin{itemize}
+   % \item CATT = CATU = CATE because \textbf{CIA} eliminates selection bias at every value of $X_i$, making the distribution of potential outcomes independent of treatment status
+	%\end{itemize}
 \end{frame}
+
+
+\begin{frame}{Identification Results for Regression}
+	\begin{itemize}	
+		\item With continuous or multi-valued covariates $X_i$, we obtain a CATE for each unique value of $X_i$
+		\vspace{0.2cm}
+		\item Applying the \textbf{law of iterated expectations (LIE)}, we can aggregate CATE into ATE:
+		\vspace{0.2cm}
+		\begin{equation*}
+			\mathrm{ATE} = \mathrm{E}_{X}\left[\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]\right] = \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}]
+		\end{equation*}
+		\vspace{0.1cm}
+		\item Under the baseline regression without interaction terms, CATE $= \alpha$ for all $X_i$, so LIE immediately gives ATE $=$ ATT $=$ ATU $= \alpha$
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item This is a consequence of \textbf{excluding interaction terms} $D_i \times X_i$ from the model
+		% 	\vspace{0.2cm}
+		% 	\item If interaction terms are included, CATE varies with $X_i$ and LIE is needed to aggregate into ATE
+		% \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+% \begin{frame}{Identification Results for Regression}
+% 	\begin{itemize}	
+% 			\item With continuous or multi-valued covariates $X_i$, we obtain a different CATE for each unique value of $X_i$
+% 		\vspace{0.2cm}
+		
+% 		\item In practice, researchers often need a single summary measure of treatment effects
+% 		\begin{itemize}
+% 			\vspace{0.2cm}
+% 			\item This allows for simpler interpretation and communication of results
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item Again, applying the law of iterated expectations (LIE), we can identify ATT, ATU, and ATE
+% 				\vspace{0.2cm}
+% 			\begin{itemize}
+% 			\item Take average of CATT, CATU, and CATE over all subgroups (all possible X-values)
+% 		\end{itemize}
+		
+% 	\end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}{Regression and Matching}{Summary}
+% 	\begin{itemize}
+% 		\item Regression may face challenges due to lack of common support
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item When covariate distributions do not overlap between treated and control groups
+% 			\vspace{0.2cm}
+% 			\item Regression must \textbf{extrapolate} into regions where one group is not observed, relying entirely on the assumed functional form
+% 			\vspace{0.2cm}
+% 			\item Control units outside the common support influence the slope of the regression line, which in turn affects the extrapolated counterfactual
+% 			\vspace{0.2cm}
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
+
+% \begin{frame}{Regression and Matching}{Summary}
+% 	\begin{itemize}
+% 		\item Matching avoids this issue by restricting comparisons to the common support region
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Only units with similar covariate values are compared
+% 			\vspace{0.2cm}
+% 			\item Ensures comparisons are made between fundamentally comparable units
+% 			\vspace{0.2cm}
+% 			\item Avoids extrapolation to regions without data support
+% 			\vspace{0.2cm}
+% 		\end{itemize}
+		
+% 		\item However, matching may discard useful data outside the common support region
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Regression can potentially utilize this information, if the model is correctly specified
+% 			\vspace{0.2cm}
+% 			\item \textbf{Trade-off}: regression gains efficiency by using all data, but risks bias if the functional form is misspecified; matching avoids extrapolation bias at the cost of discarding observations
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
+
+% \begin{frame}{Identification Results for Regression}
+	
+% 		\begin{itemize}
+% \item We estimate the following regression:	
+% 		\begin{equation*}
+% 		\begin{aligned}
+% 			\mathrm{Y}_i &= \delta + \alpha D_i + X_{i}  \beta + \epsilon_{i}
+% 		\end{aligned}
+% 	\end{equation*}	
+	
+	
+	
+% 	\item The estimated coefficient of treatment $D$ is the following:
+
+% \begin{equation*}
+% \alpha(X) = \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} 
+% \end{equation*}
+% \vspace{0.3cm}
+% 	\item Based on CIA, including all relevant covariates $X_{i}$ into regression can help us eliminate selection bias 
+
+	
+% 		\end{itemize}
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}{Identification Results for Regression}
+	
+	
+% 	\begin{equation*}
+% 	\begin{aligned}
+% 	\alpha(X) =& \underbrace{\mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i}|X_{i},D_{i}=0]}_{\text{ODO at given $X_{i}$}} \\
+% 	%&= \mathrm{E}[\mathrm{Y}^{1}_{i}|X_{i},D_i=1]-{\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]} 
+% 	%\\
+% 	%& + {\color{red} \mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0] \\
+% 	%&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{Causal Effect (CATT)}} + \underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
+% 	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} \\ 
+% 	&+\underbrace{\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=1]-\mathrm{E}[\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{Selection Bias}} \\
+% 	&= \underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=1]}_{\text{CATT}} + \underbrace{0}_{\text{Selection Bias}}  \\
+% 	&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i},D_i=0]}_{\text{CATU}} \\
+% 	&=\underbrace{\mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|X_{i}]}_{\text{CATE}}
+% 	\end{aligned}
+% 	\end{equation*}	
+	
+	
+	
+% \end{frame}
 
 
 %\begin{frame}{Identification Results for Regression}{From Conditional to Unconditional Treatment Effects}
@@ -778,27 +937,6 @@
 %\end{frame}
 %
 
-
-
-\begin{frame}{Identification Results for Regression}
-	\begin{itemize}	
-			\item With continuous or multi-valued covariates $X_i$, we obtain a different CATE for each unique value of $X_i$
-		\vspace{0.2cm}
-		
-		\item In practice, researchers often need a single summary measure of treatment effects
-		\begin{itemize}
-			\vspace{0.2cm}
-			\item This allows for simpler interpretation and communication of results
-		\end{itemize}
-		\vspace{0.2cm}
-		\item Again, applying the law of iterated expectations (LIE), we can identify ATT, ATU, and ATE
-				\vspace{0.2cm}
-			\begin{itemize}
-			\item Take average of CATT, CATU, and CATE over all subgroups (all possible X-values)
-		\end{itemize}
-		
-	\end{itemize}
-\end{frame}
 
 
 
@@ -2172,8 +2310,8 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 misstable summarize
 misstable summarize inctot
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{misstable summarize:} Displays patterns of missing values for all variables in the dataset
 		\vspace{0.2cm}
 		\item \textbf{misstable summarize varname:} Shows missing value patterns for a specific variable (e.g., inctot)
@@ -2188,8 +2326,8 @@ generate college = educ99>= 15
 generate gender = sex == 1
 generate college_gender = college*gender
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 	\item \textbf{generate:} Create a binary variable \texttt{college} indicating if education level is college or above
 	\vspace{0.2cm}
 		\item \textbf{generate:} Create a binary variable \texttt{gender} indicating if gender is male (sex=1)
@@ -2204,8 +2342,8 @@ generate college_gender = college*gender
 replace incwage=. if incwage==9999999
 drop if incwage==.
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{replace:} Replace missing values in \texttt{incwage} with "." if \texttt{incwage} equals 9999999  
 		\vspace{0.2cm}
 		\item \textbf{drop:} Drop observations with missing values in \texttt{incwage}
@@ -2219,13 +2357,14 @@ drop if incwage==.
 
 \begin{frame}[fragile]{Create Sample for Analysis}{recode: Recoding Variable Values}
 	
+		
 \begin{lstlisting}
 recode sex (1=0 "Male") (2=1 "Female"), gen(female)
 \end{lstlisting}
-\begin{itemize}
 		
 		\vspace{0.2cm}
 		
+\begin{itemize}
 		\item \textbf{recode:} Transform the original \texttt{sex} variable by reassigning its values and labels
 		
 		\vspace{0.2cm}
@@ -2249,15 +2388,16 @@ recode sex (1=0 "Male") (2=1 "Female"), gen(female)
 
 \begin{frame}[fragile]{Create Sample for Analysis}{forvalues: Looping Through Numeric Sequences}
 	
+		
 \begin{lstlisting}
 forv i=1(1)5{
 gen health_`i' = health==`i'
 }
 \end{lstlisting}
-	\begin{itemize}
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item \textbf{forvalues:} Loop through values 1 to 5 and create binary variables \texttt{health\_1}, \texttt{health\_2}, ..., \texttt{health\_5} indicating if \texttt{health} equals the corresponding value
 		
 		\vspace{0.2cm}
@@ -2282,10 +2422,10 @@ foreach var in age inctot incwage {
 sum `var', detail
 }
 \end{lstlisting}
-\begin{itemize}		
 		
 		\vspace{0.2cm}
 		
+\begin{itemize}		
 		\item \textbf{foreach:} Loop through a list of variables (\texttt{age}, \texttt{inctot}, \texttt{incwage}) and perform the same operations on each one
 		
 		\vspace{0.2cm}
@@ -2320,15 +2460,16 @@ regress depvar [indepvars] [if] [in] [weight] [,options]
 
 \begin{frame}[fragile]{Reducing OVB by including covariates}
 	
+		
 \begin{lstlisting}
 reg incwage college , vce(robust)
 reg incwage college health_1 - health_4, vce(robust)  
 reg incwage college health_1 - health_4 age i.race, vce(robust)
 \end{lstlisting}
-	\begin{itemize}
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item Regress \texttt{incwage} on \texttt{college} using robust standard errors
 		
 		\vspace{0.2cm}
@@ -2358,6 +2499,7 @@ reg incwage college health_1 - health_4 age i.race, vce(robust)
 
 \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}
 	
+		
 \begin{lstlisting}
 reg college health_1 - health_4 age i.race, vce(robust)
 predict college_rid, residuals
@@ -2365,10 +2507,10 @@ predict college_rid, residuals
 reg incwage college health_1 - health_4 age i.race, vce(robust)
 reg incwage college_rid, vce(robust)
 \end{lstlisting}
-	\begin{itemize}
 		
 		\vspace{0.2cm}
 		
+	\begin{itemize}
 		\item Regress \texttt{college} on all other covariates to obtain residuals \texttt{college\_rid}
 		
 		\vspace{0.2cm}
@@ -2408,11 +2550,12 @@ reg incwage college_rid, vce(robust)
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
+
 \begin{lstlisting}
 reg incwage college i.health age year i.race if sex==1, vce(robust)
 \end{lstlisting}
-\begin{itemize}
 	\vspace{0.2cm}
+\begin{itemize}
 \item Option \textbf{if}: restrict sample to specific subgroup
 
 
@@ -2427,11 +2570,12 @@ reg incwage college i.health age year i.race if sex==1, vce(robust)
 \end{frame}
 
 \begin{frame}[fragile]{Subgroup Analysis}
+		
 \begin{lstlisting}
 reg incwage college gender college_gender i.health age year i.race, vce(robust)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Examine differential effect of \texttt{college} by gender 
 		
 		
@@ -2502,8 +2646,8 @@ library(skimr)
 # Check for missing values with skim()
 skim(acs_2015)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \textbf{skim()} from the \textbf{skimr} package provides a comprehensive data summary
 		\vspace{0.2cm}
 		\item The function automatically reports:
@@ -2528,8 +2672,8 @@ acs_2015$college <- ifelse(acs_2015$educ99 >= 15, 1, 0)
 # Create new gender variable (1 for male, 0 for female)
 acs_2015$gender <- ifelse(acs_2015$sex == 1, 1, 0)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \texttt{ifelse()} function: 
 				\vspace{0.2cm}
 		\begin{itemize}
@@ -2550,8 +2694,8 @@ acs_2015 <- na.omit(acs_2015, cols = "incwage")
 # Generate log of incwage
 acs_2015$log_incwage <- log(acs_2015$incwage)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Handle missing values in \texttt{incwage}:
 				\vspace{0.2cm}
 		\begin{itemize}
@@ -2584,8 +2728,8 @@ health_4 = as.integer(health == 4),
 health_5 = as.integer(health == 5)
 )
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Use \texttt{dplyr}'s \textbf{mutate()} function to create all dummy variables in one step
 		\vspace{0.2cm}
 			\begin{itemize}
@@ -2645,8 +2789,8 @@ model2 <- lm_robust(incwage ~ college + age + health_1 + health_2 + health_3 + h
 summary(model1)
 summary(model2)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Regress \texttt{incwage} on \texttt{college} using robust standard errors
 		\vspace{0.2cm}
 		\item Use \textbf{lm\_robust()} with \textbf{se\_type = "HC1"} for direct computation of robust standard errors
@@ -2660,8 +2804,8 @@ model3 <- lm_robust(incwage ~ college + age + factor(race) + health_1 + health_2
 # Print summary to get robust standard errors
 summary(model3)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item \texttt{subset} parameter in \textbf{lm\_robust()}:
 		\vspace{0.2cm}
 		\begin{itemize}
@@ -2688,8 +2832,8 @@ age + factor(race), data = acs_2015, se_type = "HC1")
 # Print summary to get robust standard errors
 summary(model_interaction)
 \end{lstlisting}
-	\begin{itemize}
 		\vspace{0.2cm}
+	\begin{itemize}
 		\item Create an interaction term between \texttt{college} and \texttt{gender}
 		\vspace{0.2cm}
 		\item Include the interaction term in the regression model with robust standard errors

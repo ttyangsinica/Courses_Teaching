@@ -1,0 +1,1070 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+\usepackage{listings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Stata listings style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinelanguage{Stata}{
+	morekeywords=,
+	morekeywords=[2]{cntrade, chinafin, wbopendata, spmap,},
+	morekeywords=[3]{regress, summarize, display,},
+	morekeywords=[4]{forvalues, if, foreach, set},
+	morekeywords=[5]{rnormal, runiform},
+	morecomment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	morecomment=[n][keywordstyle9]{`}{'},
+	morestring=[b]",
+	sensitive=true,
+}
+
+\lstdefinestyle{numbers}{
+	numbers=left,
+	stepnumber=1,
+	numberstyle=\tiny\emptyaccsupp,
+	xleftmargin=2em,
+}
+
+\lstdefinestyle{nonumbers}{
+	numbers=none,
+}
+
+\lstdefinestyle{stata-plain}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
+}
+
+\lstdefinestyle{stata-editor}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle={\color{NavyBlue}},
+	keywordstyle=[2]{\color{NavyBlue}},
+	keywordstyle=[3]{\color{NavyBlue}},
+	keywordstyle=[4]{\color{NavyBlue}},
+	keywordstyle=[5]{\color{Blue}},
+	keywordstyle=[9]{\color{TealBlue}},
+	stringstyle=\color{Maroon},
+	commentstyle=\color{OliveGreen},
+}
+
+\lstset{
+	language=Stata,
+	style=stata-plain,
+	style=numbers,
+	showstringspaces=false,
+	breaklines,
+	frame=single,
+}
+
+
+
+
+\title[]
+{Causal Machine Learning (III): Heterogeneous Treatment Effects}
+
+\author
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+
+\date
+{\today}
+
+
+\usetheme{CambridgeUS}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Main Idea}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Machine Learning: Series Overview}
+	\begin{itemize}
+		\item \textbf{Machine learning (ML)} methods use data-driven algorithms to model the relationship between an outcome \textbf{Y} and covariates \textbf{X}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item There are many ML methods; \textbf{regression} is a fundamental one
+			\vspace{0.2cm}
+			\item The best method depends on the application
+		\end{itemize}
+		\vspace{0.3cm}
+		\item For \textbf{causal inference}, ML methods help us identify treatment effects credibly
+		\vspace{0.3cm}
+		\item This lecture series covers three approaches:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Part I:} Regression --- foundational ML tool for causal inference
+			\vspace{0.2cm}
+			\item \textbf{Part II:} Post-Double Selection --- high-dimensional covariates with LASSO
+			\vspace{0.2cm}
+			\item \textbf{Part III (This Lecture):} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{From Average to Heterogeneous Treatment Effects}
+	\begin{itemize}
+		\item Parts I and II focus on estimating the \textbf{Average Treatment Effect (ATE)}:
+		\begin{equation*}
+			\text{ATE} = E[Y^{1}_{i} - Y^{0}_{i}]
+		\end{equation*}
+
+		\vspace{0.2cm}
+		\item But the same policy may have \textbf{very different effects} for different people
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item A job training program may benefit low-educated workers more than college graduates
+			\vspace{0.2cm}
+			\item A minimum wage increase may hurt employment in some sectors but not others
+			\vspace{0.2cm}
+			\item Knowing \textbf{who benefits most} is crucial for targeting policies efficiently
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Part III:} Estimate the \textbf{Conditional Average Treatment Effect (CATE)}:
+		\begin{equation*}
+			\tau(x) = E[Y^{1}_{i} - Y^{0}_{i} \mid X_{i} = x]
+		\end{equation*}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{From ATE to CATE}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Conditional Average Treatment Effect (CATE)}
+	\begin{itemize}
+		\item The \textbf{CATE} captures how treatment effects vary across individuals with different observed characteristics $X_i$
+		\begin{equation*}
+			\tau(x) = E[Y^{1}_{i} - Y^{0}_{i} \mid X_{i} = x]
+		\end{equation*}
+		\vspace{0.2cm}
+		\item $\tau(x)$ is a \textbf{function} of covariates $x$, not a single number
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item For example, $\tau(\text{age}=25, \text{educ}=12)$ may differ from $\tau(\text{age}=40, \text{educ}=16)$
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Special cases:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item ATE $= E[\tau(X_i)]$: average of CATE over the population
+			\vspace{0.2cm}
+			\item ATT $= E[\tau(X_i) \mid D_i = 1]$: average CATE among the treated
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Why Can't Standard Regression Estimate CATE?}
+	\begin{itemize}
+		\item Standard regression assumes a \textbf{constant treatment effect}:
+		\begin{equation*}
+			Y_i = \delta + \alpha D_i + X_i \beta + \epsilon_i
+		\end{equation*}
+		Here $\alpha$ is assumed the same for everyone
+		\vspace{0.3cm}
+		\item We can add \textbf{interaction terms} to allow heterogeneity:
+		\begin{equation*}
+			Y_i = \delta + \alpha D_i + X_i \beta + (D_i \times X_i)\gamma + \epsilon_i
+		\end{equation*}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item But with many covariates $X$, this creates \textbf{too many interactions}
+			\vspace{0.2cm}
+			\item We do not know which interactions matter a priori
+			\vspace{0.2cm}
+			\item Standard regression cannot flexibly capture complex, nonlinear heterogeneity
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Tree-based ML methods} can flexibly model $\tau(x)$ without specifying its functional form
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Identifying CATE: Conditional Independence Assumption}
+	\begin{block}{Conditional Independence Assumption (CIA)}
+		\begin{equation*}
+			(Y^{1}_{i}, Y^{0}_{i}) \indep D_{i} \mid X_{i}
+		\end{equation*}
+	\end{block}
+	\begin{itemize}
+		\vspace{0.3cm}
+		\item Same assumption as in Parts I and II: treatment is \textbf{as good as random} after conditioning on observed covariates $X_i$
+		\vspace{0.3cm}
+		\item Under CIA, the CATE is identified:
+		\begin{equation*}
+			\tau(x) = E[Y_i \mid X_i = x, D_i = 1] - E[Y_i \mid X_i = x, D_i = 0]
+		\end{equation*}
+		\vspace{0.2cm}
+		\item The challenge is estimating this difference \textbf{flexibly} for all values of $x$
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Decision Trees}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Decision Trees: Main Idea}
+	\begin{itemize}
+		\item A \textbf{decision tree} partitions the covariate space into rectangular regions, and fits a simple model (e.g., a mean) within each region
+		\vspace{0.3cm}
+		\item \textbf{Algorithm (Recursive Binary Splitting):}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item[1] Find the variable $X^j$ and split point $s$ that minimizes prediction error
+			\vspace{0.2cm}
+			\item[2] Divide the data into two regions: $\{X^j < s\}$ and $\{X^j \geq s\}$
+			\vspace{0.2cm}
+			\item[3] Repeat within each region until a stopping rule is met
+		\end{itemize}
+		\vspace{0.3cm}
+		\item The final estimate in each \textbf{leaf} (terminal node) is the mean of $Y$ for observations that fall in that leaf
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Decision Trees: Illustration}
+	\begin{itemize}
+		\item Suppose we want to predict wages $Y$ using age and education $X$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Split 1: age $< 30$ vs. age $\geq 30$
+			\vspace{0.2cm}
+			\item Split 2 (within age $\geq 30$): educ $< 12$ vs. educ $\geq 12$
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Each leaf contains observations with similar $X$ and similar predicted $Y$
+		\vspace{0.3cm}
+		\item \textbf{Advantages:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Flexible: can capture nonlinear and interaction effects automatically
+			\vspace{0.2cm}
+			\item Interpretable: easy to visualize and explain
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Disadvantage:} A single tree tends to \textbf{overfit} (high variance)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Solution: aggregate many trees (\textbf{Random Forest})
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Naive Tree for Causal Inference: The Problem}
+	\begin{itemize}
+		\item Suppose we build a tree by splitting to \textbf{maximize differences in treatment effects}
+		\vspace{0.3cm}
+		\item \textbf{Problem: Adaptive bias}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item If we use the \textbf{same data} to choose splits and to estimate treatment effects, we introduce bias
+			\vspace{0.2cm}
+			\item The tree selects splits precisely because the treatment effect appears large there --- even by chance
+			\vspace{0.2cm}
+			\item Estimated effects in the leaves are \textbf{biased upward}
+		\end{itemize}
+		\vspace{0.3cm}
+		\item This is the \textbf{``double-dipping''} problem in statistical learning
+		\vspace{0.3cm}
+		\item Solution: \textbf{Honest Estimation} (Athey \& Imbens, 2016)
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Causal Tree}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Tree}{Athey \& Imbens (2016)}
+	Athey, Susan and Guido Imbens (2016), ``\textbf{Recursive Partitioning for Heterogeneous Causal Effects}'', \textit{Proceedings of the National Academy of Sciences}
+
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item Propose a \textbf{Causal Tree}: a decision tree designed to estimate \textbf{CATE}
+		\vspace{0.2cm}
+		\item Key innovation: \textbf{Honest Estimation}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Separate the data used for building the tree structure from the data used to estimate treatment effects within leaves
+			\vspace{0.2cm}
+			\item This eliminates the adaptive bias of naive trees
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Under CIA and honesty, within-leaf estimates of CATE are \textbf{unbiased}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Honest Estimation}{Main Idea}
+	\begin{itemize}
+		\item \textbf{Honest estimation} requires that the tree structure and the leaf-level estimates use \textbf{different samples}
+		\vspace{0.3cm}
+		\item \textbf{Step 1 --- Training sample:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use this sample to \textbf{decide how to split} the covariate space
+			\vspace{0.2cm}
+			\item Choose splits that maximize differences in estimated treatment effects across leaves
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Step 2 --- Estimation sample:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use this \textbf{fresh sample} (not used to build the tree) to \textbf{estimate the treatment effect within each leaf}:
+			\begin{equation*}
+				\hat{\tau}(\ell) = \frac{1}{n^{1}_\ell} \sum_{i \in \ell, D_i=1} Y_i - \frac{1}{n^{0}_\ell} \sum_{i \in \ell, D_i=0} Y_i
+			\end{equation*}
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Because the tree structure was determined independently, estimates are \textbf{unbiased}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Tree: Summary}
+	\begin{itemize}
+		\item A causal tree assigns each individual a CATE estimate based on the leaf they fall into:
+		\begin{equation*}
+			\hat{\tau}(x) = \hat{\tau}(\ell(x))
+		\end{equation*}
+		where $\ell(x)$ is the leaf containing $x$
+		\vspace{0.3cm}
+		\item \textbf{Limitation of a single tree:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item High variance --- small changes in data can change the tree structure substantially
+			\vspace{0.2cm}
+			\item Each leaf contains few observations, leading to noisy estimates
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Solution: grow many causal trees and average their predictions --- \textbf{Causal Forest}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Causal Forest}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Forest}{Wager \& Athey (2018)}
+	Wager, Stefan and Susan Athey (2018), ``\textbf{Estimation and Inference of Heterogeneous Treatment Effects using Random Forests}'', \textit{Journal of the American Statistical Association}
+
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item Generalize Random Forest to estimate \textbf{CATE}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Build \textbf{many honest causal trees}, each using a random subsample and random subset of covariates
+			\vspace{0.2cm}
+			\item Average the CATE estimates across trees
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Key theoretical results:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Consistency:} $\hat{\tau}(x) \xrightarrow{p} \tau(x)$ as sample size grows
+			\vspace{0.2cm}
+			\item \textbf{Asymptotic normality:} allows construction of valid confidence intervals for $\tau(x)$
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Forest: Intuition}
+	\begin{itemize}
+		\item The causal forest implicitly assigns \textbf{weights} $\alpha_i(x)$ to each observation $i$ when predicting $\tau(x)$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $\alpha_i(x)$ is large if observation $i$ tends to fall in the same leaf as $x$ across many trees
+			\vspace{0.2cm}
+			\item Observations with $X_i$ similar to $x$ receive higher weight
+		\end{itemize}
+		\vspace{0.3cm}
+		\item The CATE estimate at $x$ is essentially a \textbf{locally weighted comparison} of treated and control observations:
+		\begin{equation*}
+			\hat{\tau}(x) \approx \frac{\sum_i \alpha_i(x) \cdot (Y_i - \bar{Y}) \cdot (D_i - \bar{D})}{\sum_i \alpha_i(x) \cdot (D_i - \bar{D})^2}
+		\end{equation*}
+		\item This is like running a \textbf{local linear regression} of $Y$ on $D$, using the forest to define ``local neighborhood'' around $x$
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Forest: Key Assumption}
+	\begin{itemize}
+		\item Causal Forest still requires \textbf{CIA (selection on observables)}:
+		\begin{equation*}
+			(Y^{1}_{i}, Y^{0}_{i}) \indep D_{i} \mid X_{i}
+		\end{equation*}
+		\vspace{0.2cm}
+		\item Additionally requires \textbf{overlap}: both treated and control units exist for all values of $X$
+		\begin{equation*}
+			0 < P(D_i = 1 \mid X_i = x) < 1 \quad \forall x
+		\end{equation*}
+		\vspace{0.3cm}
+		\item \textbf{Comparison to Parts I and II:}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Same identification assumption (CIA)
+			\vspace{0.2cm}
+			\item Part I (Regression): assumes \textbf{linear, constant} treatment effect
+			\vspace{0.2cm}
+			\item Part II (PDS): focuses on ATE with high-dimensional controls
+			\vspace{0.2cm}
+			\item \textbf{Part III (Causal Forest): flexible nonlinear CATE estimation}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Causal Forest: Literature}
+	\begin{itemize}
+		\item[] Athey, Susan and Guido Imbens (2016), ``\textbf{Recursive Partitioning for Heterogeneous Causal Effects}'', \textit{PNAS}
+		\vspace{0.2cm}
+		\item[] Wager, Stefan and Susan Athey (2018), ``\textbf{Estimation and Inference of Heterogeneous Treatment Effects using Random Forests}'', \textit{JASA}
+		\vspace{0.2cm}
+		\item[] Athey, Susan, Julie Tibshirani and Stefan Wager (2019), ``\textbf{Generalized Random Forests}'', \textit{Annals of Statistics}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item R package \textbf{grf}: Generalized Random Forests
+			\vspace{0.2cm}
+			\item Provides \textbf{causal\_forest()}, \textbf{average\_treatment\_effect()}, \textbf{best\_linear\_projection()}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Interpreting CATE}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{What to Do After Estimating CATE?}
+	\begin{itemize}
+		\item After running causal forest, we obtain $\hat{\tau}(x_i)$ for each individual $i$
+		\vspace{0.3cm}
+		\item Several tools for interpreting the results:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item[1] \textbf{Average Treatment Effect:} Average $\hat{\tau}(x_i)$ over the sample to recover ATE
+			\vspace{0.2cm}
+			\item[2] \textbf{Best Linear Projection (BLP):} Which covariates drive heterogeneity?
+			\vspace{0.2cm}
+			\item[3] \textbf{Variable Importance:} Which variables are most used in splitting?
+			\vspace{0.2cm}
+			\item[4] \textbf{Distribution of CATE:} Plot histogram of $\hat{\tau}(x_i)$ to visualize heterogeneity
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Best Linear Projection (BLP)}
+	\begin{itemize}
+		\item After estimating $\hat{\tau}(x_i)$, we can project CATE onto covariates $X_i$:
+		\begin{equation*}
+			\tau(X_i) \approx \beta_0 + X_i \beta_1
+		\end{equation*}
+		\vspace{0.2cm}
+		\item $\beta_1$ tells us: \textbf{which covariates are associated with larger treatment effects?}
+		\vspace{0.3cm}
+		\item For example:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $\beta_1^{\text{educ}} < 0$: job training benefits less-educated workers more
+			\vspace{0.2cm}
+			\item $\beta_1^{\text{age}} > 0$: older workers benefit more from training
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Implemented in R via \textbf{best\_linear\_projection(cf, X)}
+		\vspace{0.3cm}
+		\item Athey et al. (2019) show BLP is valid for inference (not just description)
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Variable Importance}
+	\begin{itemize}
+		\item \textbf{Variable importance} measures how often each covariate $X^j$ is used as a split variable across all trees in the forest
+		\vspace{0.3cm}
+		\item Variables selected more frequently are more important for explaining \textbf{treatment effect heterogeneity}
+		\vspace{0.3cm}
+		\item Implemented in R via \textbf{variable\_importance(cf)}
+		\vspace{0.3cm}
+		\item \textbf{Caution:} Variable importance ranks variables but does not indicate the direction or magnitude of the effect
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use \textbf{Best Linear Projection} for directional inference
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{R Example: Job Training Program}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{R Example: LaLonde (1986) Job Training Data}{Overview}
+	LaLonde, Robert J. (1986), ``\textbf{Evaluating the Econometric Evaluations of Training Programs with Experimental Data}'', \textit{American Economic Review}
+
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item A classic randomized experiment on the effect of job training on earnings
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{Treatment $D_i$:} Participation in job training (National Supported Work Demonstration)
+			\vspace{0.2cm}
+			\item \textbf{Outcome $Y_i$:} Earnings in 1978 (re78)
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Covariates $X_i$: age, years of education, race (Black, Hispanic), marital status, no high school degree, pre-treatment earnings (1974, 1975)
+		\vspace{0.2cm}
+		\item Sample: $n = 445$ individuals (185 treated, 260 control)
+		\vspace{0.2cm}
+		\item \textbf{Question:} The average effect of training is well-established. \textbf{Who benefits most?}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Data and Code}
+	\begin{itemize}
+		\item See \textbf{CausalForest.R}
+		\vspace{0.2cm}
+		\item Use the LaLonde dataset from the \textbf{Matching} package
+		\vspace{0.2cm}
+		\item Install the following packages:
+		\begin{itemize}
+			\vspace{0.2cm}
+			\item \textbf{grf}: Generalized Random Forests (causal forest)
+			\vspace{0.2cm}
+			\item \textbf{Matching}: contains the LaLonde dataset
+			\vspace{0.2cm}
+			\item \textbf{ggplot2}: visualization
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Install Packages}
+\begin{lstlisting}[language=R]
+install.packages(c("grf", "Matching", "ggplot2"))
+
+library(grf)
+library(Matching)
+library(ggplot2)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{grf}: Main package for causal forest estimation
+		\vspace{0.2cm}
+		\item \textbf{Matching}: Provides the LaLonde dataset
+		\vspace{0.2cm}
+		\item \textbf{ggplot2}: For visualizing CATE distribution
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Load and Prepare Data}
+\begin{lstlisting}[language=R]
+data(lalonde)
+
+# Define outcome, treatment, and covariates
+Y <- lalonde$re78
+D <- lalonde$treat
+X <- lalonde[, c("age", "educ", "black", "hisp",
+                 "married", "nodegree", "re74", "re75")]
+X <- as.matrix(X)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{Y}: Earnings in 1978 (outcome variable)
+		\vspace{0.2cm}
+		\item \textbf{D}: Binary treatment indicator (1 = received job training)
+		\vspace{0.2cm}
+		\item \textbf{X}: Matrix of pre-treatment covariates
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Estimate Causal Forest}
+\begin{lstlisting}[language=R]
+# Set seed for reproducibility
+set.seed(2025)
+
+# Estimate causal forest
+cf <- causal_forest(X = X, Y = Y, W = D,
+                    num.trees = 2000)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{causal\_forest()}: Estimates a causal forest
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{X}: Covariate matrix
+			\vspace{0.2cm}
+			\item \textbf{Y}: Outcome variable
+			\vspace{0.2cm}
+			\item \textbf{W}: Binary treatment variable
+			\vspace{0.2cm}
+			\item \textbf{num.trees}: Number of trees in the forest (default: 2000)
+		\end{itemize}
+		\vspace{0.2cm}
+		\item The function automatically performs honest estimation using subsampling
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Average Treatment Effect}
+\begin{lstlisting}[language=R]
+# Estimate Average Treatment Effect (ATE)
+ate <- average_treatment_effect(cf, target.sample = "all")
+print(ate)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{average\_treatment\_effect()}: Computes ATE from the causal forest
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Returns estimate and standard error
+			\vspace{0.2cm}
+			\item \textbf{target.sample = "all"}: Average over all observations
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Can also estimate the \textbf{ATT} (Average Treatment effect on the Treated):
+\begin{lstlisting}[language=R]
+att <- average_treatment_effect(cf,
+         target.sample = "treated")
+\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Individual CATE Estimates}
+\begin{lstlisting}[language=R]
+# Get CATE estimates for each individual
+tau_hat <- predict(cf)$predictions
+
+# Summary statistics
+summary(tau_hat)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{predict(cf)}: Returns a data frame with individual CATE estimates $\hat{\tau}(x_i)$
+		\vspace{0.2cm}
+		\item Each individual receives a personalized treatment effect estimate
+		\vspace{0.3cm}
+		\item We can examine:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item The distribution of CATE across individuals
+			\vspace{0.2cm}
+			\item Which individuals have the largest (or smallest) treatment effects
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Visualize CATE Distribution}
+\begin{lstlisting}[language=R]
+cate_df <- data.frame(tau_hat = tau_hat)
+
+ggplot(cate_df, aes(x = tau_hat)) +
+  geom_histogram(bins = 30, fill = "steelblue",
+                 color = "white") +
+  geom_vline(xintercept = mean(tau_hat),
+             color = "red", linetype = "dashed") +
+  labs(title = "Distribution of CATE Estimates",
+       x = "Estimated Treatment Effect",
+       y = "Count") +
+  theme(plot.background = element_rect(fill = "white"))
+\end{lstlisting}
+	\begin{itemize}
+		\item The red dashed line marks the \textbf{average} treatment effect
+		\vspace{0.2cm}
+		\item Spread of the histogram shows the degree of \textbf{heterogeneity}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Best Linear Projection}
+\begin{lstlisting}[language=R]
+# Best Linear Projection of CATE on covariates
+blp <- best_linear_projection(cf, X)
+print(blp)
+\end{lstlisting}
+	\begin{itemize}
+		\item \textbf{best\_linear\_projection()}: Regresses estimated CATE on covariates
+		\vspace{0.3cm}
+		\item Interprets output:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \textbf{educ}: Does education increase or decrease the training effect?
+			\vspace{0.2cm}
+			\item \textbf{re74, re75}: Do workers with lower pre-treatment earnings benefit more?
+			\vspace{0.2cm}
+			\item \textbf{nodegree}: Do workers without a high school degree benefit more?
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Coefficients have valid standard errors for statistical inference
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{Variable Importance}
+\begin{lstlisting}[language=R]
+# Variable importance
+var_imp <- variable_importance(cf)
+names(var_imp) <- colnames(X)
+
+# Sort and plot
+var_imp_df <- data.frame(variable = names(var_imp),
+                          importance = var_imp)
+var_imp_df <- var_imp_df[order(-var_imp_df$importance), ]
+print(var_imp_df)
+\end{lstlisting}
+	\begin{itemize}
+		\item Shows which covariates are most frequently used for splitting across trees
+		\vspace{0.2cm}
+		\item Identifies the key drivers of treatment effect heterogeneity
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Job Training Program}{CATE vs. Covariates}
+\begin{lstlisting}[language=R]
+# Plot CATE against education
+plot_df <- data.frame(educ = lalonde$educ,
+                      tau_hat = tau_hat)
+
+ggplot(plot_df, aes(x = educ, y = tau_hat)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = TRUE,
+              color = "blue") +
+  labs(title = "CATE by Years of Education",
+       x = "Years of Education",
+       y = "Estimated Treatment Effect") +
+  theme(plot.background = element_rect(fill = "white"))
+\end{lstlisting}
+	\begin{itemize}
+		\item Plots individual CATE estimates against education
+		\vspace{0.2cm}
+		\item Reveals how the job training effect varies with education level
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Labor Economics Application}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Labor Economics Applications of Causal Forest}
+	\begin{itemize}
+		\item Causal Forest has been applied to several important labor economics questions:
+		\vspace{0.3cm}
+		\item[] Knaus, Michael C., Michael Lechner, and Anthony Strittmatter (2021), ``\textbf{Heterogeneous Employment Effects of Job Search Programmes}'', \textit{Journal of Labor Economics}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Uses causal forest to identify subgroups who benefit most from job search assistance programs
+			\vspace{0.2cm}
+			\item Finds that workers with lower labor market attachment benefit more
+		\end{itemize}
+		\vspace{0.3cm}
+		\item[] Davis, Jonathan M.V. and Sara B. Heller (2020), ``\textbf{Rethinking the Benefits of Youth Employment Programs}'', \textit{NBER Working Paper}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Applies causal forest to a randomized summer youth employment program
+			\vspace{0.2cm}
+			\item Identifies which at-risk youth benefit most in terms of reduced violence
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Why Causal Forest Matters for Labor Economics Policy}
+	\begin{itemize}
+		\item \textbf{Policy targeting:} Identify which workers should be prioritized for job training, unemployment benefits, or active labor market programs
+		\vspace{0.3cm}
+		\item \textbf{Minimum wage:} Do employment effects differ by firm size, region, or worker skill?
+		\vspace{0.3cm}
+		\item \textbf{Education returns:} Does the return to college vary by family background, field of study, or local labor market?
+		\vspace{0.3cm}
+		\item \textbf{Parental leave:} Do effects on maternal labor supply differ by pre-birth earnings, industry, or marital status?
+		\vspace{0.3cm}
+		\item \textbf{Key insight:} A policy with a small or zero \textbf{average} effect may still have large positive effects for a specific subgroup
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Causal forest helps us find and characterize that subgroup
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Recommended Resources}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Recommended Resources for Self-Learning}
+	\begin{itemize}
+		\item Machine Learning \& Causal Inference: A Short Course (Stanford)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \url{https://www.gsb.stanford.edu/faculty-research/centers-initiatives/sil/research/methods/ai-machine-learning/short-course}
+			\vspace{0.2cm}
+		\end{itemize}
+		\item \textbf{grf} package documentation and vignettes
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \url{https://grf-labs.github.io/grf/}
+			\vspace{0.2cm}
+		\end{itemize}
+		\item Susan Athey and Stefan Wager's course materials on ML and causal inference
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \url{https://github.com/susanathey/causalForest}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Recommended Resources for Self-Learning}
+	\begin{itemize}
+		\item One free textbook: \textit{An Introduction to Statistical Learning} (James et al.)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Website: \url{https://www.statlearning.com/}
+			\vspace{0.2cm}
+			\item Covers decision trees and random forests in detail (Chapter 8)
+		\end{itemize}
+		\vspace{0.3cm}
+		\item NBER Summer Institute 2013: Econometric Methods for High-Dimensional Data
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item \url{https://www.nber.org/econometrics_minicourse_2013/}
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Athey \& Imbens (2019), ``\textbf{Machine Learning Methods That Economists Should Know About}'', \textit{Annual Review of Economics}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Accessible overview of ML for causal inference
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\end{document}

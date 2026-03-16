@@ -151,8 +151,8 @@
 
 
 
-\title[]  
-{Causal Machine Learning}
+\title[]
+{Causal Machine Learning (II): Post-Double Selection}
 
 %\subtitle
 %{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
@@ -262,49 +262,47 @@
 
 	
 	
-	\begin{frame}{Machine learning}
+	\begin{frame}{Causal Machine Learning: Series Overview}
 		\begin{itemize}
-			\item Machine learning methods: Use \textbf{data-driven algorithms} to predict outcome \textbf{Y} given many covariates \textbf{X}.
+			\item \textbf{Machine learning (ML)} methods use data-driven algorithms to model the relationship between an outcome \textbf{Y} and covariates \textbf{X}
 			\vspace{0.2cm}
 			\begin{itemize}
-				\item There are \textbf{many} machine learning methods
+				\item There are many ML methods; \textbf{regression} is a fundamental one
 				\vspace{0.2cm}
-				\item The best methods vary with the particular data application
-				\vspace{0.2cm}
-				\item You can consider \textbf{regression} is a type of machine learning methods
+				\item The best method depends on the application
 			\end{itemize}
-			\item The main goal is \textbf{prediction} or \textbf{classification}
+			\vspace{0.3cm}
+			\item For \textbf{causal inference}, ML methods help us select and control for relevant covariates, enabling credible identification of treatment effects
+			\vspace{0.3cm}
+			\item This lecture series covers three approaches:
 			\vspace{0.2cm}
 			\begin{itemize}
-				\item This is useful in some economics applications
+				\item \textbf{Part I (Previous Lecture):} Regression --- the foundational ML tool for causal inference under selection on observables
 				\vspace{0.2cm}
-				\begin{itemize}
-					\item Forecast economic growth rate using many factors
-					\vspace{0.2cm}
-					\item Predict user-rating of products
-										\vspace{0.2cm}
-					\item Classify the types of individuals given many socio-economic measures and predict their loan repayment probability
-					%\item Predict one-year survival probability after hip transplant.
-					\vspace{0.2cm}
-				\end{itemize}
-				
-				
-				%Getting the best prediction or classification by applying machine learning methods	to high-dimensional data (many regressors $x$)  	
-				
+				\item \textbf{Part II (This Lecture):} Post-Double Selection --- handling high-dimensional covariates with LASSO
+				\vspace{0.2cm}
+				\item \textbf{Part III (Next Lecture):} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
 			\end{itemize}
-			%\item Machine learning methods help us select the key variables from high-dimensional data (many regressors $x$) 
 		\end{itemize}
 	\end{frame}
-	
-	
-		\begin{frame}{Machine learning and Causal Inference}
+
+
+	\begin{frame}{From Regression to High-Dimensional Settings}
 		\begin{itemize}
-		
-			\item For causal inference,  machine learning methods help us select the key control variables from high-dimensional data 
-								\vspace{0.2cm}
-					\begin{itemize}
-			\item Many covariates \textbf{X}
-			 		\end{itemize}
+			\item \textbf{Recall from Part I:} Under the Conditional Independence Assumption (CIA), regression controls for observed confounders $X$ to identify the causal effect of treatment $D$
+			\begin{eqnarray*}
+				Y_{i} = \alpha D_{i} + X_{i}\beta + \epsilon_{i}
+			\end{eqnarray*}
+			\vspace{0.2cm}
+			\item \textbf{Challenge:} To satisfy CIA, we may need to include \textbf{many} covariates $X$
+			\vspace{0.2cm}
+			\begin{itemize}
+				\item Interaction terms, polynomials, and many control variables
+				\vspace{0.2cm}
+				\item The number of covariates $p$ may be large relative to sample size $n$
+			\end{itemize}
+			\vspace{0.3cm}
+			\item \textbf{Part II:} Post-Double Selection (PDS) uses LASSO to select the most relevant controls from high-dimensional data while preserving valid causal inference
 		\end{itemize}
 	\end{frame}
 	
