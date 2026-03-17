@@ -2760,7 +2760,7 @@ gen college = educ99 >= 15
 	\begin{itemize}
 		\item \textbf{Regular block} (\texttt{```s}): shows \textbf{both code and Stata output} in the document
 		\vspace{0.2cm}
-		\item \textbf{Inline value} (\texttt{\textasciigrave s \textit{expr}\textasciigrave}): embed a computed result directly in a sentence
+		\item \textbf{Inline value} (\texttt{{\char96} s \textit{expr}{\char96}}): embed a computed result directly in a sentence
 	\end{itemize}
 
 \begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={},breaklines=true,breakatwhitespace=true]
@@ -2775,7 +2775,7 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 \end{lstlisting}
 
 	\begin{itemize}
-		\item The inline expression \texttt{\textasciigrave s \%12.0fc \_b[college]\textasciigrave} inserts the estimated coefficient directly into the sentence --- updates automatically when the model changes
+		\item The inline expression \texttt{{\char96} s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when the model changes
 		\vspace{0.1cm}
 		\item Full file \texttt{regression.stmd} is available on the course website
 	\end{itemize}
@@ -2798,7 +2798,7 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 		\hline
 		\texttt{```s} \ldots \texttt{```}   & Show code \textbf{and} output  & regressions, summary stats \\
 		\texttt{```s/q} \ldots \texttt{```} & Run quietly, \textbf{nothing shown} & paths, data cleaning \\
-		\texttt{\textasciigrave s \textit{expr}\textasciigrave} & Embed value \textbf{inline} in text & report coefficients \\
+		\texttt{{\char96} s \textit{expr}{\char96}} & Embed value \textbf{inline} in text & report coefficients \\
 		\hline
 	\end{tabular}
 
@@ -2814,7 +2814,7 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 
 	\vspace{0.2cm}
 	\begin{itemize}
-		\item The inline expression \texttt{`s \%12.0fc \_b[college]`} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+		\item The inline expression \texttt{{\char96}s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
 	\end{itemize}
 
 \end{frame}
@@ -3164,7 +3164,7 @@ acs_2015 <- read_dta(paste0(rawdata, "/cps_2014_16.dta"))
 	\begin{itemize}
 		\item \textbf{Regular chunk} (\texttt{\{r\}}): shows \textbf{both code and R output} in the document
 		\vspace{0.2cm}
-		\item \textbf{Inline value} (\texttt{\textasciigrave r \textit{expr}\textasciigrave}): embed a computed result directly in a sentence
+		\item \textbf{Inline value} (\texttt{{\char96} r \textit{expr}{\char96}}): embed a computed result directly in a sentence
 	\end{itemize}
 
 \begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
@@ -3182,7 +3182,7 @@ The college wage premium is
 \end{lstlisting}
 
 	\begin{itemize}
-		\item The inline expression \texttt{\textasciigrave r round(coef(model3)["college"], 0)\textasciigrave} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+		\item The inline expression \texttt{{\char96} r round(coef(model3)["college"], 0){\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
 	\end{itemize}
 
 \end{frame}
@@ -3204,7 +3204,7 @@ The college wage premium is
 		\hline
 		\texttt{\`\`\`\{r\}} \ldots \texttt{\`\`\`}              & Show code \textbf{and} output  & regressions, summary stats \\
 		\texttt{\`\`\`\{r, include=FALSE\}} \ldots \texttt{\`\`\`} & Run quietly, \textbf{nothing shown} & paths, data loading \\
-		\texttt{\`r \textit{expr}\`}                               & Embed value \textbf{inline} in text & report coefficients \\
+		\texttt{{\char96}r \textit{expr}{\char96}}                  & Embed value \textbf{inline} in text & report coefficients \\
 		\hline
 	\end{tabular}%
 	}
