@@ -2731,7 +2731,7 @@ markstat using regression, pdf
 	\begin{itemize}
 		\item A \texttt{.stmd} file starts with a \textbf{YAML header} (title, author, date), followed by \textbf{Markdown text} and \textbf{Stata code blocks}
 		\vspace{0.2cm}
-		\item \textbf{Quiet block} (\texttt{```s/q}): code runs but \textbf{nothing is shown} --- use for paths and data setup
+		\item \textbf{Quiet block} (\texttt{{\char96}{\char96}{\char96}s/q}): code runs but \textbf{nothing is shown} --- use for paths and data setup
 	\end{itemize}
 
 \begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{8}{10}\selectfont,keywordstyle={}]
@@ -2758,7 +2758,7 @@ gen college = educ99 >= 15
 \begin{frame}[fragile]{Reproducible Research: \texttt{.stmd} File Structure (2)}
 
 	\begin{itemize}
-		\item \textbf{Regular block} (\texttt{```s}): shows \textbf{both code and Stata output} in the document
+		\item \textbf{Regular block} (\texttt{{\char96}{\char96}{\char96}s}): shows \textbf{both code and Stata output} in the document
 		\vspace{0.2cm}
 		\item \textbf{Inline value} (\texttt{{\char96} s \textit{expr}{\char96}}): embed a computed result directly in a sentence
 	\end{itemize}
@@ -2796,8 +2796,8 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 		\hline
 		Syntax & What it does & Use for \\
 		\hline
-		\texttt{```s} \ldots \texttt{```}   & Show code \textbf{and} output  & regressions, summary stats \\
-		\texttt{```s/q} \ldots \texttt{```} & Run quietly, \textbf{nothing shown} & paths, data cleaning \\
+		\texttt{{\char96}{\char96}{\char96}s} \ldots \texttt{{\char96}{\char96}{\char96}}   & Show code \textbf{and} output  & regressions, summary stats \\
+		\texttt{{\char96}{\char96}{\char96}s/q} \ldots \texttt{{\char96}{\char96}{\char96}} & Run quietly, \textbf{nothing shown} & paths, data cleaning \\
 		\texttt{{\char96} s \textit{expr}{\char96}} & Embed value \textbf{inline} in text & report coefficients \\
 		\hline
 	\end{tabular}
@@ -3202,8 +3202,8 @@ The college wage premium is
 		\hline
 		Syntax & What it does & Use for \\
 		\hline
-		\texttt{\`\`\`\{r\}} \ldots \texttt{\`\`\`}              & Show code \textbf{and} output  & regressions, summary stats \\
-		\texttt{\`\`\`\{r, include=FALSE\}} \ldots \texttt{\`\`\`} & Run quietly, \textbf{nothing shown} & paths, data loading \\
+		\texttt{{\char96}{\char96}{\char96}\{r\}} \ldots \texttt{{\char96}{\char96}{\char96}}              & Show code \textbf{and} output  & regressions, summary stats \\
+		\texttt{{\char96}{\char96}{\char96}\{r, include=FALSE\}} \ldots \texttt{{\char96}{\char96}{\char96}} & Run quietly, \textbf{nothing shown} & paths, data loading \\
 		\texttt{{\char96}r \textit{expr}{\char96}}                  & Embed value \textbf{inline} in text & report coefficients \\
 		\hline
 	\end{tabular}%
