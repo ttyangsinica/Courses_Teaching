@@ -480,67 +480,140 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 % 頁一：夜間燈光的延伸應用
 \begin{frame}{Satellite Images}{More Applications of Night Lights}
 \begin{itemize}
-	\item Night lights data have been applied in many contexts beyond GDP measurement
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item \textbf{Conflict and violence}: measure economic activity in war zones 
-		where official statistics are unavailable
-		\vspace{0.2cm}
-		\item \textbf{Poverty mapping}: identify subnational poverty hotspots 
-		in developing countries
-		\vspace{0.2cm}
-		\item \textbf{Urbanization}: track city growth and spatial expansion over time
-	\end{itemize}
-	\vspace{0.2cm}
-	\item Two main data sources for night lights:
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item \textbf{DMSP-OLS} (1992--2013): 
-		\href{https://eogdata.mines.edu/products/dmsp/}{\texttt{eogdata.mines.edu}}
-		\vspace{0.2cm}
-		\item \textbf{VIIRS DNB} (2012--present): 
-		\href{https://eogdata.mines.edu/products/vnl/}{\texttt{eogdata.mines.edu/products/vnl}}
-		\vspace{0.2cm}
-		\item \textbf{NASA Black Marble} (VIIRS, high-res): 
-		\href{https://blackmarble.gsfc.nasa.gov}{\texttt{earthdata.nasa.gov}}
-	\end{itemize}
+    \item Night lights data have been applied in many contexts beyond GDP measurement
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Conflict and violence}: measure economic activity in war zones 
+        where official statistics are unavailable
+        \vspace{0.2cm}
+        \item \textbf{Poverty mapping}: identify subnational poverty hotspots 
+        in developing countries
+        \vspace{0.2cm}
+        \item \textbf{Urbanization}: track city growth and spatial expansion over time
+    \end{itemize}
+    \vspace{0.2cm}
+    \item Two main data sources for night lights:
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{DMSP-OLS} (1992--2013): 
+        \href{https://eogdata.mines.edu/products/dmsp/}{\texttt{eogdata.mines.edu}}
+        \vspace{0.2cm}
+        \item \textbf{VIIRS DNB} (2012--present): 
+        \href{https://eogdata.mines.edu/products/vnl/}{\texttt{eogdata.mines.edu/products/vnl}}
+        \vspace{0.2cm}
+        \item \textbf{NASA Black Marble} (VIIRS, high-res): 
+        \href{https://blackmarble.gsfc.nasa.gov}{\texttt{earthdata.nasa.gov}}
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
 
-
-
-
-\begin{frame}{Satellite Images}{Other Satellite Data Sources}
+% 頁二：NDVI
+\begin{frame}{Other Satellite Data}{Vegetation Index (NDVI)}
 \begin{itemize}
-    \item \textbf{Vegetation Index (NDVI)}
+    \item \textbf{What it measures}: the ``greenness'' of land surface,
+    reflecting vegetation health and density
+    \vspace{0.2cm}
     \begin{itemize}
+        \item $NDVI = \frac{NIR - Red}{NIR + Red}$, ranging from $-1$ to $+1$
         \vspace{0.1cm}
-        \item Proxy for agricultural productivity and rainfall
-        \item Resolution: 250m--1km, 16-day or monthly composites
-        \item Source (NASA MODIS): 
-        \href{https://modis.gsfc.nasa.gov/data/dataprod/mod13.php}{modis.gsfc.nasa.gov}
+        \item Higher values $\Rightarrow$ denser, healthier vegetation
+        \vspace{0.1cm}
+        \item Negative values $\Rightarrow$ water bodies
     \end{itemize}
     \vspace{0.2cm}
-    \item \textbf{Land Surface Temperature (LST)}
+    \item \textbf{Data}: NASA MODIS (250m--1km, 16-day or monthly)
+    \vspace{0.2cm}
+    \item \textbf{Applications in economics}:
+    \vspace{0.1cm}
     \begin{itemize}
+        \item Proxy for \textbf{agricultural productivity} and crop yields
         \vspace{0.1cm}
-        \item Measure heat islands and climate exposure
-        \item Resolution: 1km, daily or 8-day composites
-        \item Source (NASA MODIS MOD11): 
-        \href{https://modis.gsfc.nasa.gov/data/dataprod/}{modis.gsfc.nasa.gov}
+        \item Proxy for \textbf{rainfall} in areas with sparse weather stations
+        \vspace{0.1cm}
+        \item Instrument for \textbf{income shocks} in conflict and migration research
     \end{itemize}
     \vspace{0.2cm}
-    \item \textbf{Aerosol Optical Depth (AOD)}
+    \item \textbf{Source}: 
+    \href{https://modis.gsfc.nasa.gov/data/dataprod/mod13.php}{modis.gsfc.nasa.gov}
+\end{itemize}
+\end{frame}
+
+
+% 頁三：LST
+\begin{frame}{Other Satellite Data}{Land Surface Temperature (LST)}
+\begin{itemize}
+    \item \textbf{What it measures}: temperature of the Earth's surface 
+    itself (not air temperature)
+    \vspace{0.2cm}
     \begin{itemize}
+        \item Derived from thermal infrared radiation emitted by the surface
         \vspace{0.1cm}
-        \item Proxy for PM2.5 and pollution exposure
-        \item Resolution: 3km--10km, daily
-        \item Source (NASA MODIS MOD04): 
-        \href{https://modis.gsfc.nasa.gov/data/dataprod/}{modis.gsfc.nasa.gov}
+        \item Surface temperature can differ substantially from 
+        air temperature (e.g., asphalt on a hot day)
     \end{itemize}
-    \vspace{0.15cm}
-    \item All products freely available at 
+    \vspace{0.2cm}
+    \item \textbf{Data}: NASA MODIS MOD11 (1km, daily or 8-day composites)
+    \vspace{0.2cm}
+    \item \textbf{Advantage over weather stations}: 
+    globally uniform coverage, no interpolation needed
+    \vspace{0.2cm}
+    \item \textbf{Applications in economics}:
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item \textbf{Urban heat islands}: link green space and 
+        land use to housing prices
+        \vspace{0.1cm}
+        \item \textbf{Labor productivity}: estimate causal effect 
+        of heat on wages and output
+        \vspace{0.1cm}
+        \item \textbf{Energy demand}: high temperatures raise 
+        cooling demand and electricity consumption
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{Source}: 
+    \href{https://modis.gsfc.nasa.gov/data/dataprod/}{modis.gsfc.nasa.gov}
+\end{itemize}
+\end{frame}
+
+
+% 頁四：AOD
+\begin{frame}{Other Satellite Data}{Aerosol Optical Depth (AOD)}
+\begin{itemize}
+    \item \textbf{What it measures}: how much sunlight is blocked 
+    by suspended particles across the entire atmospheric column
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item AOD $= 0$: clean, transparent atmosphere
+        \vspace{0.1cm}
+        \item AOD $= 1$: heavy particulate loading (smoke, dust, pollution)
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{Data}: NASA MODIS MOD04 (3km--10km, daily)
+    \vspace{0.2cm}
+    \item \textbf{Why use AOD instead of PM2.5?}
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item Ground PM2.5 monitors are sparse, especially 
+        in developing countries
+        \vspace{0.1cm}
+        \item AOD provides global, uniform coverage since 2000
+        \vspace{0.1cm}
+        \item Caveat: AOD measures the full atmospheric column; 
+        conversion to ground-level PM2.5 requires additional modeling
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{Applications in economics}:
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item Pollution effects on \textbf{health, cognition, and productivity}
+        \vspace{0.1cm}
+        \item Evaluation of \textbf{environmental regulations}
+    \end{itemize}
+    \vspace{0.1cm}
+    \item \textbf{Source}: 
+    \href{https://modis.gsfc.nasa.gov/data/dataprod/}{modis.gsfc.nasa.gov} 
+    $\cdot$ All products free at 
     \href{https://earthdata.nasa.gov}{earthdata.nasa.gov}
 \end{itemize}
 \end{frame}
@@ -790,39 +863,39 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 
 
 
-
+ 
 \title[]  
 {Introduction to Spatial Data}
-
-
+ 
+ 
 \author 
 {}
-
+ 
 %\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
 %\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
+ 
 %\author 
 %{楊子霆 \\ 中研院經濟所}
-
+ 
 %\institute 
 %{中正大學國際經濟專題研討}
-
-
-
-
+ 
+ 
+ 
+ 
 \date
 {}
-
-
+ 
+ 
 \begin{frame}{}
 	\titlepage
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Introduction to Spatial Data}{Overview}
 	\begin{itemize}
 		\item Spatial data usually focus on \textbf{locations}
@@ -859,11 +932,11 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{itemize}
 	\end{itemize}
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Vector Data}{Spatial Objects}
 	\begin{itemize}
 		\item\textbf{Spatial objects} are usually represented by \textbf{vector data}
@@ -900,9 +973,9 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Types of Vector Data}{}
 	\begin{itemize}
 		\item According to their spatial attributes, \textbf{spatial objects} can be classified into several types
@@ -919,9 +992,9 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		of sets of \textbf{coordinate pairs (x, y)}
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Vector Data}{Points}
 	\begin{minipage}{0.6\linewidth}
 		\begin{itemize}
@@ -947,9 +1020,9 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{minipage}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Vector Data}{Polygons}
 	\begin{minipage}{0.6\linewidth}
 		\begin{itemize}
@@ -978,11 +1051,11 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{minipage}
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Raster Data}{Spatial Fields}
 	\begin{itemize}
 		\item\textbf{Spatial fields} are usually represented by \textbf{raster data}
@@ -995,23 +1068,27 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 			\vspace{0.2cm}
 			\item These rectangles all have a values (or a missing value) for the variables of interest
 			\vspace{0.2cm}
-			\item A raster cell/pixel value should normally represeent the average (or majority) value for the area it covers
+			\item A raster cell/pixel value should normally represent the value for the area it covers
+				\begin{itemize}
+					\item \textbf{Average}: for continuous variables (e.g., temperature, elevation)
+					\item \textbf{Majority}: for categorical variables (e.g., land use type)
+				\end{itemize}
 		\end{itemize}
 		
 		
 	\end{itemize}
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Raster Data}{Night Light from Satellite Images}
 	\begin{minipage}{0.6\linewidth}
 		\begin{itemize}
-			\item Each raster pixel value in a satellite image is from 0 to 63
-			\vspace{0.2cm}
-			\item It represent the light intensity at night in Taiwan
+			\item Each raster pixel value in a \textbf{DMSP/OLS} satellite image ranges from 0 to 63 (Digital Number)
+				\vspace{0.2cm}
+				\item It represents the light intensity at night in Taiwan
 			
 		\end{itemize}
 	\end{minipage}
@@ -1023,9 +1100,9 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{minipage}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Night Light from Satellite Images}{Taiwan in 1992}
 	\begin{center}
 		\begin{figure}[p]
@@ -1034,7 +1111,7 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{center}
 \end{frame}
-
+ 
 \begin{frame}{Night Light from Satellite Images}{Taiwan in 2013}
 	\begin{center}
 		\begin{figure}[p]
@@ -1043,10 +1120,10 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{center}
 \end{frame}
-
-
-
-
+ 
+ 
+ 
+ 
 \begin{frame}{Night Light from Satellite Images}{Kinmen in 1992}
 	\begin{center}
 		\begin{figure}[p]
@@ -1055,7 +1132,7 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{center}
 \end{frame}
-
+ 
 \begin{frame}{Night Light from Satellite Images}{Kinmen in 2013}
 	\begin{center}
 		\begin{figure}[p]
@@ -1064,41 +1141,40 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{figure}
 	\end{center}
 \end{frame}
-
-
+ 
 
 
 \title[]  
 {Spatial Data and Coordinate Systems}
-
-
+ 
+ 
 \author 
 {}
-
+ 
 %\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
 %\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
 \institute{}
-
+ 
 %\author 
 %{楊子霆 \\ 中研院經濟所}
-
+ 
 %\institute 
 %{中正大學國際經濟專題研討}
-
-
-
-
+ 
+ 
+ 
+ 
 \date
 {}
-
-
+ 
+ 
 \begin{frame}{}
 	\titlepage
 \end{frame}
-
-
-
-
+ 
+ 
+ 
+ 
 \begin{frame}{Coordinate Systems}
 	\begin{itemize}
 		%\item Before discussing how to create maps using STATA, it is critical to acquire a basic understanding of projections
@@ -1111,11 +1187,11 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		result in your calculations being complete garbage
 	\end{itemize}
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Coordinate Systems}
 	\begin{itemize}
 		\item Two types of coordinate systems:
@@ -1137,12 +1213,12 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		
 	\end{itemize}
 \end{frame}
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}
 	\begin{itemize}
 		\item In geographic coordinate systems (GCS), each location is coded by \textbf{angle} from \textbf{earth center}
@@ -1161,9 +1237,9 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}{}
 	
 	\begin{center}
@@ -1176,11 +1252,11 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\end{minipage}	
 	\end{center}
 \end{frame}
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}
 	\begin{itemize}
 		
@@ -1202,10 +1278,10 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		
 	\end{itemize}
 \end{frame}
-
-
-
-
+ 
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}
 	\begin{itemize}
 		
@@ -1220,21 +1296,23 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\item GCS used in Taiwan:
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item We also use \textbf{TWD67} or \textbf{TWD97}
+			\item \textbf{TWD97}: current standard adopted in 1997; closely aligned with WGS 1984 — use this for new projects
+			\vspace{0.2cm}
+			\item \textbf{TWD67}: older standard; coordinates can differ from TWD97 by \textasciitilde{}200--800 meters — mixing the two causes errors
 		\end{itemize}
 		
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 %As with latitude and longitude, the values are bounded by ±90° and ±180° respectively.
-
+ 
 %Positive latitudes are north of the equator, negative latitudes are south of the equator. Positive longitudes are east of Prime Meridian, negative longitudes are west of the Prime Meridian. Latitude and longitude are usually expressed in that sequence, latitude before longitude.
-
-
-
-
+ 
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}
 	\begin{itemize}
 		
@@ -1245,14 +1323,18 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 			\vspace{0.2cm}
 			\item The equator is divided into 360 degrees of longitude
 			\vspace{0.2cm}
-			\item So each degree at the equator represents 111,319.9 meters or approximately 111.32 km.
+			\item So each degree at the equator represents 111,319.9 meters or approximately 111.32 km
+			\vspace{0.2cm}
+			\item One degree of \textbf{latitude} is also $\approx$ 111 km everywhere --- it is nearly constant
+			\vspace{0.2cm}
+			\item One degree of \textbf{longitude} varies: $\approx$ 111 km at the equator, but \textbf{shrinks toward zero} at the poles
 		\end{itemize}
 		
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 \begin{frame}{Geographic Coordinate Systems}
 	\begin{itemize}
 		\item Only along the equator does the distance represented by \textbf{one degree of longitude} approximate the distance represented by \textbf{one degree of latitude}
@@ -1265,17 +1347,17 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		%\item You should NOT do distance or area calculations on data that is in a \textbf{geographic coordinate system}
 	\end{itemize}
 \end{frame}
-
-
-
+ 
+ 
+ 
 %\begin{frame}{Geographic Coordinate Systems}{}
 %	\includegraphics[width=.90\textwidth]{figure/geo_c_s.jpg}
-
+ 
 %\end{frame}
-
-
-
-
+ 
+ 
+ 
+ 
 \begin{frame}{Projected Coordinate Systems}
 	\begin{itemize}
 		\item \textbf{Projected coordinate systems} project the \textbf{round surface} of the earth (in degrees) onto a \textbf{flat surface} (two-dimensional)
@@ -1297,8 +1379,8 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		%		\end{itemize}
 \end{itemize}
 \end{frame}
-
-
+ 
+ 
 \begin{frame}{Projected Coordinate Systems}
 \begin{itemize}
 	
@@ -1314,21 +1396,59 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\item The coordinates at the origin are x = 0 and y = 0
 	\end{itemize}
 	\vspace{0.2cm}
-	\item All projections introduce some distortions, and different projections minimize distortions along different dimensions
+	\item All projections introduce some distortions --- think of peeling an orange and trying to lay the skin flat
+	\vspace{0.2cm}
+	\item Different projections preserve different properties:
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item \textbf{Shape} (conformal): angles are correct, e.g., Google Maps
+		\vspace{0.1cm}
+		\item \textbf{Area} (equal-area): useful for comparing region sizes
+		\vspace{0.1cm}
+		\item \textbf{Distance} (equidistant): distances from a reference point are correct
+		\vspace{0.1cm}
+		\item \textbf{Direction} (azimuthal): bearings from center are correct
+	\end{itemize}
 	
-	%\begin{itemize}
-	%	\item UTM projections
-	%		\vspace{0.2cm}
-	%	\item Goodes projection
-	%	    	\vspace{0.2cm}
-	%	\item Equidistant cylindrical projection
-	%		\vspace{0.2cm}
-	%	\item Cylindrical Equal Area
-	%		\end{itemize}
+\end{itemize}
+\vspace{0.2cm}
+\begin{alertblock}{Key point}
+	No single projection can preserve all properties simultaneously --- choose based on your research purpose
+\end{alertblock}
+\end{frame}
+ 
+ 
+ 
+ 
+\begin{frame}{Projected Coordinate Systems}{Common Examples}
+\begin{itemize}
+	\item \textbf{UTM (Universal Transverse Mercator)}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Divides the world into 60 zones; each zone uses meters as the unit
+		\vspace{0.1cm}
+		\item Taiwan is in \textbf{Zone 51N}
+		\vspace{0.1cm}
+		\item Widely used in global research; minimizes distortion within each zone
+	\end{itemize}
+	\vspace{0.3cm}
+	\item \textbf{TWD97 / TM2} (Taiwan-specific)
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Official projected coordinate system for Taiwan
+		\vspace{0.1cm}
+		\item Based on Transverse Mercator projection; unit is \textbf{meters}
+		\vspace{0.1cm}
+		\item Used in government maps, land administration, and most Taiwan GIS data
+		\vspace{0.1cm}
+		\item \textbf{Practical tip}: when working with Taiwan data, always check whether the file uses TWD97 (degrees) or TWD97/TM2 (meters)
+	\end{itemize}
+ 
 \end{itemize}
 \end{frame}
-
-
+ 
+ 
+ 
 
 
 

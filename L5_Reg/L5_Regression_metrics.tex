@@ -271,50 +271,62 @@
 			\vspace{0.2cm}
 			\item The best method depends on the application
 		\end{itemize}
-		\vspace{0.3cm}
-		\item For \textbf{causal inference}, ML methods help us select and control for relevant covariates, enabling credible identification of treatment effects
-		\vspace{0.3cm}
-		\item This lecture series covers three approaches:
 		\vspace{0.2cm}
-		\begin{itemize}
-			\item \textbf{Part I (This Lecture):} Regression --- the foundational ML tool for causal inference under selection on observables
-			\vspace{0.2cm}
-			\item \textbf{Part II:} Post-Double Selection --- handling high-dimensional covariates with LASSO
-			\vspace{0.2cm}
-			\item \textbf{Part III:} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-
-
-
-
-
-
-\begin{frame}{Machine Learning as a Prediction Tool}
+	\item The primary goal of \textbf{machine learning} is to \textbf{predict} an outcome $Y$ given covariates $X$
+		\vspace{0.2cm}
 	\begin{itemize}
-		\item The primary goal of \textbf{machine learning} is to \textbf{predict} an outcome $Y$ given covariates $X$
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item \textbf{Regression:} predict a continuous outcome (e.g., wages, earnings)
-			\vspace{0.2cm}
-			\item \textbf{Classification:} predict a discrete category (e.g., employed vs. unemployed)
-			\vspace{0.2cm}
-			\item Classification is also a prediction task --- predict which category a unit belongs to
-		\end{itemize}
-		\vspace{0.3cm}
-		\item ML methods are evaluated by \textbf{out-of-sample prediction accuracy}
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Minimize prediction error on data not used for estimation
-			\vspace{0.2cm}
-			\item This is different from the classical econometrics focus on unbiasedness and consistency
-		\end{itemize}
-		\vspace{0.3cm}
-		\item \textbf{Key question:} Can these prediction tools be used for \textbf{causal inference}?
+					\item Forecast economic growth rate using many factors
+					\vspace{0.2cm}
+					\item Predict user-rating of products
+										\vspace{0.2cm}
+					\item Classify the types of individuals given many socio-economic measures and predict their loan repayment probability
+					%\item Predict one-year survival probability after hip transplant.
+					\vspace{0.2cm}
+				\end{itemize}
+        
+		% \item For \textbf{causal inference}, ML methods help us select and control for relevant covariates, enabling credible identification of treatment effects
+		% \vspace{0.3cm}
+		% \item This lecture series covers three approaches:
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item \textbf{Part I (This Lecture):} Regression --- the foundational ML tool for causal inference under selection on observables
+		% 	\vspace{0.2cm}
+		% 	\item \textbf{Part II:} Post-Double Selection --- handling high-dimensional covariates with LASSO
+		% 	\vspace{0.2cm}
+		% 	\item \textbf{Part III:} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
+		% \end{itemize}
 	\end{itemize}
 \end{frame}
+
+
+
+
+
+
+
+% \begin{frame}{Machine Learning as a Prediction Tool}
+% 	\begin{itemize}
+% 		\item The primary goal of \textbf{machine learning} is to \textbf{predict} an outcome $Y$ given covariates $X$
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item \textbf{Regression:} predict a continuous outcome (e.g., wages, earnings)
+% 			\vspace{0.2cm}
+% 			\item \textbf{Classification:} predict a discrete category (e.g., employed vs. unemployed)
+% 			\vspace{0.2cm}
+% 			\item Classification is also a prediction task --- predict which category a unit belongs to
+% 		\end{itemize}
+% 		\vspace{0.3cm}
+% 		\item ML methods are evaluated by \textbf{out-of-sample prediction accuracy}
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Minimize prediction error on data not used for estimation
+% 			\vspace{0.2cm}
+% 			\item This is different from the classical econometrics focus on unbiasedness and consistency
+% 		\end{itemize}
+% 		\vspace{0.3cm}
+% 		\item \textbf{Key question:} Can these prediction tools be used for \textbf{causal inference}?
+% 	\end{itemize}
+% \end{frame}
 
 
 
@@ -328,21 +340,21 @@
 			\vspace{0.2cm}
 			\item But ``what would $Y$ have been \textbf{under a different treatment status}?'' $\longrightarrow$ \textbf{counterfactual}
 		\end{itemize}
-		\vspace{0.3cm}
-		\item \textbf{Fundamental Problem of Causal Inference:} We only observe one potential outcome per individual
 		\vspace{0.2cm}
-		\begin{itemize}
-			\item For treated units ($D_i=1$): observe $Y^{1}_i$, but not $Y^{0}_i$
-			\vspace{0.2cm}
-			\item For untreated units ($D_i=0$): observe $Y^{0}_i$, but not $Y^{1}_i$
-		\end{itemize}
-		\vspace{0.3cm}
+		% \item \textbf{Fundamental Problem of Causal Inference:} We only observe one potential outcome per individual
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item For treated units ($D_i=1$): observe $Y^{1}_i$, but not $Y^{0}_i$
+		% 	\vspace{0.2cm}
+		% 	\item For untreated units ($D_i=0$): observe $Y^{0}_i$, but not $Y^{1}_i$
+		% \end{itemize}
+		% \vspace{0.3cm}
 		\item \textbf{ML methods help us predict the missing counterfactual:}
 		\vspace{0.2cm}
 		\begin{itemize}
 			\item Use $X_i$ to find units with similar characteristics but different treatment status
 			\vspace{0.2cm}
-			\item Under the right assumptions (CIA), the predicted counterfactual is valid
+			\item Under the CIA, the predicted counterfactual is valid
 			\vspace{0.2cm}
 			\item \textbf{Regression} is the simplest ML tool for predicting counterfactual outcomes
 		\end{itemize}
@@ -977,14 +989,16 @@
 \begin{frame}{Estimation Methods}
 	\begin{itemize}
 		\item So far, we've discussed \textbf{identification}: under what conditions can regression coefficients be interpreted as causal effects
-		\vspace{0.3cm}
+		\vspace{0.2cm}
 		
 		\item Now we turn to \textbf{estimation}: how do we obtain numerical values for these causal parameters?
-		\vspace{0.3cm}
+		\vspace{0.2cm}
 		
 		\item Multiple estimation methods exist:
+        		\vspace{0.2cm}
 		\begin{itemize}
 			\item Ordinary Least Squares (OLS)
+            		\vspace{0.2cm}
 			\item Maximum Likelihood Estimation (MLE)
 		\end{itemize}
 	\end{itemize}
@@ -1121,32 +1135,26 @@
 \begin{frame}{Review: Omitted Variable Bias}
 	
 	\begin{itemize}
-		%\item Note that the assignment of treatment in non-experimental data is not random 
-		%\vspace{0.3cm}
-		%\begin{itemize}
-		%\item The treatment and control group may be very different in many characteristics 
-		%\vspace{0.3cm}
-		%\item These characteristics might be correlated with treatment and affect the outcome variable
-		%\vspace{0.3cm}
-		%\end{itemize}
-		%\item If we do not include these variables into regression model, it will cause Omitted Variable Bias (OVB)
-		
 		\item OLS estimator for treatment effect $\alpha$: 
 		
 		\begin{equation*}
 			\hat{\alpha} = \dfrac{Cov(\mathrm{Y}_{i},D_{i})}{V(D_{i})}
-		\end{equation*}	
+		\end{equation*}
+
+		\begin{itemize}
+			\item Covariance between $\mathrm{Y}_{i}$ and $D_{i}$: $\text{Cov}(\mathrm{Y}_i, D_i) = \frac{1}{N} \sum^N_{i=1} (Y_i - \bar{Y})(D_i - \bar{D})$
+			\vspace{0.2cm}
+			\item Variance of $D_{i}$: $V(D_i) = \frac{1}{N} \sum^N_{i=1} (D_i - \bar{D})^2$
+		\end{itemize}
 		
-		
-		\item Failure to include enough (right) control variables in the regression would result in selection bias
+		\vspace{0.3cm}
+		\item Failure to include enough (right) control variables in the regression would result in bias
 		\vspace{0.3cm}
 		\item The \textbf{OLS version} of the \textbf{selection bias} generated by inadequate controls is called \textbf{Omitted Variable Bias (OVB)}
-		
 		
 	\end{itemize}
 	
 \end{frame}
-
 
 
 \begin{frame}{Review: Omitted Variable Bias}
@@ -1337,6 +1345,24 @@
 
 
 
+\begin{frame}{From OVB to Controlling for Covariates}
+	\begin{itemize}
+		\item We saw that OVB arises when $X_i$ is correlated with $D_i$ and affects $Y_i$
+		\vspace{0.3cm}
+		\item The solution: \textbf{partial out} the influence of $X_i$ from treatment $D_i$
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item Isolate the variation in $D_i$ that is \textbf{unrelated to} $X_i$
+			\vspace{0.2cm}
+			\item Use only that ``clean'' variation to estimate the effect on $Y_i$
+		\end{itemize}
+		\vspace{0.3cm}
+		\item This logic is formalized by the \textbf{Frisch-Waugh-Lovell (FWL) Theorem}
+	\end{itemize}
+\end{frame}
+
+
+
        \begin{frame}{Review: Frisch-Waugh-Lovell Theorem}{Main Idea}
        	\begin{itemize}
        		\item Consider the population model:
@@ -1344,7 +1370,7 @@
        			Y_i = \delta + \alpha D_i + \beta X_i + \epsilon_i
        		\end{equation*}
        		
-       		\item The Frisch-Waugh-Lovell (FWL) Theorem states that the following OLS estimators for $\alpha$ are equivalent:
+       		\item The FWL Theorem states that the following OLS estimators for $\alpha$ are equivalent:
        		\vspace{0.2cm}
        		\begin{enumerate}
        			\item Direct method: Regressing $Y_i$ on $D_i$ and $X_i$ simultaneously
@@ -1445,7 +1471,7 @@
 	\begin{itemize} 
 		\item Controlling for additional covariates increases the likelihood that regression estimates have a causal interpretation
 		\vspace{0.2cm}
-		\item \textbf{Bad control problem}: More controls are not always better
+		\item \textbf{Bad control problem}: more controls are not always better
 		\begin{itemize} 
 			\vspace{0.2cm}
 			\item Bad controls are \textbf{variables that could themselves be outcomes, which are also affected by treatment}
@@ -1479,7 +1505,7 @@
 				\vspace{0.2cm}	
 				\item The effect of master degree on earnings	
 				\vspace{0.2cm}			
-				\item \textbf{Pre-determined variables:} Gender, age, birth place, father's wealth, mother's wealth
+				\item \textbf{Pre-determined variables:} gender, age, birth place, father's wealth, mother's wealth
 				\vspace{0.2cm}	
 				\item \textbf{Bad control variables:} occupation, employment, working industry			
 			\end{itemize}
@@ -1534,17 +1560,21 @@
 
 \begin{frame}{Bad Control Problem and Selection Bias}{Example}
 	\begin{itemize} 
-		\item Comparisons of earnings by college degree status within an occupation are no longer apples-to-apples comparison
+		\item Suppose master degree completion is \textbf{randomly assigned}
+		\vspace{0.2cm}
+		\item Now consider comparing earnings \textbf{within white collar workers}:
 		\vspace{0.2cm}
 		\begin{itemize} 
-			\item Those who have master degree and white color jobs
+			\item Group A: Has a master degree \textbf{and} works white collar
 			\vspace{0.2cm}
-			\item Those who do not have master degree but still have white color jobs
+			\item Group B: No master degree, \textbf{but still} works white collar
 			\vspace{0.2cm}
-			\item Two groups are different types of people (e.g. different ability)
 		\end{itemize}
+			\item Group A is a \textbf{selected} sample --- among those randomly assigned a master degree, only \textbf{some} end up in white collar jobs
 		\vspace{0.2cm}
-		\item Even if master degree completion is randomly assigned
+        \item Group B is a \textbf{selected} sample --- to obtain a white collar job without a master degree, these individuals likely have \textbf{higher unobserved ability}
+		\vspace{0.2cm}
+		\item Conditioning on occupation \textbf{creates} a new form of selection bias, even when treatment was randomly assigned
 	\end{itemize}
 \end{frame}
 
@@ -1655,16 +1685,11 @@
 			\centering
 			\node (u) {$W$};
 			\node (D) [below=0.5 of u, xshift=-1.5em] {$D$};
-			%\node (Z) [left =1.5em of D] {$Z$};
 			\node (Y) [below=0.5 of u, xshift=1.5em] {$Y$};
 			
 			\draw [<-] (u) -- node [auto]{}  (D);
 			\draw [->] (u) -- node [auto]{}  (Y);
-			%\draw [->] (D) -- node [auto]{}  (Y);
-			%\draw [->] (Z) -- node [auto]{}  (D);
-			%\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=30, thick, color=red] 
-			%(Z.south) to node[auto, swap] {exclusion restriction}(Y.south);
-			%\node  [comment, below = 0.08 of D] (1) {\Large\color{red}$\times$};
+			\draw [->] (D) -- node [auto]{}  (Y);
 		\end{tikzpicture}
 	\end{figure}
 	
@@ -1932,7 +1957,15 @@
 
 
 
-
+\begin{frame}{Distribution of t-statistic}{Visualizing the $p$-value}
+	\begin{center}
+		\includegraphics[width=0.90\textwidth]{figure/pvalue_employed.png}
+	\end{center}
+	\vspace{0.1cm}
+	%\begin{itemize}
+		%\item Shaded area (both tails) $=$ $p$-value $= 2 \times 0.0062 = 0.013 < 0.05$ $\Rightarrow$ \textbf{reject} $H_0$
+	%\end{itemize}
+\end{frame}
 
 
 
@@ -2140,8 +2173,8 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 %\end{frame}
 
 
-
-\begin{frame}{Example}
+\begin{frame}{Interpretation of Regression Results}{When $Y$ is log-transformed}
+%\begin{frame}{Example}
 	\begin{itemize}
 		\item $D$ represents whether an individual has a graduate degree (1) or not (0)
 		\vspace{0.2cm}
@@ -2164,7 +2197,7 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 \end{frame}
 
 
-\begin{frame}{Subgroup Analysis}{Heterogeneous Treatment Effects}
+\begin{frame}{Interpretation of Regression Results}{Heterogeneous Treatment Effects}
 	\begin{itemize}
 		\item Same treatment may affect different individuals differently
 		\vspace{0.2cm}
@@ -2183,7 +2216,7 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 
 
 
-\begin{frame}{Subgroup Analysis}{Heterogeneous Treatment Effects}
+\begin{frame}{Interpretation of Regression Results}{Heterogeneous Treatment Effects}
 	\begin{itemize}
 	
 		\item Example: Analyze the differential effect of graduate degree on earnings by gender
@@ -2209,7 +2242,7 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 
 
 
-\begin{frame}{Subgroup Analysis}{Heterogeneous Treatment Effects}
+\begin{frame}{Interpretation of Regression Results}{Heterogeneous Treatment Effects}
 	\begin{itemize}
 		\item Our new regression model becomes:
 		\vspace{0.2cm}
@@ -2229,7 +2262,7 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Interpreting Coefficients}
+\begin{frame}{Interpretation of Regression Results}{Heterogeneous Treatment Effects}
 	\begin{itemize}
 		\item $\alpha_1$: Effect of graduate degree on earnings for baseline group (females)
 		\vspace{0.2cm}
@@ -2241,7 +2274,7 @@ t = \dfrac{(\hat{\alpha}-\alpha)}{\hat{\mathrm{SE}}(\hat{\alpha})} = \dfrac{5000
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Interpretation Example}
+\begin{frame}{Interpretation of Regression Results}{Heterogeneous Treatment Effects}
 	Suppose we estimate:
 	\vspace{0.2cm}
 	\begin{equation*}
@@ -2594,7 +2627,202 @@ reg incwage college gender college_gender i.health age year i.race, vce(robust)
 
 
 
-\title[]  
+\begin{frame}{Reproducible Research: What is \texttt{markstat}?}
+
+	\begin{itemize}
+		\item \textbf{markstat} is a Stata package for \textbf{reproducible research}
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item Write Markdown text and Stata code together in \textbf{one file} (extension: \texttt{.stmd})
+			\vspace{0.2cm}
+			\item Compile to produce a \textbf{formatted document} with code, output, and explanation interleaved
+			\vspace{0.2cm}
+			\item Output format: \textbf{HTML} (open in browser) or \textbf{PDF} (requires \LaTeX)
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Compared to a regular \texttt{.do} file:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item A \texttt{.do} file only produces a log file with raw text output
+			\vspace{0.2cm}
+			\item A \texttt{.stmd} file produces a \textbf{readable, shareable document} with section headings, formatted tables, and narrative explanation
+		\end{itemize}
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: Installation (One-Time Setup)}
+
+	\begin{itemize}
+		\item \textbf{Step 1: Install Pandoc} --- an external program (not a Stata package)
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Download and install from \texttt{pandoc.org}
+			\vspace{0.1cm}
+			\item Pandoc converts Markdown to HTML/PDF; markstat calls it internally
+		\end{itemize}
+	\end{itemize}
+
+	\vspace{0.3cm}
+
+	\begin{itemize}
+		\item \textbf{Step 2: Install markstat in Stata}
+	\end{itemize}
+
+\begin{lstlisting}
+ssc install markstat
+ssc install whereis
+\end{lstlisting}
+
+	\begin{itemize}
+		\item \textbf{Step 3: Tell Stata where Pandoc is installed}
+	\end{itemize}
+
+\begin{lstlisting}
+* Adjust path to match your Pandoc installation:
+whereis pandoc "C:\Program Files\Pandoc\pandoc.exe"
+\end{lstlisting}
+
+	\begin{itemize}
+		\item Steps 1--3 are done \textbf{only once}
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: Compiling a \texttt{.stmd} File}
+
+	\begin{itemize}
+		\item \textbf{Step 4: Write your document} and save as \texttt{regression.stmd}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Use any plain text editor: Notepad, VS Code, or Stata's do-file editor
+			\vspace{0.1cm}
+			\item The full file \texttt{regression.stmd} is available on the course website
+		\end{itemize}
+		\vspace{0.3cm}
+		\item \textbf{Step 5: Compile} from Stata
+	\end{itemize}
+
+\begin{lstlisting}
+* Navigate to the folder containing your .stmd file:
+cd "C:\...\do"
+
+* Compile to HTML (recommended):
+markstat using regression, bundle
+
+* Compile to PDF (requires LaTeX installed):
+markstat using regression, pdf
+\end{lstlisting}
+
+	\begin{itemize}
+		\item \texttt{bundle} packs everything (CSS, images) into a single \texttt{.html} file --- easy to share
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: \texttt{.stmd} File Structure (1)}
+
+	\begin{itemize}
+		\item A \texttt{.stmd} file starts with a \textbf{YAML header} (title, author, date), followed by \textbf{Markdown text} and \textbf{Stata code blocks}
+		\vspace{0.2cm}
+		\item \textbf{Quiet block} (\texttt{{\char96}{\char96}{\char96}s/q}): code runs but \textbf{nothing is shown} --- use for paths and data setup
+	\end{itemize}
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{8}{10}\selectfont,keywordstyle={}]
+---
+title: "Regression Analysis with CPS Data"
+author: "Tzu-Ting Yang, Academia Sinica"
+date: "Causal Data Course"
+---
+
+## 1. Data Setup
+
+```s/q
+* Runs silently: paths and data loading not shown in output
+global rawdata = "C:\...\rawdata"
+use "$rawdata\cps_2014_16.dta", replace
+gen college = educ99 >= 15
+```
+\end{lstlisting}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: \texttt{.stmd} File Structure (2)}
+
+	\begin{itemize}
+		\item \textbf{Regular block} (\texttt{{\char96}{\char96}{\char96}s}): shows \textbf{both code and Stata output} in the document
+		\vspace{0.2cm}
+		\item \textbf{Inline value} (\texttt{{\char96} s \textit{expr}{\char96}}): embed a computed result directly in a sentence
+	\end{itemize}
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={},breaklines=true,breakatwhitespace=true]
+## 2. OLS Regression
+
+```s
+* Code and full Stata output both appear in document
+reg incwage college health_1-health_4 age i.race, vce(robust)
+```
+
+The college wage premium is `s %12.0fc _b[college]` USD per year.
+\end{lstlisting}
+
+	\begin{itemize}
+		\item The inline expression \texttt{{\char96} s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when the model changes
+		\vspace{0.1cm}
+		\item Full file \texttt{regression.stmd} is available on the course website
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: Key Syntax Elements}
+
+	\begin{itemize}
+		\item Three types of code blocks / inline expressions:
+	\end{itemize}
+
+	\vspace{0.2cm}
+
+	\begin{tabular}{lll}
+		\hline
+		Syntax & What it does & Use for \\
+		\hline
+		\texttt{{\char96}{\char96}{\char96}s} \ldots \texttt{{\char96}{\char96}{\char96}}   & Show code \textbf{and} output  & regressions, summary stats \\
+		\texttt{{\char96}{\char96}{\char96}s/q} \ldots \texttt{{\char96}{\char96}{\char96}} & Run quietly, \textbf{nothing shown} & paths, data cleaning \\
+		\texttt{{\char96} s \textit{expr}{\char96}} & Embed value \textbf{inline} in text & report coefficients \\
+		\hline
+	\end{tabular}
+
+	\vspace{0.4cm}
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
+```s
+reg incwage college health_1-health_4 age i.race, vce(robust)
+```
+
+The college wage premium is `s %12.0fc _b[college]` USD per year.
+\end{lstlisting}
+
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item The inline expression \texttt{{\char96}s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+	\end{itemize}
+
+\end{frame}
+
+
+
+
+\title[]
 {R Example}
 
 
@@ -2639,10 +2867,10 @@ reg incwage college gender college_gender i.health age year i.race, vce(robust)
 
 
 \begin{frame}[fragile]{Examine Data}{skim(): Check for Missing Values}
-		\begin{lstlisting}
+\begin{lstlisting}
 # Load the skimr package
 library(skimr)
-			
+
 # Check for missing values with skim()
 skim(acs_2015)
 \end{lstlisting}
@@ -2825,8 +3053,8 @@ summary(model3)
 acs_2015$college_gender <- acs_2015$college * acs_2015$gender
 
 # Define the model with interaction term and robust standard errors
-model_interaction <- lm_robust(incwage ~ college + gender + college_gender + 
-health_1 + health_2 + health_3 + health_4 + 
+model_interaction <- lm_robust(incwage ~ college + gender + college_gender +
+health_1 + health_2 + health_3 + health_4 +
 age + factor(race), data = acs_2015, se_type = "HC1")
 
 # Print summary to get robust standard errors
@@ -2838,6 +3066,157 @@ summary(model_interaction)
 		\vspace{0.2cm}
 		\item Include the interaction term in the regression model with robust standard errors
 	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Reproducible Research: What is R Markdown?}
+
+	\begin{itemize}
+		\item \textbf{R Markdown} is a file format (\texttt{.Rmd}) for reproducible research in R
+		\vspace{0.3cm}
+		\begin{itemize}
+			\item Write R code and narrative text together in \textbf{one file}
+			\vspace{0.2cm}
+			\item Compile to produce a formatted \textbf{HTML, PDF, or Word} document with code, output, and explanation interleaved
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Compared to a regular \texttt{.R} script:
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item A \texttt{.R} script only produces console output
+			\vspace{0.2cm}
+			\item A \texttt{.Rmd} file produces a \textbf{readable, shareable document} with section headings, formatted tables, and equations
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Built into \textbf{RStudio} --- no extra installation of external programs needed
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: Installation and Compile}
+
+	\begin{itemize}
+		\item \textbf{Installation} (one-time, in R console):
+	\end{itemize}
+
+\begin{lstlisting}
+install.packages("rmarkdown")
+install.packages("knitr")
+\end{lstlisting}
+
+	\begin{itemize}
+		\item \textbf{Compile} in RStudio: open \texttt{regression.Rmd} and click the \textbf{Knit} button
+		\vspace{0.2cm}
+		\item Or compile from the R console:
+	\end{itemize}
+
+\begin{lstlisting}
+rmarkdown::render("regression.Rmd")          # HTML output
+rmarkdown::render("regression.Rmd",
+  output_format = "pdf_document")            # PDF (requires LaTeX)
+\end{lstlisting}
+
+	\begin{itemize}
+		\item Output file (\texttt{regression.html}) is saved in the same folder
+		\vspace{0.2cm}
+		\item The full file \texttt{regression.Rmd} is available on the course website
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: \texttt{.Rmd} File Structure (1)}
+
+	\begin{itemize}
+		\item A \texttt{.Rmd} file starts with a \textbf{YAML header}, followed by Markdown text and R code chunks
+		\vspace{0.2cm}
+		\item The \textbf{setup chunk} (\texttt{include=FALSE}): runs silently --- use for paths and package loading
+	\end{itemize}
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
+---
+title: "Regression Analysis with CPS Data"
+author: "Tzu-Ting Yang, Academia Sinica"
+output:
+  html_document:
+    toc: true
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(haven);  library(estimatr);  library(dplyr)
+rawdata <- "C:/nest/Dropbox/.../rawdata"
+acs_2015 <- read_dta(paste0(rawdata, "/cps_2014_16.dta"))
+```
+\end{lstlisting}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: \texttt{.Rmd} File Structure (2)}
+
+	\begin{itemize}
+		\item \textbf{Regular chunk} (\texttt{\{r\}}): shows \textbf{both code and R output} in the document
+		\vspace{0.2cm}
+		\item \textbf{Inline value} (\texttt{{\char96} r \textit{expr}{\char96}}): embed a computed result directly in a sentence
+	\end{itemize}
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
+## OLS Regression
+
+```{r model3}
+model3 <- lm_robust(incwage ~ college + health_1 + health_2 +
+           health_3 + health_4 + age + factor(race),
+           data = acs_2015, se_type = "HC1")
+summary(model3)
+```
+
+The college wage premium is
+`r round(coef(model3)["college"], 0)` USD per year.
+\end{lstlisting}
+
+	\begin{itemize}
+		\item The inline expression \texttt{{\char96} r round(coef(model3)["college"], 0){\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+	\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Reproducible Research: Key Syntax Elements}
+
+	\begin{itemize}
+		\item Three types of code chunks / inline expressions:
+	\end{itemize}
+
+	\vspace{0.2cm}
+
+	\resizebox{\textwidth}{!}{%
+	\begin{tabular}{lll}
+		\hline
+		Syntax & What it does & Use for \\
+		\hline
+		\texttt{{\char96}{\char96}{\char96}\{r\}} \ldots \texttt{{\char96}{\char96}{\char96}}              & Show code \textbf{and} output  & regressions, summary stats \\
+		\texttt{{\char96}{\char96}{\char96}\{r, include=FALSE\}} \ldots \texttt{{\char96}{\char96}{\char96}} & Run quietly, \textbf{nothing shown} & paths, data loading \\
+		\texttt{{\char96}r \textit{expr}{\char96}}                  & Embed value \textbf{inline} in text & report coefficients \\
+		\hline
+	\end{tabular}%
+	}
+
+	\vspace{0.3cm}
+
+	\begin{itemize}
+		\item \texttt{echo=FALSE}: hides code, shows output; \texttt{include=FALSE}: hides both
+		\vspace{0.2cm}
+		\item Full file \texttt{regression.Rmd} is available on the course website
+	\end{itemize}
+
 \end{frame}
 
 

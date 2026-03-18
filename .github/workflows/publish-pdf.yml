@@ -141,29 +141,51 @@ jobs:
           path: |
             L5_Reg/*.pdf
 
-      # ---- L6_ML ---- (temporarily disabled: tex not ready)
-      # - name: Compile L6_ML PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: L6_ML
-      #     root_file: |
-      #       L6_ML_data.tex
-      #       L6_ML_labor.tex
-      #       L6_ML_metrics.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
+      # ---- L6_ML ----
+      - name: Compile L6_ML PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L6_ML
+          root_file: |
+            L6_ML_data.tex
+            L6_ML_labor.tex
+            L6_ML_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
 
-      # - name: Upload PDFs (L6_ML)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_L6_ML
-      #     path: |
-      #       L6_ML/*.pdf
+      - name: Upload PDFs (L6_ML)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L6_ML
+          path: |
+            L6_ML/*.pdf
+
+      # ---- S3_Geo_data ----
+      - name: Compile S3_Geo_data PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: S3_Geo_data
+          root_file: |
+            L10_geo_data_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (S3_Geo_data)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_S3_Geo_data
+          path: |
+            S3_Geo_data/*.pdf
 
       # ---- L7_FE ---- (temporarily disabled: tex not ready)
       # - name: Compile L7_FE PDFs (XeLaTeX + CJK)
