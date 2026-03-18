@@ -398,7 +398,7 @@
 	
 	
 	\begin{frame}{Problem of High-Dimensional Data}{Example 1}
-		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
+		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 		
 					\vspace{0.2cm}
 		\begin{itemize}	
@@ -457,7 +457,7 @@
 	
 	
 %	\begin{frame}{Problem of High-Dimensional Data}{Example 2}
-%		John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of Legalized Abortion on Crime}", The Quarterly Journal of Economics
+%		John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of Legalized Abortion on Crime}", The Quarterly Journal of Economics
 %		
 %		
 %		\begin{itemize}	
@@ -529,7 +529,7 @@
 %				\item \textbf{$p = 284$ possible covariates} in $x^{j}_{it}$ (see paper) 
 %				\begin{itemize}
 %					\vspace{0.2cm}
-%					\item lagged prisoners, lagged police $\times$ t ,initial income difference, initial income difference $\times$ t, initial beer consumption difference $\times$ t, average income, average income $\times$ t, initial abortion rate
+%					\item lagged prisoners, lagged police $\times$ t ,initial income difference, initial income difference $\times$ t, initial beer consumption difference $\times$ t, average income, average income $\times$ t, initial abortion rate
 %					\vspace{0.2cm}
 %				\end{itemize}
 %				\item $\gamma_{t}$ time effects
@@ -782,9 +782,9 @@
 	
 	\begin{itemize}
 		
-		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2013) ``\textbf{“Inference on Treatment Effects after Selection amongst High-Dimensional Controls}", Review of Economic Studies  
+		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2013) ``\textbf{“Inference on Treatment Effects after Selection amongst High-Dimensional Controls}", Review of Economic Studies  
 		\vspace{0.2cm}
-		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2014) ``\textbf{High-dimensional Methods and Inference on Structural and Treatment Effects}", Journal of Economic Perspectives
+		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2014) ``\textbf{High-dimensional Methods and Inference on Structural and Treatment Effects}", Journal of Economic Perspectives
 		
 		\begin{itemize}
 			\vspace{0.2cm}
@@ -1080,7 +1080,7 @@
 
 
 
-\begin{frame}{Three Ways to Choose $\lambda$}{Overview}
+\begin{frame}{Three Ways to Choose $\lambda$}{Overview}
 	\begin{itemize}
 		\item[1] \textbf{Cross-validation approach:} 
 				\vspace{0.2cm}
@@ -1092,7 +1092,7 @@
 		\item[2] \textbf{Rigorous approach:} 
 						\vspace{0.2cm}
 						\begin{itemize}			
-		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
+		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
 	\end{itemize}
 		\vspace{0.2cm}
 		\item[3] \textbf{Information criteria approach:} 
@@ -1100,7 +1100,7 @@
 		\begin{itemize}	
 		\item Select the value of $\lambda$ that minimizes information criterion (AIC, AICc, BIC or EBIC).
 			\end{itemize}
-		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		%error}
 	
 	
@@ -1149,7 +1149,7 @@
 
 \begin{frame}{Cross-validation approach}{Overview}
 	\begin{itemize}
-		\item Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		\item Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		error}
 					\vspace{0.2cm}
 			\begin{itemize}
@@ -1205,7 +1205,7 @@
 
 
 
-%\begin{frame}{Methods of Choosing $\lambda$: Cross-validation approach}{Prediction Error}
+%\begin{frame}{Methods of Choosing $\lambda$: Cross-validation approach}{Prediction Error}
 %	\begin{itemize}
 %		
 %	\item It is NOT surprising that we can fit \textbf{training data set} well
@@ -1402,7 +1402,7 @@
 						\vspace{0.2cm}
 	\item It is also called \textbf{cross-validation error curve}
 						\vspace{0.2cm}
-	\item This curve is a function of $\lambda$	
+	\item This curve is a function of $\lambda$	
 			\end{itemize}
 	\begin{center}
 		\begin{figure}[p]
@@ -1461,7 +1461,7 @@
 		\item[2-3] Do the same thing for $k = 2,\ldots,5$ and get \textbf{average prediction errors}
 		\vspace{0.2cm}
 			\end{itemize}
-		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
+		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
 	\end{itemize}
 	
 	
@@ -1505,7 +1505,7 @@
 
 
 \begin{frame}{STATA Example: Test the Convergence Hypothesis}{Overview}
-		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
+		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 	
 			\vspace{0.2cm}
 	\begin{itemize}	
@@ -1711,7 +1711,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 
 
 
-\begin{frame}{Review: Three Ways to Choose $\lambda$}{Overview}
+\begin{frame}{Review: Three Ways to Choose $\lambda$}{Overview}
 	\begin{itemize}
 		\item[1] \textbf{Cross-validation approach:} It is a data-driven approach. Choose \textbf{tuning parameter} $\lambda$ that minimize \textbf{prediction
 			error}
@@ -1720,7 +1720,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 		\item STATA command: \textbf{cvlasso}
 			\end{itemize}
 				\vspace{0.2cm}
-		\item[2] \textbf{Rigorous approach:} It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
+		\item[2] \textbf{Rigorous approach:} It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
 			\vspace{0.2cm}
 		\begin{itemize}
 			\item STATA command: \textbf{rlasso}
@@ -1733,7 +1733,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 		\begin{itemize}
 			\item STATA command: \textbf{lasso2}
 		\end{itemize}
-		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		%error}
 					\vspace{0.2cm}
 		\item To use the above commands, you need to install \textbf{lassopack} package

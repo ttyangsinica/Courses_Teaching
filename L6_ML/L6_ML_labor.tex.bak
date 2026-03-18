@@ -151,8 +151,8 @@
 
 
 
-\title[]  
-{Causal Machine Learning}
+\title[]
+{Causal Machine Learning (II): Post-Double Selection}
 
 %\subtitle
 %{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
@@ -184,13 +184,13 @@
 {\today}
 
 
-% \usetheme{CambridgeUS}
-% %\usecolortheme{seahorse}
-% \setbeamertemplate{footline}{%
-% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
-% 	\usebeamerfont{page number in head/foot}%
-% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-% }
+\usetheme{CambridgeUS}
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
 
 % \usetheme{Boadilla}
 % %\useinnertheme{rectangles}
@@ -204,13 +204,13 @@
 % }
 
 
-%\usepackage{beamerthemeshadow}
-%\usecolortheme{seahorse}
-\setbeamertemplate{footline}{%
-	\hfill\usebeamercolor[fg]{page number in head/foot}%
-	\usebeamerfont{page number in head/foot}%
-	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-}
+% \usepackage{beamerthemeshadow}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
 
 
 %\usepackage{beamerthemeshadow}
@@ -262,49 +262,47 @@
 
 	
 	
-	\begin{frame}{Machine learning}
+	% \begin{frame}{Causal Machine Learning: Series Overview}
+	% 	\begin{itemize}
+	% 		\item \textbf{Machine learning (ML)} methods use data-driven algorithms to model the relationship between an outcome \textbf{Y} and covariates \textbf{X}
+	% 		\vspace{0.2cm}
+	% 		\begin{itemize}
+	% 			\item There are many ML methods; \textbf{regression} is a fundamental one
+	% 			\vspace{0.2cm}
+	% 			\item The best method depends on the application
+	% 		\end{itemize}
+	% 		\vspace{0.3cm}
+	% 		\item For \textbf{causal inference}, ML methods help us select and control for relevant covariates, enabling credible identification of treatment effects
+	% 		\vspace{0.3cm}
+	% 		\item This lecture series covers three approaches:
+	% 		\vspace{0.2cm}
+	% 		\begin{itemize}
+	% 			\item \textbf{Part I (Previous Lecture):} Regression --- the foundational ML tool for causal inference under selection on observables
+	% 			\vspace{0.2cm}
+	% 			\item \textbf{Part II (This Lecture):} Post-Double Selection --- handling high-dimensional covariates with LASSO
+	% 			\vspace{0.2cm}
+	% 			\item \textbf{Part III (Next Lecture):} Heterogeneous Treatment Effects --- estimating CATE with Causal Forest
+	% 		\end{itemize}
+	% 	\end{itemize}
+	% \end{frame}
+
+
+	\begin{frame}{From Regression to High-Dimensional Settings}
 		\begin{itemize}
-			\item Machine learning methods: Use \textbf{data-driven algorithms} to predict outcome \textbf{Y} given many covariates \textbf{X}.
+			\item \textbf{Recall from Part I:} Under the Conditional Independence Assumption (CIA), regression controls for observed confounders $X$ to identify the causal effect of treatment $D$
+			\begin{eqnarray*}
+				Y_{i} = \alpha D_{i} + X_{i}\beta + \epsilon_{i}
+			\end{eqnarray*}
+			\vspace{0.2cm}
+			\item \textbf{Challenge:} To satisfy CIA, we may need to include \textbf{many} covariates $X$
 			\vspace{0.2cm}
 			\begin{itemize}
-				\item There are \textbf{many} machine learning methods
+				\item Interaction terms, polynomials, and many control variables
 				\vspace{0.2cm}
-				\item The best methods vary with the particular data application
-				\vspace{0.2cm}
-				\item You can consider \textbf{regression} is a type of machine learning methods
+				\item The number of covariates $p$ may be large relative to sample size $n$
 			\end{itemize}
-			\item The main goal is \textbf{prediction} or \textbf{classification}
-			\vspace{0.2cm}
-			\begin{itemize}
-				\item This is useful in some economics applications
-				\vspace{0.2cm}
-				\begin{itemize}
-					\item Forecast economic growth rate using many factors
-					\vspace{0.2cm}
-					\item Predict user-rating of products
-										\vspace{0.2cm}
-					\item Classify the types of individuals given many socio-economic measures and predict their loan repayment probability
-					%\item Predict one-year survival probability after hip transplant.
-					\vspace{0.2cm}
-				\end{itemize}
-				
-				
-				%Getting the best prediction or classification by applying machine learning methods	to high-dimensional data (many regressors $x$)  	
-				
-			\end{itemize}
-			%\item Machine learning methods help us select the key variables from high-dimensional data (many regressors $x$) 
-		\end{itemize}
-	\end{frame}
-	
-	
-		\begin{frame}{Machine learning and Causal Inference}
-		\begin{itemize}
-		
-			\item For causal inference,  machine learning methods help us select the key control variables from high-dimensional data 
-								\vspace{0.2cm}
-					\begin{itemize}
-			\item Many covariates \textbf{X}
-			 		\end{itemize}
+			\vspace{0.3cm}
+			\item \textbf{Part II:} Post-Double Selection (PDS) uses LASSO to select the most relevant controls from high-dimensional data while preserving valid causal inference
 		\end{itemize}
 	\end{frame}
 	
@@ -398,7 +396,7 @@
 	
 	
 	\begin{frame}{Problem of High-Dimensional Data}{Example 1}
-		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
+		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 		
 					\vspace{0.2cm}
 		\begin{itemize}	
@@ -457,7 +455,7 @@
 	
 	
 %	\begin{frame}{Problem of High-Dimensional Data}{Example 2}
-%		John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of Legalized Abortion on Crime}", The Quarterly Journal of Economics
+%		John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of Legalized Abortion on Crime}", The Quarterly Journal of Economics
 %		
 %		
 %		\begin{itemize}	
@@ -529,7 +527,7 @@
 %				\item \textbf{$p = 284$ possible covariates} in $x^{j}_{it}$ (see paper) 
 %				\begin{itemize}
 %					\vspace{0.2cm}
-%					\item lagged prisoners, lagged police $\times$ t ,initial income difference, initial income difference $\times$ t, initial beer consumption difference $\times$ t, average income, average income $\times$ t, initial abortion rate
+%					\item lagged prisoners, lagged police $\times$ t ,initial income difference, initial income difference $\times$ t, initial beer consumption difference $\times$ t, average income, average income $\times$ t, initial abortion rate
 %					\vspace{0.2cm}
 %				\end{itemize}
 %				\item $\gamma_{t}$ time effects
@@ -782,9 +780,9 @@
 	
 	\begin{itemize}
 		
-		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2013) ``\textbf{“Inference on Treatment Effects after Selection amongst High-Dimensional Controls}", Review of Economic Studies  
+		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2013) ``\textbf{“Inference on Treatment Effects after Selection amongst High-Dimensional Controls}", Review of Economic Studies  
 		\vspace{0.2cm}
-		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2014) ``\textbf{High-dimensional Methods and Inference on Structural and Treatment Effects}", Journal of Economic Perspectives
+		\item[] Belloni, Chernozhukov, Fernandez-Val and Hansen (2014) ``\textbf{High-dimensional Methods and Inference on Structural and Treatment Effects}", Journal of Economic Perspectives
 		
 		\begin{itemize}
 			\vspace{0.2cm}
@@ -1080,7 +1078,7 @@
 
 
 
-\begin{frame}{Three Ways to Choose $\lambda$}{Overview}
+\begin{frame}{Three Ways to Choose $\lambda$}{Overview}
 	\begin{itemize}
 		\item[1] \textbf{Cross-validation approach:} 
 				\vspace{0.2cm}
@@ -1092,7 +1090,7 @@
 		\item[2] \textbf{Rigorous approach:} 
 						\vspace{0.2cm}
 						\begin{itemize}			
-		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
+		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
 	\end{itemize}
 		\vspace{0.2cm}
 		\item[3] \textbf{Information criteria approach:} 
@@ -1100,7 +1098,7 @@
 		\begin{itemize}	
 		\item Select the value of $\lambda$ that minimizes information criterion (AIC, AICc, BIC or EBIC).
 			\end{itemize}
-		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		%error}
 	
 	
@@ -1149,7 +1147,7 @@
 
 \begin{frame}{Cross-validation approach}{Overview}
 	\begin{itemize}
-		\item Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		\item Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		error}
 					\vspace{0.2cm}
 			\begin{itemize}
@@ -1205,7 +1203,7 @@
 
 
 
-%\begin{frame}{Methods of Choosing $\lambda$: Cross-validation approach}{Prediction Error}
+%\begin{frame}{Methods of Choosing $\lambda$: Cross-validation approach}{Prediction Error}
 %	\begin{itemize}
 %		
 %	\item It is NOT surprising that we can fit \textbf{training data set} well
@@ -1402,7 +1400,7 @@
 						\vspace{0.2cm}
 	\item It is also called \textbf{cross-validation error curve}
 						\vspace{0.2cm}
-	\item This curve is a function of $\lambda$	
+	\item This curve is a function of $\lambda$	
 			\end{itemize}
 	\begin{center}
 		\begin{figure}[p]
@@ -1461,7 +1459,7 @@
 		\item[2-3] Do the same thing for $k = 2,\ldots,5$ and get \textbf{average prediction errors}
 		\vspace{0.2cm}
 			\end{itemize}
-		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
+		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
 	\end{itemize}
 	
 	
@@ -1505,7 +1503,7 @@
 
 
 \begin{frame}{STATA Example: Test the Convergence Hypothesis}{Overview}
-		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
+		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 	
 			\vspace{0.2cm}
 	\begin{itemize}	
@@ -1711,7 +1709,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 
 
 
-\begin{frame}{Review: Three Ways to Choose $\lambda$}{Overview}
+\begin{frame}{Review: Three Ways to Choose $\lambda$}{Overview}
 	\begin{itemize}
 		\item[1] \textbf{Cross-validation approach:} It is a data-driven approach. Choose \textbf{tuning parameter} $\lambda$ that minimize \textbf{prediction
 			error}
@@ -1720,7 +1718,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 		\item STATA command: \textbf{cvlasso}
 			\end{itemize}
 				\vspace{0.2cm}
-		\item[2] \textbf{Rigorous approach:} It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
+		\item[2] \textbf{Rigorous approach:} It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
 			\vspace{0.2cm}
 		\begin{itemize}
 			\item STATA command: \textbf{rlasso}
@@ -1733,7 +1731,7 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 		\begin{itemize}
 			\item STATA command: \textbf{lasso2}
 		\end{itemize}
-		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
 		%error}
 					\vspace{0.2cm}
 		\item To use the above commands, you need to install \textbf{lassopack} package
