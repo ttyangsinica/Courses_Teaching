@@ -4,6 +4,7 @@
 \usepackage{ragged2e} % 文字向兩邊對齊
 \renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
 
+\usepackage{tikz}
 \usepackage{listings}
 \usepackage{lmodern}
 \usepackage{fontspec}
@@ -228,9 +229,8 @@
 
 
 
-
 \title[]  
-{Main Idea}
+{Problem of High-Dimensional Data}
 
 
 \author 
@@ -281,34 +281,6 @@
 	\end{frame}
 	
 	
-
-\title[]  
-{Problem of High-Dimensional Data}
-
-
-\author 
-{}
-
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
-\institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
-
-
-
-
-\date
-{}
-
-
-\begin{frame}{}
-	\titlepage
-\end{frame}
 
 	
 	
@@ -382,7 +354,7 @@
 			\vspace{0.2cm}
 			\item He finds that a substantial number of variables can be found to be strongly related to growth
 			\vspace{0.2cm}
-			\item Citations: 3,888 times
+			\item Citations: 4,026 times
 			
 		\end{itemize}
 	\end{frame}
@@ -410,7 +382,7 @@
 			%	\mbox{E}[\epsilon|d_{i},x_{i}] =0.
 			%\end{eqnarray*}
 			\vspace{0.2cm}
-			\item Test the convergence hypothesis $-- \alpha < 0$ 
+			\item Test the convergence hypothesis: $\alpha < 0$ 
 			\vspace{0.2cm}
 			\begin{itemize}
 				\item Poor countries catch up with richer countries, conditional on similar characteristics (e.g. institutions, human capital etc.)
@@ -517,7 +489,7 @@
 	
 
 \title[]  
-{Post-Double Selection Method: Main Idea}
+{Post-Double Selection}
 
 
 \author 
@@ -551,27 +523,27 @@
 
 
 \begin{frame}{Using Machine Learning to Improve Causal Inference}{Post-Double Selection Method}
-	\begin{itemize}
-		\item Suppose we want to estimate casual effect of treatment $D_{i}$ on outcome $Y_{i}$
-		\vspace{0.2cm}
-		\item Control $p$ potential covariates where $p$ is too large
-		\vspace{0.2cm}
-		\begin{eqnarray*}
-			Y_{i} = \beta_{0} + \alpha D_{i} + \sum^{p}_{j=1} \beta_{j} X^{j}_{i}  + \epsilon_{i}, \ \ i=1, \ldots ,n
-		\end{eqnarray*}		
-		
-		\item \textbf{Traditional Variable Selection:}
-		\begin{itemize}
-						\vspace{0.2cm}
-			\item[1] Drop all $X^{j}_{i}$ that have small coefficients, using model selection devices (classical such as t-tests or modern) 
-			\vspace{0.2cm}
-			\item[2] Run OLS of $Y_{i}$ on $D_{i}$ and selected covariates $X^{j}_{i}$
-		\end{itemize}
-		\item \textbf{Does not work} because fails to eliminate \textbf{omitted variable bias}
-	\end{itemize}
+    \begin{itemize}
+        \item Suppose we want to estimate the causal effect of treatment $D_{i}$ on outcome $Y_{i}$
+        \vspace{0.2cm}
+        \item Control $p$ potential covariates where $p$ is too large
+        \vspace{0.2cm}
+        \begin{eqnarray*}
+            Y_{i} = \beta_{0} + \alpha D_{i} + \sum^{p}_{j=1} \beta_{j} X^{j}_{i}  + \epsilon_{i}, \ \ i=1, \ldots ,n
+        \end{eqnarray*}		
+        
+        \item \textbf{Traditional Variable Selection:}
+        \begin{itemize}
+            \vspace{0.2cm}
+            \item[1] Drop all $X^{j}_{i}$ that are \textbf{statistically insignificant} (e.g., using t-tests)
+            %(e.g., using t-tests or information criteria such as AIC/BIC)
+            \vspace{0.2cm}
+            \item[2] Run OLS of $Y_{i}$ on $D_{i}$ and selected covariates $X^{j}_{i}$
+        \end{itemize}
+                    \vspace{0.2cm}
+        \item \textbf{Does not work} because fails to eliminate \textbf{omitted variable bias}
+    \end{itemize}
 \end{frame}
-
-
 
 
 
@@ -776,7 +748,7 @@
 
 
 \title[]  
-{LASSO Estimation: Details}
+{LASSO Estimation}
 
 
 \author 
@@ -890,7 +862,13 @@
 		\vspace{0.2cm}
 		\item where $\lambda \geq 0$ is a \textbf{tuning parameter}
 		\vspace{0.2cm}
-		\item This is equivalent to minimizing SSE subject to $\sum^{p}_{j=1} |\beta_{j}| \leq s$ for some $s$
+		\item This is equivalent to minimizing SSE subject to 
+$\sum^{p}_{j=1} |\beta_{j}| \leq s$ for some $s \geq 0$ 
+		\vspace{0.2cm}
+
+\item $s$ and $\lambda$ are in one-to-one correspondence
+        
+        %\item This is equivalent to minimizing SSE subject to $\sum^{p}_{j=1} |\beta_{j}| \leq s$ for some $s$
 	\end{itemize}
 			\vspace{0.2cm}
 	\item The LASSO estimator:
@@ -935,45 +913,44 @@
 
 
 
-\begin{frame}{LASSO regression}
-	\begin{itemize}	
-		
-		\item There is no closed-form solution for LASSO estimator
-				\vspace{0.2cm}
-		\item \textbf{Intuition:}
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item There is a cost to including lots of regressors
-					\vspace{0.2cm}
-						\begin{itemize}	
-					\item $\lambda \sum^{p}_{j=1} |\beta_{j}|$
-							\end{itemize}
-						\vspace{0.2cm}
-			\item We can minimize the objective function by throwing out the ones that contribute little to the fit
-								\vspace{0.2cm}
-										\begin{itemize}	
-					\vspace{0.2cm}				
-			\item The effect of the penalization is that LASSO sets the $\hat{\beta}_{j}$ for some
-			variables to zero
-										\end{itemize}
-			
-			%\item Work best when a few regressors have $\beta_{j} \neq 0 $ and most $\beta_{j} = 0$ 
-			%\vspace{0.2cm}
-			%\item Leads to a more interpretable model than ridge regression
-			%			\vspace{0.2cm} 
-
-			%\item Best when many predictors important with coeffs of similar size
-			%\vspace{0.2cm}
-			%\item Best when LS has high variance
-			%\vspace{0.2cm}
-			%\item Algorithms exist to quickly compute $\hat{\beta}_{\lambda}$ for many values of $\lambda$
-			%	\vspace{0.2cm}
-			%\item then choose $\lambda$ by cross validation
-		\end{itemize}
-	\vspace{0.2cm}
-			\item Key question: \textbf{how to choose $\lambda$}
-	
-	\end{itemize}
+\begin{frame}{LASSO Regression}
+    \begin{itemize}
+        \item There is no closed-form solution for the LASSO estimator
+        \begin{itemize}
+            % \vspace{0.1cm}
+            % \item Unlike Ridge regression, the penalty $|\beta_j|$ is 
+            % non-differentiable at $\beta_j = 0$
+        \end{itemize}
+        \vspace{0.2cm}
+        \item \textbf{Intuition:}
+        \begin{itemize}
+            \vspace{0.2cm}
+            \item Including more regressors incurs a cost: 
+            $\lambda \sum^{p}_{j=1} |\beta_{j}|$
+            \vspace{0.2cm}
+            \item Variables that contribute little to fit are 
+            penalized out: LASSO sets $\hat{\beta}_{j} = 0$ 
+            for some $j$, performing \textbf{variable selection}
+        \end{itemize}
+        \vspace{0.2cm}
+        \item \textbf{Sparsity assumption:} LASSO works best when 
+        only a few $\beta_j \neq 0$ and most $\beta_j = 0$
+        \vspace{0.2cm}
+        \item \textbf{Choosing $\lambda$} $=$ \textbf{choosing which variables to include}
+        \begin{itemize}
+            \vspace{0.2cm}
+            \item Large $\lambda$: heavier penalty $\Rightarrow$ fewer variables selected
+            \vspace{0.2cm}
+            \item Small $\lambda$: lighter penalty $\Rightarrow$ more variables retained
+            \vspace{0.2cm}
+            \item Extremes: $\lambda \to \infty$ sets all $\hat{\beta}_j = 0$; 
+            $\lambda \to 0$ recovers OLS
+           % \vspace{0.1cm}
+           % \item $\lambda$ selected by \textbf{cross-validation} or theory-based 
+            criteria 
+            %(e.g., $\lambda \propto \sqrt{n \log p}$)
+        \end{itemize}
+    \end{itemize}
 \end{frame}
 
 
@@ -981,109 +958,166 @@
 
 
 
+% \title[]  
+% {How to select $\lambda$}
 
 
-\title[]  
-{How to select $\lambda$}
+% \author 
+% {}
 
+% %\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+% %\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+% \institute{}
 
-\author 
-{}
+% %\author 
+% %{楊子霆 \\ 中研院經濟所}
 
-%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
-%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
-\institute{}
-
-%\author 
-%{楊子霆 \\ 中研院經濟所}
-
-%\institute 
-%{中正大學國際經濟專題研討}
+% %\institute 
+% %{中正大學國際經濟專題研討}
 
 
 
 
-\date
-{}
+% \date
+% {}
 
 
-\begin{frame}{}
-	\titlepage
-\end{frame}
+% \begin{frame}{}
+% 	\titlepage
+% \end{frame}
+
+
+
+
 
 
 
 
 
 \begin{frame}{How to select $\lambda$}{Overview}
-	\begin{itemize}
-		%\item Each shrinkage method has an associated \textbf{tuning parameter} $\lambda$
-		\item The \textbf{tuning parameter} $\lambda$ controls the \textbf{strength of penalty} and determines a set of covariates
-						\vspace{0.2cm}
-							\begin{itemize}
-		\item Each tuning parameter value $\lambda$ corresponds to a fitted regression model
-								\vspace{0.2cm}
-									\end{itemize}
-		\item The shrinkage methods allow us to \textbf{simplify the model selection
-		problem to a one-dimensional problem}				
-						
-		%\item Therefore, choosing a good value of the \textbf{tuning parameter} $\lambda$ is crucial
-		%				\vspace{0.2cm}
-		%	\begin{itemize}
-		%\item Because each tuning parameter value corresponds to a fitted model
-						\vspace{0.2cm}
-	%	\item We also refer to this task as model selection
-	%							\vspace{0.2cm}
-		
-		%	\end{itemize}
-		
-	%	\item \textbf{Goal:} select a regression model that have best fit to data 
-	%		\begin{itemize}
-	%	\vspace{0.2cm}
-	%	\item It can help us predict data well
-	%	\vspace{0.2cm}
-	%	\item It can help us choose/include important covariates
-	%		\end{itemize}
-		
-	\end{itemize}
+    \begin{itemize}
+        \item The \textbf{tuning parameter} $\lambda$ controls the 
+        \textbf{strength of penalty} and determines a set of covariates
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Each tuning parameter value $\lambda$ corresponds to 
+            a fitted regression model
+            \vspace{0.2cm}
+        \end{itemize}
+        \item \textbf{Example:} given $p=3$ covariates, different $\lambda$ 
+        values yield different models:
+        \vspace{0.2cm}
+        \begin{center}
+        \begin{tabular}{cll}
+            \hline
+            $\lambda$ & Selected covariates & Fitted model \\
+            \hline
+            small & $x^1, x^2, x^3$ & $\hat{y}_i = \hat{\beta}_1 x^1_i + \hat{\beta}_2 x^2_i + \hat{\beta}_3 x^3_i$ \\
+            medium & $x^1, x^3$ & $\hat{y}_i = \hat{\beta}_1 x^1_i + \hat{\beta}_3 x^3_i$ \\
+            large & $x^1$ & $\hat{y}_i = \hat{\beta}_1 x^1_i$ \\
+            $\to \infty$ & (none) & $\hat{y}_i = 0$ \\
+            \hline
+        \end{tabular}
+        \end{center}
+        \vspace{0.2cm}
+        \item The shrinkage methods allow us to \textbf{simplify the model 
+        selection problem to a one-dimensional problem}
+    \end{itemize}
 \end{frame}
 
 
 
+
+% \begin{frame}{Three Ways to Choose $\lambda$}{Overview}
+% 	\begin{itemize}
+% 		\item[1] \textbf{Cross-validation approach:} 
+% 				\vspace{0.2cm}
+% 			\begin{itemize}
+% 		\item It is a data-driven approach. Choose \textbf{tuning parameter} $\lambda$ that minimize \textbf{prediction
+% 			error}
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item[2] \textbf{Rigorous approach:} 
+% 						\vspace{0.2cm}
+% 						\begin{itemize}			
+% 		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
+% 	\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item[3] \textbf{Information criteria approach:} 
+% 			\vspace{0.2cm}
+% 		\begin{itemize}	
+% 		\item Select the value of $\lambda$ that minimizes information criterion (AIC, AICc, BIC or EBIC).
+% 			\end{itemize}
+% 		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
+% 		%error}
+	
+	
+	
+	
+% \end{itemize}
+% \end{frame}
 
 
 \begin{frame}{Three Ways to Choose $\lambda$}{Overview}
-	\begin{itemize}
-		\item[1] \textbf{Cross-validation approach:} 
-				\vspace{0.2cm}
-			\begin{itemize}
-		\item It is a data-driven approach. Choose \textbf{tuning parameter} $\lambda$ that minimize \textbf{prediction
-			error}
-		\end{itemize}
-		\vspace{0.2cm}
-		\item[2] \textbf{Rigorous approach:} 
-						\vspace{0.2cm}
-						\begin{itemize}			
-		\item It is a theory-driven approach. Belloni et al. (2012, Econometrica) develop theory and feasible algorithms for the optimal $\lambda$.
-	\end{itemize}
-		\vspace{0.2cm}
-		\item[3] \textbf{Information criteria approach:} 
-			\vspace{0.2cm}
-		\begin{itemize}	
-		\item Select the value of $\lambda$ that minimizes information criterion (AIC, AICc, BIC or EBIC).
-			\end{itemize}
-		%Cross-validation is a simple, intuitive way to evaluate model fit (choose $\lambda$) based on \textbf{prediction
-		%error}
-	
-	
-	
-	
-\end{itemize}
+    \begin{itemize}
+        \item[1] \textbf{Cross-validation approach:}
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Data-driven: choose $\lambda$ that minimizes 
+            \textbf{out-of-sample prediction error} (typically via $k$-fold CV)
+            \vspace{0.2cm}
+            \item Simple and widely used, but computationally costly 
+            and does not guarantee inferential properties for causal estimation
+        \end{itemize}
+        \vspace{0.2cm}
+        \item[2] \textbf{Rigorous (theory-based) approach:}
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Theory-driven: Belloni, Chernozhukov, and Hansen 
+            (2014, \textit{ReStud}) derive the optimal 
+            $\lambda \propto \sqrt{n \log p}$
+            \vspace{0.2cm}
+            \item More data ($\uparrow n$) and more variables ($\uparrow p$) 
+            $\Rightarrow$ stronger penalty needed to avoid false selection
+            \vspace{0.2cm}
+            \item Provides formal statistical guarantees in high dimensions; 
+            used in the \textbf{Post-Double Selection} method
+        \end{itemize}
+        % \vspace{0.2cm}
+        % \item[3] \textbf{Information criteria approach:} see next slide
+    \end{itemize}
 \end{frame}
 
-
-
-
+\begin{frame}{Three Ways to Choose $\lambda$}{Information Criteria Approach}
+    \begin{itemize}
+        \item[3] \textbf{Information criteria approach:}
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Choose $\lambda$ that minimizes an information criterion, 
+            e.g., BIC:
+            \vspace{0.2cm}
+            \begin{eqnarray*}
+                \text{BIC}(\lambda) = \log\left(\frac{\text{SSE}(\lambda)}{n}\right) 
+                + \frac{\log n}{n} \cdot \hat{s}(\lambda)
+            \end{eqnarray*}
+            \vspace{0.1cm}
+            \item $\hat{s}(\lambda)$: number of selected variables 
+            (non-zero $\hat{\beta}_j$) under penalty $\lambda$
+            \vspace{0.2cm}
+            \item \textbf{Intuition:} trade-off between fit and sparsity
+            \begin{itemize}
+                \vspace{0.1cm}
+                \item Large $\lambda$ $\Rightarrow$ small $\hat{s}(\lambda)$ 
+                but large SSE
+                \vspace{0.1cm}
+                \item Small $\lambda$ $\Rightarrow$ small SSE 
+                but large $\hat{s}(\lambda)$
+                \vspace{0.1cm}
+                \item BIC selects $\lambda$ that balances the two
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{frame}
 
 
 
@@ -1199,72 +1233,130 @@
 
 
 
-
 \begin{frame}{Cross-validation approach}{Training Data}
-	\begin{itemize}
-	%	\item We wish to predict $y$ given $\bf{x} = (x_{1}, ..., x_{p})$.
-	%	\vspace{0.2cm}
-		\item We use \textbf{training data} to estimate the following regression using LASSO:
-		\begin{eqnarray*}
-			y_{i} = \sum^{p}_{j=1} \beta_{j} x^{j}_{i}  + \epsilon_{i},  \ \ i=1, \ldots ,n
-		\end{eqnarray*}	
-
-\vspace{0.2cm}
-\item Choose a set of \textbf{LASSO estimator} $\hat{\beta}_{j}$ that minimize \textbf{SSE with a penalty for model size} 
-\begin{itemize}
-	\vspace{0.2cm}
-	\item $\sum^{n}_{i=1} (y_{i} - \sum^{p}_{j=1} \beta_{j} x^{j}_{i})^{2} + \lambda \sum^{p}_{j=1} |\beta_{j}|$
-	\vspace{0.2cm}
-	\item where $\lambda \geq 0$ is a \textbf{tuning parameter}	
-\end{itemize}
-
-
-		\item We can predict $y_{i}$ using the estimated regression model	 $\mathrm{\hat{f}}_{\lambda}()$
-		\vspace{0.2cm}
-				\begin{itemize}	
-		%\item OLS: $\hat{y}_{i} = \sum^{p}_{j=1} \hat{\beta}^{ols}_{j} x^{j}_{i} = \mathrm{\hat{f}}(x^{j}_{i})$ 	
-		%\vspace{0.2cm}	
-		%\item Ridge: $\hat{y}_{i} = \sum^{p}_{j=1} \hat{\beta}^{R}_{j}(\lambda) x^{j}_{i}= \mathrm{\hat{f}}_{\lambda}(x^{j}_{i})$ 	
-		\vspace{0.2cm}	
-		\item $\hat{y}_{i} = \mathrm{\hat{f}}_{\lambda}(x^{j}_{i}) = \sum^{p}_{j=1} \hat{\beta}_{j} x^{j}_{i}$ 	
-		
-	\end{itemize}
-	\end{itemize}
+    \begin{itemize}
+        \item Use \textbf{training data} to estimate the following 
+        regression using LASSO:
+        \begin{eqnarray*}
+            y_{i} = \sum^{p}_{j=1} \beta_{j} x^{j}_{i} + \epsilon_{i}, 
+            \ \ i=1, \ldots, n
+        \end{eqnarray*}
+        \vspace{0.1cm}
+        \item Choose $(\hat{\beta}_{1}, \hat{\beta}_{2}, \ldots, \hat{\beta}_{p})$ 
+        that minimize \textbf{SSE with a penalty for model size}:
+        \begin{eqnarray*}
+            \sum^{n}_{i=1} \left(y_{i} - \sum^{p}_{j=1} \beta_{j} 
+            x^{j}_{i}\right)^{2} + \lambda \sum^{p}_{j=1} |\beta_{j}|
+        \end{eqnarray*}
+        \begin{itemize}
+            \item where $\lambda \geq 0$ is a \textbf{tuning parameter}
+        \end{itemize}
+        \vspace{0.2cm}
+        \item Predict $y_{i}$ using the estimated model 
+        $\hat{f}_{\lambda}(\cdot)$:
+        \begin{eqnarray*}
+            \hat{y}_{i} = \hat{f}_{\lambda}(x^{j}_{i}) 
+            = \sum^{p}_{j=1} \hat{\beta}_{j} x^{j}_{i}
+        \end{eqnarray*}
+    \end{itemize}
 \end{frame}
 
 
 
+% \begin{frame}{Cross-validation approach}{Validation Data}
+% 	\begin{itemize}
+% 		\item Then, we use this estimated regression model to predict unseen observations $y^{+}_{i}$ in the \textbf{validation data}
+% 				     \vspace{0.2cm}	
+% 		\item We can evaluate prediction accuracy based on \textbf{prediction errors} using \textbf{SSE} or \textbf{mean of squares error (MSE)}
+		
+% 		 \begin{eqnarray*}
+% 			SSE = \sum^{n}_{i=1} (y^{+}_{i} - \mathrm{\hat{f}}_{\lambda}(x^{j+}_{i}))^2
+% 		\end{eqnarray*}	
+		
+		
+% 		\begin{eqnarray*}
+% 			MSE = \dfrac{1}{n} \sum^{n}_{i=1} (y^{+}_{i} - \mathrm{\hat{f}}_{\lambda}(x^{j+}_{i}))^2
+% 		\end{eqnarray*}	
+		
+		
+% 		%$\sum^{n}_{i=1} (y_{i} - \hat{y}_{i})^2$ 
+		
+% 		\item $(x^{j+}_{i}, y^{+}_{i})$ are previously unseen observations in \textbf{validation data}
+% 		\vspace{0.2cm}
+% 		\item $\mathrm{\hat{f}}_{\lambda}()$ is the estimated regression model based on \textbf{training data}
+% 		%\vspace{0.2cm}
+% 		%\item It is not surprising that we can fit training data well
+		
+		
+% 	\end{itemize}
+% \end{frame}
 
 
 
 \begin{frame}{Cross-validation approach}{Validation Data}
-	\begin{itemize}
-		\item Then, we use this estimated regression model to predict unseen observations $y^{+}_{i}$ in the \textbf{validation data}
-				     \vspace{0.2cm}	
-		\item We can evaluate prediction accuracy based on \textbf{prediction errors} using \textbf{SSE} or \textbf{mean of squares error (MSE)}
-		
-		 \begin{eqnarray*}
-			SSE = \sum^{n}_{i=1} (y^{+}_{i} - \mathrm{\hat{f}}_{\lambda}(x^{j+}_{i}))^2
-		\end{eqnarray*}	
-		
-		
-		\begin{eqnarray*}
-			MSE = \dfrac{1}{n} \sum^{n}_{i=1} (y^{+}_{i} - \mathrm{\hat{f}}_{\lambda}(x^{j+}_{i}))^2
-		\end{eqnarray*}	
-		
-		
-		%$\sum^{n}_{i=1} (y_{i} - \hat{y}_{i})^2$ 
-		
-		\item $(x^{j+}_{i}, y^{+}_{i})$ are previously unseen observations in \textbf{validation data}
-		\vspace{0.2cm}
-		\item $\mathrm{\hat{f}}_{\lambda}()$ is the estimated regression model based on \textbf{training data}
-		%\vspace{0.2cm}
-		%\item It is not surprising that we can fit training data well
-		
-		
-	\end{itemize}
+    \begin{itemize}
+        \item Use the estimated model $\hat{f}_{\lambda}(\cdot)$ to predict 
+        unseen observations in the \textbf{validation data}
+        \vspace{0.2cm}
+        \item Evaluate prediction accuracy via \textbf{SSE} or \textbf{MSE}:
+        \begin{eqnarray*}
+            \text{SSE} = \sum^{n}_{i=1} 
+            \left(y^{+}_{i} - \hat{f}_{\lambda}(x^{j+}_{i})\right)^2
+        \end{eqnarray*}
+        \begin{eqnarray*}
+            \text{MSE} = \frac{1}{n} \sum^{n}_{i=1} 
+            \left(y^{+}_{i} - \hat{f}_{\lambda}(x^{j+}_{i})\right)^2
+        \end{eqnarray*}
+        \begin{itemize}
+            \item $(x^{j+}_{i}, y^{+}_{i})$: unseen observations 
+            in \textbf{validation data}
+            \vspace{0.1cm}
+            \item $\hat{f}_{\lambda}(\cdot)$: estimated model from 
+            \textbf{training data}
+        \end{itemize}
+        \vspace{0.2cm}
+        \item \textbf{Key idea:} a model that fits training data well may 
+        not predict validation data well $\Rightarrow$ \textbf{overfitting}
+    \end{itemize}
 \end{frame}
 
+
+
+% \begin{frame}{Cross-validation approach}{Training vs.\ Validation MSE}
+% \begin{center}
+% \begin{tikzpicture}[scale=1.0]
+
+% \draw[->, thick] (0,0) -- (7.5,0) node[right] {$\lambda$};
+% \draw[->, thick] (0,0) -- (0,5) node[above] {MSE};
+
+% \draw[blue, thick, domain=0.3:7, smooth, samples=100]
+%   plot (\x, {0.3 + 0.08*\x*\x});
+
+% \draw[red, dashed, thick, domain=0.3:7, smooth, samples=100]
+%   plot (\x, {3.5 + 2.5*exp(-1.2*\x) + 0.08*(\x-2.5)*(\x-2.5) - 0.3});
+
+% \draw[dashed, gray] (2.5, 0) -- (2.5, 3.2);
+% \node[below] at (2.5, 0) {$\lambda^{*}$};
+% \filldraw[green!60!black] (2.5, 3.2) circle (2.5pt);
+
+% \node[blue, right] at (7, 4.3) {Training MSE};
+% \node[red, right] at (5.5, 4.0) {Validation MSE};
+
+% \node[gray, font=\small] at (1.0, -0.5) {overfitting};
+% \node[gray, font=\small] at (5.5, -0.5) {underfitting};
+
+% \draw[<->, gray] (0.1, -0.35) -- (2.4, -0.35);
+% \draw[<->, gray] (2.6, -0.35) -- (6.9, -0.35);
+
+% \end{tikzpicture}
+% \end{center}
+% \begin{itemize}
+%     \item \textbf{Choose $\lambda^{*}$} that minimizes MSE on \textbf{validation data}
+%     \item Small $\lambda$: low Training MSE but high Validation MSE 
+%     $\Rightarrow$ \textbf{overfitting}
+%     \item Large $\lambda$: both MSEs rise $\Rightarrow$ \textbf{underfitting}
+% \end{itemize}
+% \end{frame}
 
 
 \begin{frame}{K-fold Cross Validation}{Step 1}
@@ -1291,7 +1383,7 @@
 
 \begin{frame}{K-fold Cross Validation}{Step 2}
 	\begin{itemize}
-	\item[2] For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, we do the followings: 
+	\item[2] For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, we do the following steps: 
 				\vspace{0.2cm}
 		\begin{itemize}
 	\item Note that each $\lambda$ has the corresponding regression model so we have $m$ regression models in this case
@@ -1365,80 +1457,106 @@
 
 
 
+\begin{frame}{K-fold Cross Validation}{Step 3: Choose $\hat{\lambda}$}
+    \begin{itemize}
+        \item[3] Choose $\lambda$ that minimizes the \textbf{cross-validation 
+        error curve} $CV(\lambda)$:
+        \begin{eqnarray*}
+            \hat{\lambda} = \arg \min_{\lambda \in \{\lambda_{1},\ldots,\lambda_{m}\}} 
+            CV(\lambda)
+        \end{eqnarray*}
+        \vspace{0.1cm}
+        \item $CV(\lambda)$ is a U-shaped curve 
+        \vspace{0.2cm}
+        \item When $K = n$: \textbf{leave-one-out cross-validation}
+       
+    \end{itemize}
+\end{frame}
 
+\begin{frame}{K-fold Cross Validation}{CV Error Curve}
+    \begin{center}
+    \begin{tikzpicture}[scale=1.05]
 
-\begin{frame}{K-fold Cross Validation}{Step 2-3}
-	\begin{itemize}
-		\item[2-3] Having done this, we get a \textbf{average prediction error} $CV(\lambda)$ 
-		\begin{itemize}	
-						\vspace{0.2cm}
-	\item It is also called \textbf{cross-validation error curve}
-						\vspace{0.2cm}
-	\item This curve is a function of $\lambda$	
-			\end{itemize}
-	\begin{center}
-		\begin{figure}[p]
-			\centering
-			\includegraphics{figure/CV_f6.jpg}
-		\end{figure}
-	\end{center}
-		
-	\end{itemize}
+    \draw[->, thick] (0,0) -- (7.5,0) node[right] {$\lambda$};
+    \draw[->, thick] (0,0) -- (0,5) node[above] {$CV(\lambda)$};
+
+    \draw[red, dashed, thick, domain=0.3:7, smooth, samples=100]
+        plot (\x, {3.5 + 2.5*exp(-1.2*\x) + 0.08*(\x-2.5)*(\x-2.5) - 0.3});
+
+    \draw[dashed, gray] (2.5, 0) -- (2.5, 3.2);
+    \node[below] at (2.5, 0) {$\hat{\lambda}$};
+    \filldraw[green!60!black] (2.5, 3.2) circle (2.5pt);
+    \node[green!60!black, above right, font=\small] at (2.6, 3.3) 
+        {$\min CV(\lambda)$};
+
+    \node[red] at (6.2, 4.5) {};
+
+    \node[gray, font=\small] at (1.0, -0.6) {overfitting};
+    \node[gray, font=\small] at (5.5, -0.6) {underfitting};
+
+    \draw[<->, gray] (0.1, -0.45) -- (2.4, -0.45);
+    \draw[<->, gray] (2.6, -0.45) -- (6.9, -0.45);
+
+    \end{tikzpicture}
+    \end{center}
 \end{frame}
 
 
+% \begin{frame}{K-fold Cross Validation}{CV Error Curve}
+%     \begin{center}
+%     \begin{tikzpicture}[scale=1.05]
+
+%     \draw[->, thick] (0,0) -- (7.5,0) node[right] {$\lambda$};
+%     \draw[->, thick] (0,0) -- (0,5) node[above] {$CV(\lambda)$};
+
+%     \draw[red, dashed, thick, domain=0.3:7, smooth, samples=100]
+%         plot (\x, {3.5 + 2.5*exp(-1.2*\x) + 0.08*(\x-2.5)*(\x-2.5) - 0.3});
+
+%     \draw[dashed, gray] (2.5, 0) -- (2.5, 3.2);
+%     \node[below] at (2.5, 0) {$\hat{\lambda}$};
+%     \filldraw[green!60!black] (2.5, 3.2) circle (2.5pt);
+%     \node[green!60!black, above right, font=\small] at (2.6, 3.3)
+%         {$\min CV(\lambda)$};
+
+%     \node[red] at (6.2, 4.5) {$CV(\lambda)$};
+
+%     \end{tikzpicture}
+%     \end{center}
+% \end{frame}
 
 
 
-\begin{frame}{K-fold Cross Validation}{Step 3}
-	\begin{itemize}
-		\item[3] Choose the value of \textbf{tuning parameter} $\lambda$ that minimizes $CV(\lambda)$ curve: 
-	\begin{eqnarray*}
-		\hat{\lambda} = \arg \min_{\lambda \in \{ \lambda_{1},\ldots,\lambda_{m} \}} CV(\lambda)
-	\end{eqnarray*}
+% \begin{frame}{\textbf{Example:} 5-fold cross validation}
+
+% 			\begin{center}
+% 		\begin{figure}[p]
+% 			\centering
+% 				\includegraphics[width=0.8\textwidth]{figure/CV_f4_new.jpg}
+% 			%\includegraphics{CV_f4_new.jpg}
+% 		\end{figure}
+% 	\end{center}
+
+% 	%\item \textbf{Example:} 5-fold cross validation
+% 	\begin{itemize}
+% 		\item[1] Pick 1st part of data as the \textbf{validation data} and use other parts of data as the \textbf{training data}
+% 		\vspace{0.2cm}
+% 		\item[2] For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, we do the followings: 
+% 				\vspace{0.2cm}
+% 			\begin{itemize}
+% 		\item[2-1] Get estimated regression models based on \textbf{training data}
+% 				\vspace{0.2cm}
+% 		\item[2-2] Use these estimated regression models to predict each \textbf{validation data} and get \textbf{prediction errors}	
+% 		\vspace{0.2cm}
+% 		\item[2-3] Do the same thing for $k = 2,\ldots,5$ and get \textbf{average prediction errors}
+% 		\vspace{0.2cm}
+% 			\end{itemize}
+% 		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
+% 	\end{itemize}
 	
-	\item When $K = n$, we call this \textbf{leave-one-out cross-validation}, because we leave out one data point at a time
-		
-	\end{itemize}
-\end{frame}
-
-
-
-
-
-
-
-\begin{frame}{\textbf{Example:} 5-fold cross validation}
-
-			\begin{center}
-		\begin{figure}[p]
-			\centering
-				\includegraphics[width=0.8\textwidth]{figure/CV_f4_new.jpg}
-			%\includegraphics{CV_f4_new.jpg}
-		\end{figure}
-	\end{center}
-
-	%\item \textbf{Example:} 5-fold cross validation
-	\begin{itemize}
-		\item[1] Pick 1st part of data as the \textbf{validation data} and use other parts of data as the \textbf{training data}
-		\vspace{0.2cm}
-		\item[2] For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, we do the followings: 
-				\vspace{0.2cm}
-			\begin{itemize}
-		\item[2-1] Get estimated regression models based on \textbf{training data}
-				\vspace{0.2cm}
-		\item[2-2] Use these estimated regression models to predict each \textbf{validation data} and get \textbf{prediction errors}	
-		\vspace{0.2cm}
-		\item[2-3] Do the same thing for $k = 2,\ldots,5$ and get \textbf{average prediction errors}
-		\vspace{0.2cm}
-			\end{itemize}
-		\item[3] Choose $\lambda$ that can minimize \textbf{average prediction errors} $CV(\lambda)$
-	\end{itemize}
 	
-	
-	%\vspace{0.2cm}
-	%\item (When $K = n$, we call this \textbf{leave-one-out cross-validation}, because we leave out one data point at a time)
-\end{frame}
+% 	%\vspace{0.2cm}
+% 	%\item (When $K = n$, we call this \textbf{leave-one-out cross-validation}, because we leave out one data point at a time)
+% \end{frame}
 
 
 
@@ -1475,58 +1593,18 @@
 
 
 \begin{frame}{STATA Example: Test the Convergence Hypothesis}{Overview}
-		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
-	
-			\vspace{0.2cm}
-	\begin{itemize}	
-		\item The author tries to examine the hypothesis of growth convergence and the determinants of economic growth 
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Whether poorer economies' per capita incomes will tend to grow at faster rates than richer economies
-		\end{itemize}
-		\vspace{0.2cm}
-		\item He finds that a substantial number of variables can be found to be strongly related to growth
-		\vspace{0.2cm}
-		\item Citations: 2,931 times
-		
-	\end{itemize}
-\end{frame}
-
-
-
-
-\begin{frame}{STATA Example: Test the Convergence Hypothesis}{Overview}
-	%Example 3: (Exogenous) Cross-Country Growth Regression.
+	Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", \textit{American Economic Review} (cited 2,931 times)
+	\vspace{0.3cm}
 	\begin{itemize}
-		\item Examine the relation between GDP growth rate and initial per capita GDP: 
+		\item Same setup as Example 1: test $\alpha < 0$ (convergence hypothesis) in
 		\begin{eqnarray*}
-			\underbrace{\mbox{GrowthRate}}_{Y_{i}} = \beta_{0} + \underbrace{\alpha}_{\mbox{ATE}} \underbrace{\log(\mbox{GDP})}_{D_{i}}	+ \sum^{p}_{j=1} \beta_{j} X^{j}_{i} + \epsilon_{i}	
+			\underbrace{\mbox{GrowthRate}}_{Y_{i}} = \beta_{0} + \underbrace{\alpha}_{\mbox{ATE}} \underbrace{\log(\mbox{GDP})}_{D_{i}} + \sum^{p}_{j=1} \beta_{j} X^{j}_{i} + \epsilon_{i}
 		\end{eqnarray*}
-		
-        \item Control a lot of covariates $X^{j}_{i}$	
-        
-       \item In their data, they have $p = 60$ covariates, $n = 90$
-        observations 
-        				\vspace{0.2cm}
-        	\begin{itemize}
-        \item Need to do variable selection
-        	\end{itemize}
-		%where the model is exogenous,
-		%\begin{eqnarray*}
-		%	\mbox{E}[\epsilon|d_{i},x_{i}] =0.
-		%\end{eqnarray*}
-						\vspace{0.2cm}
-		\item Test the convergence hypothesis $-- \alpha < 0$ 
-				\vspace{0.2cm}
-		\begin{itemize}
-		\item Poor countries catch up with richer countries, conditional on similar institutions etc. 
-				\vspace{0.2cm}
-		\item Prediction from the classical Solow growth model.   
-		        	\end{itemize}
-	
+		\item Data: $p = 60$ covariates, $n = 90$ observations $\Rightarrow$ need \textbf{variable selection}
+		\vspace{0.2cm}
+		\item Key finding: a large number of variables are robustly related to growth
 	\end{itemize}
 \end{frame}
-
 
 
 

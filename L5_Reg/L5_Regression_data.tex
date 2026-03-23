@@ -473,10 +473,11 @@
 		\item Both matching and regression require CIA (selection on observable) to get causal affects
 		\vspace{0.3cm}
 		\begin{itemize}
+        \item Matching additionally requires \textbf{common support}: treated and control units must overlap in their covariate distributions
+			\vspace{0.2cm}
 			\item But regression implicitly assume a specific functional form of \textbf{potential outcomes}
 			\vspace{0.2cm}
-			\item Matching additionally requires \textbf{common support}: treated and control units must overlap in their covariate distributions
-			\vspace{0.2cm}
+
 			\item Regression does \textbf{not} require common support --- it extrapolates outside the region of overlap using the assumed functional form
 		\end{itemize}
 	\end{itemize}
@@ -1363,45 +1364,45 @@
 
 
 
-       \begin{frame}{Review: Frisch-Waugh-Lovell Theorem}{Main Idea}
-       	\begin{itemize}
-       		\item Consider the population model:
-       		\begin{equation*}
-       			Y_i = \delta + \alpha D_i + \beta X_i + \epsilon_i
-       		\end{equation*}
+    %    \begin{frame}{Review: Frisch-Waugh-Lovell Theorem}{Main Idea}
+    %    	\begin{itemize}
+    %    		\item Consider the population model:
+    %    		\begin{equation*}
+    %    			Y_i = \delta + \alpha D_i + \beta X_i + \epsilon_i
+    %    		\end{equation*}
        		
-       		\item The FWL Theorem states that the following OLS estimators for $\alpha$ are equivalent:
-       		\vspace{0.2cm}
-       		\begin{enumerate}
-       			\item Direct method: Regressing $Y_i$ on $D_i$ and $X_i$ simultaneously
-       			       		\vspace{0.2cm}
-       			\item Partitioned method:
-       			       		\vspace{0.2cm}
-       			\begin{itemize}
-       				\item Step 1: Regress $D_i$ on $X_i$, obtain residuals $\tilde{D}_i$
-       				       		\vspace{0.2cm}
-       				\item Step 2: Regress $Y_i$ on $\tilde{D}_i$
-       				       		\vspace{0.2cm}
-       			\end{itemize}
-       		\end{enumerate}
+    %    		\item The FWL Theorem states that the following OLS estimators for $\alpha$ are equivalent:
+    %    		\vspace{0.2cm}
+    %    		\begin{enumerate}
+    %    			\item Direct method: Regressing $Y_i$ on $D_i$ and $X_i$ simultaneously
+    %    			       		\vspace{0.2cm}
+    %    			\item Partitioned method:
+    %    			       		\vspace{0.2cm}
+    %    			\begin{itemize}
+    %    				\item Step 1: Regress $D_i$ on $X_i$, obtain residuals $\tilde{D}_i$
+    %    				       		\vspace{0.2cm}
+    %    				\item Step 2: Regress $Y_i$ on $\tilde{D}_i$
+    %    				       		\vspace{0.2cm}
+    %    			\end{itemize}
+    %    		\end{enumerate}
        		
-       		\item The theorem also holds for multiple control variables 
-       	\end{itemize}
-       \end{frame}
+    %    		\item The theorem also holds for multiple control variables 
+    %    	\end{itemize}
+    %    \end{frame}
        
-    \begin{frame}{Review: Frisch-Waugh-Lovell Theorem}{Key Insights}
-       	\begin{itemize}
-       		\item Key insights from the partitioned method:
-       		       		\vspace{0.2cm}
-       		\begin{itemize}
-       			\item $\tilde{D}_i$ represents the part of $D_i$ uncorrelated with $X_i$
-       			       		\vspace{0.2cm}
-       			\item Regressing $Y_i$ on $\tilde{D}_i$ isolates the effect of $D_i$ on $Y_i$, controlling for $X_i$
-       		\end{itemize}
+    % \begin{frame}{Review: Frisch-Waugh-Lovell Theorem}{Key Insights}
+    %    	\begin{itemize}
+    %    		\item Key insights from the partitioned method:
+    %    		       		\vspace{0.2cm}
+    %    		\begin{itemize}
+    %    			\item $\tilde{D}_i$ represents the part of $D_i$ uncorrelated with $X_i$
+    %    			       		\vspace{0.2cm}
+    %    			\item Regressing $Y_i$ on $\tilde{D}_i$ isolates the effect of $D_i$ on $Y_i$, controlling for $X_i$
+    %    		\end{itemize}
        		
        	
-       	\end{itemize}
-       \end{frame}
+    %    	\end{itemize}
+    %    \end{frame}
 
 
 
@@ -2530,37 +2531,37 @@ reg incwage college health_1 - health_4 age i.race, vce(robust)
 
 
 
-\begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}
+% \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}
 	
 		
-\begin{lstlisting}
-reg college health_1 - health_4 age i.race, vce(robust)
-predict college_rid, residuals
+% \begin{lstlisting}
+% reg college health_1 - health_4 age i.race, vce(robust)
+% predict college_rid, residuals
 
-reg incwage college health_1 - health_4 age i.race, vce(robust)
-reg incwage college_rid, vce(robust)
-\end{lstlisting}
+% reg incwage college health_1 - health_4 age i.race, vce(robust)
+% reg incwage college_rid, vce(robust)
+% \end{lstlisting}
 		
-		\vspace{0.2cm}
+% 		\vspace{0.2cm}
 		
-	\begin{itemize}
-		\item Regress \texttt{college} on all other covariates to obtain residuals \texttt{college\_rid}
+% 	\begin{itemize}
+% 		\item Regress \texttt{college} on all other covariates to obtain residuals \texttt{college\_rid}
 		
-		\vspace{0.2cm}
-			\begin{itemize}
-		\item \texttt{college\_rid} represents the part of \texttt{college} that is unrelated to other covariates
-			\end{itemize}
-		\vspace{0.2cm}
+% 		\vspace{0.2cm}
+% 			\begin{itemize}
+% 		\item \texttt{college\_rid} represents the part of \texttt{college} that is unrelated to other covariates
+% 			\end{itemize}
+% 		\vspace{0.2cm}
 		
-		\item Regress \texttt{incwage} on \texttt{college} and other covariates 
+% 		\item Regress \texttt{incwage} on \texttt{college} and other covariates 
 		
-		\vspace{0.2cm}
+% 		\vspace{0.2cm}
 		
-		\item Regress \texttt{incwage} on \texttt{college\_rid} gives same coefficient as previous regression
+% 		\item Regress \texttt{incwage} on \texttt{college\_rid} gives same coefficient as previous regression
 		
-	\end{itemize}
+% 	\end{itemize}
 	
-\end{frame}
+% \end{frame}
 
 
 
@@ -2568,21 +2569,21 @@ reg incwage college_rid, vce(robust)
 
 
 
-\begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
-		\includegraphics[width=0.9\textwidth]{figure/reg_est_f3.png}
+% \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
+% 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f3.png}
 		
 		
-\end{frame}
+% \end{frame}
 
 
 
-\begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
-		\includegraphics[width=0.9\textwidth]{figure/reg_est_f4.png}
+% \begin{frame}[fragile]{Understanding the Frisch-Waugh-Lovell Theorem}{Output}
+% 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f4.png}
 		
 		
-\end{frame}
+% \end{frame}
 
-\begin{frame}[fragile]{Subgroup Analysis}
+\begin{frame}[fragile]{Heterogeneous Treatment Effects}{Setup}
 
 \begin{lstlisting}
 reg incwage college i.health age year i.race if sex==1, vce(robust)
@@ -2596,13 +2597,13 @@ reg incwage college i.health age year i.race if sex==1, vce(robust)
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Subgroup Analysis}{Output}
+\begin{frame}[fragile]{Heterogeneous Treatment Effects}{Output}
 		\includegraphics[width=0.9\textwidth]{figure/reg_est_f5.png}
 		
 		
 \end{frame}
 
-\begin{frame}[fragile]{Subgroup Analysis}
+\begin{frame}[fragile]{Heterogeneous Treatment Effects}{Output}
 		
 \begin{lstlisting}
 reg incwage college gender college_gender i.health age year i.race, vce(robust)
@@ -2627,7 +2628,7 @@ reg incwage college gender college_gender i.health age year i.race, vce(robust)
 
 
 
-\begin{frame}{Reproducible Research: What is \texttt{markstat}?}
+\begin{frame}{How to Share Your Results}{Stata Markdown}
 
 	\begin{itemize}
 		\item \textbf{markstat} is a Stata package for \textbf{reproducible research}
@@ -2653,7 +2654,7 @@ reg incwage college gender college_gender i.health age year i.race, vce(robust)
 
 
 
-\begin{frame}[fragile]{Reproducible Research: Installation (One-Time Setup)}
+\begin{frame}[fragile]{Installation}{One-Time Setup}
 
 	\begin{itemize}
 		\item \textbf{Step 1: Install Pandoc} --- an external program (not a Stata package)
@@ -2693,7 +2694,7 @@ whereis pandoc "C:\Program Files\Pandoc\pandoc.exe"
 
 
 
-\begin{frame}[fragile]{Reproducible Research: Compiling a \texttt{.stmd} File}
+\begin{frame}[fragile]{Compiling a \texttt{.stmd} File}
 
 	\begin{itemize}
 		\item \textbf{Step 4: Write your document} and save as \texttt{regression.stmd}
@@ -2726,7 +2727,7 @@ markstat using regression, pdf
 
 
 
-\begin{frame}[fragile]{Reproducible Research: \texttt{.stmd} File Structure (1)}
+\begin{frame}[fragile]{Stata Markdown File Structure (1)}
 
 	\begin{itemize}
 		\item A \texttt{.stmd} file starts with a \textbf{YAML header} (title, author, date), followed by \textbf{Markdown text} and \textbf{Stata code blocks}
@@ -2755,7 +2756,7 @@ gen college = educ99 >= 15
 
 
 
-\begin{frame}[fragile]{Reproducible Research: \texttt{.stmd} File Structure (2)}
+\begin{frame}[fragile]{\texttt{.stmd} File Structure (2)}
 
 	\begin{itemize}
 		\item \textbf{Regular block} (\texttt{{\char96}{\char96}{\char96}s}): shows \textbf{both code and Stata output} in the document
@@ -2777,14 +2778,14 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 	\begin{itemize}
 		\item The inline expression \texttt{{\char96} s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when the model changes
 		\vspace{0.1cm}
-		\item Full file \texttt{regression.stmd} is available on the course website
+		\item Full file \texttt{regression.stmd} is available on the course dropbox
 	\end{itemize}
 
 \end{frame}
 
 
 
-\begin{frame}[fragile]{Reproducible Research: Key Syntax Elements}
+\begin{frame}[fragile]{Key Syntax Elements}
 
 	\begin{itemize}
 		\item Three types of code blocks / inline expressions:
@@ -3070,7 +3071,7 @@ summary(model_interaction)
 
 
 
-\begin{frame}{Reproducible Research: What is R Markdown?}
+\begin{frame}{How to Share Your Results}{R Markdown}
 
 	\begin{itemize}
 		\item \textbf{R Markdown} is a file format (\texttt{.Rmd}) for reproducible research in R
@@ -3096,7 +3097,7 @@ summary(model_interaction)
 
 
 
-\begin{frame}[fragile]{Reproducible Research: Installation and Compile}
+\begin{frame}[fragile]{Installation and Compile}
 
 	\begin{itemize}
 		\item \textbf{Installation} (one-time, in R console):
@@ -3129,7 +3130,7 @@ rmarkdown::render("regression.Rmd",
 
 
 
-\begin{frame}[fragile]{Reproducible Research: \texttt{.Rmd} File Structure (1)}
+\begin{frame}[fragile]{R Markdown File Structure (1)}
 
 	\begin{itemize}
 		\item A \texttt{.Rmd} file starts with a \textbf{YAML header}, followed by Markdown text and R code chunks
@@ -3159,7 +3160,7 @@ acs_2015 <- read_dta(paste0(rawdata, "/cps_2014_16.dta"))
 
 
 
-\begin{frame}[fragile]{Reproducible Research: \texttt{.Rmd} File Structure (2)}
+\begin{frame}[fragile]{R Markdown File Structure (2)}
 
 	\begin{itemize}
 		\item \textbf{Regular chunk} (\texttt{\{r\}}): shows \textbf{both code and R output} in the document
@@ -3189,7 +3190,7 @@ The college wage premium is
 
 
 
-\begin{frame}[fragile]{Reproducible Research: Key Syntax Elements}
+\begin{frame}[fragile]{R Markdown Key Syntax Elements}
 
 	\begin{itemize}
 		\item Three types of code chunks / inline expressions:
@@ -3214,7 +3215,7 @@ The college wage premium is
 	\begin{itemize}
 		\item \texttt{echo=FALSE}: hides code, shows output; \texttt{include=FALSE}: hides both
 		\vspace{0.2cm}
-		\item Full file \texttt{regression.Rmd} is available on the course website
+		\item Full file \texttt{regression.Rmd} is available on the course dropbox
 	\end{itemize}
 
 \end{frame}
