@@ -682,7 +682,7 @@
 
 
 \begin{frame}[fragile]{STATA Command: regress}{}
-	\item Example:	
+	\noindent\textbf{Example:}
 \begin{lstlisting}
 regress incwage college i.statefip i.year, vce(robust)
 \end{lstlisting}
@@ -697,12 +697,12 @@ regress incwage college i.statefip i.year, vce(robust)
 
 
 \begin{frame}[fragile]{STATA Command: areg}{}
-	\item Syntax:	
+	\noindent\textbf{Syntax:}
 \begin{lstlisting}
 areg depvar [indepvars] [if] [in] [weight], absorb(varname) [options]
 \end{lstlisting}
 	
-	\item Example:	
+	\noindent\textbf{Example:}
 \begin{lstlisting}
 areg incwage college i.year, absorb(statefip) vce(robust)
 \end{lstlisting}	
@@ -744,12 +744,12 @@ ssc install reghdfe
 
 
 \begin{frame}[fragile]{STATA Command: reghdfe}{}
-	\item Syntax:	
+	\noindent\textbf{Syntax:}
 \begin{lstlisting}
 reghdfe depvar [indepvars] [if] [in] [weight] , absorb(absvars) [options]
 \end{lstlisting}
 	
-	\item Example:	
+	\noindent\textbf{Example:}
 \begin{lstlisting}
 reghdfe incwage college, absorb(statefip year) vce(robust)
 \end{lstlisting}	
@@ -769,12 +769,12 @@ reghdfe incwage college, absorb(statefip year) vce(robust)
 
 
 \begin{frame}[fragile]{STATA Command: outreg2}{Display your results}
-	\item Syntax:
+	\noindent\textbf{Syntax:}
 \begin{lstlisting}
 outreg2 using filename, [options]
 \end{lstlisting}
 	
-	\item Example:
+	\noindent\textbf{Example:}
 \begin{lstlisting}
 reghdfe incwage college age age_sq i.sex i.race, absorb(statefip year) vce(robust)
 outreg2 using results.csv, replace keep(college) ///
@@ -796,12 +796,12 @@ addtext(Age, Yes, Sex, Yes, Race, Yes, State FE, Yes, Year FE, Yes)
 
 
 \begin{frame}[fragile]{STATA Command: outreg2}{Display your results}
-	\item Syntax:
+	\noindent\textbf{Syntax:}
 \begin{lstlisting}
 outreg2 using filename, [options]
 \end{lstlisting}
 
-\item Example:
+\noindent\textbf{Example:}
 \begin{lstlisting}
 reghdfe incwage college age age_sq i.sex i.race, absorb(statefip year) vce(robust)
 outreg2 using results.csv, replace keep(college) ///
@@ -852,7 +852,7 @@ addtext(Age, Yes, Sex, Yes, Race, Yes, State FE, Yes, Year FE, Yes)
 \end{frame}
 
 \begin{frame}[fragile]{R Command: lm() for Fixed Effects}{}
-	\item Example:
+	\noindent\textbf{Example:}
 \begin{lstlisting}[language=R]
 library(dplyr)
 
@@ -880,7 +880,7 @@ summary(model)
 
 
 \begin{frame}[fragile]{R Command: plm() for Fixed Effects}{}
-	\item Example:
+	\noindent\textbf{Example:}
 \begin{lstlisting}[language=R]
 library(plm)
 
