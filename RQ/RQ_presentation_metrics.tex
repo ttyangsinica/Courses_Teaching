@@ -1,0 +1,331 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+%（可選）若你會用到無襯線中文或等寬中文，建議補上：
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{colortbl} 
+\usepackage{xcolor}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+\usepackage{listings}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX snippet: language and style definition of Stata for listings package.
+%                [listings](http://www.ctan.org/pkg/listings) 
+%                [Stata](http://www.stata.com/)
+%
+% Usage:
+%     Copy the code into your preamble, or import it by `\include` .
+%     then in your doc:
+%     \lstinputlisting[style=numbers]{DO-SCRIPT}
+%     \lstinputlisting[style=numbers, style=stata-editor]{DO-SCRIPT}
+%     \lstinputlisting[style=nonumbers, frame=none]{DO-SCRIPT}
+% How it works:
+%     - The language is defined by `\lstdefinelanguage{Stata}`
+%     - Four styles is defined by `\lstdefinestyle{STYLE-NAME}`, 
+%       they are: numbers and no numbers, plain(black and white) and colorful
+%       (colored roughly like stata editor.)
+% Tips:
+%     - Generally you only need to set your default in the last part,
+%       that is, code inside of `\lstset`.
+%     - Add more keywords(I can not list all of them) in the `\lstset` part.
+%     - Do NOT leave any blank lines in commands
+%       (`\lstddefinelanguage', `\lstdefinestyle` and `\lstset`)
+%
+% update: 2014-04-16
+% version: 0.1
+% author: kongs
+% licence: MIT
+% url: https://gist.github.com/kongs-sublime/10862838
+%
+% TODO: 
+%       - finish keyword list.
+%       - precise colors that match stata editor?
+%       - make it flexible(fonts and style)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% langugae defination
+\lstdefinelanguage{Stata}{
+	% Left for users to add missing commands,
+	% with possibility of choosing different style.
+	morekeywords=,
+	% Popular add-on commands
+	morekeywords=[2]{cntrade, chinafin, 
+		wbopendata, spmap,
+	},
+	% System commands
+	morekeywords=[3]{regress, summarize, 
+		display,
+	},
+	% Keywords
+	morekeywords=[4]{forvalues, if, foreach, set},
+	% Built-in functions
+	morekeywords=[5]{rnormal, runiform},
+	morecomment=[l]{//},
+	% morecomment=[l]{*},  // `*` maybe used as multiply operator. So use `//` as line comment.
+	morecomment=[s]{/*}{*/},
+	% morecomment=[s]{,}{//},
+	% The following is used by macros, like `lags'.
+	morecomment=[n][keywordstyle9]{`}{'},
+	morestring=[b]",
+	sensitive=true,
+}
+
+\lstdefinestyle{numbers}{
+	numbers=left, 
+	stepnumber=1, 
+	numberstyle=\tiny\emptyaccsupp,
+	xleftmargin=2em,
+}
+
+\lstdefinestyle{nonumbers}{
+	numbers=none,
+}
+
+\lstdefinestyle{stata-plain}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,
+}
+
+\lstdefinestyle{stata-editor}{
+	language=Stata,
+	basicstyle=\footnotesize\ttfamily,  
+	keywordstyle={\color{NavyBlue}},  
+	keywordstyle=[2]{\color{NavyBlue}},
+	keywordstyle=[3]{\color{NavyBlue}},
+	keywordstyle=[4]{\color{NavyBlue}},
+	keywordstyle=[5]{\color{Blue}},
+	keywordstyle=[9]{\color{TealBlue}},
+	stringstyle=\color{Maroon},
+	commentstyle=\color{OliveGreen},
+}
+
+\lstset{
+	language=Stata,
+	style=stata-plain,
+	% style=stata-editor,
+	style=numbers,
+	showstringspaces=false,
+	breaklines,
+	frame=single,
+	% To add missing commands
+	% morekeywords={xtreg, xtunitroot},
+}
+
+
+
+\title[]  
+{Compulsory Office Hour}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{\today}
+
+% \usetheme{CambridgeUS}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
+
+\usetheme{Boadilla}
+%\useinnertheme{rectangles}
+
+%\usetheme{CambridgeUS}
+\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+
+% % \usepackage{beamerthemeshadow}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
+
+%\usepackage{beamerthemeshadow}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+ \titlepage
+\end{frame}
+
+
+
+\begin{frame}{Date and Deadline}
+\begin{itemize} 
+\item \textbf{Compulsory office hour will be hold on 4/15} 
+\vspace{0.2cm}
+\item Prepare 1-5 slides to describe your research questions 
+\vspace{0.2cm}
+\item Please upload your slides \textbf{before your meeting}
+\vspace{0.2cm}
+\item Upload your slides using this link:
+\vspace{0.2cm}
+\begin{itemize} 
+\item \url{https://www.dropbox.com/request/dYNdeGCQp1AOL0RERWzK}
+	\vspace{0.2cm}
+\item Format of file name: \textbf{StudentID\_YourName}
+\vspace{0.2cm}
+
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Booking a Slot}
+	\begin{itemize} 
+	
+		\item We will have 15 minutes to discuss your research topics
+		\vspace{0.2cm}
+		\item Please book your slot through this link
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item \url{https://calendar.app.google/F9KjbLsjs6kwaAsZ6}
+			
+		\end{itemize}
+		\vspace{0.2cm}
+		\item You can schedule a 1-on-1 meeting with me, or opt for a 2-on-1 meeting if you'd like to include your classmate. 
+	\vspace{0.2cm}
+	\begin{itemize} 
+		\item For 2-on-1 meeting, please put the first student name in 姓氏 and second one's name in 名字
+		
+	\end{itemize}
+		\vspace{0.2cm}
+	%	\item For undergraduate students, please let me know if you want to work on term paper together
+	%		\vspace{0.2cm}
+	%	\begin{itemize} 
+	%		\item Just book one slot for you and your coauthor
+			
+	%	\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Content}{Part 1}
+	\begin{itemize} 
+		\item Write down at least two research questions
+		\vspace{0.2cm}
+		\item Briefly mention why the proposed topics are interesting 
+		\vspace{0.2cm}
+		\item Some background information about your topic: 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item What is the origin of the question, puzzle, economic prediction, or stylized fact of interest?
+		\end{itemize}
+		
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Content}{Part 2}
+	\begin{itemize} 
+		
+		\item What is the causal relationship you want to estimate
+		\vspace{0.2cm}
+		\item Clearly point out your \textbf{outcome of interest} and the \textbf{treatment variable}
+		\vspace{0.2cm}
+		\item Try to figure out potential \textbf{selection bias} and how to fix it
+		\vspace{0.2cm}
+		\item Discuss potential \textbf{data sources}
+		
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+
+
+\end{document} 

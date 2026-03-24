@@ -331,6 +331,52 @@ jobs:
       #     path: |
       #       L12_RDD/*.pdf
 
+      # ---- Homework ----
+      - name: Compile Homework PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: Homework
+          root_file: |
+            HW1_labor.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (Homework)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_Homework
+          path: |
+            Homework/*.pdf
+
+      # ---- RQ ----
+      - name: Compile RQ PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: RQ
+          root_file: |
+            RQ_presentation_data.tex
+            RQ_presentation_labor.tex
+            RQ_presentation_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (RQ)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_RQ
+          path: |
+            RQ/*.pdf
+
       # ---- Logs (optional but useful) ----
       - name: Upload LaTeX logs (always)
         if: always()
