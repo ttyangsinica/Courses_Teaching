@@ -185,24 +185,24 @@
 {\today}
 
 
-% \usetheme{CambridgeUS}
-% %\usecolortheme{seahorse}
-% \setbeamertemplate{footline}{%
-% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
-% 	\usebeamerfont{page number in head/foot}%
-% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-% }
-
-\usetheme{Boadilla}
-%\useinnertheme{rectangles}
-
-%\usetheme{CambridgeUS}
-\usecolortheme{seahorse}
+\usetheme{CambridgeUS}
+%\usecolortheme{seahorse}
 \setbeamertemplate{footline}{%
 	\hfill\usebeamercolor[fg]{page number in head/foot}%
 	\usebeamerfont{page number in head/foot}%
 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
 }
+
+% \usetheme{Boadilla}
+% %\useinnertheme{rectangles}
+
+% %\usetheme{CambridgeUS}
+% \usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
 
 
 % \usepackage{beamerthemeshadow}
@@ -341,7 +341,7 @@
 	
 	
 	
-	\begin{frame}{Problem of High-Dimensional Data}{Example 1: Test the Convergence Hypothesis}
+	\begin{frame}{Problem of High-Dimensional Data}{Example 1}
 		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 		
 					\vspace{0.2cm}
@@ -362,7 +362,7 @@
 	
 	
 	
-	\begin{frame}{Problem of High-Dimensional Data}{Example 1: Test the Convergence Hypothesis}
+	\begin{frame}{Example 1: Test the Convergence Hypothesis}
 		\begin{itemize}
 			\item Examine the relation between GDP growth rate and initial per capita GDP: 
 			\begin{eqnarray*}
@@ -396,10 +396,10 @@
 	\end{frame}
 	
 	
-	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+	\begin{frame}{Problem of High-Dimensional Data}{Example: Effect of Abortion on Crime}
     John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of 
     Legalized Abortion on Crime,}'' \textit{Quarterly Journal of Economics}
-        \vspace{0.2cm}
+
     \begin{itemize}
         \item Examine the causal effect of legalized abortion on crime rate
         \vspace{0.2cm}
@@ -410,19 +410,18 @@
         \end{itemize}
         \vspace{0.2cm}
         \item Crime began to fall roughly 18 years after abortion 
-        legalization 
-        %(Roe v.\ Wade, 1973)
+        legalization (Roe v.\ Wade, 1973)
         \vspace{0.2cm}
         \item States with high abortion rates in the 1970s--80s 
         experienced greater crime reductions in the 1990s
         \vspace{0.2cm}
-        \item \textbf{Highly controversial}: many debates on 
+        \item \textbf{Highly controversial} --- many debates on 
         identification and confounders
     \end{itemize}
 \end{frame}
 
 
-	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+\begin{frame}{Example: Effect of Abortion on Crime}{Setup}
     \begin{itemize}
         \item \textbf{Goal:} estimate causal effect of $d_{it}$ 
         (abortion rate) on $y_{it}$ (crime rate)
@@ -444,7 +443,7 @@
         \end{itemize}
         \vspace{0.2cm}
         \item \textbf{Solution:} control for $p = 284$ potential 
-        covariates but $n = 600$ (50 states $\times$ 12 years)
+        covariates --- but $n = 600$ (50 states $\times$ 12 years)
         \begin{itemize}
             \vspace{0.1cm}
             \item $p$ is large relative to $n$ $\Rightarrow$ 
@@ -454,7 +453,7 @@
 \end{frame}
 
 
-	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+\begin{frame}{Example: Effect of Abortion on Crime}{Baseline Model}
     \begin{itemize}
         \item Donohue and Levitt (2001) baseline model:
         \begin{eqnarray*}
@@ -1679,6 +1678,8 @@ $\sum^{p}_{j=1} |\beta_{j}| \leq s$ for some $s \geq 0$
 
 
 
+
+\iffalse
 \begin{frame}{STATA Example: Test the Convergence Hypothesis}{Overview}
 	Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", \textit{American Economic Review} (cited 2,931 times)
 	\vspace{0.3cm}
@@ -1753,6 +1754,102 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 
 
 
+
+
+\fi
+
+
+% ---- NEW STATA EXAMPLE: Abortion & Crime (Donohue & Levitt 2001) ------------
+
+\begin{frame}{STATA Example: Abortion and Crime (Donohue \& Levitt 2001)}{Overview}
+	Donohue, J.J. and Levitt, S.D. (2001), ``\textbf{The Impact of Legalized Abortion on Crime}", \textit{Quarterly Journal of Economics}
+	\vspace{0.3cm}
+	\begin{itemize}
+		\item Does legalizing abortion reduce crime 15--20 years later?
+		\vspace{0.2cm}
+		\item First-difference model (removes state fixed effects):
+		\begin{eqnarray*}
+			\Delta \underbrace{\log(\text{ViolentCrime})}_{Y_{it}} = \underbrace{\alpha}_{\text{ATE}} \cdot \Delta \underbrace{\text{AbortionRate}}_{D_{it}} + \sum^{p}_{j=1} \beta_{j} \Delta X^{j}_{it} + \eta_{t} + \epsilon_{it}
+		\end{eqnarray*}
+		\item Data: 50 states $\times$ 12 years (1986--1997); 8 base controls expanded to $p = 44$ via squares \& interactions + year FE
+		\vspace{0.2cm}
+		\item Key question: does $\hat{\alpha} < 0$? (higher abortion $\Rightarrow$ lower crime)
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Data and Code}
+	\begin{itemize}
+	   \item See \textbf{ML\_v2.do}
+		\vspace{0.2cm}
+		\item Use \textbf{levitt\_ex.dat}
+		\vspace{0.2cm}
+		\item 8 base controls: prison, police, unemployment, income, poverty, AFDC, gun laws, beer tax
+		\vspace{0.2cm}
+		\item Expand to \textbf{44 controls}: 8 first differences + 8 squared terms + 28 pairwise interactions
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Feature Engineering}
+\begin{lstlisting}
+local Dlist "Dxxprison Dxxpolice Dxxunemp Dxxincome ///
+    Dxxpover Dxxafdc15 Dxxgunlaw Dxxbeer"
+
+* Squared differences (8 vars)
+foreach x of local Dlist { gen `x'2 = `x'^2 }
+
+* Pairwise interactions (28 vars)
+local n : word count `Dlist'
+forvalues i = 1/`n' {
+    local start = `i' + 1
+    forvalues j = `start'/`n' {
+        local vi : word `i' of `Dlist'
+        local vj : word `j' of `Dlist'
+        gen `vi'X`vj' = `vi' * `vj'
+    }
+}
+
+local AllCtrl `Dlist' `Dsq' `Dint'   * 44 controls total
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Control All Covariates}
+\begin{lstlisting}
+reg Dyviol Dviol `AllCtrl' _Iyear*, cluster(statenum)
+\end{lstlisting}
+\begin{itemize}
+	\item OLS with all 44 controls + year dummies (benchmark)
+	\vspace{0.2cm}
+	\item With $n \approx 600$ obs.\ and $p = 44$ controls, overfitting is a real concern
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Control All Covariates}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=.9\textwidth]{figure/abort_scatter.png}
+		\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Control All Covariates}
+\begin{itemize}
+\normalsize
+\item Change in abortion rate is negatively associated with change in violent crime
+\vspace{0.2cm}
+\item But OLS with all 44 controls is unreliable: imprecise estimates, wide confidence intervals
+\vspace{0.2cm}
+\item With $p = 44$ controls and $n \approx 600$, we need \textbf{variable selection} to identify the most relevant controls
+\end{itemize}
+\end{frame}
 
 
 \begin{frame}{Review: Post-Double Selection Method}{Formal Illustration}
@@ -1888,6 +1985,8 @@ reg Outcome gdpsh465 bmp1l- tot1,r
 
 
 
+
+\iffalse
 \begin{frame}[fragile]{STATA Example: Test the Convergence Hypothesis}{Use Post-Double Selection Method}
 \begin{lstlisting}
 pdslasso Outcome gdpsh465 (bmp1l- tot1),rob
@@ -2102,6 +2201,117 @@ graph export "$pic\gdp_scatter_r.png", replace width(3000)
 
 
 
+\fi
+
+
+% ---- NEW STATA PDS SECTION --------------------------------------------------
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Post-Double Selection LASSO}
+\begin{lstlisting}
+pdslasso Dyviol Dviol ///
+    (`AllCtrl' _Iyear*), ///
+    pnotpen(_Iyear*) cluster(statenum)
+\end{lstlisting}
+\begin{itemize}
+	\item \textbf{pdslasso}: double selection LASSO for causal inference
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item \textbf{AllCtrl}: all 44 penalized controls (LASSO selects the relevant ones)
+		\vspace{0.2cm}
+		\item \textbf{pnotpen(\_Iyear*)}: year dummies always included (not penalized)
+		\vspace{0.2cm}
+		\item \textbf{cluster(statenum)}: cluster-robust standard errors
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Post-Double Selection LASSO}
+\begin{itemize}
+\normalsize
+\item PDS-LASSO selects controls correlated with the outcome or the treatment
+\vspace{0.2cm}
+\item Estimated $\hat{\alpha} < 0$: higher abortion rate $\Rightarrow$ lower violent crime 15--20 years later
+\vspace{0.2cm}
+\item Coefficient is \textbf{statistically significant}: supports Donohue \& Levitt's original finding
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Manual PDS Steps}
+\begin{lstlisting}
+* Step 1: LASSO - select controls predicting outcome
+rlasso Dyviol Dxxprison Dxxpolice Dxxunemp Dxxincome Dxxpover ///
+    Dxxafdc15 Dxxgunlaw Dxxbeer _Iyear*, pnotpen(_Iyear*) rob
+
+* Step 2: LASSO - select controls predicting treatment
+rlasso Dviol Dxxprison Dxxpolice Dxxunemp Dxxincome Dxxpover ///
+    Dxxafdc15 Dxxgunlaw Dxxbeer _Iyear*, pnotpen(_Iyear*) rob
+
+* Step 3: OLS with union of selected controls
+* reg Dyviol Dviol [...] _Iyear*, cluster(statenum)
+\end{lstlisting}
+\begin{itemize}
+	\item Manual implementation shows which variables each LASSO step selects
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Visualization}
+\begin{lstlisting}
+graph twoway ///
+    (scatter Dyviol Dviol) ///
+    (lfit Dyviol Dviol), ///
+    title("Change in Violent Crime vs. Abortion Rate") ///
+    xtitle("Change in Abortion Rate (efaviol)") ///
+    ytitle("Change in Log Violent Crime") ///
+    graphregion(color(white))
+
+graph export "$figure/abort_scatter.png", replace width(3000)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Visualization}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=.9\textwidth]{figure/abort_scatter.png}
+		\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Partialed-Out Scatter}
+\begin{lstlisting}
+regress Dyviol Dxxprison Dxxpolice Dxxunemp Dxxincome Dxxpover ///
+    Dxxafdc15 Dxxgunlaw Dxxbeer _Iyear*
+predict res_Dyviol, residuals
+
+regress Dviol Dxxprison Dxxpolice Dxxunemp Dxxincome Dxxpover ///
+    Dxxafdc15 Dxxgunlaw Dxxbeer _Iyear*
+predict res_Dviol, residuals
+\end{lstlisting}
+\begin{itemize}
+	\item Partial out controls to isolate the \textbf{causal channel} (FWL theorem)
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{STATA Example: Abortion and Crime}{Partialed-Out Scatter}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=.9\textwidth]{figure/abort_scatter_r.png}
+		\end{figure}
+\end{frame}
+
+
+
+\iffalse
 \title[]  
 {R Example}
 
@@ -2364,6 +2574,189 @@ ggsave(filename = file.path(pic, "gdp_scatter_r.png"), width = 10, dpi = 300)
 
 
 
+
+
+\fi
+
+
+% ---- NEW R SECTION ----------------------------------------------------------
+
+\title[]
+{R Example}
+
+
+\author
+{}
+
+\institute{}
+
+\date
+{}
+
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Data and Code}
+	\begin{itemize}
+		\item See \textbf{ML\_v2.R}
+		\vspace{0.2cm}
+		\item Use \textbf{levitt\_ex.dat}
+		\vspace{0.2cm}
+		\item 8 base controls expanded to \textbf{44 controls}: 8 diffs + 8 squares + 28 interactions
+		\vspace{0.2cm}
+		\item Install: haven, hdm, ggplot2, dplyr
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Read and Prepare Data}
+\begin{lstlisting}
+library(hdm); library(haven); library(ggplot2); library(dplyr)
+
+AbortData <- read.table(paste0(workdata, "/levitt_ex.dat"),
+                        header = TRUE, sep = "\t")
+
+AbortData <- AbortData %>%
+  filter(statenum != 9, year >= 85, year <= 97) %>%
+  mutate(xxincome = xxincome / 100,
+         xxpover  = xxpover  / 100,
+         xxafdc15 = xxafdc15 / 10000,
+         xxbeer   = xxbeer   / 100) %>%
+  arrange(statenum, year)
+\end{lstlisting}
+\begin{itemize}
+	\item Drop DC, keep 1985--1997, rescale controls
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Generate First Differences}
+\begin{lstlisting}
+ctrl_vars <- c("xxprison","xxpolice","xxunemp","xxincome",
+               "xxpover","xxafdc15","xxgunlaw","xxbeer")
+
+AbortData <- AbortData %>%
+  group_by(statenum) %>%
+  mutate(
+    Dyviol = lpc_viol - lag(lpc_viol),
+    Dviol  = efaviol  - lag(efaviol),
+    across(all_of(ctrl_vars), ~ . - lag(.), .names = "D{.col}")
+  ) %>%
+  ungroup() %>%
+  filter(!is.na(Dyviol))
+\end{lstlisting}
+\begin{itemize}
+	\item \textbf{group\_by + lag()}: panel first differences within each state
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Feature Engineering}
+\begin{lstlisting}
+ctrl_D <- paste0("D", ctrl_vars)
+
+# Squared differences (8 vars)
+for (v in ctrl_D) AbortData[[paste0(v,"2")]] <- AbortData[[v]]^2
+ctrl_D_sq <- paste0(ctrl_D, "2")
+
+# Pairwise interactions (28 vars)
+ctrl_D_int <- c()
+for (i in 1:(length(ctrl_D)-1)) {
+  for (j in (i+1):length(ctrl_D)) {
+    nm <- paste0(ctrl_D[i],"X",ctrl_D[j])
+    AbortData[[nm]] <- AbortData[[ctrl_D[i]]] * AbortData[[ctrl_D[j]]]
+    ctrl_D_int <- c(ctrl_D_int, nm)
+  }
+}
+all_ctrl <- c(ctrl_D, ctrl_D_sq, ctrl_D_int)  # 44 controls
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Post-Double Selection Estimation}
+\begin{lstlisting}
+year_mat <- model.matrix(~ as.factor(year) - 1, data = AbortData)[, -1]
+
+X <- cbind(as.matrix(AbortData[, all_ctrl, drop = FALSE]), year_mat)
+y <- as.matrix(AbortData$Dyviol)
+d <- as.matrix(AbortData$Dviol)
+
+doublesel.effect <- rlassoEffect(x = X, y = y, d = d,
+                                  method = "double selection")
+summary(doublesel.effect)
+confint(doublesel.effect)
+\end{lstlisting}
+\begin{itemize}
+	\item \textbf{rlassoEffect()}: selects from 44 controls via PDS
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Scatter Plot}
+\begin{lstlisting}
+ggplot(AbortData, aes(x = Dviol, y = Dyviol)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Change in Violent Crime vs. Abortion Rate",
+       x = "Change in Abortion Rate (efaviol)",
+       y = "Change in Log Violent Crime") +
+  theme(plot.background = element_rect(fill = "white"))
+
+ggsave(filename = file.path(figure, "abort_scatter.png"),
+       width = 10, dpi = 300)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Scatter Plot}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=.9\textwidth]{figure/abort_scatter.png}
+		\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Partialed-Out Scatter}
+\begin{lstlisting}
+ctrl_formula <- paste(c(all_ctrl, "as.factor(year)"), collapse = " + ")
+model_y <- lm(as.formula(paste("Dyviol ~", ctrl_formula)), data = AbortData)
+AbortData$res_Dyviol <- resid(model_y)
+
+model_d <- lm(as.formula(paste("Dviol ~", ctrl_formula)), data = AbortData)
+AbortData$res_Dviol <- resid(model_d)
+
+ggplot(AbortData, aes(x = res_Dviol, y = res_Dyviol)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  labs(title = "Partialed Scatter: Violent Crime vs. Abortion Rate",
+       x = "Residual Abortion Rate",
+       y = "Residual Log Violent Crime") +
+  theme(plot.background = element_rect(fill = "white"))
+
+ggsave(filename = file.path(figure, "abort_scatter_r.png"), width = 10, dpi = 300)
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{R Example: Abortion and Crime}{Partialed-Out Scatter}
+		\begin{figure}[p]
+			\centering
+			\includegraphics[width=.9\textwidth]{figure/abort_scatter_r.png}
+		\end{figure}
+\end{frame}
 
 
 \begin{frame}{Recommended Resources for Self-Learning}

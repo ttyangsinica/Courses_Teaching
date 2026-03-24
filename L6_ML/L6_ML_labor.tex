@@ -341,7 +341,7 @@
 	
 	
 	
-	\begin{frame}{Problem of High-Dimensional Data}{Example 1}
+	\begin{frame}{Problem of High-Dimensional Data}{Example 1: Test the Convergence Hypothesis}
 		Sala-i-Martin, Xavier (1997), ``\textbf{I Just Ran Two Million Regressions}", American Economic Review
 		
 					\vspace{0.2cm}
@@ -362,7 +362,7 @@
 	
 	
 	
-	\begin{frame}{Example 1: Test the Convergence Hypothesis}
+	\begin{frame}{Problem of High-Dimensional Data}{Example 1: Test the Convergence Hypothesis}
 		\begin{itemize}
 			\item Examine the relation between GDP growth rate and initial per capita GDP: 
 			\begin{eqnarray*}
@@ -396,7 +396,94 @@
 	\end{frame}
 	
 	
-	
+	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+    John J. Donohue and Steven D. Levitt (2001), ``\textbf{The Impact of 
+    Legalized Abortion on Crime,}'' \textit{Quarterly Journal of Economics}
+        \vspace{0.2cm}
+    \begin{itemize}
+        \item Examine the causal effect of legalized abortion on crime rate
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item \textbf{Mechanism:} unwanted children are at elevated 
+            risk of criminal behavior; abortion legalization reduced 
+            the number of such births
+        \end{itemize}
+        \vspace{0.2cm}
+        \item Crime began to fall roughly 18 years after abortion 
+        legalization 
+        %(Roe v.\ Wade, 1973)
+        \vspace{0.2cm}
+        \item States with high abortion rates in the 1970s--80s 
+        experienced greater crime reductions in the 1990s
+        \vspace{0.2cm}
+        \item \textbf{Highly controversial}: many debates on 
+        identification and confounders
+    \end{itemize}
+\end{frame}
+
+
+	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+    \begin{itemize}
+        \item \textbf{Goal:} estimate causal effect of $d_{it}$ 
+        (abortion rate) on $y_{it}$ (crime rate)
+        \vspace{0.2cm}
+        \item \textbf{Problem:} abortion rates are not randomly assigned
+        \vspace{0.2cm}
+        \item \textbf{Key concern:} many confounders correlated with 
+        both abortion and crime rates
+        \begin{itemize}
+            \vspace{0.2cm}
+            \item States differ in demographics, income, policing, 
+            social programs, etc.
+            \vspace{0.2cm}
+            \item Crime rates evolve differently across states 
+            for many reasons
+            \vspace{0.2cm}
+            \item Example confounder: high school dropout rate 
+            --- correlated with both abortion access and crime
+        \end{itemize}
+        \vspace{0.2cm}
+        \item \textbf{Solution:} control for $p = 284$ potential 
+        covariates but $n = 600$ (50 states $\times$ 12 years)
+        \begin{itemize}
+            \vspace{0.1cm}
+            \item $p$ is large relative to $n$ $\Rightarrow$ 
+            high-dimensional problem
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+	\begin{frame}{Problem of High-Dimensional Data}{Example 2: Effect of Abortion on Crime}
+    \begin{itemize}
+        \item Donohue and Levitt (2001) baseline model:
+        \begin{eqnarray*}
+            y_{it} = \alpha_{0} d_{it} + \sum^{p}_{j=1} \beta_{j} 
+            x^{j}_{it} + \gamma_{t} + \delta_{i} + \epsilon_{it}
+        \end{eqnarray*}
+        \begin{itemize}
+            \item $n = 600$: 50 states $\times$ 12 years
+            \vspace{0.1cm}
+            \item $y_{it}$: crime rate (violent, property, or murder 
+            per 1,000 people)
+            \vspace{0.1cm}
+            \item $d_{it}$: ``effective'' abortion rate
+            \vspace{0.1cm}
+            \item \textbf{$p = 284$ potential covariates} $x^{j}_{it}$: 
+            lagged prisoners, lagged police $\times t$, income, 
+            beer consumption, initial abortion rate, etc.
+            \vspace{0.1cm}
+            \item $\gamma_{t}$: time fixed effects; \ 
+            $\delta_{i}$: state fixed effects
+        \end{itemize}
+        % \vspace{0.2cm}
+        % \item \textbf{Replication data publicly available:}
+        % Belloni, Chernozhukov, and Hansen (2014, \textit{JEP}) 
+        % provide Stata code and data at 
+        % \href{https://www.openicpsr.org/openicpsr/project/113924/version/V1/view}{openICPSR} 
+        % and \href{https://github.com/mattmikem/flp}{GitHub}
+    \end{itemize}
+\end{frame}
 	
 	
 	
