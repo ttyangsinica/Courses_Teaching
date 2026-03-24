@@ -1963,8 +1963,6 @@ reg work treated pre_event_3 pre_event_2 post_event_0-post_event_2 pre_dd_3 pre_
 outreg2 using "$table\DID_dynamic.xls", replace nocon keep(pre_dd_* post_dd_*)
  year<1994,r
 \end{lstlisting}
-	\begin{itemize}
-	\end{itemize}
 \end{frame}
 
 
@@ -2086,8 +2084,6 @@ panel.grid.minor = element_blank())
 
 ggsave(paste0(pic, "/eitc_DID.png"), width = 12, height = 8, units = "in")
 \end{lstlisting}
-	\begin{itemize}
-	\end{itemize}
 \end{frame}
 
 
@@ -2134,8 +2130,6 @@ treated_placebo = treated * placebo)
 model_placebo <- lm(work ~ treated + placebo + treated_placebo, data = eitc_data, subset = (year < 1994))
 summary(model_placebo)
 \end{lstlisting}
-	\begin{itemize}
-	\end{itemize}
 \end{frame}
 
 
@@ -2157,8 +2151,6 @@ post_dd_0 = as.numeric(event_year == 0) * treated,
 post_dd_1 = as.numeric(event_year == 1) * treated,
 post_dd_2 = as.numeric(event_year == 2) * treated)
 \end{lstlisting}
-	\begin{itemize}
-	\end{itemize}
 \end{frame}
 
 
