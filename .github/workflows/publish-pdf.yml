@@ -187,29 +187,29 @@ jobs:
           path: |
             S3_Geo_data/*.pdf
 
-      # ---- L7_FE ---- (temporarily disabled: tex not ready)
-      # - name: Compile L7_FE PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: L7_FE
-      #     root_file: |
-      #       L7_FixedEffect_data.tex
-      #       L7_FixedEffect_labor.tex
-      #       L7_FixedEffect_metrics.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
+      # ---- L7_FE ----
+      - name: Compile L7_FE PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L7_FE
+          root_file: |
+            L7_FixedEffect_data.tex
+            L7_FixedEffect_labor.tex
+            L7_FixedEffect_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
 
-      # - name: Upload PDFs (L7_FE)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_L7_FE
-      #     path: |
-      #       L7_FE/*.pdf
+      - name: Upload PDFs (L7_FE)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L7_FE
+          path: |
+            L7_FE/*.pdf
 
       # ---- L8_DID ---- (temporarily disabled: tex not ready)
       # - name: Compile L8_DID PDFs (XeLaTeX + CJK)
