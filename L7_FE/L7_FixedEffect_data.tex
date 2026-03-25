@@ -195,7 +195,7 @@
 % }
 
 
-%\usepackage{beamerthemeshadow}
+% \usepackage{beamerthemeshadow}
 %\usecolortheme{seahorse}
 \setbeamertemplate{footline}{%
 	\hfill\usebeamercolor[fg]{page number in head/foot}%
@@ -280,27 +280,29 @@
 
 
 \begin{frame}{Fixed Effects Regression}
-	\begin{itemize} 
-		
+	\begin{itemize}
+
 		\item If unobserved confounding factors are \textbf{time-invariant}
 		\vspace{0.2cm}
-		\begin{itemize} 
-			
-			
-			\item If we have multiple time periods panel data or cross-sectional data
-					\vspace{0.2cm}
-			\item We can still obtain causal effect by estimating a regression that include many fixed effects in the model
+		\begin{itemize}
+			\item With panel data (multiple observations per unit over time), we can control for \textit{all} time-invariant unobservables — even ones we cannot measure
 			\vspace{0.2cm}
+			\item The key idea: assign each individual (firm, state, \ldots) their own intercept $\lambda_i$ that absorbs every time-invariant characteristic of unit $i$
+			% \vspace{0.2cm}
+			% \item We then identify $\alpha$ purely from \textbf{within-unit changes} over time
 		\end{itemize}
-	
-		
-		
-		%\item Individuals with certain characteristics may be much more likely to be treated than others (selection bias)
-		
-		%\begin{equation*}
-		%\mathrm{E}[\mathrm{Y}^{0}_{it} |D_{it}=1] \neq %\mathrm{E}[\mathrm{Y}^{0}_{it} |D_{it}=0]
-		%\end{equation*}
-		
+
+		\vspace{0.2cm}
+		\item \textbf{Why ``fixed effects''?}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $\lambda_i$ is treated as a \textbf{fixed (non-random) parameter} to be estimated — one for every unit $i$
+			\vspace{0.2cm}
+			\item This contrasts with \textbf{random effects}, where $\lambda_i \sim N(0,\sigma^2_\lambda)$ is assumed to be a random draw \textit{uncorrelated} with $D_{it}$
+			\vspace{0.2cm}
+			\item Because FE makes no distributional assumption on $\lambda_i$, it is consistent even when $\lambda_i$ is correlated with the treatment
+		\end{itemize}
+
 	\end{itemize}
 \end{frame}
 
@@ -339,18 +341,26 @@
 
 
 \begin{frame}{Fixed Effects Regression}{Example}
-	\begin{itemize} 
+	\begin{itemize}
 		\item This regression equation implies the following potential outcomes:
-		
+
 		\begin{equation*}
 		Y^{0}_{it}=\delta+A'_i\gamma+X'_{it}\beta+ \varepsilon_{it}
 		\end{equation*}
-		
-		
+
 		\begin{equation*}
 			Y^{1}_{it}=Y^{0}_{it}+ \alpha
 		\end{equation*}
-		
+
+		\item Key assumption: $E[\varepsilon_{it}\mid A_i, D_{it}, X_{it}]=0$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item After controlling for $A_i$ and $X_{it}$, the treatment $D_{it}$ is as good as randomly assigned
+			% \vspace{0.2cm}
+			% \item This rules out reverse causality where past outcomes affect current treatment (\textit{feedback effects})
+
+            %Known as \textbf{strict exogeneity}:
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -433,20 +443,28 @@
 
 
 \begin{frame}{Demeaning Approach}{}
-	\begin{itemize} 
+	\begin{itemize}
 		\item[1] Calculate individual averages of the outcome variable and all covariates (over time)
 		\begin{equation*}
 			\bar{Y}_{i}=\bar{\lambda}_{i}+\alpha\bar{D}_{i}+\bar{X}_i'\beta+\bar{\varepsilon}_i
-		\end{equation*}		
-		
+		\end{equation*}
+
 		\item[2] Subtract these averages from regression equation (1):
 		\begin{equation*}
 			Y_{it}-\bar{Y}_{i}=\alpha(D_{it}-\bar{D}_i)+(X_{it}-\bar{X}_{i})'\beta+(\varepsilon_{it}-\bar{\varepsilon}_i)
 		\end{equation*}
-		
-		\item Note that $\lambda_i$ drops out since it is time-invariant
-				\vspace{0.2cm}
-	\item Therefore the error $\varepsilon_{it}$ and the treatment $D_{it}$ would no longer be correlated.
+
+		\item $\lambda_i$ drops out because it is time-invariant ($\bar{\lambda}_i = \lambda_i$)
+		\vspace{0.2cm}
+		\item \textbf{Intuition}: identification comes entirely from \textbf{within-unit variation} 
+		\vspace{0.2cm}
+		\begin{itemize}
+        \item How a worker's union status and earnings change \textit{over time}, not from comparing different workers cross-sectionally
+        \vspace{0.2cm}
+			\item This is why the demeaned estimator is also called the \textbf{within estimator}
+			\vspace{0.2cm}
+			\item Cross-sectional differences between individuals (including $A_i$) are completely removed
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -587,10 +605,18 @@
 
 
 \begin{frame}{Regression with `N-1 dummy variables"}
-	\begin{itemize} 
+	\begin{itemize}
 		\item Since regression with `N-1 dummy variables" and regression with fixed effects are the same
 		\vspace{0.2cm}
-		\item Thus, when there are not many groups (e.g. state, year, county), we usually control these fixed effects by simply including many dummy variables
+		\item When there are not many groups (e.g. state, year), we usually control fixed effects by simply including dummy variables
+		% \vspace{0.3cm}
+		% \item \textbf{Cost of fixed effects}: every unit $i$ consumes one degree of freedom
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item With many units and few time periods (large $N$, small $T$), we lose many degrees of freedom
+		% 	\vspace{0.2cm}
+		% 	\item \textbf{Incidental parameters problem}: with fixed $T$, the estimated $\hat{\lambda}_i$ are inconsistent as $N \to \infty$; in nonlinear models (logit, probit) this can bias the structural parameter $\alpha$ — in linear models OLS remains consistent
+		% \end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -634,6 +660,7 @@
 		%\item If there are not many fixed effects, we can control these fixed effects by simply including group dummies
 	\end{itemize}
 \end{frame}
+
 
 
 

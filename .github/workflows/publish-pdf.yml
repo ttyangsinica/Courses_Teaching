@@ -337,7 +337,9 @@ jobs:
         with:
           working_directory: Homework
           root_file: |
-            HW1_NTU.tex
+            HW1_labor.tex
+            HW1_data.tex
+            HW1_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

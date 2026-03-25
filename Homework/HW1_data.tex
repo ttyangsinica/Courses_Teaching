@@ -1,0 +1,297 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Homework 1: R / Stata Practice (v3)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{enumerate}
+
+\usepackage{sectsty}
+\allsectionsfont{\normalfont\scshape}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=red}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt}
+
+% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+% Hint box: indented block with label
+\newcommand{\hint}[2]{%
+  \vspace{0.15cm}%
+  \hspace{1em}\textit{\textbf{Hint (#1):}} #2%
+  \vspace{0.1cm}%
+}
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge Homework 1: R / Stata Practice \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof. Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+
+
+%----------------------------------------------------------------------------------------
+%	INSTRUCTION
+%----------------------------------------------------------------------------------------
+
+\section*{Instruction}
+
+\begin{itemize}
+\item[\textbullet] You should submit Homework 1 before 4/22.
+\item[\textbullet] There is no late submission (zero points after the deadline).
+\item[\textbullet] Homework 1 accounts for 15 points in your final grade.
+\item[\textbullet] This homework will help you practice basic data skills and start working on your term paper.
+\item[\textbullet] You may use \textbf{either Stata or R}. Submit \textbf{two files}:
+  \begin{enumerate}
+    \item \textbf{Empirical analysis record (HTML)}: A single HTML file documenting your entire empirical workflow from loading the data through the regression analysis.
+    \begin{itemize}
+      \item \textbf{Stata}: Write code and narrative in a \texttt{.stmd} file and compile with \texttt{markstat using ``filename'', bundle}.
+      \item \textbf{R}: Write code and narrative in an \texttt{.Rmd} file and knit to HTML via ``Knit to HTML'' in RStudio or \texttt{rmarkdown::render()}.
+    \end{itemize}
+    \item \textbf{Answer sheet (PDF)}: A PDF answering all questions (1--12), including tables and figures.
+  \end{enumerate}
+\item[\textbullet] Recommended R packages: \texttt{haven}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{fixest}, \texttt{rmarkdown}.
+\item[\textbullet] Upload files here: \textbf{\url{https://www.dropbox.com/request/vE8QChJE7x3Ww9kQPuJ8}}
+\item[\textbullet] File name format: \texttt{StudentID\_YourName\_HW1.html} and \texttt{StudentID\_YourName\_HW1.pdf}.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 0
+%----------------------------------------------------------------------------------------
+
+\subsection*{Empirical Analysis Record}
+
+Submit an HTML file recording your complete empirical workflow --- from loading the data to the analyses in Questions. The HTML should include:
+\begin{itemize}
+  \item All code you executed (data loading, cleaning, visualization, regression).
+  \item Output from each code block (tables, figures, regression results).
+  \item Brief narrative text explaining what each step does.
+\end{itemize}
+
+\medskip
+\textit{\textbf{Hint (Stata):}} Create a \texttt{.stmd} file with markdown text and Stata code blocks, then compile:
+\begin{quote}\texttt{markstat using ``your\_file'', bundle}\end{quote}
+The \texttt{bundle} option embeds all figures directly into the HTML. \\
+
+\textit{\textbf{Hint (R):}} Create an \texttt{.Rmd} file with YAML header \texttt{output: html\_document} and embed R code in \texttt{\`{}\`{}\`{}\{r\}} chunks. Render with:
+\begin{quote}\texttt{rmarkdown::render("your\_file.Rmd")}\end{quote}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 1
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 1 \quad Research Question}
+
+Describe the research question you plan to investigate in your term paper. Clearly state:
+\begin{enumerate}[(a)]
+  \item What is the \textbf{research question}? Why this question is interesting?
+  \item What is your \textbf{treatment variable}? 
+  \item What is your \textbf{outcome variable}? 
+\end{enumerate}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 2
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 2 \quad Data Introduction}
+
+% Provide a brief introduction of your dataset and describe how you load it.
+% \begin{enumerate}[(a)]
+  %\item 
+Describe the \textbf{data source}, the \textbf{unit of observation} (e.g., individual, household, firm, region), the \textbf{type of data} (e.g., cross-sectional, panel, repeated cross-section), and the time period and geographic coverage if applicable.
+  %\item Describe how you load the data into your software.
+% \end{enumerate}
+
+% \begin{description}
+%   \item[Hint (Stata):] \texttt{use} for \texttt{.dta}; \texttt{import delimited} or \texttt{import excel} for other formats.
+%   \item[Hint (R):] \texttt{haven::read\_dta()} for \texttt{.dta}; \texttt{readr::read\_csv()} for \texttt{.csv}; \texttt{readxl::read\_excel()} for Excel.
+% \end{description}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 3
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 3 \quad Examine Data}
+
+\begin{enumerate}[(a)]
+  \item Check whether your \textbf{outcome variable} has any missing values. Report the number of missing observations (if any) and discuss whether they could affect your analysis.
+  \item Identify the variable(s) serving as the \textbf{unique ID} for each observation. Check whether this ID contains duplicate values and explain your findings.
+\end{enumerate}
+
+\medskip
+\textit{\textbf{Hint (Stata):}}
+\begin{itemize}
+  \item Missing values: \texttt{misstable summarize outcomevar}, \texttt{inspect outcomevar}
+  \item Duplicate IDs: \texttt{isid idvar} or \texttt{duplicates report idvar} \\
+        For panel data: \texttt{xtset id time} or \texttt{isid id time}
+\end{itemize}
+
+\textit{\textbf{Hint (R):}}
+\begin{itemize}
+  \item Missing values: \texttt{sum(is.na(df\$outcomevar))}
+  \item Duplicate IDs: \texttt{sum(duplicated(df\$idvar))} \\
+        For panel data: \texttt{anyDuplicated(df[, c("id", "time")])}
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 4
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 4 \quad Sample Construction}
+
+\begin{enumerate}[(a)]
+  \item Describe the steps you took to construct your \textbf{analysis sample}. For each step, state the selection criterion (e.g., age restriction, non-missing outcome) and report the number of observations remaining after applying it.
+  \item Describe the final sample size and sample period
+  
+  %\textbf{three} data-cleaning commands you used and explain what each one does.
+\end{enumerate}
+
+\medskip
+\textit{\textbf{Hint:}} Useful commands include:
+\begin{itemize}
+  \item \textbf{Create variables} --- Stata: \texttt{generate}, \texttt{egen} \quad R: \texttt{mutate()}
+  \item \textbf{Recode values} --- Stata: \texttt{recode}, \texttt{replace} \quad R: \texttt{case\_when()}, \texttt{ifelse()}
+  \item \textbf{Keep/drop observations} --- Stata: \texttt{keep}, \texttt{drop} \quad R: \texttt{filter()}, \texttt{select()}
+  \item \textbf{Merge/append} --- Stata: \texttt{merge}, \texttt{append} \quad R: \texttt{left\_join()}, \texttt{bind\_rows()}
+  \item \textbf{Reshape} --- Stata: \texttt{reshape} \quad R: \texttt{pivot\_longer()}, \texttt{pivot\_wider()}
+  \item \textbf{Collapse} --- Stata: \texttt{collapse} \quad R: \texttt{group\_by()} + \texttt{summarise()}
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 5
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 5 \quad Distribution of a Variable}
+
+Create a graph displaying the \textbf{distribution} of a variable you are interested in. Specify this graph as Figure 1 in your answer sheet. Briefly explain your findings.
+
+\medskip
+\textit{\textbf{Hint (Stata):}} \texttt{histogram varname, xtitle("...") ytitle("...")}
+
+\textit{\textbf{Hint (R):}} \texttt{ggplot(df, aes(x = var)) + geom\_histogram() + labs(x = "...", y = "...")}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 6
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 6 \quad Relationship Between Two Variables}
+
+Create a graph displaying the \textbf{relationship between two variables} of interest (e.g., your treatment and outcome). Specify this graph as Figure 2 in your answer sheet. Briefly explain your findings.
+
+\medskip
+\textit{\textbf{Hint (Stata):}} \texttt{graph twoway (scatter y x) (lfit y x)}
+
+\textit{\textbf{Hint (R):}} \texttt{ggplot(df, aes(x = x, y = y)) + geom\_point() + geom\_smooth(method = "lm")}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 7
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 7 \quad Simple Regression}
+
+Use regression to investigate the relationship between your treatment and outcome variable \textbf{without controlling for any covariates}. Write down the regression equation, define the variables, and explain your finding.
+
+\medskip
+\textit{\textbf{Hint (Stata):}} \texttt{reghdfe  y treat}
+
+\textit{\textbf{Hint (R):}} \texttt{lm(y \textasciitilde treat, data = df)}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 8
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 8 \quad Causal Interpretation and Omitted Variable Bias}
+
+Do you think the estimate from Question 7 represents a \textbf{causal effect}? Is there potential \textbf{omitted variable bias (selection bias)}? Provide a concrete example of an omitted variable that affects both the treatment and the outcome, and explain the direction of the bias.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 9
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 9 \quad OVB Formula}
+
+Use the \textbf{omitted-variable bias (OVB) formula} to discuss how the omitted variable you identified in Question 8 biases your estimate. Does it lead to an \textbf{overestimation} or \textbf{underestimation} of the causal effect? Show the formula and explain each component.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 10
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 10 \quad Adding Control Variables}
+
+List the \textbf{control variables} you plan to include. Add them to the regression and compare the results before and after (focusing on changes in the treatment coefficient). What do you find?
+
+\medskip
+\textit{\textbf{Hint (Stata):}} \texttt{reghdfe  y treat controls}
+
+\textit{\textbf{Hint (R):}} \texttt{lm(y \textasciitilde treat + controls, data = df)}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 11
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 11 \quad Bad Controls}
+
+Explain why the control variables you added in Question 10 are \textbf{not bad controls} --- that is, why they are not themselves caused by the treatment variable.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 12
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 12 \quad Fixed Effects}
+
+Add \textbf{fixed effects} to your regression. Explain which fixed effects you include and why they help control for confounding factors. Compare results before and after adding fixed effects and discuss the impact on the treatment coefficient.
+
+\medskip
+\textit{\textbf{Hint (Stata):}} \texttt{reghdfe y treat controls, absorb(fe1 fe2)}
+
+\textit{\textbf{Hint (R):}} \texttt{fixest::feols(y \textasciitilde treat + controls | fe1 + fe2, data = df)}
+
+\end{document}
