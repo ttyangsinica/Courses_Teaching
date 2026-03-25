@@ -228,7 +228,7 @@ Create a graph displaying the \textbf{relationship between two variables} of int
 Use regression to investigate the relationship between your treatment and outcome variable \textbf{without controlling for any covariates}. Write down the regression equation, define the variables, and explain your finding.
 
 \medskip
-\textit{\textbf{Hint (Stata):}} \texttt{regress y treat}
+\textit{\textbf{Hint (Stata):}} \texttt{reghdfe  y treat}
 
 \textit{\textbf{Hint (R):}} \texttt{lm(y \textasciitilde treat, data = df)}
 
@@ -263,7 +263,7 @@ Use the \textbf{omitted-variable bias (OVB) formula} to discuss how the omitted 
 List the \textbf{control variables} you plan to include. Add them to the regression and compare the results before and after (focusing on changes in the treatment coefficient). What do you find?
 
 \medskip
-\textit{\textbf{Hint (Stata):}} \texttt{regress y treat controls}
+\textit{\textbf{Hint (Stata):}} \texttt{reghdfe  y treat controls}
 
 \textit{\textbf{Hint (R):}} \texttt{lm(y \textasciitilde treat + controls, data = df)}
 
