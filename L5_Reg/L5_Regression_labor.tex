@@ -3118,11 +3118,10 @@ rmarkdown::render("regression.Rmd")          # HTML output
 rmarkdown::render("regression.Rmd",
   output_format = "pdf_document")            # PDF (requires LaTeX)
 \end{lstlisting}
-
 	\begin{itemize}
 		\item Output file (\texttt{regression.html}) is saved in the same folder
 		\vspace{0.2cm}
-		\item The full file \texttt{regression.Rmd} is available on the course website
+		\item The full file \texttt{regression.Rmd} is available on the course dropbox
 	\end{itemize}
 
 \end{frame}
@@ -3182,7 +3181,9 @@ The college wage premium is
 \end{lstlisting}
 
 	\begin{itemize}
-		\item The inline expression \texttt{{\char96} r round(coef(model3)["college"], 0){\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+		\item The inline expression \texttt{{\char96} r round(coef(model3)["college"], 0){\char96}} inserts the estimated coefficient directly into the sentence 
+        
+        %--- updates automatically when data or model changes
 	\end{itemize}
 
 \end{frame}
@@ -3212,9 +3213,11 @@ The college wage premium is
 	\vspace{0.3cm}
 
 	\begin{itemize}
-		\item \texttt{echo=FALSE}: hides code, shows output; \texttt{include=FALSE}: hides both
-		\vspace{0.2cm}
-		\item Full file \texttt{regression.Rmd} is available on the course website
+		\item \texttt{echo=FALSE}: hides code, shows output 
+        		\vspace{0.2cm}
+        \item \texttt{include=FALSE}: hides both
+		% \vspace{0.2cm}
+		% \item Full file \texttt{regression.Rmd} is available on the course website
 	\end{itemize}
 
 \end{frame}
