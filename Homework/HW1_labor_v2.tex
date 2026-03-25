@@ -1,0 +1,186 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Homework 1: R / Stata Practice (v2)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{sectsty}
+\allsectionsfont{\centering \normalfont\scshape}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=red}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt}
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge Homework 1: R / Stata Practice \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof. Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+%----------------------------------------------------------------------------------------
+%	INSTRUCTION
+%----------------------------------------------------------------------------------------
+
+\section*{Instruction}
+\begin{itemize}
+\item[\textbullet] You should submit Homework 1 before 4/21.
+\item[\textbullet] There is no late submission (zero points after the deadline).
+\item[\textbullet] Homework 1 accounts for 10 points in your final grade.
+\item[\textbullet] This homework will help you practice basic data skills and start working on your term paper.
+\item[\textbullet] You may use \textbf{either Stata or R}. You must submit \textbf{two files}:
+\begin{enumerate}
+  \item \textbf{Empirical analysis record (HTML)}: A single HTML file documenting your entire empirical workflow, from reading the data through the analysis in Questions 5--12.
+  \begin{itemize}
+    \item \textbf{Stata users}: Write your code and narrative in a \texttt{.stmd} file and compile it to \texttt{.html} using \texttt{markstat} (\texttt{markstat using ``filename'', bundle}).
+    \item \textbf{R users}: Write your code and narrative in an \texttt{.Rmd} (R Markdown) file and knit it to \texttt{.html} (click ``Knit to HTML'' in RStudio, or use \texttt{rmarkdown::render()}).
+  \end{itemize}
+  \item \textbf{Answer sheet (PDF)}: A PDF answering all questions (0--12) in writing. For Questions 5--12, copy key output and figures from your HTML record and add your written interpretation.
+\end{enumerate}
+\item[\textbullet] For R users, recommended packages include: \texttt{haven}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{fixest}, \texttt{rmarkdown}.
+\item[\textbullet] Please upload files using this link: \\ \textbf{\url{https://www.dropbox.com/request/tHC1fXI6jlvN060Oezs1}}.
+\item[\textbullet] File name format: \texttt{StudentID\_YourName\_HW1.html} and \texttt{StudentID\_YourName\_HW1.pdf}.
+\end{itemize}
+
+\vspace{0.3cm}
+
+%----------------------------------------------------------------------------------------
+%	QUESTIONS
+%----------------------------------------------------------------------------------------
+
+\section*{Questions}
+
+\begin{enumerate}
+\setcounter{enumi}{-1}
+
+% ---- Q0 ----
+\item Submit an HTML file recording your complete empirical workflow --- from loading the data to the analyses in Questions 5--12. The HTML should include all code you executed, the output produced by each code block (tables, figures, regression results), and brief narrative text explaining each step.
+
+\textit{Hint (Stata):} Create a \texttt{.stmd} file with markdown text and Stata code blocks, then compile with \texttt{markstat using ``your\_file'', bundle}. The \texttt{bundle} option embeds figures directly in the HTML.
+
+\textit{Hint (R):} Create an \texttt{.Rmd} file with the YAML header \texttt{output: html\_document} and embed R code in \texttt{\`{}\`{}\`{}\{r\}} chunks. Knit with \texttt{rmarkdown::render("your\_file.Rmd")}.
+
+\vspace{0.3cm}
+
+% ---- Q1 ----
+\item Describe the research question you plan to investigate. Clearly state: (a) what the research question is; (b) what your \textbf{treatment variable} ($D$) is and how it is defined in your data; and (c) what your \textbf{outcome variable} ($Y$) is and how it is defined in your data.
+
+\vspace{0.3cm}
+
+% ---- Q2 ----
+\item Provide a brief introduction of your dataset. Describe the data source, the \textbf{unit of observation} (e.g., individual, household, firm, region), the \textbf{type of data} (e.g., cross-sectional, panel), and the time period and geographic coverage if applicable. Also describe how you load the data into your software.
+
+\textit{Hint (Stata):} \texttt{use} for \texttt{.dta} files; \texttt{import delimited}, \texttt{import excel}, or \texttt{infix} for other formats.
+
+\textit{Hint (R):} \texttt{haven::read\_dta()} for \texttt{.dta}; \texttt{readr::read\_csv()} for \texttt{.csv}; \texttt{readxl::read\_excel()} for Excel.
+
+\vspace{0.3cm}
+
+% ---- Q3 ----
+\item Check whether your \textbf{outcome variable} has any missing values and report your findings. Also identify the variable(s) serving as the \textbf{unique ID} for each observation, check whether the ID contains duplicate values, and explain your findings.
+
+\textit{Hint (Stata):} \texttt{misstable summarize outcomevar}; \texttt{isid idvar} or \texttt{duplicates report idvar}. For panel data: \texttt{xtset id time}.
+
+\textit{Hint (R):} \texttt{sum(is.na(df\$outcomevar))}; \texttt{sum(duplicated(df\$idvar))}. For panel data: \texttt{anyDuplicated(df[, c("id", "time")])}.
+
+\vspace{0.3cm}
+
+% ---- Q4 ----
+\item Describe the steps you took to construct your \textbf{analysis sample}. For each step, state the selection criterion (e.g., age restriction, non-missing outcome) and the number of observations remaining. Also briefly describe \textbf{three} data-cleaning commands you used.
+
+\textit{Hint:} Useful commands include:
+\begin{itemize}
+\item \textbf{Create variables} --- Stata: \texttt{generate}, \texttt{egen}; R: \texttt{mutate()}
+\item \textbf{Recode values} --- Stata: \texttt{recode}, \texttt{replace}; R: \texttt{case\_when()}, \texttt{ifelse()}
+\item \textbf{Keep/drop observations} --- Stata: \texttt{keep}, \texttt{drop}; R: \texttt{filter()}, \texttt{select()}
+\item \textbf{Merge/append} --- Stata: \texttt{merge}, \texttt{append}; R: \texttt{left\_join()}, \texttt{bind\_rows()}
+\item \textbf{Reshape} --- Stata: \texttt{reshape}; R: \texttt{pivot\_longer()}, \texttt{pivot\_wider()}
+\item \textbf{Collapse/aggregate} --- Stata: \texttt{collapse}; R: \texttt{group\_by()} + \texttt{summarise()}
+\end{itemize}
+
+\vspace{0.3cm}
+
+% ---- Q5 ----
+\item Create a graph displaying the \textbf{distribution} of a variable you are interested in. Briefly explain your findings.
+
+\textit{Hint (Stata):} \texttt{histogram varname, xtitle("...") ytitle("...")}
+
+\textit{Hint (R):} \texttt{ggplot(df, aes(x = var)) + geom\_histogram() + labs(x = "...", y = "...")}
+
+\vspace{0.3cm}
+
+% ---- Q6 ----
+\item Create a graph displaying the \textbf{relationship between two variables} of interest (e.g., treatment and outcome). Briefly explain your findings.
+
+\textit{Hint (Stata):} \texttt{graph twoway (scatter y x) (lfit y x)}
+
+\textit{Hint (R):} \texttt{ggplot(df, aes(x = x, y = y)) + geom\_point() + geom\_smooth(method = "lm")}
+
+\vspace{0.3cm}
+
+% ---- Q7 ----
+\item Use regression to investigate the relationship between your treatment and outcome variable \textbf{without controlling for any covariates}. Write down the regression equation, define the variables, and explain your finding.
+
+\textit{Hint (Stata):} \texttt{regress y treat}
+
+\textit{Hint (R):} \texttt{lm(y \textasciitilde treat, data = df)}
+
+\vspace{0.3cm}
+
+% ---- Q8 ----
+\item Do you think the estimate from Question 7 represents a \textbf{causal effect}? Is there potential \textbf{omitted variable bias (selection bias)}? Provide a concrete example of an omitted variable that affects both the treatment and the outcome.
+
+\vspace{0.3cm}
+
+% ---- Q9 ----
+\item Use the \textbf{omitted-variable bias (OVB) formula} to discuss how the omitted variable you identified in Question 8 biases your estimate. Does it lead to an overestimation or underestimation of the causal effect?
+
+\vspace{0.3cm}
+
+% ---- Q10 ----
+\item List the \textbf{control variables} you plan to include. Add them to the regression and compare the results before and after (focusing on changes in the treatment coefficient). What do you find?
+
+\textit{Hint (Stata):} \texttt{regress y treat controls}
+
+\textit{Hint (R):} \texttt{lm(y \textasciitilde treat + controls, data = df)}
+
+\vspace{0.3cm}
+
+% ---- Q11 ----
+\item Explain why the control variables you added in Question 10 are \textbf{not bad controls} (i.e., they are not themselves caused by the treatment).
+
+\vspace{0.3cm}
+
+% ---- Q12 ----
+\item Add \textbf{fixed effects} to your regression. Explain which fixed effects you include and why they help control for confounding factors. Compare results before and after adding fixed effects and discuss the impact on the treatment coefficient.
+
+\textit{Hint (Stata):} \texttt{reghdfe y treat controls, absorb(fe1 fe2)}
+
+\textit{Hint (R):} \texttt{fixest::feols(y \textasciitilde treat + controls | fe1 + fe2, data = df)}
+
+\end{enumerate}
+
+\end{document}
