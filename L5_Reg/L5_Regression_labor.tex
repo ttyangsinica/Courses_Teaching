@@ -2701,7 +2701,7 @@ whereis pandoc "C:\Program Files\Pandoc\pandoc.exe"
 		\begin{itemize}
 			\item Use any plain text editor: Notepad, VS Code, or Stata's do-file editor
 			\vspace{0.1cm}
-			\item The full file \texttt{regression.stmd} is available on the course website
+			\item The full file \texttt{regression.stmd} is available on the course dropbox
 		\end{itemize}
 		\vspace{0.3cm}
 		\item \textbf{Step 5: Compile} from Stata
@@ -2719,7 +2719,7 @@ markstat using regression, pdf
 \end{lstlisting}
 
 	\begin{itemize}
-		\item \texttt{bundle} packs everything (CSS, images) into a single \texttt{.html} file --- easy to share
+		\item \texttt{bundle} packs everything (tables, graphs) into a single \texttt{.html} file --- easy to share
 	\end{itemize}
 
 \end{frame}
@@ -2776,8 +2776,8 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 
 	\begin{itemize}
 		\item The inline expression \texttt{{\char96} s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when the model changes
-		\vspace{0.1cm}
-		\item Full file \texttt{regression.stmd} is available on the course website
+		% \vspace{0.1cm}
+		% \item Full file \texttt{regression.stmd} is available on the course website
 	\end{itemize}
 
 \end{frame}
@@ -2802,20 +2802,20 @@ The college wage premium is `s %12.0fc _b[college]` USD per year.
 		\hline
 	\end{tabular}
 
-	\vspace{0.4cm}
+% 	\vspace{0.4cm}
 
-\begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
-```s
-reg incwage college health_1-health_4 age i.race, vce(robust)
-```
+% \begin{lstlisting}[language={},basicstyle=\ttfamily\fontsize{7.5}{9}\selectfont,keywordstyle={}]
+% ```s
+% reg incwage college health_1-health_4 age i.race, vce(robust)
+% ```
 
-The college wage premium is `s %12.0fc _b[college]` USD per year.
-\end{lstlisting}
+% The college wage premium is `s %12.0fc _b[college]` USD per year.
+% \end{lstlisting}
 
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item The inline expression \texttt{{\char96}s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
-	\end{itemize}
+% 	\vspace{0.2cm}
+% 	\begin{itemize}
+% 		\item The inline expression \texttt{{\char96}s \%12.0fc \_b[college]{\char96}} inserts the estimated coefficient directly into the sentence --- updates automatically when data or model changes
+% 	\end{itemize}
 
 \end{frame}
 
