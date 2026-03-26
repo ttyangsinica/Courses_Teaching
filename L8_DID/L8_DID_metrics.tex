@@ -681,12 +681,10 @@ Y_{NJ,Feb} + (Y_{PA,Nov} - Y_{PA,Feb})
 \begin{frame}{A Motivating Example}{Card \& Krueger (1994)}
 \begin{itemize}
 \item We can identify the effect of minimum wage on employment in NJ by taking difference in \textbf{realized employment} and \textbf{counterfactual employment} in NJ:
-\begin{equation*}
-\begin{aligned}
+\begin{align*}
 \alpha_{DID} &=  Y_{NJ,Nov} - {\color{red}[Y_{NJ,Feb} + (Y_{PA,Nov} - Y_{PA,Feb})]}  \\
 &= (Y_{NJ,Nov} - Y_{NJ,Feb}) - (Y_{PA,Nov} - Y_{PA,Feb})
-\end{aligned}
-\end{equation*}
+\end{align*}
 
 \item If PA is a good control group:	
 \vspace{0.2cm}
@@ -921,22 +919,18 @@ Y_{i1}=\mathrm{Y}^{0}_{i1}(1-D_i)+\mathrm{Y}^{1}_{i1}D_i
 \begin{itemize} 
 
 \begin{block}{Parallel Trends Assumption}
-\begin{equation*}
-\begin{aligned}
+\begin{align*}
 E[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=1]&=E[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=0]  \\
 &=E[\mathrm{Y}_{i1}-\mathrm{Y}_{i0}|D_{i}=0]
-\end{aligned}
-\end{equation*}
+\end{align*}
 \end{block}
 \item The treatment group and control group would have exhibited the same trend in the absence of the treatment
 \vspace{0.2cm}
 \item We can use Parallel Trends Assumption to construct a counterfactual for treatment group at $t=1$
-\begin{equation*}
-\begin{aligned}
+\begin{align*}
 \mathrm{E}[\mathrm{Y}^{0}_{i1} |D_{i}=1] &= \mathrm{E}[\mathrm{Y}^{0}_{i0}|D_{i}=1] + \mathrm{E}[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=0]  \\
 &= \mathrm{E}[\mathrm{Y}_{i0}|D_{i}=1] + \mathrm{E}[\mathrm{Y}_{i1}-\mathrm{Y}_{i0}|D_{i}=0]
-\end{aligned}
-\end{equation*}
+\end{align*}
 
 \item We can use \textbf{observed outcomes} to represent \textbf{unobserved $\mathrm{E}[\mathrm{Y}^{0}_{i1} |D_{i}=1]$}
 
@@ -950,15 +944,13 @@ E[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=1]&=E[\mathrm{Y}^{0}_{i1}-\mathr
 \begin{frame}{Identification Results for DID}
 \begin{itemize} 
 \item Apply Parallel Trends Assumption:
-\begin{equation*}
-\begin{aligned}
+\begin{align*}
 \alpha_{\text{ATT}}&=\mathrm{E}[\mathrm{Y}^{1}_{i1}-\mathrm{Y}^{0}_{i1}|D_{i}=1] \\
 &= \mathrm{E}[\mathrm{Y}^{1}_{i1}|D_{i}=1] - {\color{red}\mathrm{E}[\mathrm{Y}^{0}_{i1}|D_{i}=1]} \\
 &= \mathrm{E}[\mathrm{Y}^{1}_{i1}|D_{i}=1] - {\color{red}\mathrm{E}[\mathrm{Y}^{0}_{i0}|D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=0]} \\
-&= \mathrm{E}[\mathrm{Y}^{1}_{i1}- \mathrm{Y}^{0}_{i0}|D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=0]   \\     
-&= \mathrm{E}[\mathrm{Y}_{i1}- \mathrm{Y}_{i0}|D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i1}-\mathrm{Y}_{i0}|D_{i}=0] = 	\alpha_{\text{DID}}                    
-\end{aligned}
-\end{equation*}
+&= \mathrm{E}[\mathrm{Y}^{1}_{i1}- \mathrm{Y}^{0}_{i0}|D_{i}=1] - \mathrm{E}[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=0]   \\
+&= \mathrm{E}[\mathrm{Y}_{i1}- \mathrm{Y}_{i0}|D_{i}=1] - \mathrm{E}[\mathrm{Y}_{i1}-\mathrm{Y}_{i0}|D_{i}=0] = \alpha_{\text{DID}}
+\end{align*}
 
 \item The \textbf{average treatment effect on treated (ATT)} can be identified by difference in trend of outcome between treatment and control groups	
 
@@ -1081,14 +1073,11 @@ Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\vare
 	\end{itemize}
 	
 \item We will show that $\alpha$ can represent the DID estimate:
-\begin{equation*}
-	\begin{aligned}
+\begin{align*}
 		\alpha &= \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=0]\} \\
-		&- \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=0]\}  
+		&- \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=0]\}
 		%&= \{(\mu + \gamma + \delta + \alpha_{DID}) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\}
-		
-	\end{aligned}
-\end{equation*}	
+\end{align*}	
 	
 	
 	
@@ -1133,14 +1122,12 @@ Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\vare
 	\begin{itemize}
 		
 		\item $\alpha$ can represent treatment effect identified by DID design $\alpha_{DID}$:
-		\begin{equation*}
-			\begin{aligned}
+		\begin{align*}
 				\alpha_{DID} &= \{\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=0]\} \\
 				&- \{\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=0]\}  \\
 				&= \{(\mu + \gamma + \delta + \alpha) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\} \\
 				&= \alpha
-			\end{aligned}
-		\end{equation*}
+		\end{align*}
 		
 	\end{itemize}
 \end{frame}
@@ -1305,13 +1292,11 @@ DID 	&              &          & $ \alpha$ \\
 \begin{frame}{Dynamic DID Design}
 	\begin{itemize}
 		\item The estimated regression would be:
-			\begin{equation*}
-		\begin{aligned}
+		\begin{align*}
 		Y_{it}&=\alpha + \beta D_{i} + \sum^{q}_{\substack{k=-m\\k\neq-1}}\delta_{k} \mathbf{I}[t-E_{i}=k]  \\
 		&+ \sum^{q}_{\substack{k=-m\\k\neq-1}}\gamma_{k} D_{i} \times \mathbf{I}[t-E_{i}=k]
 		+X'_{it}\theta+\varepsilon_{it},
-		\end{aligned}
-		\end{equation*}
+		\end{align*}
 		\begin{itemize}
 			%\vspace{0.3cm}
 			\item  $E_{i}$ represents the timing when treatment happens.
@@ -1340,13 +1325,11 @@ DID 	&              &          & $ \alpha$ \\
 \begin{frame}{Dynamic DID Design}
 	\begin{itemize}
 		\item The estimated regression would be:
-		\begin{equation*}
-			\begin{aligned}
+		\begin{align*}
 				Y_{it}&=\alpha + \beta D_{i} + \sum^{q}_{\substack{k=-m\\k\neq-1}}\delta_{k} \mathbf{I}[t-E_{i}=k]  \\
 				&+ \sum^{q}_{\substack{k=-m\\k\neq-1}}\gamma_{k} D_{i} \times \mathbf{I}[t-E_{i}=k]
 				+X'_{it}\theta+\varepsilon_{it},
-			\end{aligned}
-		\end{equation*}
+		\end{align*}
 		\begin{itemize}
 			\vspace{0.2cm}
 			\item $\gamma_{-2}, \gamma_{-3},...,\gamma_{-m} $ represent pre-trend
@@ -1457,13 +1440,11 @@ DID 	&              &          & $ \alpha$ \\
 \begin{frame}{Empirical Example: Han et al. (2023)}{Dynamic DID Design}
 	\begin{itemize} 
 		\item We estimate the following regression:
-		\begin{equation*}
-		\begin{aligned}
+		\begin{align*}
 			Y_{it}&=\alpha + \beta D_{i} + \sum^{6}_{k=-3}\delta_{k} \mathbf{I}[t-E_{i}=k]  \\
 			&+ \sum^{6}_{k=-3}\gamma_{k} D_{i} \times \mathbf{I}[t-E_{i}=k]
 			+X'_{it}\theta+\varepsilon_{it},
-		\end{aligned}
-	\end{equation*}
+		\end{align*}
 	\begin{itemize} 
 		\item $D_{i}$ represents treatment group dummy.	
 						\vspace{0.3cm}
