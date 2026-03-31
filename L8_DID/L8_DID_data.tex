@@ -696,49 +696,49 @@ Y_{NJ,Feb} + (Y_{PA,Nov} - Y_{PA,Feb})
 \end{frame}
 
 
-\begin{frame}{A Motivating Example}{Card \& Krueger (1994)}
-\begin{figure}
-\tikzstyle{R} = [rectangle, text centered, draw = black]
-\begin{tikzpicture}[comment/.style={rectangle, text centered}]
-\centering
-\draw[black, thick] (0,0) -- (0,4) node[anchor=north west, yshift=3em, xshift=-5em] {Employment};
-\draw[black, thick] (2,0) -- (5,0) node[anchor=south east, yshift=-3em, xshift=4em] {Time};
+% \begin{frame}{A Motivating Example}{Card \& Krueger (1994)}
+% \begin{figure}
+% \tikzstyle{R} = [rectangle, text centered, draw = black]
+% \begin{tikzpicture}[comment/.style={rectangle, text centered}]
+% \centering
+% \draw[black, thick] (0,0) -- (0,4) node[anchor=north west, yshift=3em, xshift=-5em] {Employment};
+% \draw[black, thick] (2,0) -- (5,0) node[anchor=south east, yshift=-3em, xshift=4em] {Time};
 
-\foreach \x in {2}
-\draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Feb$};
-\foreach \x in {5}
-\draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Nov$};
+% \foreach \x in {2}
+% \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Feb$};
+% \foreach \x in {5}
+% \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Nov$};
 
-\foreach \y in {0}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$16$};
-\foreach \y in {1}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$18$};
-\foreach \y in {2}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$20$};
-\foreach \y in {3}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$22$};
-\foreach \y in {4}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$24$};
+% \foreach \y in {0}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$16$};
+% \foreach \y in {1}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$18$};
+% \foreach \y in {2}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$20$};
+% \foreach \y in {3}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$22$};
+% \foreach \y in {4}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$24$};
 
-\filldraw[black] (2,2) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Treated group (NJ)};
-\filldraw[black] (5,2) circle (1.5pt);
-\filldraw[black] (5,1) circle (1.5pt) node[anchor=west, yshift=-1em](ct) {\small Counterfacutal NJ};
-\node [comment, below of = ct, yshift=1.5em] {\small without treatment};
+% \filldraw[black] (2,2) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Treated group (NJ)};
+% \filldraw[black] (5,2) circle (1.5pt);
+% \filldraw[black] (5,1) circle (1.5pt) node[anchor=west, yshift=-1em](ct) {\small Counterfacutal NJ};
+% \node [comment, below of = ct, yshift=1.5em] {\small without treatment};
 
-\filldraw[black] (2,3.3) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Control group (PA)};
-\filldraw[black] (5,2.3) circle (1.5pt);
+% \filldraw[black] (2,3.3) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Control group (PA)};
+% \filldraw[black] (5,2.3) circle (1.5pt);
 
-\draw[black, thick] (2,2) -- (5,2);
-\draw[dashed, black, thick] (2,2) -- (5,1);
-\draw[black, thick] (2,3.3) -- (5,2.3);
+% \draw[black, thick] (2,2) -- (5,2);
+% \draw[dashed, black, thick] (2,2) -- (5,1);
+% \draw[black, thick] (2,3.3) -- (5,2.3);
 
-%\draw[dashed, gray] (0,0.5) -- (1,0.5);
-%\draw[dashed, gray] (0,2) -- (4,2);
-%\draw[dashed, gray] (0,2.5) -- (1,2.5);
-%\draw[dashed, gray] (0,5) -- (4,5);
-\end{tikzpicture}
-\end{figure}
-\end{frame}
+% %\draw[dashed, gray] (0,0.5) -- (1,0.5);
+% %\draw[dashed, gray] (0,2) -- (4,2);
+% %\draw[dashed, gray] (0,2.5) -- (1,2.5);
+% %\draw[dashed, gray] (0,5) -- (4,5);
+% \end{tikzpicture}
+% \end{figure}
+% \end{frame}
 
 
 

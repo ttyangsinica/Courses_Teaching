@@ -211,30 +211,6 @@ jobs:
           path: |
             L7_FE/*.pdf
 
-      # ---- L8_DID ---- (temporarily disabled: tex not ready)
-      # - name: Compile L8_DID PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: L8_DID
-      #     root_file: |
-      #       L8_DID_data.tex
-      #       L8_DID_labor.tex
-      #       L8_DID_metrics.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
-
-      # - name: Upload PDFs (L8_DID)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_L8_DID
-      #     path: |
-      #       L8_DID/*.pdf
-
       # ---- L9_SCM ---- (temporarily disabled: tex not ready)
       # - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
       #   uses: xu-cheng/latex-action@v3
