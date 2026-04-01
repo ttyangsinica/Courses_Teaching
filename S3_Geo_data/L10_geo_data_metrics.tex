@@ -1355,7 +1355,44 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
  
 %\end{frame}
  
- 
+\begin{frame}{Why Do We Need Projected Coordinate Systems?}
+    \begin{itemize}
+        \item GCS expresses location in \textbf{degrees} (angles) --- not in meters
+        \vspace{0.2cm}
+        \item This creates three practical problems for spatial analysis:
+        \vspace{0.3cm}
+        \begin{itemize}
+            \item \textbf{Distance calculations are incorrect}
+            \vspace{0.1cm}
+            \begin{itemize}
+                \item One degree of longitude $\approx$ 111 km at the equator, but $\approx$ 0 km at the poles
+                            \vspace{0.1cm}
+                \item ``Distance'' in degrees is not a meaningful unit
+            \end{itemize}
+            \vspace{0.2cm}
+            \item \textbf{Area calculations are incorrect}
+            \vspace{0.1cm}
+            \begin{itemize}
+                \item A $1^\circ \times 1^\circ$ grid cell covers very different physical areas depending on latitude
+                            \vspace{0.1cm}
+                \item Comparing region sizes in degrees is meaningless
+            \end{itemize}
+            \vspace{0.2cm}
+            \item \textbf{Spatial operations assume a flat surface}
+            \vspace{0.1cm}
+            \begin{itemize}
+                \item Standard geometric formulas (area, buffer, overlay) assume 2D Euclidean space
+                            \vspace{0.1cm}
+                \item Applying them to angular coordinates gives wrong answers
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
+    % \begin{alertblock}{Key Rule}
+    %     Always \textbf{project your data} before computing distances, areas, or running spatial regressions. Doing calculations in GCS (degrees) will give wrong results.
+    % \end{alertblock}
+
+\end{frame} 
  
  
 \begin{frame}{Projected Coordinate Systems}
@@ -1396,7 +1433,8 @@ J. Vernon Henderson, Adam Storeygard, and David N. Weil (2012), ``\textbf{Measur
 		\item The coordinates at the origin are x = 0 and y = 0
 	\end{itemize}
 	\vspace{0.2cm}
-	\item All projections introduce some distortions --- think of peeling an orange and trying to lay the skin flat
+	\item All projections introduce some distortions 
+    %--- think of peeling an orange and trying to lay the skin flat
 	\vspace{0.2cm}
 	\item Different projections preserve different properties:
 	\vspace{0.2cm}
