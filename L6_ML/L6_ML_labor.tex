@@ -1329,14 +1329,14 @@ $\sum^{p}_{j=1} |\beta_{j}| \leq s$ for some $s \geq 0$
             \ \ i=1, \ldots, n
         \end{eqnarray*}
         \vspace{0.1cm}
-        \item Choose $(\hat{\beta}_{1}, \hat{\beta}_{2}, \ldots, \hat{\beta}_{p})$ 
+        \item For each value of the tuning parameter $\lambda \in \{\lambda_{1},\ldots,\lambda_{m} \}$, choose $(\hat{\beta}_{1}, \hat{\beta}_{2}, \ldots, \hat{\beta}_{p})$ 
         that minimize \textbf{SSE with a penalty for model size}:
         \begin{eqnarray*}
             \sum^{n}_{i=1} \left(y_{i} - \sum^{p}_{j=1} \beta_{j} 
             x^{j}_{i}\right)^{2} + \lambda \sum^{p}_{j=1} |\beta_{j}|
         \end{eqnarray*}
         \begin{itemize}
-            \item where $\lambda \geq 0$ is a \textbf{tuning parameter}
+            %\item where $\lambda \geq 0$ is a \textbf{tuning parameter}
         \end{itemize}
         \vspace{0.2cm}
         \item Predict $y_{i}$ using the estimated model 
