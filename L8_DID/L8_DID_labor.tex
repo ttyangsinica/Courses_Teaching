@@ -696,49 +696,49 @@ Y_{NJ,Feb} + (Y_{PA,Nov} - Y_{PA,Feb})
 \end{frame}
 
 
-\begin{frame}{A Motivating Example}{Card \& Krueger (1994)}
-\begin{figure}
-\tikzstyle{R} = [rectangle, text centered, draw = black]
-\begin{tikzpicture}[comment/.style={rectangle, text centered}]
-\centering
-\draw[black, thick] (0,0) -- (0,4) node[anchor=north west, yshift=3em, xshift=-5em] {Employment};
-\draw[black, thick] (2,0) -- (5,0) node[anchor=south east, yshift=-3em, xshift=4em] {Time};
+% \begin{frame}{A Motivating Example}{Card \& Krueger (1994)}
+% \begin{figure}
+% \tikzstyle{R} = [rectangle, text centered, draw = black]
+% \begin{tikzpicture}[comment/.style={rectangle, text centered}]
+% \centering
+% \draw[black, thick] (0,0) -- (0,4) node[anchor=north west, yshift=3em, xshift=-5em] {Employment};
+% \draw[black, thick] (2,0) -- (5,0) node[anchor=south east, yshift=-3em, xshift=4em] {Time};
 
-\foreach \x in {2}
-\draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Feb$};
-\foreach \x in {5}
-\draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Nov$};
+% \foreach \x in {2}
+% \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Feb$};
+% \foreach \x in {5}
+% \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$Nov$};
 
-\foreach \y in {0}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$16$};
-\foreach \y in {1}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$18$};
-\foreach \y in {2}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$20$};
-\foreach \y in {3}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$22$};
-\foreach \y in {4}
-\draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$24$};
+% \foreach \y in {0}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$16$};
+% \foreach \y in {1}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$18$};
+% \foreach \y in {2}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$20$};
+% \foreach \y in {3}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$22$};
+% \foreach \y in {4}
+% \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$24$};
 
-\filldraw[black] (2,2) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Treated group (NJ)};
-\filldraw[black] (5,2) circle (1.5pt);
-\filldraw[black] (5,1) circle (1.5pt) node[anchor=west, yshift=-1em](ct) {\small Counterfacutal NJ};
-\node [comment, below of = ct, yshift=1.5em] {\small without treatment};
+% \filldraw[black] (2,2) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Treated group (NJ)};
+% \filldraw[black] (5,2) circle (1.5pt);
+% \filldraw[black] (5,1) circle (1.5pt) node[anchor=west, yshift=-1em](ct) {\small Counterfacutal NJ};
+% \node [comment, below of = ct, yshift=1.5em] {\small without treatment};
 
-\filldraw[black] (2,3.3) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Control group (PA)};
-\filldraw[black] (5,2.3) circle (1.5pt);
+% \filldraw[black] (2,3.3) circle (1.5pt) node[anchor=west, xshift=-5em, yshift=1em] {\small Control group (PA)};
+% \filldraw[black] (5,2.3) circle (1.5pt);
 
-\draw[black, thick] (2,2) -- (5,2);
-\draw[dashed, black, thick] (2,2) -- (5,1);
-\draw[black, thick] (2,3.3) -- (5,2.3);
+% \draw[black, thick] (2,2) -- (5,2);
+% \draw[dashed, black, thick] (2,2) -- (5,1);
+% \draw[black, thick] (2,3.3) -- (5,2.3);
 
-%\draw[dashed, gray] (0,0.5) -- (1,0.5);
-%\draw[dashed, gray] (0,2) -- (4,2);
-%\draw[dashed, gray] (0,2.5) -- (1,2.5);
-%\draw[dashed, gray] (0,5) -- (4,5);
-\end{tikzpicture}
-\end{figure}
-\end{frame}
+% %\draw[dashed, gray] (0,0.5) -- (1,0.5);
+% %\draw[dashed, gray] (0,2) -- (4,2);
+% %\draw[dashed, gray] (0,2.5) -- (1,2.5);
+% %\draw[dashed, gray] (0,5) -- (4,5);
+% \end{tikzpicture}
+% \end{figure}
+% \end{frame}
 
 
 
@@ -1019,141 +1019,182 @@ E[\mathrm{Y}^{0}_{i1}-\mathrm{Y}^{0}_{i0}|D_{i}=1]&=E[\mathrm{Y}^{0}_{i1}-\mathr
 
 
 
-
-
-
-
-
-
-
-
-\begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+%-------------------------------------------------------
+% Frame 1: DID Estimation — Basic Setup
+%-------------------------------------------------------
+\begin{frame}{DID Estimation}{Basic Two-Period/Two-Group Setup}
 \begin{itemize}
-\item Basic case: two groups and two periods
-\vspace{0.2cm}
-\item We can obtain the DID estimates using a regression framework
-\vspace{0.2cm}	
-%\item To implement DID method in a regression framework, we estimate:
-\begin{equation*}
-Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
-\end{equation*}
-
-\begin{itemize}
-\item $D$ is a dummy indicating treatment group
-\vspace{0.2cm}
-\item $Post$ is a dummy indicating post-treatment period
-\vspace{0.2cm}
-%\item $\varepsilon_{st}$ is a transitory shock/idiosyncratic error
-%\vspace{0.2cm}
-\item $\gamma$ captures differences across groups that are constant over time
-\vspace{0.2cm}
-\item $\delta$ captures differences over time that are common to all groups
-\vspace{0.2cm}
-
-
-%\item if $E[\varepsilon|D,T]=0$
-\end{itemize}
-
+    \item Basic case: two groups (treatment \& control) and two periods (pre \& post)
+    \vspace{0.2cm}
+    \item We implement the DID design using a simple regression:
+    \begin{equation*}
+        Y_{it} = \mu + \gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t}) + \varepsilon_{it}
+    \end{equation*}
+    \item Each coefficient has a clear economic interpretation:
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item $D_i = 1$: individual $i$ belongs to the \textbf{treatment group}
+        \vspace{0.2cm}
+        \item $Post_t = 1$: period $t$ is the \textbf{post-treatment period}
+        \vspace{0.2cm}
+        \item $\gamma$: time-invariant difference between treatment and control group
+        \vspace{0.2cm}
+        \item $\delta$: time trend common to all groups (regardless of treatment)
+        \vspace{0.2cm}
+        \item $\alpha$: \textbf{treatment effect} --- the extra change in the treatment group \emph{beyond} the common trend
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{DID Estimation}{Basic Two Periods/Groups}
-	
-	\begin{equation*}
-Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
-	\end{equation*}
-	
-	\begin{itemize}
-	\item $\alpha$ is the coefficient of interest 
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Capture the different trends in outcome between treatment and control group
-	\end{itemize}
-	
-\item We will show that $\alpha$ can represent the DID estimate:
+
+%-------------------------------------------------------
+% Frame 2: DID as a Difference in Means
+%-------------------------------------------------------
+\begin{frame}{DID Estimation}{$\alpha$ as the DID Estimator}
+
+\begin{equation*}
+    Y_{it} = \mu + \gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t}) + \varepsilon_{it}
+\end{equation*}
+
+\begin{itemize}
+    \item The coefficient $\alpha$ on the interaction term $D_i \times Post_t$ captures:
+            \vspace{0.2cm}
+
+    \begin{itemize}
+        \item The differential trend in outcomes between the treatment and control groups after treatment happened
+        %\item i.e., how much \emph{more} the treatment group changed relative to the control group
+    \end{itemize}
+    \vspace{0.2cm}
+    \item We will show that $\alpha$ equals the standard DID formula:
+    \begin{align*}
+        \alpha_{DID} &= \underbrace{\bigl[\mathrm{E}[Y_{it}|D_i=1, Post_t=1] - \mathrm{E}[Y_{it}|D_i=1, Post_t=0]\bigr]}_{\text{change in treatment group}} \\[4pt]
+        &\quad - \underbrace{\bigl[\mathrm{E}[Y_{it}|D_i=0, Post_t=1] - \mathrm{E}[Y_{it}|D_i=0, Post_t=0]\bigr]}_{\text{change in control group (common trend)}}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{DID Estimation}{Proof: $\alpha = \alpha_{DID}$}
+
 \begin{align*}
-		\alpha &= \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=0]\} \\
-		&- \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=0]\}
-		%&= \{(\mu + \gamma + \delta + \alpha_{DID}) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\}
-\end{align*}	
-	
-	
-	
-		\end{itemize}
-		
-		
-
-\end{frame}
-
-
-
-
-
-\begin{frame}{DID Estimation}{Basic Two Periods/Groups}
-
-\begin{equation*}
-Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
-\end{equation*}
+    \alpha_{DID}
+    &= \underbrace{\bigl[\mathrm{E}[Y_{it}|D_i=1, Post_t=1] - \mathrm{E}[Y_{it}|D_i=1, Post_t=0]\bigr]}_{\text{change in treatment group}}  \\[4pt]
+    &\quad - \underbrace{\bigl[\mathrm{E}[Y_{it}|D_i=0, Post_t=1] - \mathrm{E}[Y_{it}|D_i=0, Post_t=0]\bigr]}_{\text{change in control group (common trend)}} \\[8pt]
+    &= \bigl[(\mu+\gamma+\delta+\alpha) - (\mu+\gamma)\bigr]
+     - \bigl[(\mu+\delta) - \mu\bigr] \\[4pt]
+    &= (\delta + \alpha) - \delta \\[4pt]
+    &= \alpha
+\end{align*}
 
 \begin{itemize}
-\item Assume $E[\varepsilon_{it}|D,Post]=0$
-\vspace{0.2cm}
-%\iten Then, we can show that
-\begin{itemize}
-\item \textbf{Pre-treatment mean of outcome for control group:} $\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=0]=\mu$
-\vspace{0.2cm}
-\item \textbf{Post-treatment mean of outcome for control group:} $\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=1]=\mu + \delta$
-\vspace{0.2cm}
-\item \textbf{Pre-treatment mean of outcome for treatment group:} $\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=0]=\mu + \gamma$ 
-\vspace{0.2cm}
-\item \textbf{Post-treatment mean of outcome for treatment group:} $\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=1]=\mu + \gamma + \delta + \alpha$
-\vspace{0.2cm}
+    \item  Under $E[\varepsilon_{it} \mid D_i, Post_t] = 0$, the OLS coefficient $\alpha$ on $D_i \times Post_t$ \textbf{equals the DID treatment effect} $\alpha_{DID}$.
 \end{itemize}
 
+% \begin{alertblock}{Key Result}
+%     Under $E[\varepsilon_{it} \mid D_i, Post_t] = 0$, the OLS coefficient $\alpha$ on $D_i \times Post_t$ \textbf{equals the DID treatment effect} $\alpha_{DID}$.
+% \end{alertblock}
 
-\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{DID Estimation}{Basic Two Periods/Groups}
-	\begin{itemize}
-		
-		\item $\alpha$ can represent treatment effect identified by DID design $\alpha_{DID}$:
-		\begin{align*}
-				\alpha_{DID} &= \{\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=0]\} \\
-				&- \{\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=0]\}  \\
-				&= \{(\mu + \gamma + \delta + \alpha) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\} \\
-				&= \alpha
-		\end{align*}
-		
-	\end{itemize}
-\end{frame}
 
 
 
-\begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+
+% %-------------------------------------------------------
+% % Frame 3: Conditional Means Table
+% %-------------------------------------------------------
+% \begin{frame}{DID Estimation}{Computing Conditional Means}
+
+% \begin{equation*}
+%     Y_{it} = \mu + \gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t}) + \varepsilon_{it}
+% \end{equation*}
+
+% \begin{itemize}
+%     \item Assume $E[\varepsilon_{it} \mid D_i, Post_t] = 0$ (no omitted confounders conditional on group and period)
+%     \vspace{0.3cm}
+%     \item The four group-period conditional means are:
+% \end{itemize}
+
+% \vspace{0.2cm}
+% \begin{center}
+% \begin{threeparttable}
+% \begin{tabular}{lcc}
+% \toprule
+%                   & Pre ($Post=0$)       & Post ($Post=1$)                  \\
+% \midrule
+% Control ($D=0$)   & $\mu$                & $\mu + \delta$                   \\[4pt]
+% Treatment ($D=1$) & $\mu + \gamma$       & $\mu + \gamma + \delta + \alpha$ \\
+% \bottomrule
+% \end{tabular}
+% \begin{tablenotes}
+% \small
+% \item $\gamma$ = level difference between groups; $\delta$ = common time trend; $\alpha$ = treatment effect
+% \end{tablenotes}
+% \end{threeparttable}
+% \end{center}
+
+% \end{frame}
+
+
+% %-------------------------------------------------------
+% % Frame 4: Deriving alpha = alpha_DID
+% %-------------------------------------------------------
+% \begin{frame}{DID Estimation}{Proof: $\alpha = \alpha_{DID}$}
+
+% \begin{itemize}
+%     \item Using the conditional means from the table, the DID formula gives:
+%     \begin{align*}
+%         \alpha_{DID}
+%         &= \bigl[(\mu+\gamma+\delta+\alpha) - (\mu+\gamma)\bigr]
+%          - \bigl[(\mu+\delta) - \mu\bigr] \\[4pt]
+%         &= (\delta + \alpha) - \delta \\[4pt]
+%         &= \alpha
+%     \end{align*}
+
+%     \vspace{0.2cm}
+%     \item Intuition: by subtracting the control group's change ($\delta$), we \textbf{remove the common time trend} and isolate the causal effect
+% \end{itemize}
+
+% \begin{alertblock}{Key Result}
+%     Under $E[\varepsilon_{it} \mid D_i, Post_t] = 0$, the OLS coefficient $\alpha$ on $D_i \times Post_t$ \textbf{equals the DID treatment effect} $\alpha_{DID}$.
+% \end{alertblock}
+
+% \end{frame}
+
+
+%-------------------------------------------------------
+% Frame 5: Summary Table
+%-------------------------------------------------------
+\begin{frame}{DID Estimation}{Summary: Decomposing the DID Estimator}
 
 \begin{center}
 \begin{threeparttable}
-%\tabcolsep=0.9pt
-%\fontsize{9}{9pt}\selectfont
-\centering %\footnotesize
-%\caption{}
-%\extrarowheight = 4pt 
 \begin{tabular}{lccc}
 \toprule
-& Pre       & Post     & Pre/Post difference \\
-\midrule                                                                             
-Control Group    & $\mu$  & $\mu + \delta$ &  $\delta$ \\
-Treatment Group	    & $\mu + \gamma$  & $\mu + \gamma + \delta + \alpha$ & $ \delta + \alpha$ \\
-DID 	&              &          & $ \alpha$ \\
+                     & Pre                 & Post                             & $\Delta$ (Post $-$ Pre) \\
+\midrule
+Control ($D=0$)      & $\mu$               & $\mu + \delta$                   & $\delta$                \\[4pt]
+Treatment ($D=1$)    & $\mu + \gamma$      & $\mu + \gamma + \delta + \alpha$ & $\delta + \alpha$       \\[4pt]
+\midrule
+\textbf{DID}         &                     &                                  & $\boldsymbol{\alpha}$   \\
 \bottomrule
 \end{tabular}
+\begin{tablenotes}
+\small
+%\item The DID estimator differences out $\delta$ (common trend), leaving only $\alpha$ (treatment effect).
+\end{tablenotes}
 \end{threeparttable}
 \end{center}
+
+\begin{itemize}
+    \item Both groups share the same time trend $\delta$:  This is the \textbf{parallel trends assumption}
+    \vspace{0.2cm}
+    \item By differencing, we remove $\delta$ and recover the causal effect $\alpha$
+\end{itemize}
 
 \end{frame}
 
@@ -1161,33 +1202,199 @@ DID 	&              &          & $ \alpha$ \\
 
 
 
-\begin{frame}{DID Estimation}{Use Regression to Get DID Estimator}
-\begin{itemize}
-	\item Estimate the DID estimator in a regression framework has the following advantages: 
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item It is easy to calculate standard errors
-		\vspace{0.2cm}
-		\item We can control for other variables which may reduce the selection bias further
-		\vspace{0.2cm}
-		\item It is easy to include multiple periods
-		\vspace{0.2cm}
-		\item We can study treatments with different \textbf{treatment intensity} (continous measure)
-			\vspace{0.2cm}
-			\begin{itemize}	
+
+
+% \begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+% \begin{itemize}
+% \item Basic case: two groups and two periods
+% \vspace{0.2cm}
+% \item We can obtain the DID estimates using a regression framework
+% \vspace{0.2cm}	
+% %\item To implement DID method in a regression framework, we estimate:
+% \begin{equation*}
+% Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
+% \end{equation*}
+
+% \begin{itemize}
+% \item $D$ is a dummy indicating treatment group
+% \vspace{0.2cm}
+% \item $Post$ is a dummy indicating post-treatment period
+% \vspace{0.2cm}
+% %\item $\varepsilon_{st}$ is a transitory shock/idiosyncratic error
+% %\vspace{0.2cm}
+% \item $\gamma$ captures differences across groups that are constant over time
+% \vspace{0.2cm}
+% \item $\delta$ captures differences over time that are common to all groups
+% \vspace{0.2cm}
+
+
+% %\item if $E[\varepsilon|D,T]=0$
+% \end{itemize}
+
+% \end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+	
+% 	\begin{equation*}
+% Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
+% 	\end{equation*}
+	
+% 	\begin{itemize}
+% 	\item $\alpha$ is the coefficient of interest 
+% 	\vspace{0.2cm}
+% 	\begin{itemize}
+% 		\item Capture the different trends in outcome between treatment and control group
+% 	\end{itemize}
+	
+% \item We will show that $\alpha$ can represent the DID estimate:
+% \begin{align*}
+% 		\alpha &= \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=1,Post_{t}=0]\} \\
+% 		&- \{\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=1]-\mathrm{E}[\mathrm{Y}_{it}|D_{i}=0,Post_{t}=0]\}
+% 		%&= \{(\mu + \gamma + \delta + \alpha_{DID}) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\}
+% \end{align*}	
+	
+	
+	
+% 		\end{itemize}
 		
-		\item Example: varying increases in the minimum wage for different states
-					\vspace{0.2cm}
-		\item Estimate equation: \\ $Y_{it} = \alpha + \delta (\text{TreatmentIntensity}_{it} \times Post_t) + \lambda_i + \gamma_t + \epsilon_{it}$
-		 	\end{itemize}
-	\end{itemize}
+		
+
+% \end{frame}
+
+
+
+
+
+% \begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+
+% \begin{equation*}
+% Y_{it}=\mu+\gamma D_{i} + \delta Post_{t} + \alpha (D_{i} \times Post_{t})+\varepsilon_{it},
+% \end{equation*}
+
+% \begin{itemize}
+% \item Assume $E[\varepsilon_{it}|D,Post]=0$
+% \vspace{0.2cm}
+% %\iten Then, we can show that
+% \begin{itemize}
+% \item \textbf{Pre-treatment mean of outcome for control group:} $\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=0]=\mu$
+% \vspace{0.2cm}
+% \item \textbf{Post-treatment mean of outcome for control group:} $\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=1]=\mu + \delta$
+% \vspace{0.2cm}
+% \item \textbf{Pre-treatment mean of outcome for treatment group:} $\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=0]=\mu + \gamma$ 
+% \vspace{0.2cm}
+% \item \textbf{Post-treatment mean of outcome for treatment group:} $\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=1]=\mu + \gamma + \delta + \alpha$
+% \vspace{0.2cm}
+% \end{itemize}
+
+
+% \end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+% 	\begin{itemize}
+		
+% 		\item $\alpha$ can represent treatment effect identified by DID design $\alpha_{DID}$:
+% 		\begin{align*}
+% 				\alpha_{DID} &= \{\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=1,Post=0]\} \\
+% 				&- \{\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=1]-\mathrm{E}[\mathrm{Y}_{it}|D=0,Post=0]\}  \\
+% 				&= \{(\mu + \gamma + \delta + \alpha) - (\mu + \gamma)\} - \{(\mu + \delta) - \mu\} \\
+% 				&= \alpha
+% 		\end{align*}
+		
+% 	\end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}{DID Estimation}{Basic Two Periods/Groups}
+
+% \begin{center}
+% \begin{threeparttable}
+% %\tabcolsep=0.9pt
+% %\fontsize{9}{9pt}\selectfont
+% \centering %\footnotesize
+% %\caption{}
+% %\extrarowheight = 4pt 
+% \begin{tabular}{lccc}
+% \toprule
+% & Pre       & Post     & Pre/Post difference \\
+% \midrule                                                                             
+% Control Group    & $\mu$  & $\mu + \delta$ &  $\delta$ \\
+% Treatment Group	    & $\mu + \gamma$  & $\mu + \gamma + \delta + \alpha$ & $ \delta + \alpha$ \\
+% DID 	&              &          & $ \alpha$ \\
+% \bottomrule
+% \end{tabular}
+% \end{threeparttable}
+% \end{center}
+
+% \end{frame}
+
+
+
+
+%-------------------------------------------------------
+% Frame 1: Advantages + Treatment Intensity (with D and Post)
+%-------------------------------------------------------
+\begin{frame}{DID Estimation}{Advantages of the Regression Framework}
+\begin{itemize}
+    \item Estimating the DID estimator in a regression framework has the following advantages: 
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item It is easy to calculate standard errors
+        \vspace{0.2cm}
+        \item We can control for other covariates $X_{it}$ to further reduce residual bias
+        \vspace{0.2cm}
+        \item It is easy to accommodate \textbf{multiple periods}
+        \vspace{0.2cm}
+        \item $D_i$ can be a \textbf{continuous} measure of treatment intensity
+        \vspace{0.2cm}
+        \begin{itemize}	
+            \item Example: varying increases in the minimum wage across states
+            \vspace{0.2cm}
+            \item Estimating equation:
+            \[
+                Y_{it} = \mu + \gamma D_{i} + \delta Post_t + \alpha (D_{i} \times Post_t) + \varepsilon_{it}
+            \]
+            \item $\alpha$ captures the effect of a \textbf{one-unit increase} in treatment intensity
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
 \end{frame}
 
 
+%-------------------------------------------------------
+% Frame 2: General DID with Two-Way FE
+%-------------------------------------------------------
+\begin{frame}{DID Estimation}{Generalization: Two-Way Fixed Effects}
+\begin{itemize}
+    \item The basic two-period setup can be generalized to \textbf{multiple periods and multiple groups}
+    \vspace{0.2cm}
+    \item Replace the group dummy $\gamma D_i$ and period dummy $\delta Post_t$ with \textbf{fixed effects}:
+    \[
+        Y_{it} = \alpha D_{it} + \lambda_i + \gamma_t + \varepsilon_{it}
+    \]
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item $\lambda_i$: \textbf{unit fixed effects} --- absorb all time-invariant differences across units
+        \vspace{0.2cm}
+        \item $\gamma_t$: \textbf{time fixed effects} --- absorb common shocks across all units
+        \vspace{0.2cm}
+        \item $D_{it}$: treatment that can now vary across \emph{both} units and time
+    \end{itemize}
+    \vspace{0.2cm}
+    \item This is called the \textbf{Two-Way Fixed Effects (TWFE)} estimator
+\end{itemize}
 
+% \begin{alertblock}{Parallel Trends in TWFE}
+%     After controlling for unit and time FE, the identifying assumption is that \textbf{trends in outcomes would have been the same} across treated and untreated units in the absence of treatment.
+% \end{alertblock}
 
-
+\end{frame}
 
 
 
@@ -1349,7 +1556,7 @@ DID 	&              &          & $ \alpha$ \\
 \begin{frame}{Dynamic DID Design}{Example}
 	
 	
-	Hsing-Wen Han, Kuang-Ta Lo, Yung-Yu Tsai, and Tzu-Ting Yang (2023), ``\textbf{The Effect of Financial Resources on Fertility: Evidence from Administrative Data on Lottery Winners}", Working Paper
+	Hsing-Wen Han, Kuang-Ta Lo, Yung-Yu Tsai, and Tzu-Ting Yang (2026), ``\textbf{The Effect of Financial Resources on Fertility: Evidence from Administrative Data on Lottery Winners}", \textit{Journal of Labor Economics}
 	
 	
 	%\begin{itemize}
@@ -1359,7 +1566,7 @@ DID 	&              &          & $ \alpha$ \\
 \end{frame}
 
 
-\begin{frame}{Empirical Example: Han et al. (2023)}{Motivation}
+\begin{frame}{Empirical Example: Han et al. (2026)}{Motivation}
 	\begin{itemize} 
 		
 			\item During the past fifty years, fertility rates in developed countries have declined dramatically
@@ -1379,7 +1586,7 @@ DID 	&              &          & $ \alpha$ \\
 
 
 
-\begin{frame}{Empirical Example: Han et al. (2023)}{Motivation}
+\begin{frame}{Empirical Example: Han et al. (2026)}{Motivation}
 	\begin{itemize} 
 		
 	\item Empirically, there is an endogenous problem between income and fertility.
@@ -1415,7 +1622,7 @@ DID 	&              &          & $ \alpha$ \\
 
 
 
-\begin{frame}{Empirical Example: Han et al. (2023)}{Dynamic DID Design}
+\begin{frame}{Empirical Example: Han et al. (2026)}{Dynamic DID Design}
 	\begin{itemize} 
 			
 		\item This paper examines the fertility
@@ -1437,7 +1644,7 @@ DID 	&              &          & $ \alpha$ \\
 
 
 
-\begin{frame}{Empirical Example: Han et al. (2023)}{Dynamic DID Design}
+\begin{frame}{Empirical Example: Han et al. (2026)}{Dynamic DID Design}
 	\begin{itemize} 
 		\item We estimate the following regression:
 		\begin{align*}
@@ -1473,7 +1680,7 @@ DID 	&              &          & $ \alpha$ \\
 
 
 
-\begin{frame}{Empirical Example: Han et al. (2023)}{Dynamic DID Design}
+\begin{frame}{Empirical Example: Han et al. (2026)}{Dynamic DID Design}
 
 	%	\item We estimate the following regression:
 		\begin{equation*}
@@ -1817,51 +2024,67 @@ Y_{it}=\mu+ \gamma D_i+ \delta Post_t+ \alpha (D_i\times Post_t)+X'_{it}\beta+\v
 \end{frame}
 
 
-\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{STATA Command: outreg2}
-\begin{lstlisting}	
-reg work post treated treated_post,r
-outreg2 using "$table\DID_pre_post.xls", replace nocon keep(treated_post)  ///
-stats(coef se) addstat(Sample Size, e(N)) ///
-addtext(Basic, Yes, Age, No, Demo, No, State FE, No, Year FE, No)
-\end{lstlisting}
-	\begin{itemize}
-		\item \textbf{outreg2:} Stata command (from a user-written package) to export regression tables to an external file
-		\begin{itemize}
-						\vspace{0.2cm}
-			\item \textbf{using "\$table\textbackslash DID\_pre\_post.xls":} Path and filename for the output Excel file (tex/csv)
-						\vspace{0.2cm}
-			\item \textbf{replace:} Overwrites any existing file with the same name
-						\vspace{0.2cm}
-			\item \textbf{nocon:} Suppresses the constant term in the output table
-						\vspace{0.2cm}
-				\item \textbf{keep(treated\_post):} Only output the coefficient for the treated\_post variable
+% ---------- outreg2 ----------
+\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{STATA: \texttt{outreg2} $\to$ .tex}
+\begin{lstlisting}
+reg work post treated treated_post, r
+outreg2 using "$table\DID_pre_post.tex", replace nocon ///
+    keep(treated_post) stats(coef se) label            ///
+    addstat(Observations, e(N)) ctitle("(1)")          ///
+    addtext(Age, , Demo, , State FE, , Year FE, )
 
-		\end{itemize}
-	\end{itemize}
+* Cols (2)-(5): replace -> append; update addtext() per column
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{replace} for col~(1); \textbf{append} for cols~(2)--(5)
+    \vspace{0.15cm}
+    \item \textbf{addtext()}: control indicator rows must be filled \textbf{manually} for every column
+    \vspace{0.15cm}
+    \item Output uses \texttt{\textbackslash hline} (not booktabs); ``Yes''/``'' labels only — no $\surd$ support
+\end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{STATA Command: outreg2}
-\begin{lstlisting}	
-reg work post treated treated_post age age2,r
-outreg2 using "$table\DID_pre_post.xls", append nocon keep(treated_post)  ///
-stats(coef se) addstat(Sample Size, e(N)) ///
-addtext(Basic, Yes, Age, Yes, Demo, No, State FE, No, Year FE, No)
+% ---------- esttab: code ----------
+\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{STATA: \texttt{esttab} $\to$ .tex (code)}
+\begin{lstlisting}
+* ssc install estout  (run once)
+local surd = char(36) + "\surd" + char(36)
+
+eststo clear
+eststo m1: reg work post treated treated_post, r
+eststo m2: reg work post treated treated_post age age2, r
+* (m3: +demographics  m4: +state FE  m5: +year FE)
+eststo m5: reg work post treated treated_post ///
+    nonwhite age age2 ed finc nonlaborinc i.state i.year, r
+
+esttab m1 m2 m3 m4 m5 using "$table\DID_pre_post.tex", replace ///
+    booktabs keep(treated_post) label                           ///
+    mtitles("(1)" "(2)" "(3)" "(4)" "(5)") nonumbers            ///
+    stats(N, fmt(%9.0fc) labels("Observations"))                ///
+    star(* 0.10 ** 0.05 *** 0.01) b(%9.3f) se par              ///
+    indicate("Age Controls = age age2"                          ///
+             "Demographics = nonwhite ed finc nonlaborinc"      ///
+             "State FE = *.state" "Year FE = *.year",           ///
+             labels("`surd'" ""))
 \end{lstlisting}
-	\begin{itemize}
-		\item \textbf{outreg2 options:}
-		\begin{itemize}
-								\vspace{0.2cm}
-			\item \textbf{append:} Append the output to an existing file
-						\vspace{0.2cm}
-			\item \textbf{stats(coef se):} Specifies to report coefficients and standard errors
-			\vspace{0.2cm}
-			\item \textbf{addstat(Sample Size, e(N)):} Adds the sample size to the table using e(N) which returns the number of observations
-			\vspace{0.2cm}
-			\item \textbf{addtext():} Adds text to the table describing which controls were included in the model
-			\vspace{0.2cm}
-			\item \textbf{///:} Line continuation marker in Stata, allowing the command to continue on the next line
-		\end{itemize}
-	\end{itemize}
+\end{frame}
+
+% ---------- esttab: options ----------
+\begin{frame}{Step 3: Pre/Post DID regression}{STATA: \texttt{esttab} $\to$ .tex (options)}
+\begin{itemize}
+    \item \textbf{eststo m1: reg \ldots}: stores results; \textbf{esttab} combines all into one table
+    \vspace{0.2cm}
+    \item \textbf{booktabs}: replaces \texttt{\textbackslash hline} with
+          \texttt{\textbackslash toprule / \textbackslash midrule / \textbackslash bottomrule}
+          --- matches publication style
+    \vspace{0.2cm}
+    \item \textbf{indicate()}: \textbf{auto-detects} which variables are in each model
+          and inserts $\surd$ or blank --- no manual filling needed
+    \vspace{0.2cm}
+    \item \textbf{char(36)}: Stata trick for a literal \texttt{\$} sign
+          (``\texttt{\$\textbackslash surd\$}'' triggers macro expansion; use
+          \texttt{char(36) + "\textbackslash surd" + char(36)} instead)
+\end{itemize}
 \end{frame}
 
 
@@ -1873,15 +2096,28 @@ addtext(Basic, Yes, Age, Yes, Demo, No, State FE, No, Year FE, No)
 
 
 \begin{frame}{Pre/Post DID Results}
-
-\begin{figure}[p]
-	\centering
-\includegraphics[width=0.9\textwidth]{figure/stata_did_table1.png} 
-%	\includegraphics{stata_did_table1.png}
-\end{figure}
-
-
-
+\vspace{-0.2cm}
+\begin{table}[h]
+\centering
+\footnotesize
+\caption{Effect of EITC Expansion on Labor Force Participation}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+\midrule\midrule
+Treat $\times$ Post & 0.047*** & 0.041*** & 0.046*** & 0.046*** & 0.045*** \\
+                   & (0.011)  & (0.011)  & (0.010)  & (0.010)  & (0.010)  \\
+\midrule\midrule
+Observations       & \multicolumn{5}{c}{13,746} \\
+\midrule\midrule
+Age Controls       &          & $\surd$  & $\surd$  & $\surd$  & $\surd$  \\
+Demographics       &          &          & $\surd$  & $\surd$  & $\surd$  \\
+State FE           &          &          &          & $\surd$  & $\surd$  \\
+Year FE            &          &          &          &          & $\surd$  \\
+\bottomrule
+\end{tabular}
+\end{table}
+{\tiny Robust SE in parentheses. *** p$<$0.01, ** p$<$0.05, * p$<$0.1.}
 
 
 \end{frame}
@@ -2085,15 +2321,62 @@ ggsave(paste0(pic, "/eitc_DID.png"), width = 12, height = 8, units = "in")
 
 
 
-\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{R Command}
-	\begin{itemize}
-		\item Show the treatment effect by treatment intensity:
+% ---------- modelsummary 1/3: backend fix ----------
+\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{R: \texttt{modelsummary} $\to$ .tex (1/3)}
+\begin{itemize}
+    \item \textbf{modelsummary 2.0+} defaults to \textbf{tinytable} backend, which outputs
+          tex requiring \texttt{tabularray}, \texttt{siunitx}, \ldots\
+          --- incompatible with standard Beamer/\LaTeX
+    \vspace{0.15cm}
+    \item Fix: force \textbf{kableExtra} backend \textbf{before} calling \texttt{modelsummary}
+\end{itemize}
 \begin{lstlisting}
-DID <- lm(work ~ treated_post+post+treated, data = eitc_data)
+options("modelsummary_factory_latex"        = "kableExtra")
+options("modelsummary_format_numeric_latex" = "plain")
+library(kableExtra)
 
-summary(DID)
+ck <- "$\\surd$"      # LaTeX checkmark — no $-macro issue in R
+models_list <- list("(1)"=model1, "(2)"=model2, "(3)"=model3,
+                    "(4)"=model4, "(5)"=model5)
 \end{lstlisting}
-	\end{itemize}
+\end{frame}
+
+% ---------- modelsummary 2/3: code ----------
+\begin{frame}[fragile]{Step 3: Pre/Post DID regression}{R: \texttt{modelsummary} $\to$ .tex (2/3)}
+\begin{lstlisting}
+rows <- data.frame(
+  term=c("Age Controls","Demographics","State FE","Year FE"),
+  `(1)`=c("","","",""), `(2)`=c(ck,"","",""),
+  `(3)`=c(ck,ck,"",""), `(4)`=c(ck,ck,ck,""),
+  `(5)`=c(ck,ck,ck,ck), check.names=FALSE)
+
+modelsummary(models_list,
+  coef_map = c("treated_post" = "Treat $\\times$ Post"),
+  gof_map  = list(list("raw"="nobs","clean"="Observations","fmt"=0)),
+  stars    = c("*"=0.1,"**"=0.05,"***"=0.01),
+  add_rows = rows,
+  booktabs = TRUE,
+  output   = file.path(table, "DID_pre_post.tex"))
+\end{lstlisting}
+\end{frame}
+
+% ---------- modelsummary 3/3: options ----------
+\begin{frame}{Step 3: Pre/Post DID regression}{R: \texttt{modelsummary} $\to$ .tex (3/3)}
+\begin{itemize}
+    \item \textbf{coef\_map}: renames + selects coefficients ---
+          only \texttt{treated\_post}, labelled ``Treat $\times$ Post''
+    \vspace{0.2cm}
+    \item \textbf{gof\_map}: selects GOF stats ---
+          only \texttt{nobs} displayed as ``Observations''
+    \vspace{0.2cm}
+    \item \textbf{add\_rows}: appends custom rows (control indicators) at the bottom
+    \vspace{0.2cm}
+    \item \textbf{booktabs = TRUE}: \texttt{\textbackslash toprule / \textbackslash midrule / \textbackslash bottomrule}
+          --- same as \texttt{esttab}'s \texttt{booktabs} option
+    \vspace{0.2cm}
+    \item \textit{Minor differences vs.\ manual table}: single \texttt{\textbackslash midrule}
+          (not double); Observations shown per column (not \texttt{\textbackslash multicolumn})
+\end{itemize}
 \end{frame}
 
 
@@ -2225,7 +2508,162 @@ write.xlsx(dynamic_did_results, file = paste0(table, "/DID_dynamic.xlsx"), overw
 \end{frame}
 
 
+\begin{frame}{Statistical Inference in DID Estimation}{}
+    \begin{itemize}
+        \item Many DID papers use data spanning \textbf{many years} (not just 1 pre and 1 post period)
+        \vspace{0.2cm}
+        \item A key feature of DID data: treatment varies at the \textbf{group level}, but outcomes are observed at the \textbf{individual level}
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Example: minimum wage policy varies at the \emph{state} level, but employment is measured at the \emph{worker} level
+            \vspace{0.2cm}
+            \item Workers in the same state share the same treatment, and their outcomes tend to move together over time
+        \end{itemize}
+        \vspace{0.2cm}
+        \item This creates two problems for standard errors:
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item \textbf{Within-group correlation}: observations in the same group are not independent
+            \vspace{0.2cm}
+            \item \textbf{Serial correlation}: treatment status is highly persistent over time within a group
+        \end{itemize}
+    \end{itemize}
+\end{frame}
 
+
+\begin{frame}{Statistical Inference in DID Estimation}{Example: Serial Correlation in Treatment}
+
+    \begin{equation*}
+        Y_{ist} = \mu + \gamma Treat_{s} + \delta Post_{t} + \alpha^{DD} d_{st} + X'_{ist}\beta + \epsilon_{ist}
+    \end{equation*}
+
+    \begin{itemize}
+        \item $d_{st} = Treat_{s} \times Post_{t} = 1$ if state $s$ raises minimum wage at time $t$
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item State 1 (never treated): $d_{11} = 0,\ d_{12} = 0,\ d_{13} = 0,\ d_{14} = 0,\ \ldots$
+            \vspace{0.2cm}
+            \item State 2 (treated from $t=3$): $d_{21} = 0,\ d_{22} = 0,\ d_{23} = 1,\ d_{24} = 1,\ \ldots$
+            \vspace{0.2cm}
+            \item State 3 (treated from $t=2$): $d_{31} = 0,\ d_{32} = 1,\ d_{33} = 1,\ d_{34} = 1,\ \ldots$
+        \end{itemize}
+        \vspace{0.2cm}
+        \item[$\Rightarrow$] Once a state is treated, it \emph{stays} treated $\Rightarrow$ strong \textbf{within-state serial correlation} in $d_{st}$
+        \vspace{0.2cm}
+        \item[$\Rightarrow$] Conventional SE treats these repeated observations as independent --- they are not
+    \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Statistical Inference in DID Estimation}{Why Conventional SE Fails}
+    \begin{itemize}
+        \item As Bertrand, Duflo, Mullainathan (2004) show:
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Conventional standard errors often severely \textbf{understate} the true SE of DID estimators
+        \end{itemize}
+        \vspace{0.2cm}
+        \item Intuition: conventional SE treats all $n$ observations as independent draws
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item But if workers in the same state have correlated outcomes, we do \emph{not} truly have $n$ independent pieces of information
+            \vspace{0.2cm}
+            \item The \textbf{effective sample size} is smaller than $n$
+            \vspace{0.2cm}
+            \item Conventional SE underestimates uncertainty $\Rightarrow$ \textbf{over-rejection} of the null hypothesis (too many false positives)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Statistical Inference in DID Estimation}{Heteroskedasticity-Robust SE}
+    \begin{itemize}
+        \item Robust SE allows for heteroskedasticity, but still assumes \textbf{independence across observations}:
+        \[
+        \widehat{\text{Var}}(\hat{\beta})_{\text{robust}}
+        = \left(X'X\right)^{-1}
+          \left(\sum_{i=1}^{n} \hat{\epsilon}_i^2\, X_i X_i'\right)
+          \left(X'X\right)^{-1}
+        \]
+        \vspace{0.1cm}
+        \begin{itemize}
+            \item The middle matrix sums only \textbf{diagonal terms} $\hat{\epsilon}_i^2 X_i X_i'$
+            \vspace{0.2cm}
+            \item Cross-unit terms $\hat{\epsilon}_i \hat{\epsilon}_j X_i X_j'$ ($i \neq j$) are assumed to be \textbf{zero}
+            \vspace{0.2cm}
+            \item This assumption fails when observations within the same group are correlated
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Statistical Inference in DID Estimation}{Clustered Standard Errors}
+    \begin{itemize}
+        \item Clustered SE allows for arbitrary correlation \textbf{within} clusters (but independence \textbf{across} clusters):
+        \[
+        \widehat{\text{Var}}(\hat{\beta})_{\text{cluster}}
+        = \left(X'X\right)^{-1}
+          \left(\sum_{g=1}^{G} \sum_{i \in g} \sum_{j \in g}
+          \hat{\epsilon}_i \hat{\epsilon}_j\, X_i X_j'\right)
+          \left(X'X\right)^{-1}
+        \]
+        \vspace{0.1cm}
+        \begin{itemize}
+            \item Now the middle matrix includes \textbf{cross-unit terms} $\hat{\epsilon}_i \hat{\epsilon}_j$ for all $i, j$ in the same cluster $g$
+            \vspace{0.2cm}
+            \item If outcomes within a cluster are \textbf{positively correlated} ($\hat{\epsilon}_i \hat{\epsilon}_j > 0$), these cross terms are positive $\Rightarrow$ the middle matrix is \textbf{larger}
+            \vspace{0.2cm}
+            \item[$\Rightarrow$] Clustered SE $\geq$ Robust SE when within-cluster correlation is positive
+        \end{itemize}
+    \end{itemize}
+
+    \begin{alertblock}{Key Insight}
+        Clustered SE is larger because it counts correlated observations within a group as carrying \textbf{less independent information} than robust SE assumes.
+    \end{alertblock}
+\end{frame}
+
+
+\begin{frame}{Statistical Inference in DID Estimation}{Solutions and Practical Guidance}
+    \begin{itemize}
+        \item \textbf{Cluster at the group level} (the level at which treatment varies):
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Stata: add \texttt{vce(cluster state)} to the regression command
+            \vspace{0.2cm}
+            \item R: use \texttt{feols()} from \texttt{fixest} with \texttt{cluster = \textasciitilde state}
+        \end{itemize}
+        \vspace{0.2cm}
+        \item Clustered SE is asymptotically valid only when $G$ (number of clusters) is \textbf{large}:
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item With too few clusters, SE is still underestimated
+            \vspace{0.2cm}
+            \item Common rule of thumb: $G \geq 10$--$20$ (Hansen, 2007); more is better
+            \vspace{0.2cm}
+            \item With few clusters, consider \textbf{wild cluster bootstrap} instead
+        \end{itemize}
+        \vspace{0.2cm}
+        \item As a robustness check: report both robust and clustered SE, and take the \textbf{larger} of the two
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Statistical Inference in DID Estimation}{Summary}
+    \begin{itemize}
+        \item In DID designs, treatment varies at the \textbf{group level} and outcomes are \textbf{serially correlated} within groups
+        \vspace{0.2cm}
+        \item Conventional robust SE ignores within-group correlation $\Rightarrow$ \textbf{understates} uncertainty $\Rightarrow$ too many false positives
+        \vspace{0.2cm}
+        \item Clustered SE includes cross-unit residual terms within each cluster:
+        \vspace{0.2cm}
+        \begin{itemize}
+            \item Positive within-cluster correlation $\Rightarrow$ larger middle matrix $\Rightarrow$ larger SE
+        \end{itemize}
+        \vspace{0.2cm}
+        \item Cluster at the \textbf{level of treatment variation}; ensure enough clusters ($G \geq 20$ preferred)
+    \end{itemize}
+\end{frame}
 
 %\begin{frame}{Change in Sample Composition}{}
 %\begin{itemize}
@@ -2251,181 +2689,181 @@ write.xlsx(dynamic_did_results, file = paste0(table, "/DID_dynamic.xlsx"), overw
 
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{}
-	\begin{itemize}
+% \begin{frame}{Statistical Inference in DID Estimation}{}
+% 	\begin{itemize}
 		
-		\item Many papers using a DID design use data from many years
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Not only 1 pre and 1 post period
-		\end{itemize} 
-		\vspace{0.2cm}
-		\item The variables of interest in DID setups typically vary at the group level, and outcome variables are often serially correlated
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item The observation is at individual level
-			\vspace{0.2cm}
-			\item But the group (policy variation) is defined at city level
-		\end{itemize}
+% 		\item Many papers using a DID design use data from many years
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Not only 1 pre and 1 post period
+% 		\end{itemize} 
+% 		\vspace{0.2cm}
+% 		\item The variables of interest in DID setups typically vary at the group level, and outcome variables are often serially correlated
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item The observation is at individual level
+% 			\vspace{0.2cm}
+% 			\item But the group (policy variation) is defined at city level
+% 		\end{itemize}
 		
-	\end{itemize}
-\end{frame}
+% 	\end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{}
-	\begin{itemize}
+% \begin{frame}{Statistical Inference in DID Estimation}{}
+% 	\begin{itemize}
 		
-		\item The conventional (heteroskedasticity-robust) standard errors depend 
-		on assumption of independence
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item IID assumption: independent and identically distributed
-			\vspace{0.2cm}
-			\item The IID assumption implies that observations are random draws from some population and are uncorrelated with each other
-		\end{itemize} 
-		\vspace{0.2cm}
-		\item In DID design or panel data, independence assumption is 
-		often unrealistic
+% 		\item The conventional (heteroskedasticity-robust) standard errors depend 
+% 		on assumption of independence
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item IID assumption: independent and identically distributed
+% 			\vspace{0.2cm}
+% 			\item The IID assumption implies that observations are random draws from some population and are uncorrelated with each other
+% 		\end{itemize} 
+% 		\vspace{0.2cm}
+% 		\item In DID design or panel data, independence assumption is 
+% 		often unrealistic
 		
-	\end{itemize}
-\end{frame}
+% 	\end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{Example}
+% \begin{frame}{Statistical Inference in DID Estimation}{Example}
 	
 	
 	
-	\begin{equation*}
-		Y_{ist} = \mu+ \gamma Treat_{s} + \delta Post_{t}+ \alpha^{DD} d_{st} + X'_{ist}\beta + \epsilon_{ist}.
-	\end{equation*}
+% 	\begin{equation*}
+% 		Y_{ist} = \mu+ \gamma Treat_{s} + \delta Post_{t}+ \alpha^{DD} d_{st} + X'_{ist}\beta + \epsilon_{ist}.
+% 	\end{equation*}
 	
-	\begin{itemize}
-		\item $d_{st} = Treat_{s} \times Post_{t} = 1$ if a state $s$ raises minimum wage at time $t$. 
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item $d_{11} = 0, d_{12} = 0, d_{13} = 0, d_{14} = 0, \ldots$
-			\vspace{0.2cm}
-			\item $d_{21} = 0, d_{22} = 0, d_{23} = 1, d_{24} = 1, \ldots$
-			\vspace{0.2cm}
-			\item $d_{31} = 0, d_{32} = 1, d_{33} = 1, d_{34} = 1, \ldots$
-		\end{itemize}
-		\vspace{0.2cm}
-		\item[] $\Rightarrow$ This implies strong within-state serial correlation in the treatment variable over time, which can lead to biased inference if not properly accounted for.
-	\end{itemize}
+% 	\begin{itemize}
+% 		\item $d_{st} = Treat_{s} \times Post_{t} = 1$ if a state $s$ raises minimum wage at time $t$. 
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item $d_{11} = 0, d_{12} = 0, d_{13} = 0, d_{14} = 0, \ldots$
+% 			\vspace{0.2cm}
+% 			\item $d_{21} = 0, d_{22} = 0, d_{23} = 1, d_{24} = 1, \ldots$
+% 			\vspace{0.2cm}
+% 			\item $d_{31} = 0, d_{32} = 1, d_{33} = 1, d_{34} = 1, \ldots$
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item[] $\Rightarrow$ This implies strong within-state serial correlation in the treatment variable over time, which can lead to biased inference if not properly accounted for.
+% 	\end{itemize}
 	
-\end{frame}
+% \end{frame}
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{}
-	\begin{itemize}
+% \begin{frame}{Statistical Inference in DID Estimation}{}
+% 	\begin{itemize}
 		
 		
-		\item As Bertrand, Duflo, Mullainathan (2004) point out: 
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Conventional standard errors often severely \textbf{understate} the standard error of the DID estimators
-		\end{itemize}
-		\vspace{0.2cm}
-		\item Intuition:
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Conventional standard errors do not account for the fact that observations within the same group may be correlated
-			\vspace{0.2cm}
-			\item This leads to an underestimation of the true standard errors, potentially causing over-rejection of the null hypothesis.
-		\end{itemize}
+% 		\item As Bertrand, Duflo, Mullainathan (2004) point out: 
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Conventional standard errors often severely \textbf{understate} the standard error of the DID estimators
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item Intuition:
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Conventional standard errors do not account for the fact that observations within the same group may be correlated
+% 			\vspace{0.2cm}
+% 			\item This leads to an underestimation of the true standard errors, potentially causing over-rejection of the null hypothesis.
+% 		\end{itemize}
 		
-	\end{itemize}
-\end{frame}
+% 	\end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{Heteroskedasticity-Robust Standard Errors}
-	\begin{itemize}
-		\item The variance-covariance matrix of the OLS estimator $\hat{\beta}$, adjusting for heteroskedasticity but not autocorrelation:
-		\[
-		\hat{\text{SE}}(\hat{\beta})_{\text{Robust}} = \left( X'X \right)^{-1} \left( \sum_{i=1}^{n} \hat{\epsilon}_i^2 X_i X_i' \right) \left( X'X \right)^{-1}
-		\]
-		\begin{itemize}
-			\item $X$ is the matrix of covariates and treatment variables
-			\vspace{0.2cm}
-			\item $\hat{\epsilon}_i$ are the residuals from the OLS regression		
-			\vspace{0.2cm}			
-			\item $n$ is the number of observations													
-			\vspace{0.2cm}												
-			\item Assumes observations are uncorrelated
-		\end{itemize}
-		\vspace{0.2cm}
-		\item This is a heteroskedasticity-robust estimator that assumes no autocorrelation and relies on the independence of residuals across units.
-	\end{itemize}
-\end{frame}
+% \begin{frame}{Statistical Inference in DID Estimation}{Heteroskedasticity-Robust Standard Errors}
+% 	\begin{itemize}
+% 		\item The variance-covariance matrix of the OLS estimator $\hat{\beta}$, adjusting for heteroskedasticity but not autocorrelation:
+% 		\[
+% 		\hat{\text{SE}}(\hat{\beta})_{\text{Robust}} = \left( X'X \right)^{-1} \left( \sum_{i=1}^{n} \hat{\epsilon}_i^2 X_i X_i' \right) \left( X'X \right)^{-1}
+% 		\]
+% 		\begin{itemize}
+% 			\item $X$ is the matrix of covariates and treatment variables
+% 			\vspace{0.2cm}
+% 			\item $\hat{\epsilon}_i$ are the residuals from the OLS regression		
+% 			\vspace{0.2cm}			
+% 			\item $n$ is the number of observations													
+% 			\vspace{0.2cm}												
+% 			\item Assumes observations are uncorrelated
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item This is a heteroskedasticity-robust estimator that assumes no autocorrelation and relies on the independence of residuals across units.
+% 	\end{itemize}
+% \end{frame}
 
-\begin{frame}{Statistical Inference in DID Estimation}{Clustered Standard Errors}
-	\begin{itemize}
-		\item Clustered standard errors take into account not just heteroskedasticity but also autocorrelation within clusters	
-		\vspace{0.2cm}	
-		\item For data clustered into $G$ groups, the clustered variance-covariance matrix of $\hat{\beta}$ is:
+% \begin{frame}{Statistical Inference in DID Estimation}{Clustered Standard Errors}
+% 	\begin{itemize}
+% 		\item Clustered standard errors take into account not just heteroskedasticity but also autocorrelation within clusters	
+% 		\vspace{0.2cm}	
+% 		\item For data clustered into $G$ groups, the clustered variance-covariance matrix of $\hat{\beta}$ is:
 		
-		\[
-		\hat{\text{SE}}(\hat{\beta})_{\text{cluster}} = \left( X'X \right)^{-1} \left( \sum_{g=1}^{G} \sum_{i \in g} \sum_{j \in g} \hat{\epsilon}_i \hat{\epsilon}_j X_i X_j' \right) \left( X'X \right)^{-1}
-		\]
-		\begin{itemize}
-			\item $g$ indexes the clusters (e.g., states, schools, firms)
-			\vspace{0.2cm}	
-			\item $i$ and $j$ index observations within clusters
-			\vspace{0.2cm}	
-			\item This allows for intra-cluster correlation, leading to more accurate (typically larger) standard error estimates
-			\vspace{0.2cm}
-			\item When clustering, we allow for arbitrary correlation of residuals within a cluster but assume independence across clusters
-		\end{itemize}
-	\end{itemize}
-\end{frame}
+% 		\[
+% 		\hat{\text{SE}}(\hat{\beta})_{\text{cluster}} = \left( X'X \right)^{-1} \left( \sum_{g=1}^{G} \sum_{i \in g} \sum_{j \in g} \hat{\epsilon}_i \hat{\epsilon}_j X_i X_j' \right) \left( X'X \right)^{-1}
+% 		\]
+% 		\begin{itemize}
+% 			\item $g$ indexes the clusters (e.g., states, schools, firms)
+% 			\vspace{0.2cm}	
+% 			\item $i$ and $j$ index observations within clusters
+% 			\vspace{0.2cm}	
+% 			\item This allows for intra-cluster correlation, leading to more accurate (typically larger) standard error estimates
+% 			\vspace{0.2cm}
+% 			\item When clustering, we allow for arbitrary correlation of residuals within a cluster but assume independence across clusters
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
 
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{Solutions}
-	\begin{itemize}
-		\item Simple solution:
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Clustering standard errors at the group level
-			\vspace{0.2cm}
-			\item In STATA one would simply add \textbf{vce(cluster state)} to the regression equation if one analyzes state level variation
-		\end{itemize}
-		\vspace{0.2cm}
+% \begin{frame}{Statistical Inference in DID Estimation}{Solutions}
+% 	\begin{itemize}
+% 		\item Simple solution:
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Clustering standard errors at the group level
+% 			\vspace{0.2cm}
+% 			\item In STATA one would simply add \textbf{vce(cluster state)} to the regression equation if one analyzes state level variation
+% 		\end{itemize}
+% 		\vspace{0.2cm}
 		
-		\item Asymptotic consistency of estimated clustered standard errors depends on number of clusters		
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Only guaranteed to get precise estimate of 
-			correct standard errors if we have a lot of clusters 
-			\vspace{0.2cm}
-			\item If too few clusters, standard errors will be too low
-			\vspace{0.2cm}
-			\item Hansen (2007) suggests that having at least 10 clusters may be sufficient for consistent inference under certain conditions, though more is generally better.
-		\end{itemize}
-		\vspace{0.2cm}
-		\item Compare the robust SE to the cluster SE 
-		and take maximum of the two
+% 		\item Asymptotic consistency of estimated clustered standard errors depends on number of clusters		
+% 		\vspace{0.2cm}
+% 		\begin{itemize}
+% 			\item Only guaranteed to get precise estimate of 
+% 			correct standard errors if we have a lot of clusters 
+% 			\vspace{0.2cm}
+% 			\item If too few clusters, standard errors will be too low
+% 			\vspace{0.2cm}
+% 			\item Hansen (2007) suggests that having at least 10 clusters may be sufficient for consistent inference under certain conditions, though more is generally better.
+% 		\end{itemize}
+% 		\vspace{0.2cm}
+% 		\item Compare the robust SE to the cluster SE 
+% 		and take maximum of the two
 		
-	\end{itemize}
-\end{frame}
+% 	\end{itemize}
+% \end{frame}
 
 
 
-\begin{frame}{Statistical Inference in DID Estimation}{Summary}
-	\begin{itemize}
-		\item DID estimators often rely on variation at the group level and involve serially correlated outcomes.
-		\vspace{0.2cm}
-			\begin{itemize}
-		\item Conventional (robust) standard errors assume independence across observations, which is unrealistic in DID setups.
-		\vspace{0.2cm}
-		\item Ignoring within-group correlation leads to understated standard errors and false precision.
-		\vspace{0.2cm}
-			\end{itemize}
-		\item Clustered standard errors account for intra-group correlation and provide more accurate inference.
-		\vspace{0.2cm}
-		\item Reliable inference requires a sufficient number of clusters; 10 or more is a commonly used rule of thumb.
-	\end{itemize}
-\end{frame}
+% \begin{frame}{Statistical Inference in DID Estimation}{Summary}
+% 	\begin{itemize}
+% 		\item DID estimators often rely on variation at the group level and involve serially correlated outcomes.
+% 		\vspace{0.2cm}
+% 			\begin{itemize}
+% 		\item Conventional (robust) standard errors assume independence across observations, which is unrealistic in DID setups.
+% 		\vspace{0.2cm}
+% 		\item Ignoring within-group correlation leads to understated standard errors and false precision.
+% 		\vspace{0.2cm}
+% 			\end{itemize}
+% 		\item Clustered standard errors account for intra-group correlation and provide more accurate inference.
+% 		\vspace{0.2cm}
+% 		\item Reliable inference requires a sufficient number of clusters; 10 or more is a commonly used rule of thumb.
+% 	\end{itemize}
+% \end{frame}
 
 
 
