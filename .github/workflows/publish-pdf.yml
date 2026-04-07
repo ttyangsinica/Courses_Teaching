@@ -211,29 +211,29 @@ jobs:
           path: |
             L7_FE/*.pdf
 
-      # ---- L9_SCM ---- (temporarily disabled: tex not ready)
-      # - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: L9_SCM
-      #     root_file: |
-      #       L9_SyntheticControl_data.tex
-      #       L9_SyntheticControl_labor.tex
-      #       L9_SyntheticControl_metrics.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
+      # ---- L9_SCM ----
+      - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L9_SCM
+          root_file: |
+            L9_SyntheticControl_data.tex
+            L9_SyntheticControl_labor.tex
+            L9_SyntheticControl_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
 
-      # - name: Upload PDFs (L9_SCM)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_L9_SCM
-      #     path: |
-      #       L9_SCM/*.pdf
+      - name: Upload PDFs (L9_SCM)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L9_SCM
+          path: |
+            L9_SCM/*.pdf
 
       # ---- L10_IV ---- (temporarily disabled: tex not ready)
       # - name: Compile L10_IV PDFs (XeLaTeX + CJK)
