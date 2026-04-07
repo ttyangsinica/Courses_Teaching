@@ -615,7 +615,8 @@ Y_{it}=\mathrm{Y}^{0}_{it}(1-D_{it})+\mathrm{Y}^{1}_{it}D_{it}
 %\item Treatment effect for unit $i$ at time $t=1$ is 
 %	\begin{equation*}
 %	\mathrm{Y}^{1}_{i1}-\mathrm{Y}^{0}_{i1}
-%	\end{equation*}
+%	
+\end{equation*}
 \end{itemize}
 \end{itemize}
 
@@ -714,7 +715,7 @@ where for $t>T_0$:
 			W^* = \argmin\limits_{W} & \sum_{k=1}^{K} v_k\left(X_{1k} - \sum_{i=2}^{J+1} w_i X_{ik}\right)^2 \\
 			\text{subject to } & \sum_{i=2}^{J+1} w_i = 1 
 		\end{aligned}
-	\end{equation*}
+\end{equation*}
 
 \begin{itemize}
 	\item $X_{1k}$ is the $k$-th predictor variable for the treated unit
@@ -760,7 +761,8 @@ where for $t>T_0$:
 %				W^* = \argmin\limits_{W} & \sum_{k=1}^{K} v_k\left(X_{1k} - \sum_{j=2}^{J+1} w_j X_{jk}\right)^2 \\
 %				\text{subject to } & \sum_{j=2}^{J+1} w_j = 1, \; w_j \geq 0 \; \forall j \in \{2,...,J+1\}
 %			\end{aligned}
-%		\end{equation*}
+%		
+\end{equation*}
 %		\item Where:
 %		\begin{itemize}
 %			\item $X_{1k}$ is the $k$-th predictor variable for the treated unit
@@ -783,7 +785,8 @@ where for $t>T_0$:
 %		\item Treatment effect estimation:
 %		\begin{equation*}
 %			\hat{\tau}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w^*_j Y_{jt}, \quad \forall t > T_0
-%		\end{equation*}
+%		
+\end{equation*}
 %		\vspace{0.2cm}
 %		\item Method advantages:
 %		\begin{itemize}
@@ -803,7 +806,7 @@ where for $t>T_0$:
 		\item Assume potential outcome if unit $1$ would not receive treatment $Y^0_{1t}$ can be expressed as follows:
 		\begin{equation*}
 			Y^0_{1t}=\delta_t+\theta_tZ_1+\lambda_t\mu_1+\varepsilon_{1t}
-		\end{equation*}
+\end{equation*}
 		\begin{itemize}
 			\item $\delta_t$ are common time effects (e.g. year fixed effects)
 			\vspace{0.2cm}
@@ -839,12 +842,14 @@ where for $t>T_0$:
 %		\item SCM creates a synthetic control by selecting weights $W^*$ such that:
 %		\begin{equation*}
 %			\sum_{j=2}^{J+1} w^*_j Y_{jt} \approx Y_{1t} \text{ for } t < T_0
-%		\end{equation*}
+%		
+\end{equation*}
 %		
 %		\item This implicitly ensures:
 %		\begin{equation*}
 %			\sum_{j=2}^{J+1} w^*_j \mu_j \approx \mu_1 \text{ and } \sum_{j=2}^{J+1} w^*_j Z_j \approx Z_1
-%		\end{equation*}
+%		
+\end{equation*}
 %		
 %		\vspace{0.2cm}
 %		
@@ -949,7 +954,8 @@ as $T_0\rightarrow\infty$
 %		\item \textbf{Data Generating Process}:
 %		\begin{equation*}
 %			Y_{it} = \delta_t + \theta_t Z_i + \lambda_t \mu_i + \epsilon_{it}
-%		\end{equation*}
+%		
+\end{equation*}
 %		where
 %		\begin{itemize}
 %			\item $\delta_t$: time fixed effects (e.g., general economic conditions)
@@ -969,7 +975,8 @@ as $T_0\rightarrow\infty$
 %		\item Then the synthetic control will approximate the counterfactual:
 %		\begin{equation*}
 %			Y_{1t}^0 \approx \sum_{j=2}^{J+1} w_j^* Y_{jt}
-%		\end{equation*}
+%		
+\end{equation*}
 %		\item The condition $\sum_{t=1}^{T_0} \lambda_t'\lambda_t$ non-singular ensures:
 %		\begin{itemize}
 %			\item Common factors are linearly independent
@@ -988,7 +995,8 @@ as $T_0\rightarrow\infty$
 %				W^* = \argmin\limits_{W} & \sum_{k=1}^{K} v_k\left(X_{1k} - \sum_{j=2}^{J+1} w_j X_{jk}\right)^2 \
 %				\text{subject to } & \sum_{j=2}^{J+1} w_j = 1, \quad w_j \geq 0
 %			\end{aligned}
-%		\end{equation*}
+%		
+\end{equation*}
 %		\item Where $X$ includes both $Z$ and pre-treatment $Y$
 %		\item Good pre-treatment fit suggests we've matched on both:
 %		\begin{itemize}
@@ -1193,7 +1201,7 @@ our analysis does NOT provide significant evidence of causal effect
 		\item \textbf{Step 1:} Estimate treatment effect for treated unit (e.g., California)
 		\begin{equation*}
 			\hat{\alpha}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w_i^* Y_{it}, \quad t > T_0
-		\end{equation*}
+\end{equation*}
 		\vspace{0.2cm}
 		\item \textbf{Step 2:} Conduct placebo studies
 				\vspace{0.2cm}
@@ -1218,7 +1226,7 @@ our analysis does NOT provide significant evidence of causal effect
 			\item Calculate empirical p-value at each post-treatment time $t$:
 			\begin{equation*}
 				p_{1t}=\dfrac{\sum^{J+1}_{i=2}\mathbf{1}\{\hat{\alpha}_{it}\geq\hat{\alpha}_{1t}\}}{J}
-			\end{equation*}
+\end{equation*}
 			where $\mathbf{1}\{\cdot\}$ is the indicator function
 		\end{itemize}
 		\vspace{0.2cm}
@@ -1331,10 +1339,7 @@ our analysis does NOT provide significant evidence of causal effect
 		
 		\begin{equation*}
 			RMSPE^{pre}_{i}= 	\sqrt{\dfrac{			\sum^{T_{0}}_{t=1}(Y_{it} - Y^{SC}_{it})^{2}}{T_{0}}}
-			
-		
-
-		\end{equation*}
+\end{equation*}
 		
 			\end{itemize}
 	\end{itemize}
@@ -1369,12 +1374,12 @@ our analysis does NOT provide significant evidence of causal effect
 		
 	\begin{equation*}
 		p^{std}_{1t}=\dfrac{\sum^{J+1}_{i=2}\mathbf{1}\{\dfrac{\hat{\alpha}_{it}}{RMSPE^{pre}_{i}} \geq   \dfrac{\hat{\alpha}_{1t}}{RMSPE^{pre}_{1}}\}}{J}
-	\end{equation*}
+\end{equation*}
 		
 		
 		\begin{equation*}
 			RMSPE^{pre}_{i}= 	\sqrt{\dfrac{			\sum^{T_{0}}_{t=1}(Y_{it} - Y^{SC}_{it})^{2}}{T_{0}}}
-		\end{equation*}
+\end{equation*}
 		
 			\end{itemize}
 	\end{itemize}
@@ -1391,11 +1396,11 @@ our analysis does NOT provide significant evidence of causal effect
 			
 			\begin{equation*}
 				p^{ratio}_{1}=\dfrac{\sum^{J+1}_{i=2}\mathbf{1}\{\dfrac{RMSPE^{post}_{i}}{RMSPE^{pre}_{i}} \geq \dfrac{RMSPE^{post}_{1}}{RMSPE^{pre}_{1}}\}}{J}
-			\end{equation*}
+\end{equation*}
 			
 			\begin{equation*}
 				RMSPE^{post}_{i}= \sqrt{\dfrac{\sum^{T}_{t=T_{0}+1}(Y_{it} - Y^{SC}_{it})^{2}}{T-T_{0}}}
-			\end{equation*}
+\end{equation*}
 			
 			\item This method evaluates whether the treatment effect is large relative to the pre-treatment fit
 					\vspace{0.2cm}
