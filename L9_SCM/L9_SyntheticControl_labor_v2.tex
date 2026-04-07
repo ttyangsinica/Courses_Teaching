@@ -480,7 +480,7 @@
 Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic control methods for comparative case studies: Estimating the effect of California's Tobacco Control Program}", Journal of the American Statistical Association	
 \begin{itemize}
 \vspace{0.2cm}
-\item This is one of the first paper using SC method
+\item This is one of the first papers using SC method
 \vspace{0.2cm}
 \begin{itemize}
 \item Use this example to go through the key concepts of SC method	
@@ -531,9 +531,9 @@ Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic
 \vspace{0.2cm}
 \item Units $\{2,...,J+1\}$ being unaffected 
 \vspace{0.2cm}
-\item Pre-treatment period: $1.....T_0$	
+\item Pre-treatment period: $1,\ldots,T_0$	
 \vspace{0.2cm}	
-\item Post-treatment period: $T_0+1......T$	
+\item Post-treatment period: $T_0+1,\ldots,T$	
 \vspace{0.2cm} 
 \end{itemize}
 %affects unit $1$ only, and leaves the other $J$ states unaffected 
@@ -577,7 +577,7 @@ Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic
 \item Note that the treated unit would receive treatment from periods $T_0+1$ until $T$
 \end{itemize}
 \vspace{0.2cm}
-\item $\mathrm{Y}^{0}_{it}$: the potential outcome we \textit{would} observe for unit $i$ at time $t$ if unit $i$ does not receives the treatment
+\item $\mathrm{Y}^{0}_{it}$: the potential outcome we \textit{would} observe for unit $i$ at time $t$ if unit $i$ does not receive the treatment
 \end{itemize}
 \vspace{0.2cm}
 \item Note that \textbf{unit in synthetic control method is usually aggregate level}: country, state, county, or region 
@@ -713,7 +713,7 @@ where for $t>T_0$:
 	\begin{equation*}
 		\begin{aligned}
 			W^* = \argmin\limits_{W} & \sum_{k=1}^{K} v_k\left(X_{1k} - \sum_{i=2}^{J+1} w_i X_{ik}\right)^2 \\
-			\text{subject to } & \sum_{i=2}^{J+1} w_i = 1 
+			\text{subject to } & \sum_{i=2}^{J+1} w_i = 1, \; w_i \geq 0 \;\forall\, i \in \{2,\ldots,J+1\}
 		\end{aligned}
 \end{equation*}
 
@@ -724,6 +724,51 @@ where for $t>T_0$:
 					\vspace{0.2cm}
 			\item $v_k$ represents relative importance of each predictor variable (chosen by cross-validation)
 \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{SC Estimation}{Choosing $v_k$: Intuition}
+\begin{itemize}
+	\item $v_k$ controls how much weight predictor $k$ receives when measuring ``closeness'' between the treated unit and the synthetic unit
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item A \textbf{larger} $v_k$ $\Rightarrow$ predictor $k$ must be matched more precisely
+		\vspace{0.2cm}
+		\item A \textbf{smaller} $v_k$ $\Rightarrow$ predictor $k$ matters less in constructing the synthetic unit
+	\end{itemize}
+	\vspace{0.2cm}
+	\item \textbf{Key question:} Which predictors are most informative for reproducing the pre-treatment outcome trajectory?
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item We want $v_k$ to be \textbf{large} for predictors that help fit pre-treatment $Y_{1t}$ well
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{SC Estimation}{Choosing $v_k$: Cross-Validation}
+\begin{itemize}
+	\item Split the pre-treatment period into two sub-periods:
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item \textbf{Training period:} $1,\ldots,T_1$ \quad (``in-sample'')
+		\vspace{0.2cm}
+		\item \textbf{Validation period:} $T_1{+}1,\ldots,T_0$ \quad (``out-of-sample'')
+	\end{itemize}
+	\vspace{0.2cm}
+	\item \textbf{Nested (bilevel) optimization:}
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \textbf{Inner problem} (given $V$): find $W^{*}(V)$ that minimizes predictor mismatch \textit{in the training period}
+		\vspace{0.1cm}
+		\item \textbf{Outer problem}: choose $V^{*}$ to minimize out-of-sample prediction error \textit{in the validation period}:
+		\begin{equation*}
+			V^{*} = \argmin_{V} \sum_{t=T_1+1}^{T_0}
+			\left(Y_{1t} - \sum_{i=2}^{J+1} w^{*}_{i}(V)\,Y_{it}\right)^{2}
+		\end{equation*}
+	\end{itemize}
+	\item \textbf{Intuition:} Pick $v_k$'s so that the synthetic unit fitting predictors well \textit{also} predicts the outcome well in the portion of the pre-treatment period it has not yet ``seen''
 \end{itemize}
 \end{frame}
 
@@ -817,12 +862,12 @@ where for $t>T_0$:
 			\item $\varepsilon_{1t}$ are unobserved transitory shocks at the unit level with zero mean
 			\vspace{0.2cm}
 		\end{itemize}
-		\item This assumption allows time-varying responsses of multiple unobserved factors ($\lambda_t\mu_1$) 
+		\item This assumption allows time-varying responses of multiple unobserved factors ($\lambda_t\mu_1$) 
 		
-		%heterogenous responsses to multiple unobserved factors ($\lambda_t\mu_i$) 
+		%heterogenous responses to multiple unobserved factors ($\lambda_t\mu_i$) 
 		%and embeds time-trend models
 		\vspace{0.2cm}
-		\item However, it implicitly assumes \textbf{the number of unobservable factors $\mu_1$ are fixed over the period} 
+		\item However, it implicitly assumes \textbf{the unobservable factor loadings $\mu_i$ are fixed over time} 
 		\vspace{0.2cm}
 		\begin{itemize}
 			\item No structural breaks
@@ -879,11 +924,11 @@ where for $t>T_0$:
 \item Ideally, one would want to select $W^{*}$ such that
 
 \begin{equation*}
-\sum^{J+1}_{j=2}w^*_{i}Z_{i} = Z_{1}  
+\sum^{J+1}_{j=2}w^*_{j}Z_{j} = Z_{1}  
 \end{equation*}
 
 \begin{equation*}
-\sum^{J+1}_{j=2}w^*_{i}\mu_{i} = \mu_{1}  
+\sum^{J+1}_{j=2}w^*_{j}\mu_{j} = \mu_{1}  
 \end{equation*}
 
 \item Thus, causal effect of treatment $\hat{\alpha}_{1t}$ is unbiased 	
@@ -911,7 +956,7 @@ where for $t>T_0$:
 \begin{frame}{SC Estimation}
 \begin{itemize}
 
-\item Solution: Choose $W=(w^{*}_{1},...,w^{*}_{J})$ satisfying
+\item Solution: Choose $W=(w^{*}_{2},...,w^{*}_{J+1})$ satisfying
 
 \begin{equation*}
 \begin{aligned}
@@ -937,7 +982,7 @@ where for $t>T_0$:
 \sum^{J+1}_{i=2}w^*_{i}Y_{it}&=Y_{1t} \\
 \sum^{J+1}_{i=2}w^*_{i}Z_i&=Z_1,
 \end{align*}
-and $\sum^{T_0}_{t=1}\lambda'_t\lambda_t$ is non-singluar. Then for all $t>T_0$ we have
+and $\sum^{T_0}_{t=1}\lambda'_t\lambda_t$ is non-singular. Then for all $t>T_0$ we have
 \begin{equation*}
 \mathbb{E}\left[Y^0_{1t}-\sum^{J+1}_{i=2}w^*_{i}Y_{it}\right]\rightarrow 0
 \end{equation*}
@@ -1089,7 +1134,7 @@ as $T_0\rightarrow\infty$
 
 
 
-\begin{frame}{Example: Abadie et. al (2010)}{Results: Unit Weights for SC}
+\begin{frame}{Example: Abadie et al. (2010)}{Results: Unit Weights for SC}
 \begin{center}
 	\begin{figure}[p]
 		\centering
@@ -1100,7 +1145,7 @@ as $T_0\rightarrow\infty$
 \end{frame}
 
 
-\begin{frame}{Example: Abadie et. al (2010)}{Comparison of Synthetic Fit and Simple Average}
+\begin{frame}{Example: Abadie et al. (2010)}{Comparison of Synthetic Fit and Simple Average}
 \begin{table}[p]
 \centering
 %\extrarowheight = 3pt 
@@ -1161,7 +1206,7 @@ Cigarette sales per capita 1975 & 127.10 & 126.99 & 132.81  \\
 \begin{itemize}
 \item Large-sample asymptotic inference is not possible with SC
 \vspace{0.2cm}
-\item Abadie et. al (2010) suggest the use of \textbf{permutation methods} for inference 
+\item Abadie et al. (2010) suggest the use of \textbf{permutation methods} for inference 
 \vspace{0.2cm}
 	\begin{itemize}
 	%\item Similar to Fisher's exact test
@@ -1200,7 +1245,7 @@ our analysis does NOT provide significant evidence of causal effect
 	\begin{itemize}
 		\item \textbf{Step 1:} Estimate treatment effect for treated unit (e.g., California)
 		\begin{equation*}
-			\hat{\alpha}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w_i^* Y_{it}, \quad t > T_0
+			\hat{\alpha}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w_j^* Y_{jt}, \quad t > T_0
 \end{equation*}
 		\vspace{0.2cm}
 		\item \textbf{Step 2:} Conduct placebo studies
@@ -1310,7 +1355,7 @@ our analysis does NOT provide significant evidence of causal effect
 
 \begin{frame}{Statistical Inference of SC}
 \begin{itemize}
-\item The placebo effects may be quite large if those units where NOT matched well in the pre-treatment period
+\item The placebo effects may be quite large if those units were NOT matched well in the pre-treatment period
 \vspace{0.2cm}
 \item For example, when the SC fit is bad, we may get erroneous inferences 
 \vspace{0.2cm}
@@ -1613,7 +1658,7 @@ trunit(36) trperiod(2018) xperiod(2007(1)2017)
 
 \begin{frame}{Results: Unit Weights for SC}
 \begin{itemize}
-	\item Top 3 countries that consist synthetic China
+	\item Top 3 states that constitute the synthetic New York
 	\begin{itemize}
 		\vspace{0.2cm}
 		\item New Hampshire: 23.1\%
@@ -1637,7 +1682,7 @@ fert(2013) fert(2012) fert(2011) fert(2010) fert(2009) ///
 fert(2008) fert(2007), trunit(36) trperiod(2018) ///
 xperiod(2007(1)2017) placebo(unit cutoff(2))
 \end{lstlisting}
-	\item The \textbf{placebo(unit cutoff(2))} option excludes states where pre-treatment MSPE is twice that of the treated unit (New York).
+	\item The \textbf{placebo(unit cutoff(2))} option excludes states where pre-treatment RMSPE is more than twice that of the treated unit (New York).
 \end{itemize}
 \end{frame}
 
@@ -2051,7 +2096,7 @@ file.path(workdata, "ny_fert_balance.csv"))
 %			\item Single treated problems only require placebo treated \textbf{units}, multiple treated problems require placebo \textbf{groups}
 %		\end{itemize}
 %		\vspace{0.2cm}
-%		\item Thus, it may be computationally infeasible to implement the Cavallo et. al (2013) method with a large $G$ and $J$
+%		\item Thus, it may be computationally infeasible to implement the Cavallo et al. (2013) method with a large $G$ and $J$
 %		%\begin{itemize}
 %		%\vspace{0.2cm}
 %		%\item Limit the number of placebo treatment groups to 5,000

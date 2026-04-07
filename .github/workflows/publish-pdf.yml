@@ -219,6 +219,7 @@ jobs:
           root_file: |
             L9_SyntheticControl_data.tex
             L9_SyntheticControl_labor.tex
+            L9_SyntheticControl_labor_v2.tex
             L9_SyntheticControl_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
