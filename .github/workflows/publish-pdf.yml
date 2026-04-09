@@ -171,7 +171,7 @@ jobs:
         with:
           working_directory: S3_Geo_data
           root_file: |
-            L10_geo_data_metrics.tex
+            S3_geo_data_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
@@ -379,6 +379,145 @@ jobs:
           name: pdf_RQ
           path: |
             RQ/*.pdf
+
+      # ---- Reading_list ----
+      - name: Compile Reading_list PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: Reading_list
+          root_file: |
+            Reading_list_data.tex
+            Reading_list_labor.tex
+            Reading_list_metrics.tex
+            reading_group_labor_2025.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (Reading_list)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_Reading_list
+          path: |
+            Reading_list/*.pdf
+
+      # ---- L13_CausalForest ---- (comment out if not ready)
+      - name: Compile L13_CausalForest PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L13_CausalForest
+          root_file: |
+            L13_CausalForest_labor.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L13_CausalForest)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L13_CausalForest
+          path: |
+            L13_CausalForest/*.pdf
+
+      # ---- S3_Geo_data: new satellite practical slide ----
+      - name: Compile S3_satellite_practical PDF (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: S3_Geo_data
+          root_file: |
+            S3_satellite_practical.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (S3_satellite_practical)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_S3_satellite_practical
+          path: |
+            S3_Geo_data/S3_satellite_practical.pdf
+
+      # ---- S1_Data ---- (temporarily disabled: tex not ready)
+      # - name: Compile S1_Data PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: S1_Data
+      #     root_file: |
+      #       P1_Data_sources_data.tex
+      #       P1_Data_sources_labor_2026_v1.tex
+      #       P1_Data_sources_metrics_2026_v1.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
+
+      # - name: Upload PDFs (S1_Data)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_S1_Data
+      #     path: |
+      #       S1_Data/*.pdf
+
+      # ---- S2_AI_Calude ---- (temporarily disabled: tex not ready)
+      # - name: Compile S2_AI_Calude PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: S2_AI_Calude
+      #     root_file: |
+      #       S2_AI_Claude.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
+
+      # - name: Upload PDFs (S2_AI_Calude)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_S2_AI_Calude
+      #     path: |
+      #       S2_AI_Calude/*.pdf
+
+      # ---- Syllabus ---- (temporarily disabled: tex not ready)
+      # - name: Compile Syllabus PDFs (XeLaTeX + CJK)
+      #   uses: xu-cheng/latex-action@v3
+      #   with:
+      #     working_directory: Syllabus
+      #     root_file: |
+      #       Causal_Inference_Data_Syllabus_2026.tex
+      #       Topic_Labor_Econ_Syllabus_2026.tex
+      #       Topics_metrics_Syllabus_v1.tex
+      #     latexmk_use_xelatex: true
+      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
+      #     extra_system_packages: |
+      #       fontconfig
+      #       font-noto-cjk
+      #     continue_on_error: true
+
+      # - name: Upload PDFs (Syllabus)
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: pdf_Syllabus
+      #     path: |
+      #       Syllabus/*.pdf
 
       # ---- Logs (optional but useful) ----
       - name: Upload LaTeX logs (always)

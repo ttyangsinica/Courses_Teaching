@@ -1,0 +1,678 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+
+\usepackage{ragged2e}
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,positioning,shapes}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% ---- lstlisting: R language ----------------------------------------
+\usepackage{listings}
+
+\lstdefinelanguage{R}{
+  morekeywords=[1]{if,else,for,while,function,return,library,require,TRUE,FALSE,NULL,NA,Inf,NaN},
+  morekeywords=[2]{install.packages,p_load,rm,list,ls,cat,print,head,tail,summary,
+                   plot,ggplot,aes,geom_raster,geom_sf,scale_fill_viridis_c,
+                   scale_fill_gradient2,coord_sf,labs,theme_void,theme,ggsave,
+                   element_text,element_blank,unit,
+                   bm_raster,
+                   gadm,st_as_sf,st_transform,st_geometry,st_drop_geometry,st_crs,
+                   raster_to_df,exact_extract,
+                   mutate,select,filter,arrange,desc,group_by,summarise,
+                   write_csv,write_dta,read_csv,
+                   file.path,dir.create,paste,paste0,str_c,
+                   c,names,quantile,abs},
+  morestring=[b]",
+  morestring=[b]',
+  morecomment=[l]{\#},
+  sensitive=true,
+}
+
+\lstdefinestyle{rstyle}{
+  language=R,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle={\color{NavyBlue}},
+  keywordstyle=[2]{\color{NavyBlue}},
+  stringstyle=\color{Maroon},
+  commentstyle=\color{OliveGreen},
+  numbers=none,
+  breaklines=true,
+  frame=single,
+  showstringspaces=false,
+}
+
+\lstset{style=rstyle}
+% -------------------------------------------------------------------
+
+\beamertemplatefootpagenumber
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+  \hfill\usebeamercolor[fg]{page number in head/foot}%
+  \usebeamerfont{page number in head/foot}%
+  \insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+%=====================================================================
+\title[]{Satellite Data: Practical Implementation}
+\author{Prof. Tzu-Ting Yang \\ 楊子霆}
+\institute{Institute of Economics, Academia Sinica \\ 中央研究院經濟研究所}
+\date{\today}
+%=====================================================================
+
+\begin{document}
+
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+
+%=====================================================================
+\title[]{Overview}
+\author{}
+\institute{}
+\date{}
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{What We Do Today}
+\begin{itemize}
+  \item \textbf{Goal:} download, process, and visualise satellite data in R ---
+        from raw pixels to a township-level panel ready for regression
+  \vspace{0.3cm}
+  \item \textbf{Focus: Nighttime Lights}
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item NASA Black Marble (VIIRS, 2012–present)
+    \vspace{0.1cm}
+    \item Compare Taiwan in 2012 vs.\ 2024
+    \vspace{0.1cm}
+    \item Produce township-level (\text{鄉鎮區}) statistics
+  \end{itemize}
+  \vspace{0.3cm}
+  \item \textbf{We also briefly cover:}
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item NDVI (vegetation), LST (temperature), AOD (air pollution)
+  \end{itemize}
+  \vspace{0.3cm}
+  \item \textbf{Output files}
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item Maps (PNG) $\Rightarrow$ \texttt{S3\_Geo\_data/figure/}
+    \vspace{0.05cm}
+    \item Township data $\Rightarrow$ \texttt{taiwan\_nightlights\_township.csv / .dta}
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{R Script}
+\begin{itemize}
+  \item Full code: \texttt{Class\_Data/R\_code/nighttime\_lights\_taiwan.R}
+  \vspace{0.3cm}
+  \item Key packages:
+  \vspace{0.1cm}
+  \begin{center}
+  \small
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Package} & \textbf{Role} \\
+    \midrule
+    \texttt{BlackMarbleR}  & Download NASA Black Marble tiles \\
+    \texttt{sf}            & Vector spatial data (shapefiles) \\
+    \texttt{terra}         & Raster operations \\
+    \texttt{geodata}       & Download GADM shapefiles \\
+    \texttt{exactextractr} & Aggregate raster to polygons \\
+    \texttt{ggplot2}       & Map visualisation \\
+    \texttt{haven}         & Export to Stata \texttt{.dta} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{itemize}
+\end{frame}
+
+
+%=====================================================================
+\title[]{NASA Black Marble}
+\author{}
+\institute{}
+\date{}
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{What is NASA Black Marble?}
+\begin{itemize}
+  \item \textbf{NASA Black Marble} is a NASA Earth Science Data Systems (ESDS)
+        project that provides daily, monthly, and yearly global nighttime lights
+        using the \textbf{VIIRS Day-Night Band (DNB)} sensor
+  \vspace{0.3cm}
+  \item Sensor: Suomi-NPP and NOAA-20 satellites
+  \vspace{0.3cm}
+  \item \textbf{Data products:}
+  \vspace{0.1cm}
+  \begin{center}
+  \small
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Product} & \textbf{Frequency} & \textbf{Resolution} & \textbf{Coverage} \\
+    \midrule
+    VNP46A1 & Daily     & 500 m & 2012--present \\
+    VNP46A2 & Daily (gap-filled) & 500 m & 2012--present \\
+    VNP46A3 & Monthly   & 500 m & 2012--present \\
+    VNP46A4 & Annual    & 500 m & 2012--present \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.3cm}
+  \item Free access via NASA LAADS DAAC:
+        \href{https://ladsweb.modaps.eosdis.nasa.gov}{\texttt{ladsweb.modaps.eosdis.nasa.gov}}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Black Marble vs.\ DMSP-OLS}
+\begin{center}
+\small
+\begin{tabular}{lcc}
+  \toprule
+  & \textbf{DMSP-OLS} & \textbf{NASA Black Marble (VIIRS)} \\
+  \midrule
+  Sensor        & DMSP / OLS      & Suomi-NPP VIIRS DNB \\
+  Coverage      & 1992–2013       & 2012–present \\
+  Resolution    & $\sim$1 km      & 500 m \\
+  Radiometric   & 6-bit (0–63)    & 14-bit, calibrated nW/sr/cm$^2$ \\
+  Saturation    & Yes (urban)     & No \\
+  Moonlight corr.& No             & Yes \\
+  Cloud mask    & Partial         & Yes \\
+  Stray light corr.& No           & Yes \\
+  Recommended for& Pre-2012, long run & 2012–present \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\vspace{0.2cm}
+\begin{itemize}
+  \item \textbf{Key advantage of Black Marble:} fully calibrated, no saturation in
+        bright urban areas --- suitable for studying within-country inequality
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{BlackMarbleR Package}
+\begin{itemize}
+  \item \texttt{BlackMarbleR} is an R package that automates the full download
+        pipeline: it identifies relevant HDF5 tiles from NASA LAADS DAAC, downloads
+        them, mosaics the tiles, and converts to a \texttt{terra::SpatRaster}
+  \vspace{0.3cm}
+  \item GitHub: \href{https://worldbank.github.io/blackmarbler/}{\texttt{worldbank.github.io/blackmarbler}}
+  \vspace{0.3cm}
+  \item \textbf{Main function:}
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item \texttt{bm\_raster(roi\_sf, product\_id, date, bearer, ...)}
+    \vspace{0.1cm}
+    \item \texttt{roi\_sf}: region of interest as an \texttt{sf} polygon
+    \vspace{0.1cm}
+    \item \texttt{product\_id}: e.g.\ \texttt{"VNP46A4"} for annual composite
+    \vspace{0.1cm}
+    \item \texttt{bearer}: your NASA Earthdata Bearer token
+  \end{itemize}
+  \vspace{0.3cm}
+  \item Returns a \texttt{SpatRaster} cropped and masked to your region
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Getting a NASA Earthdata Account}
+\begin{enumerate}
+  \item Register (free) at \href{https://urs.earthdata.nasa.gov}{\texttt{urs.earthdata.nasa.gov}}
+  \vspace{0.25cm}
+  \item Log in $\to$ Profile $\to$ \textbf{Generate Token}
+  \vspace{0.25cm}
+  \item Copy the token string (starts with \texttt{eyJ...}) and paste into the R script
+  \vspace{0.25cm}
+  \item Token expires after 1 year --- regenerate when needed
+\end{enumerate}
+\vspace{0.4cm}
+\begin{tikzpicture}
+  \node[draw, rounded corners, fill=orange!15, text width=9.5cm,
+        inner sep=8pt, font=\small] {
+    \textbf{Note:} keep your token private (treat it like a password).
+    Do \emph{not} push it to GitHub or share publicly.
+    In code, store it as an environment variable or in a separate file
+    that is not version-controlled.
+  };
+\end{tikzpicture}
+\end{frame}
+
+
+%=====================================================================
+\title[]{Taiwan Shapefile}
+\author{}
+\institute{}
+\date{}
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}{Where to Get Taiwan Boundaries}
+\begin{itemize}
+  \item \textbf{Option 1: GADM} (recommended for research reproducibility)
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item Global Administrative Areas: \href{https://gadm.org}{\texttt{gadm.org}}
+    \vspace{0.1cm}
+    \item Download directly in R with \texttt{geodata::gadm()}
+    \vspace{0.1cm}
+    \item Level 1 = counties / municipalities (22 units)\\
+          Level 2 = townships / districts (鄉鎮市區, $\approx$368 units)
+  \end{itemize}
+  \vspace{0.3cm}
+  \item \textbf{Option 2: Taiwan Government Open Data}
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item \href{https://data.gov.tw/dataset/7442}{\texttt{data.gov.tw}} --- 直轄市、縣市界線 / 鄉鎮市區界線
+    \vspace{0.1cm}
+    \item Official TWD97 projection (EPSG:3826); convert to WGS84 (EPSG:4326)
+          before passing to BlackMarbleR
+  \end{itemize}
+  \vspace{0.3cm}
+  \item \textbf{Option 3: \texttt{rnaturalearth} package}
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item Only provides country-level or province-level outlines
+    \item Sufficient for a national overview map
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Downloading Taiwan Shapefile in R}
+\begin{lstlisting}
+library(pacman)
+p_load(geodata, sf)
+
+# Download GADM Level-2 (townships / districts)
+tw_gadm <- geodata::gadm(
+  country = "TWN",
+  level   = 2,
+  path    = rawdata_path   # cached locally
+)
+tw_sf <- sf::st_as_sf(tw_gadm)
+
+# BlackMarbleR requires WGS84 (EPSG:4326)
+tw_sf <- sf::st_transform(tw_sf, crs = 4326)
+
+cat("Number of townships:", nrow(tw_sf))   # ~368
+\end{lstlisting}
+\begin{itemize}
+  \item The shapefile is cached locally --- the download runs only once
+  \vspace{0.2cm}
+  \item Key columns: \texttt{NAME\_1} (county), \texttt{NAME\_2} (township),
+        \texttt{HASC\_2} (ISO code)
+\end{itemize}
+\end{frame}
+
+
+%=====================================================================
+\title[]{R Code Walkthrough}
+\author{}
+\institute{}
+\date{}
+\begin{frame}{}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 1: Install and Load Packages}
+\begin{lstlisting}
+if (!require("pacman")) install.packages("pacman")
+library(pacman)
+
+# install.packages("BlackMarbleR")  # run once
+
+p_load(
+  BlackMarbleR,  # NASA Black Marble downloader
+  sf,            # Vector spatial data
+  terra,         # Raster operations
+  tidyverse,     # ggplot2, dplyr, etc.
+  geodata,       # GADM shapefile
+  exactextractr, # Raster-to-polygon aggregation
+  haven,         # Write .dta (Stata)
+  viridis,       # Color palettes
+  patchwork      # Combine ggplots
+)
+
+bearer_token <- "YOUR_NASA_EARTHDATA_BEARER_TOKEN"
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 2: Download Nighttime Lights}
+\begin{lstlisting}
+# Annual composite for 2012 (first available year)
+ntl_2012 <- bm_raster(
+  roi_sf     = tw_sf,
+  product_id = "VNP46A4",
+  date       = "2012-01-01",  # any date in target year
+  bearer     = bearer_token,
+  output_location_type = "file",
+  file_dir   = file.path(rawdata_path, "nightlights/")
+)
+
+# Annual composite for 2024 (most recent complete year)
+ntl_2024 <- bm_raster(
+  roi_sf     = tw_sf,
+  product_id = "VNP46A4",
+  date       = "2024-01-01",
+  bearer     = bearer_token,
+  output_location_type = "file",
+  file_dir   = file.path(rawdata_path, "nightlights/")
+)
+\end{lstlisting}
+\begin{itemize}
+  \item \texttt{output\_location\_type = "file"} saves HDF5 tiles locally
+        --- subsequent runs skip re-downloading
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 3: Create Maps}
+\begin{lstlisting}
+# Convert raster to data frame for ggplot2
+raster_to_df <- function(r, varname = "ntl") {
+  df <- terra::as.data.frame(r, xy = TRUE)
+  names(df) <- c("x", "y", varname)
+  df[!is.na(df[[varname]]), ]
+}
+
+df_2012 <- raster_to_df(ntl_2012)
+df_2024 <- raster_to_df(ntl_2024)
+
+# Map function
+make_ntl_map <- function(df, title_text) {
+  ggplot(df, aes(x = x, y = y, fill = ntl)) +
+    geom_raster() +
+    geom_sf(data = tw_sf, fill = NA, color = "gray60",
+            linewidth = 0.15, inherit.aes = FALSE) +
+    scale_fill_viridis_c(option = "inferno",
+      name = "Radiance\n(nW/sr/cm2)") +
+    coord_sf(expand = FALSE) +
+    labs(title = title_text, x = NULL, y = NULL) +
+    theme_void()
+}
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 4: Aggregate to Township Level}
+\begin{lstlisting}
+# exact_extract() weights pixels by polygon coverage fraction
+tw_ntl <- tw_sf %>%
+  mutate(
+    ntl_mean_2012 = exactextractr::exact_extract(
+                      ntl_2012, tw_sf, "mean"),
+    ntl_mean_2024 = exactextractr::exact_extract(
+                      ntl_2024, tw_sf, "mean"),
+    ntl_sum_2012  = exactextractr::exact_extract(
+                      ntl_2012, tw_sf, "sum"),
+    ntl_sum_2024  = exactextractr::exact_extract(
+                      ntl_2024, tw_sf, "sum"),
+    ntl_change    = ntl_mean_2024 - ntl_mean_2012,
+    ntl_pct_change = (ntl_mean_2024 - ntl_mean_2012) /
+                     (ntl_mean_2012 + 1) * 100
+  )
+\end{lstlisting}
+\begin{itemize}
+  \item We add 1 in the denominator to avoid division by zero for
+        very dark areas ($\bar{Y}_{2012} \approx 0$)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 5: Export Data}
+\begin{lstlisting}
+# Drop geometry to get a plain data frame
+tw_ntl_export <- tw_ntl %>%
+  sf::st_drop_geometry() %>%
+  select(county   = NAME_1,
+         township = NAME_2,
+         HASC_code = HASC_2,
+         ntl_mean_2012, ntl_sum_2012,
+         ntl_mean_2024, ntl_sum_2024,
+         ntl_change, ntl_pct_change)
+
+# CSV (for R / Python)
+write_csv(tw_ntl_export,
+  "Class_Data/taiwan_nightlights_township.csv")
+
+# Stata .dta
+haven::write_dta(tw_ntl_export,
+  "Class_Data/taiwan_nightlights_township.dta")
+\end{lstlisting}
+\begin{itemize}
+  \item The \texttt{.dta} file can be opened directly in Stata with \texttt{use}
+\end{itemize}
+\end{frame}
+
+
+%=====================================================================
+% \title[]{Results}
+% \author{}
+% \institute{}
+% \date{}
+% \begin{frame}{}
+%   \titlepage
+% \end{frame}
+
+
+% \begin{frame}{Taiwan Nighttime Lights: 2012}
+%   \begin{center}
+%     \includegraphics[width=0.80\textwidth]{figure/ntl_taiwan_2012.png}
+%   \end{center}
+% \end{frame}
+
+
+% \begin{frame}{Taiwan Nighttime Lights: 2024}
+%   \begin{center}
+%     \includegraphics[width=0.80\textwidth]{figure/ntl_taiwan_2024.png}
+%   \end{center}
+% \end{frame}
+
+
+% \begin{frame}{Taiwan Nighttime Lights: 2012 vs.\ 2024}
+%   \begin{center}
+%     \includegraphics[width=\textwidth]{figure/ntl_taiwan_compare.png}
+%   \end{center}
+% \end{frame}
+
+
+% \begin{frame}{Change in Nighttime Lights: 2024 $-$ 2012}
+%   \begin{center}
+%     \includegraphics[width=0.82\textwidth]{figure/ntl_taiwan_change.png}
+%   \end{center}
+% \end{frame}
+
+
+% \begin{frame}{Township-Level Mean Nighttime Lights 2024}
+%   \begin{center}
+%     \includegraphics[width=0.72\textwidth]{figure/ntl_township_2024.png}
+%   \end{center}
+% \end{frame}
+
+
+% \begin{frame}{Township-Level Dataset}
+% \begin{itemize}
+%   \item After aggregation, each row is a \textbf{township} (鄉鎮市區)
+%   \vspace{0.3cm}
+%   \item Variables produced:
+%   \vspace{0.1cm}
+%   \begin{center}
+%   \small
+%   \begin{tabular}{ll}
+%     \toprule
+%     \textbf{Variable} & \textbf{Description} \\
+%     \midrule
+%     \texttt{county}         & County / municipality name \\
+%     \texttt{township}       & Township / district name \\
+%     \texttt{ntl\_mean\_2012} & Mean radiance 2012 (nW/sr/cm$^2$) \\
+%     \texttt{ntl\_sum\_2012}  & Total radiance 2012 \\
+%     \texttt{ntl\_mean\_2024} & Mean radiance 2024 \\
+%     \texttt{ntl\_sum\_2024}  & Total radiance 2024 \\
+%     \texttt{ntl\_change}     & Change in mean radiance 2012$\to$2024 \\
+%     \texttt{ntl\_pct\_change}& \% change in mean radiance \\
+%     \bottomrule
+%   \end{tabular}
+%   \end{center}
+%   \vspace{0.3cm}
+%   \item Can be merged with other township-level variables for regression analysis
+% \end{itemize}
+% \end{frame}
+
+
+% %=====================================================================
+% \title[]{Other Satellite Data}
+% \author{}
+% \institute{}
+% \date{}
+% \begin{frame}{}
+%   \titlepage
+% \end{frame}
+
+
+% \begin{frame}{NDVI: Vegetation Index}
+% \begin{itemize}
+%   \item \textbf{What it measures:} the ``greenness'' of land surface ---
+%         vegetation health and density
+%   \vspace{0.2cm}
+%   \[
+%     \text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}
+%     \quad \in [-1,\,+1]
+%   \]
+%   \item Higher values $\Rightarrow$ denser, healthier vegetation;
+%         negative values $\Rightarrow$ water bodies
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD13 (250 m -- 1 km, 16-day or monthly)
+%   \vspace{0.2cm}
+%   \item \textbf{R package:} \texttt{MODIStsp} or \texttt{appeears} API
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Proxy for agricultural productivity and crop yields
+%     \item Instrument for income shocks in conflict / migration research
+%   \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Land Surface Temperature (LST)}
+% \begin{itemize}
+%   \item \textbf{What it measures:} temperature of the Earth's surface
+%         itself (not air temperature)
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD11A2 (1 km, 8-day composites)
+%   \vspace{0.2cm}
+%   \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{appeears}
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Urban heat islands: link green space and land use to housing prices
+%     \vspace{0.1cm}
+%     \item Labor productivity: causal effect of heat on wages and output
+%     \vspace{0.1cm}
+%     \item Energy demand: high temperatures raise cooling demand
+%   \end{itemize}
+%   \vspace{0.3cm}
+%   \item \textbf{Advantage over weather stations:}
+%         globally uniform coverage, no interpolation needed
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Aerosol Optical Depth (AOD) --- Air Pollution}
+% \begin{itemize}
+%   \item \textbf{What it measures:} how much sunlight is blocked by suspended
+%         particles (PM$_{2.5}$, dust, smoke) across the atmospheric column
+%   \vspace{0.3cm}
+%   \item AOD $= 0$: clean atmosphere;\quad AOD $= 1$: heavy particulate loading
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD04 (3 km -- 10 km, daily);
+%         also available from Sentinel-5P (TROPOMI)
+%   \vspace{0.2cm}
+%   \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{sen2r}, \texttt{openeo}
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Pollution effects on health, cognition, and productivity
+%     \vspace{0.1cm}
+%     \item Evaluation of environmental regulations
+%     \vspace{0.1cm}
+%     \item Caveat: AOD measures full atmospheric column; conversion to
+%           ground-level PM$_{2.5}$ requires additional calibration
+%   \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Summary: Satellite Data Packages in R}
+% \begin{center}
+% \small
+% \begin{tabular}{lll}
+%   \toprule
+%   \textbf{Data} & \textbf{R Package} & \textbf{Source} \\
+%   \midrule
+%   Nighttime lights    & \texttt{BlackMarbleR}    & NASA LAADS DAAC \\
+%   NDVI / LST / AOD    & \texttt{MODIStsp}        & NASA MODIS \\
+%                       & \texttt{appeears}         & NASA AppEEARS API \\
+%   Sentinel-2 imagery  & \texttt{sen2r}            & ESA / Copernicus \\
+%   Google Earth Engine & \texttt{rgee}             & Google EE \\
+%   Land cover          & \texttt{FedData}          & NLCD / MODIS MCD12 \\
+%   Elevation (DEM)     & \texttt{elevatr}          & USGS / Amazon \\
+%   Population          & \texttt{wpgpDataR}        & WorldPop \\
+%   \bottomrule
+% \end{tabular}
+% \end{center}
+% \vspace{0.3cm}
+% \begin{itemize}
+%   \item All sources are free; most require a one-time free account registration
+%   \item See also: \href{https://earthdata.nasa.gov}{\texttt{earthdata.nasa.gov}}
+%         (unified NASA portal) and \href{https://browser.dataspace.copernicus.eu}{\texttt{Copernicus Browser}}
+% \end{itemize}
+% \end{frame}
+
+
+\end{document}

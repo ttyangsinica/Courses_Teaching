@@ -1,0 +1,304 @@
+
+
+
+
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+% By  using hyperref={pdfpagelabels=false} you get rid off:
+% Package hyperref Warning: Option `pdfpagelabels' is turned off
+% (hyperref)                because \thepage is undefined. 
+% Hyperref stopped early 
+%
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKsansfont{標楷體}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks,urlcolor=blue}
+%\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=blue}
+
+\usepackage{listings}
+\usepackage{fontspec}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+
+\title[]  
+{Reading Group Presentation}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{\today}
+
+%\usetheme{Copenhagen}  %applied
+\usetheme{CambridgeUS}  %labor
+%\usepackage{beamerthemeshadow}  % data
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+%\usepackage{beamerthemeshadow}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+ \titlepage
+\end{frame}
+
+
+\begin{frame}{Overview}{Finding Team Members}
+	\begin{itemize}
+		\item Form teams of 3-4 people
+				\vspace{0.2cm}
+		\item Choose an article to report from the Reading List. 
+						\vspace{0.2cm}
+		\item There are two ways to register:
+		\begin{itemize}
+			\item First find your team members, then register the article you want to report together.
+							\vspace{0.2cm}
+			\item Register for an article on your own; I will assist in forming groups among students with similar interests.
+							\vspace{0.2cm}
+		\end{itemize}
+	
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Overview}{Finding Team Members}
+	\begin{itemize}
+	
+		\item Please complete the registration before the class on \textbf{4/21}.
+					\vspace{0.2cm}
+				\begin{itemize}
+		
+		\item Register here: \url{https://reurl.cc/g6XaZX}
+		
+				\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Overview}{Presentation Dates}
+	\begin{itemize}
+		\item The presentation dates and order will be determined by a random draw.
+									\vspace{0.2cm}
+		\item Tentative presentation dates: 5/14, 5/21 and 5/28.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Overview}{Uploading and Sharing Slides}
+	\begin{itemize}
+		\item Please upload your slides by 9:00 AM on the day of your presentation.
+											\vspace{0.2cm}
+		\begin{itemize}
+			\item Filename: First presenter's student ID\_First presenter's name.
+												\vspace{0.2cm}
+			\begin{itemize}
+				\item Example: r09323010\_Yang\_Tzu\_Ting
+													\vspace{0.2cm}
+			\end{itemize}
+			\item Upload here: \url{https://www.dropbox.com/request/yFekVv6WEzgVmXAD3Gw6}
+		\end{itemize}
+														\vspace{0.2cm}
+	
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Overview}{Collaborative Editing}
+	\begin{itemize}
+		
+		\item If you want to use Overleaf for simultaneous collaborative editing
+		
+		\begin{itemize}
+			\vspace{0.2cm}
+			\item Please let me know I have bought a plan for group editing
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Overview}{Division of Labor}
+	\begin{itemize}
+		\item Each team presents for 30-40 minutes, and every member must report on the part they are responsible for:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item Member 1 reports on the Introduction and Data Construction.
+																\vspace{0.2cm}
+			\item Member 2 reports on Empirical Methods.
+																\vspace{0.2cm}
+			\item Member 3 reports and interprets the first part of the empirical results.
+																\vspace{0.2cm}
+			\item Member 4 reports and interprets the second part of the empirical results and conclusion.
+																\vspace{0.2cm}
+		\end{itemize}
+		\item Please keep the number of slides to less than 30.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Content: Member 1}{Introduction}
+	\begin{itemize}
+		\item Try to answer the following questions:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item What is the question? What causal relationship are the authors attempting to examine?
+																\vspace{0.2cm}
+			\item Why should we care about it?
+																\vspace{0.2cm}
+			\item How do the authors answer the research questions they propose?
+			\begin{itemize}
+																	\vspace{0.2cm}
+				\item Briefly describe how the authors conduct the study and their findings.
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Content: Member 1}{Data and Sample}
+	\begin{itemize}
+		\item Try to answer the following questions:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item What is their data?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Briefly describe the main variables in the data and why this data is suitable for the study.
+																	\vspace{0.2cm}
+			\end{itemize}
+			\item How the authors construct the sample for estimation.
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Briefly describe the authors' sample construction and screening process.
+																	\vspace{0.2cm}
+				\item Discuss the descriptive statistics of the estimation sample.
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Content: Member 2}{Empirical Specifications}
+	\begin{itemize}
+		\item Try to answer the following questions:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item What is their empirical strategy?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Briefly describe the empirical methods used by the authors.
+																	\vspace{0.2cm}
+				\item Introduce in detail the estimation equations.
+																	\vspace{0.2cm}
+				\item What selection bias are the authors facing in estimating the causal relationship?
+																	\vspace{0.2cm}
+				\item Why does this method obtain the causal relationship the authors want to estimate, based on the underlying assumptions?
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Content: Member 3}{Results}
+	\begin{itemize}
+		\item Try to answer the following questions:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item What are their main results?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Interpret the authors' results in detail (graphs and tables).
+																	\vspace{0.2cm}
+				\item Is the estimated effect significant? How large is it?
+																	\vspace{0.2cm}
+			\end{itemize}
+			\item Are their results robust to other settings?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item What robustness checks have the authors conducted?
+																	\vspace{0.2cm}
+				\item Briefly describe whether the results are robust.
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Content: Member 4}{Other Results and Conclusion}
+	\begin{itemize}
+		\item Try to answer the following questions:
+															\vspace{0.2cm}
+		\begin{itemize}
+			\item Is there heterogeneity in the estimated effects?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Describe the subgroup analysis conducted by the authors.
+																	\vspace{0.2cm}
+				\item Are the estimated effects heterogeneous?
+																	\vspace{0.2cm}
+				\item How do the authors interpret these results?
+																	\vspace{0.2cm}
+			\end{itemize}
+			\item Do they have any other interesting results?
+																\vspace{0.2cm}
+			\begin{itemize}
+				\item Describe any other findings you find interesting.
+																	\vspace{0.2cm}
+				\item What further analysis do you think the authors could conduct?
+																	\vspace{0.2cm}
+			\end{itemize}
+		\end{itemize}
+		\item Briefly summarize the article's conclusions.
+	\end{itemize}
+\end{frame}
+
+\end{document} 
