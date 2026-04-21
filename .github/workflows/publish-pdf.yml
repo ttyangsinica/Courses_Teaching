@@ -236,29 +236,29 @@ jobs:
           path: |
             L9_SCM/*.pdf
 
-      # ---- L10_IV ---- (temporarily disabled: tex not ready)
-      # - name: Compile L10_IV PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: L10_IV
-      #     root_file: |
-      #       L10_IV_data.tex
-      #       L10_IV_labor.tex
-      #       L10_IV_metrics.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
+      # ---- L10_IV ----
+      - name: Compile L10_IV PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L10_IV
+          root_file: |
+            L10_IV_data.tex
+            L10_IV_labor.tex
+            L10_IV_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
 
-      # - name: Upload PDFs (L10_IV)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_L10_IV
-      #     path: |
-      #       L10_IV/*.pdf
+      - name: Upload PDFs (L10_IV)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L10_IV
+          path: |
+            L10_IV/*.pdf
 
       # ---- L11_SSIV ---- (temporarily disabled: tex not ready)
       # - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)

@@ -32,6 +32,7 @@
 \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
 
 \usepackage{booktabs}
+\usepackage{comment}
 \usepackage{threeparttable}
 \usepackage{colortbl} 
 \usepackage{xcolor}
@@ -2047,6 +2048,7 @@ file.path(workdata, "ny_fert_balance.csv"))
 
 
 
+\begin{comment}
 % ============================================================
 \title[]{Recent Development}
 \author{}
@@ -2737,8 +2739,573 @@ scplotMulti(pi.multi, type = "series")
     \item \texttt{type = "series"}: plots each unit's trajectory with its prediction interval separately
 \end{itemize}
 \end{frame}
+\end{comment}
 
 
+% ==================================================================
+%  Recent Development: Regression-Based Synthetic Control
+% ==================================================================
+
+\title[]{Recent Development: Regression-Based SCM}
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+\begin{frame}{Regression-Based Synthetic Control}{Motivation}
+\begin{itemize}
+	\item Standard SC constrains the weights:
+	\begin{equation*}
+		w_i \geq 0
+		\quad\text{and}\quad
+		\sum_{i=2}^{J+1} w_i = 1
+	\end{equation*}
+	\vspace{0.2cm}
+	\item These constraints ensure \textbf{no extrapolation}: the synthetic unit always lies \textbf{within} the convex hull of the donor pool
+	\vspace{0.2cm}
+	\item \textbf{Problem:} if the treated unit lies \textbf{outside} the convex hull, perfect pre-treatment fit is impossible
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item The synthetic unit cannot fully match the treated unit's trajectory
+		\vspace{0.1cm}
+		\item Residual pre-treatment mismatch may bias post-treatment estimates
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression-Based Synthetic Control}{Idea: Relax the Constraints}
+\begin{itemize}
+	\item \textbf{Key idea:} relax the non-negativity and summation constraints to allow \textbf{extrapolation}
+	\vspace{0.3cm}
+	\item Concretely, estimate counterfactual outcomes using a regression:
+	\begin{equation*}
+		\hat{Y}^{0}_{1t} = \hat{\alpha} + \sum_{j=2}^{J+1}\hat{w}_j\,Y_{jt},
+		\quad t > T_0
+	\end{equation*}
+	\vspace{0.2cm}
+	\item Two relaxations compared to standard SC:
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item Add an \textbf{intercept} $\alpha$
+		\vspace{0.2cm}
+		\item Allow weights to be \textbf{negative} and \textbf{not sum to one}
+	\end{itemize}
+	\vspace{0.3cm}
+	\item But with $J$ potentially large, we need \textbf{regularization} --- enter LASSO
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression-Based Synthetic Control}{Why an Intercept?}
+\begin{itemize}
+	\item Suppose the treated unit's outcome level is \textbf{systematically higher} than any donor, even before treatment
+	\vspace{0.3cm}
+	\item Standard SC cannot handle this: the convex combination of donors can never reach the treated unit's level
+	\vspace{0.3cm}
+	\item The intercept $\alpha$ absorbs this \textbf{constant level difference}:
+	\begin{equation*}
+		Y_{1t} = \underbrace{\alpha}_{\text{level shift}} + \sum_{j=2}^{J+1} w_j\,Y_{jt} + \varepsilon_t
+	\end{equation*}
+	\vspace{0.2cm}
+	\item Think of it like adding a constant in a regression --- it lets the donor outcomes \emph{track the trend} of $Y_{1t}$ without needing to match its \emph{level} exactly
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Regression-Based Synthetic Control}{Baseline: OLS with Intercept}
+\begin{itemize}
+	\item The simplest approach: just run an \textbf{OLS regression} of $Y_{1t}$ on donor outcomes, adding an intercept
+	\begin{equation*}
+		\min_{\alpha,\,\{w_j\}}\;
+		\sum_{t=1}^{T_0}\!\left(Y_{1t} - \alpha - \sum_{j=2}^{J+1}w_j Y_{jt}\right)^{\!2}
+	\end{equation*}
+	\vspace{0.1cm}
+	\item This is exactly OLS --- the ``regressors'' are the \textbf{pre-treatment outcomes of donor units}
+	\vspace{0.2cm}
+	\item Two relaxations compared to standard SC:
+	\begin{itemize}
+		\vspace{0.1cm}
+		\item \textbf{Intercept} $\alpha$: absorbs a permanent level difference between NY and donors
+		\vspace{0.1cm}
+		\item \textbf{Unconstrained weights}: $w_j$ can be negative and need not sum to one $\Rightarrow$ extrapolation allowed
+	\end{itemize}
+	\vspace{0.2cm}
+	\item \textbf{Doudchenko \& Imbens (2016)}: this is the baseline version of regression-based SC
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression-Based Synthetic Control}{Extension: When $J$ is Large}
+\begin{itemize}
+	\item OLS works well when $J$ is small relative to $T_0$
+	\vspace{0.2cm}
+	\item \textbf{Problem:} when $J$ is large (many donors), OLS overfits the pre-treatment period --- poor out-of-sample performance
+	\vspace{0.2cm}
+	\item \textbf{Solution:} add a \textbf{regularization penalty}, just as in standard regression:
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \textbf{LASSO} ($\ell_1$ penalty $\lambda\sum_j|w_j|$): selects a sparse set of donors
+		\vspace{0.1cm}
+		\item \textbf{Ridge} ($\ell_2$ penalty $\lambda\sum_j w_j^2$): shrinks all weights, stable under collinearity
+		\vspace{0.1cm}
+		\item \textbf{Elastic net}: mixes both --- sparse \emph{and} stable
+	\end{itemize}
+	\vspace{0.2cm}
+	\item In our empirical example, $J$ is small $\Rightarrow$ we use the \textbf{OLS version} as our baseline
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Regression-Based Synthetic Control}{A LASSO Version}
+\begin{itemize}
+	\item Treat the weight-finding step as a \textbf{LASSO regression}:
+	\begin{equation*}
+		\min_{\alpha,\,\{w_j\}}\;
+		\underbrace{\sum_{t=1}^{T_0}\!\left(Y_{1t} - \alpha - \sum_{j=2}^{J+1}w_j Y_{jt}\right)^{\!2}}_{\text{pre-treatment fit}}
+		+\;
+		\underbrace{\lambda\sum_{j=2}^{J+1}|w_j|}_{\text{LASSO penalty}}
+	\end{equation*}
+	\vspace{0.2cm}
+	\item Exactly like standard LASSO, but the ``regressors'' are the \textbf{pre-treatment outcomes of donor units}
+	\vspace{0.3cm}
+	\item The LASSO penalty $\lambda\sum|w_j|$ does two things you already know:
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item \textbf{Shrinks} weights toward zero $\Rightarrow$ prevents overfitting to pre-treatment period
+		\vspace{0.1cm}
+		\item \textbf{Selects} a sparse set of donors (many $\hat{w}_j = 0$) $\Rightarrow$ interpretable synthetic control
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Regression-Based Synthetic Control}{Doudchenko \& Imbens (2016): Elastic Net}
+\begin{itemize}
+	\item \textbf{Problem with pure LASSO:} when donor outcomes are highly correlated, LASSO picks one arbitrarily and drops the rest --- unstable
+	\vspace{0.3cm}
+	\item \textbf{Solution:} mix LASSO with \textbf{ridge} $\Rightarrow$ the \textbf{elastic net} penalty:
+	\begin{equation*}
+		\lambda_1\!\left(\frac{1-\lambda_2}{2}\sum_j w_j^2
+		+\,\lambda_2\sum_j|w_j|\right)
+	\end{equation*}
+	\vspace{0.2cm}
+	\item The mixing parameter $\lambda_2 \in [0,1]$ interpolates between:
+	\vspace{0.1cm}
+	\begin{itemize}
+		\item $\lambda_2 = 1$: pure \textbf{LASSO} (sparse, may be unstable under collinearity)
+		\vspace{0.1cm}
+		\item $\lambda_2 = 0$: pure \textbf{ridge} (stable, but all donors kept)
+		\vspace{0.1cm}
+		\item $0 < \lambda_2 < 1$: \textbf{elastic net} --- sparse \emph{and} stable
+	\end{itemize}
+	\vspace{0.2cm}
+	\item Both $\lambda_1$ and $\lambda_2$ are chosen by cross-validation over the pre-treatment period
+\end{itemize}
+\end{frame}
+
+
+% \begin{frame}{Regression-Based SCM}{Motivation}
+% \begin{itemize}
+% 	\item Standard SC (Abadie et al.\ 2010) restricts weights: $w_j \geq 0$ and $\sum_j w_j = 1$
+% 	\vspace{0.2cm}
+% 	\item These restrictions can be \textbf{too binding}:
+% 	\vspace{0.1cm}
+% 	\begin{itemize}
+% 		\item If the treated unit lies \textbf{outside} the convex hull of donors, no convex combination can reproduce its pre-treatment path
+% 		\vspace{0.1cm}
+% 		\item Forcing the constraint leads to poor pre-treatment fit and biased estimates
+% 	\end{itemize}
+% 	\vspace{0.2cm}
+% 	\item \textbf{Solution}: Doudchenko \& Imbens (2016) --- remove weight constraints and add an intercept to absorb level differences
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Regression-Based SCM}{Doudchenko \& Imbens (2016)}
+% \begin{itemize}
+% 	\item The synthetic counterfactual is an \textbf{affine} combination of donors:
+% 	\begin{equation*}
+% 		\hat{Y}_{1t}^{(0)} = \hat{\mu} + \sum_{j=2}^{J+1} \hat{w}_j\,Y_{jt}
+% 	\end{equation*}
+% 	\vspace{0.1cm}
+% 	\item $(\hat{\mu},\,\hat{W})$ solve a penalized least-squares problem on the pre-treatment period:
+% 	\begin{equation*}
+% 		\min_{\mu,\,W}\;\sum_{t=1}^{T_0}\!\left(Y_{1t} - \mu - W'Y_{0t}\right)^{\!2} + P_{\lambda}(W)
+% 	\end{equation*}
+% 	\vspace{0.1cm}
+% 	\item \textbf{Key differences from standard SC}:
+% 	\vspace{0.1cm}
+% 	\begin{itemize}
+% 		\item No non-negativity or sum-to-one constraint --- weights can be \textbf{negative}
+% 		\vspace{0.1cm}
+% 		\item Intercept $\hat{\mu}$ absorbs persistent level differences between treated and donors
+% 	\end{itemize}
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Regression-Based SCM}{Regularization Choices}
+% \begin{itemize}
+% 	\item With many donors relative to pre-treatment periods ($J \gg T_0$), OLS overfits. Regularization is needed:
+% 	\vspace{0.2cm}
+% 	\begin{itemize}
+% 		\item \textbf{OLS} ($P = 0$): feasible only when $J < T_0$; otherwise underdetermined
+% 		\vspace{0.2cm}
+% 		\item \textbf{Ridge} ($P = \lambda\|W\|_2^2$): shrinks all weights toward zero; closed-form solution:
+% 		\begin{equation*}
+% 			\hat{W} = \bigl(X_0'X_0 + \lambda I\bigr)^{-1} X_0'Y_1
+% 		\end{equation*}
+% 		\vspace{0.1cm}
+% 		\item \textbf{LASSO} ($P = \lambda\|W\|_1$): sparse --- only a few donors receive non-zero weight
+% 	\end{itemize}
+% 	\vspace{0.2cm}
+% 	\item $\lambda$ is selected by \textbf{cross-validation} within the pre-treatment period
+% \end{itemize}
+% \end{frame}
+
+% ── Theory: Permutation Test ──────────────────────────────────────
+\begin{frame}{Regression-Based SCM}{Inference: Permutation Test}
+\begin{itemize}
+	\item The \textbf{same permutation (placebo) test} from standard SCM applies directly
+	\vspace{0.2cm}
+	\item Procedure:
+	\begin{enumerate}
+		\item Apply regression-based SC to \textbf{each donor unit} as if it were treated
+		\vspace{0.1cm}
+		\item Compute two statistics per unit:
+		\begin{itemize}
+			\item \textbf{RMSPE ratio}: $\;\dfrac{\sqrt{\text{post-MSPE}}}{\sqrt{\text{pre-MSPE}}}$ --- adjusts for units that are hard to fit in-sample
+			\vspace{0.1cm}
+			\item \textbf{Mean signed post-gap}: $\;\dfrac{1}{T_1}\sum_{t>T_0}(Y_{it}-\hat{Y}^{(0)}_{it})$ --- tests direction and magnitude
+		\end{itemize}
+		\vspace{0.1cm}
+		\item \textbf{P-value} $=$ fraction of placebo statistics $\geq$ the treated unit's statistic
+	\end{enumerate}
+	\vspace{0.2cm}
+	\item The test is \textbf{agnostic to weight constraints} --- valid for standard SC, LASSO-based SC, or any variant
+\end{itemize}
+\end{frame}
+
+
+% ── R Example title page ───────────────────────────────────────────
+\title[]{R Example: Regression-Based SCM}
+\author{}\institute{}\date{}
+\begin{frame}{}\titlepage\end{frame}
+
+
+% ── Package ────────────────────────────────────────────────────────
+\begin{frame}[fragile]{Package: \texttt{scpi}}{Regression-Based SCM in R}
+\begin{itemize}
+    \item \texttt{scpi} implements regression-based SCM in pure R
+    \vspace{0.15cm}
+    \item Three main functions:
+    \begin{itemize}
+        \item \texttt{scdata()} --- structures the panel into pre/post matrices
+        \item \texttt{scest()} --- finds optimal weights (and intercept $\hat{\alpha}$)
+        \item \texttt{scpi()} --- prediction intervals (not used here)
+    \end{itemize}
+    \vspace{0.15cm}
+\begin{lstlisting}[language=R, style=r-style]
+install.packages("scpi")
+library(scpi); library(tidyverse); library(purrr)
+\end{lstlisting}
+    \vspace{0.15cm}
+    \item \textbf{Why not \texttt{tidysynth}?} Only supports constrained weights
+    ($w_j \geq 0$, $\sum w_j = 1$). \texttt{scpi} allows unconstrained weights,
+    an intercept $\hat{\alpha}$, and regularization (OLS / ridge / LASSO)
+\end{itemize}
+\end{frame}
+
+
+% ── Step 1: scdata ─────────────────────────────────────────────────
+\begin{frame}[fragile]{Step 1: \texttt{scdata()}}{Data Preparation}
+\begin{lstlisting}[language=R, style=r-style]
+df_sc <- scdata(
+  df          = fert_sc,      # long-format panel data
+  id.var      = "state",      # unit identifier
+  time.var    = "year",       # time variable
+  outcome.var = "fert",       # outcome of interest
+  unit.tr     = "New York",   # treated unit
+  unit.co     = donors,       # donor pool (character vector)
+  period.pre  = 2007:2017,    # pre-treatment window
+  period.post = 2018:2019,    # post-treatment window
+  constant    = TRUE,         # add intercept alpha-hat
+  cointegrated = FALSE)
+\end{lstlisting}
+\begin{itemize}
+    \vspace{0.15cm}
+    \item \texttt{constant = TRUE}: adds intercept $\hat{\alpha}$ --- absorbs a
+    constant level difference between NY and the donor pool
+    \vspace{0.1cm}
+    \item Returns a structured object passed directly to \texttt{scest()}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 2: \texttt{scest()}}{Weight Estimation}
+\begin{lstlisting}[language=R, style=r-style]
+res_est <- scest(
+  data     = df_sc,
+  w.constr = list(name = "ols"),  # unconstrained OLS weights
+  solver   = "ECOS")
+\end{lstlisting}
+\vspace{0.2cm}
+\begin{itemize}
+    \item \texttt{w.constr} mirrors the estimators we discussed:
+    \begin{itemize}
+        \vspace{0.1cm}
+        \item \texttt{"simplex"}: standard SCM --- $w_j \geq 0,\;\sum_j w_j = 1$
+        \vspace{0.1cm}
+        \item \texttt{"ols"}: OLS, no regularization --- \textbf{our baseline} (small $J$)
+        \vspace{0.1cm}
+        \item \texttt{"lasso"}: unconstrained $+$ $\ell_1$ penalty --- use when $J$ is large
+        \vspace{0.1cm}
+        \item \texttt{"ridge"}: unconstrained $+$ $\ell_2$ penalty --- stable under collinearity
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \texttt{"ols"} $+$ \texttt{constant = TRUE} $\;\Rightarrow\;$ baseline Doudchenko \& Imbens (2016)
+    \vspace{0.1cm}
+    \item $\lambda$ for \texttt{"lasso"}/\texttt{"ridge"} is chosen by cross-validation over the pre-treatment period
+\end{itemize}
+\end{frame}
+
+
+% ── Permutation: Why manual ────────────────────────────────────────
+\begin{frame}{Permutation Test}{Why Write It Ourselves?}
+\begin{itemize}
+    \item \texttt{scpi()} provides \textbf{prediction intervals}; there is
+    \textbf{no built-in permutation test}
+    \vspace{0.2cm}
+    \item We implement \textbf{placebo-in-space} manually:
+    \begin{enumerate}
+        \vspace{0.1cm}
+        \item Apply regression-based SC to \textbf{every unit} (NY + all donors),
+        each time treating that unit as the ``treated'' unit
+        \vspace{0.1cm}
+        \item Compute each unit's gap series:
+        $\;\text{gap}_{it} = Y_{it} - \hat{Y}_{it}^{(0)}$
+        \vspace{0.1cm}
+        \item Compute two statistics per unit (RMSPE ratio and mean signed post-gap)
+        \vspace{0.1cm}
+        \item P-value $=$ fraction of placebo statistics $\geq$ NY's statistic
+    \end{enumerate}
+    \vspace{0.2cm}
+    \item \texttt{run\_sc\_one()} applies steps 1--3 for a single unit
+\end{itemize}
+\end{frame}
+
+
+% ── run_sc_one ─────────────────────────────────────────────────────
+\begin{frame}[fragile]{Permutation Function}{\texttt{run\_sc\_one()} (R)}
+\begin{lstlisting}[language=R, style=r-style]
+run_sc_one <- function(unit_id, df_long) {
+  tryCatch({
+    don_i <- setdiff(unique(df_long$state), unit_id)
+    df_i <- scdata(df=df_long, id.var="state",
+      time.var="year", outcome.var="fert",
+      unit.tr=unit_id, unit.co=don_i,
+      period.pre=period_pre, period.post=period_post,
+      constant=TRUE, cointegrated=FALSE)
+    res_i <- scest(data=df_i,
+      w.constr=list(name="lasso"), solver="ECOS")
+    g <- c(res_i$data$Y.pre[,1], res_i$data$Y.post[,1]) -
+         c(res_i$est.results$Y.pre.fit[,1],
+           res_i$est.results$Y.post.fit[,1])
+    t0 <- length(period_pre)
+    list(unit=unit_id, gap=g,
+         mspe_pre =mean(g[1:t0]^2),
+         mspe_post=mean(g[(t0+1):length(g)]^2),
+         mean_gap =mean(g[(t0+1):length(g)]))
+  }, error=function(e) NULL)
+}
+\end{lstlisting}
+\begin{itemize}
+    \vspace{0.05cm}
+    \item Returns \texttt{NULL} if the LASSO solver fails for a given unit
+    (filtered out before computing p-values)
+\end{itemize}
+\end{frame}
+
+
+% ── Two p-values ───────────────────────────────────────────────────
+\begin{frame}{Two P-values}{What Do They Measure?}
+\begin{itemize}
+    \item \textbf{P1 --- RMSPE ratio}
+    $\;=\; \dfrac{\sqrt{\text{post-MSPE}}}{\sqrt{\text{pre-MSPE}}}$
+    \begin{itemize}
+        \vspace{0.05cm}
+        \item How much larger is the post-treatment misfit relative to pre-treatment fit?
+        \vspace{0.05cm}
+        \item Adjusts for units that inherently fit worse in-sample
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{P2 --- Mean signed post-gap}
+    $\;=\; \dfrac{1}{T_1}\sum_{t>T_0}\text{gap}_{it}$
+    \begin{itemize}
+        \vspace{0.05cm}
+        \item Tests whether the direction and magnitude of the post-treatment gap is unusual
+        \vspace{0.05cm}
+        \item One-tailed: direction auto-detected from NY's gap sign
+    \end{itemize}
+    \vspace{0.2cm}
+    \item \textbf{Pre-MSPE filter}: exclude placebos with
+    pre-MSPE $> 5\times$ NY's
+    \begin{itemize}
+        \vspace{0.05cm}
+        \item Poor-fitting placebos inflate the reference distribution
+        \vspace{0.05cm}
+        \item Filtering focuses inference on ``well-matched'' placebos
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+% ── P-value computation ────────────────────────────────────────────
+\begin{frame}[fragile]{P-value Computation}{R}
+\begin{lstlisting}[language=R, style=r-style]
+perm_ok <- Filter(Negate(is.null),
+  lapply(unique(fert_sc$state), run_sc_one, df_long=fert_sc))
+
+stats_tbl <- map_dfr(perm_ok, function(x)
+  tibble(unit=x$unit, mspe_pre=x$mspe_pre,
+         ratio   =sqrt(x$mspe_post)/sqrt(x$mspe_pre),
+         mean_gap=x$mean_gap))
+
+# P1: RMSPE ratio
+ny_ratio <- stats_tbl$ratio[stats_tbl$unit == "New York"]
+p_ratio  <- mean(stats_tbl$ratio >= ny_ratio)
+
+# P2: mean signed gap (one-tailed, direction from NY's sign)
+ny_gap <- stats_tbl$mean_gap[stats_tbl$unit == "New York"]
+p_gap  <- if (ny_gap < 0) mean(stats_tbl$mean_gap <= ny_gap) else
+                          mean(stats_tbl$mean_gap >= ny_gap)
+
+# Pre-MSPE filter (5x cutoff)
+ny_mspe   <- stats_tbl$mspe_pre[stats_tbl$unit == "New York"]
+stats_f   <- stats_tbl %>% filter(mspe_pre <= 5 * ny_mspe)
+p_ratio_f <- mean(stats_f$ratio >= ny_ratio)
+\end{lstlisting}
+\end{frame}
+
+
+% ── Gap plot ───────────────────────────────────────────────────────
+\begin{frame}[fragile]{Gap Trajectory Plot}{R}
+\begin{lstlisting}[language=R, style=r-style]
+gap_df <- map_dfr(perm_ok, function(x)
+  tibble(unit =x$unit,
+         year =c(period_pre, period_post)[seq_along(x$gap)],
+         gap  =x$gap,
+         is_ny=(x$unit == "New York")))
+
+ggplot(gap_df, aes(x=year, y=gap, group=unit)) +
+  geom_line(data=subset(gap_df, !is_ny),
+            color="grey70", alpha=0.6, linewidth=0.4) +
+  geom_line(data=subset(gap_df,  is_ny),
+            color="firebrick", linewidth=1.2) +
+  geom_vline(xintercept=2017.5, linetype="dashed") +
+  geom_hline(yintercept=0, color="grey30") +
+  labs(title="Permutation Test: Regression-Based SCM",
+       x="Year", y=expression(gap == Y[it] - hat(Y)[it]^{"(0)"})) +
+  theme_bw()
+\end{lstlisting}
+\begin{itemize}
+    \vspace{0.1cm}
+    \item Pre-treatment gaps near zero = good fit;
+    NY's post-treatment gap (red) should stand out from placebos (grey)
+\end{itemize}
+\end{frame}
+
+
+\begin{comment}
+% ==================================================================
+%  Stata Example: Regression-Based SCM  (ridge via Mata)
+% ==================================================================
+
+\title[]{Stata Example: Regression-Based SCM}
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+\titlepage
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 0: Data Preparation}{Stata}
+\begin{lstlisting}[language=Stata, style=stata-editor]
+import delimited "$rawdata/fert_rate_synth.csv", ///
+    delimiters(comma) clear
+destring, replace force
+drop if ipums==6 | ipums==34 | ipums==44 | ipums==53
+drop if year >= 2020
+* (apply state_labels, decode, drop D.C. as before)
+decode ipums, gen(state_str)
+drop if state_str == "D.C."
+
+* Create clean variable names (no spaces)
+gen state_code = subinstr(state_str, " ", "_", .)
+keep state_code year fert
+reshape wide fert, i(year) j(state_code) string
+\end{lstlisting}
+\begin{itemize}
+    \vspace{0.1cm}
+    \item \texttt{reshape wide} creates one \texttt{fert\_*} variable per state; ``New York'' $\to$ \texttt{fertNew\_York}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 1: Ridge SC via Mata}{Stata}
+\begin{lstlisting}[language=Stata, style=stata-editor]
+unab all_fert : fert*
+local donor_vars : subinstr local all_fert ///
+    "fertNew_York" "", all
+
+mata:
+  Y  = st_data(., "fertNew_York")
+  X0 = st_data(., tokens(st_local("donor_vars")))
+  t  = st_data(., "year")
+  pre  = selectindex(t :<= 2017)
+  post = selectindex(t :>= 2018)
+  Xp = (J(rows(pre),1,1), X0[pre,.])   // + intercept
+  lambda = 100                           // tune via CV
+  p  = cols(Xp) ;  D = I(p)*lambda ;  D[1,1] = 0
+  beta   = invsym(Xp'*Xp + D)*Xp'*Y[pre]
+  Y0h    = (J(rows(post),1,1), X0[post,.])*beta
+  tau    = Y[post] - Y0h
+  printf("tau (2018, 2019): %g, %g\n", tau[1], tau[2])
+end
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 2: Permutation Test}{Stata}
+\begin{lstlisting}[language=Stata, style=stata-editor]
+unab all_fert : fert*
+local all_states ""
+foreach v of varlist fert* {
+    local s = subinstr("`v'","fert","",1)
+    local all_states "`all_states' `s'"
+}
+
+foreach unit of local all_states {
+    local don : subinstr local all_fert ///
+        "fert`unit'" "", all
+    mata:
+      Y2 = st_data(., "fert`unit'")
+      X2 = st_data(., tokens(st_local("don")))
+      // (same ridge estimation as Step 1)
+      // compute pre_rmspe, post_rmspe, ratio
+      st_numscalar("r_`unit'", post_r / pre_r)
+    end
+}
+* p-value = share of placebo ratios >= NY ratio
+\end{lstlisting}
+\begin{itemize}
+    \vspace{0.1cm}
+    \item Loop logic identical to standard SCM permutation test; only the estimator inside changes
+\end{itemize}
+\end{frame}
+\end{comment}
 
 
 
