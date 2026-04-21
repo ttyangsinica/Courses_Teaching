@@ -43,6 +43,7 @@
 \beamertemplatefootpagenumber
 
 
+\usepackage{listings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LaTeX snippet: language and style definition of Stata for listings package.
 %                [listings](http://www.ctan.org/pkg/listings) 
@@ -120,13 +121,13 @@
 
 \lstdefinestyle{stata-plain}{
 	language=Stata,
-	basicstyle=\scriptsize\ttfamily,
+	basicstyle=\footnotesize\ttfamily,
 }
 
 \lstdefinestyle{stata-editor}{
 	language=Stata,
-	basicstyle=\scriptsize\ttfamily,
-	keywordstyle={\color{NavyBlue}},
+	basicstyle=\footnotesize\ttfamily,  
+	keywordstyle={\color{NavyBlue}},  
 	keywordstyle=[2]{\color{NavyBlue}},
 	keywordstyle=[3]{\color{NavyBlue}},
 	keywordstyle=[4]{\color{NavyBlue}},
@@ -136,22 +137,14 @@
 	commentstyle=\color{OliveGreen},
 }
 
-\lstdefinestyle{r-style}{
-	language=R,
-	basicstyle=\scriptsize\ttfamily,
-	keywordstyle=\color{NavyBlue},
-	commentstyle=\color{OliveGreen},
-	stringstyle=\color{Maroon},
-}
-
 \lstset{
 	language=Stata,
-	style=stata-editor,
+	style=stata-plain,
+	% style=stata-editor,
 	style=numbers,
 	showstringspaces=false,
 	breaklines,
 	frame=single,
-	backgroundcolor=\color{gray!5},
 	% To add missing commands
 	% morekeywords={xtreg, xtunitroot},
 }
@@ -183,24 +176,24 @@
 
 
 
-% \usetheme{CambridgeUS}
-% %\usecolortheme{seahorse}
-% \setbeamertemplate{footline}{%
-% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
-% 	\usebeamerfont{page number in head/foot}%
-% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-% }
-
-\usetheme{Boadilla}
-%\useinnertheme{rectangles}
-
-%\usetheme{CambridgeUS}
-\usecolortheme{seahorse}
+\usetheme{CambridgeUS}
+%\usecolortheme{seahorse}
 \setbeamertemplate{footline}{%
 	\hfill\usebeamercolor[fg]{page number in head/foot}%
 	\usebeamerfont{page number in head/foot}%
 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
 }
+
+% \usetheme{Boadilla}
+% %\useinnertheme{rectangles}
+
+% %\usetheme{CambridgeUS}
+% \usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
 
 
 % \usepackage{beamerthemeshadow}
@@ -487,7 +480,7 @@
 Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic control methods for comparative case studies: Estimating the effect of California's Tobacco Control Program}", Journal of the American Statistical Association	
 \begin{itemize}
 \vspace{0.2cm}
-\item This is one of the first papers using SC method
+\item This is one of the first paper using SC method
 \vspace{0.2cm}
 \begin{itemize}
 \item Use this example to go through the key concepts of SC method	
@@ -538,9 +531,9 @@ Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic
 \vspace{0.2cm}
 \item Units $\{2,...,J+1\}$ being unaffected 
 \vspace{0.2cm}
-\item Pre-treatment period: $1,\ldots,T_0$	
+\item Pre-treatment period: $1.....T_0$	
 \vspace{0.2cm}	
-\item Post-treatment period: $T_0+1,\ldots,T$	
+\item Post-treatment period: $T_0+1......T$	
 \vspace{0.2cm} 
 \end{itemize}
 %affects unit $1$ only, and leaves the other $J$ states unaffected 
@@ -584,7 +577,7 @@ Alberto Abadie, Alexis Diamond, and Jens Hainmueller (2010), ``\textbf{Synthetic
 \item Note that the treated unit would receive treatment from periods $T_0+1$ until $T$
 \end{itemize}
 \vspace{0.2cm}
-\item $\mathrm{Y}^{0}_{it}$: the potential outcome we \textit{would} observe for unit $i$ at time $t$ if unit $i$ does not receive the treatment
+\item $\mathrm{Y}^{0}_{it}$: the potential outcome we \textit{would} observe for unit $i$ at time $t$ if unit $i$ does not receives the treatment
 \end{itemize}
 \vspace{0.2cm}
 \item Note that \textbf{unit in synthetic control method is usually aggregate level}: country, state, county, or region 
@@ -720,7 +713,7 @@ where for $t>T_0$:
 	\begin{equation*}
 		\begin{aligned}
 			W^* = \argmin\limits_{W} & \sum_{k=1}^{K} v_k\left(X_{1k} - \sum_{i=2}^{J+1} w_i X_{ik}\right)^2 \\
-			\text{subject to } & \sum_{i=2}^{J+1} w_i = 1, \; w_i \geq 0 \;\forall\, i \in \{2,\ldots,J+1\}
+			\text{subject to } & \sum_{i=2}^{J+1} w_i = 1 
 		\end{aligned}
 \end{equation*}
 
@@ -731,51 +724,6 @@ where for $t>T_0$:
 					\vspace{0.2cm}
 			\item $v_k$ represents relative importance of each predictor variable (chosen by cross-validation)
 \end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{SC Estimation}{Choosing $v_k$: Intuition}
-\begin{itemize}
-	\item $v_k$ controls how much weight predictor $k$ receives when measuring ``closeness'' between the treated unit and the synthetic unit
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item A \textbf{larger} $v_k$ $\Rightarrow$ predictor $k$ must be matched more precisely
-		\vspace{0.2cm}
-		\item A \textbf{smaller} $v_k$ $\Rightarrow$ predictor $k$ matters less in constructing the synthetic unit
-	\end{itemize}
-	\vspace{0.2cm}
-	\item \textbf{Key question:} Which predictors are most informative for reproducing the pre-treatment outcome trajectory?
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item We want $v_k$ to be \textbf{large} for predictors that help fit pre-treatment $Y_{1t}$ well
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{SC Estimation}{Choosing $v_k$: Cross-Validation}
-\begin{itemize}
-	\item Split the pre-treatment period into two sub-periods:
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item \textbf{Training period:} $1,\ldots,T_1$ \quad (``in-sample'')
-		\vspace{0.2cm}
-		\item \textbf{Validation period:} $T_1{+}1,\ldots,T_0$ \quad (``out-of-sample'')
-	\end{itemize}
-	\vspace{0.2cm}
-	\item \textbf{Nested (bilevel) optimization:}
-	\vspace{0.1cm}
-	\begin{itemize}
-		\item \textbf{Inner problem} (given $V$): find $W^{*}(V)$ that minimizes predictor mismatch \textit{in the training period}
-		\vspace{0.1cm}
-		\item \textbf{Outer problem}: choose $V^{*}$ to minimize out-of-sample prediction error \textit{in the validation period}:
-		\begin{equation*}
-			V^{*} = \argmin_{V} \sum_{t=T_1+1}^{T_0}
-			\left(Y_{1t} - \sum_{i=2}^{J+1} w^{*}_{i}(V)\,Y_{it}\right)^{2}
-		\end{equation*}
-	\end{itemize}
-	\item \textbf{Intuition:} Pick $v_k$'s so that the synthetic unit fitting predictors well \textit{also} predicts the outcome well in the portion of the pre-treatment period it has not yet ``seen''
 \end{itemize}
 \end{frame}
 
@@ -869,12 +817,12 @@ where for $t>T_0$:
 			\item $\varepsilon_{1t}$ are unobserved transitory shocks at the unit level with zero mean
 			\vspace{0.2cm}
 		\end{itemize}
-		\item This assumption allows time-varying responses of multiple unobserved factors ($\lambda_t\mu_1$) 
+		\item This assumption allows time-varying responsses of multiple unobserved factors ($\lambda_t\mu_1$) 
 		
-		%heterogenous responses to multiple unobserved factors ($\lambda_t\mu_i$) 
+		%heterogenous responsses to multiple unobserved factors ($\lambda_t\mu_i$) 
 		%and embeds time-trend models
 		\vspace{0.2cm}
-		\item However, it implicitly assumes \textbf{the unobservable factor loadings $\mu_i$ are fixed over time} 
+		\item However, it implicitly assumes \textbf{the number of unobservable factors $\mu_1$ are fixed over the period} 
 		\vspace{0.2cm}
 		\begin{itemize}
 			\item No structural breaks
@@ -931,11 +879,11 @@ where for $t>T_0$:
 \item Ideally, one would want to select $W^{*}$ such that
 
 \begin{equation*}
-\sum^{J+1}_{j=2}w^*_{j}Z_{j} = Z_{1}  
+\sum^{J+1}_{j=2}w^*_{i}Z_{i} = Z_{1}  
 \end{equation*}
 
 \begin{equation*}
-\sum^{J+1}_{j=2}w^*_{j}\mu_{j} = \mu_{1}  
+\sum^{J+1}_{j=2}w^*_{i}\mu_{i} = \mu_{1}  
 \end{equation*}
 
 \item Thus, causal effect of treatment $\hat{\alpha}_{1t}$ is unbiased 	
@@ -963,7 +911,7 @@ where for $t>T_0$:
 \begin{frame}{SC Estimation}
 \begin{itemize}
 
-\item Solution: Choose $W=(w^{*}_{2},...,w^{*}_{J+1})$ satisfying
+\item Solution: Choose $W=(w^{*}_{1},...,w^{*}_{J})$ satisfying
 
 \begin{equation*}
 \begin{aligned}
@@ -989,7 +937,7 @@ where for $t>T_0$:
 \sum^{J+1}_{i=2}w^*_{i}Y_{it}&=Y_{1t} \\
 \sum^{J+1}_{i=2}w^*_{i}Z_i&=Z_1,
 \end{align*}
-and $\sum^{T_0}_{t=1}\lambda'_t\lambda_t$ is non-singular. Then for all $t>T_0$ we have
+and $\sum^{T_0}_{t=1}\lambda'_t\lambda_t$ is non-singluar. Then for all $t>T_0$ we have
 \begin{equation*}
 \mathbb{E}\left[Y^0_{1t}-\sum^{J+1}_{i=2}w^*_{i}Y_{it}\right]\rightarrow 0
 \end{equation*}
@@ -1141,7 +1089,7 @@ as $T_0\rightarrow\infty$
 
 
 
-\begin{frame}{Example: Abadie et al. (2010)}{Results: Unit Weights for SC}
+\begin{frame}{Example: Abadie et. al (2010)}{Results: Unit Weights for SC}
 \begin{center}
 	\begin{figure}[p]
 		\centering
@@ -1152,7 +1100,7 @@ as $T_0\rightarrow\infty$
 \end{frame}
 
 
-\begin{frame}{Example: Abadie et al. (2010)}{Comparison of Synthetic Fit and Simple Average}
+\begin{frame}{Example: Abadie et. al (2010)}{Comparison of Synthetic Fit and Simple Average}
 \begin{table}[p]
 \centering
 %\extrarowheight = 3pt 
@@ -1213,7 +1161,7 @@ Cigarette sales per capita 1975 & 127.10 & 126.99 & 132.81  \\
 \begin{itemize}
 \item Large-sample asymptotic inference is not possible with SC
 \vspace{0.2cm}
-\item Abadie et al. (2010) suggest the use of \textbf{permutation methods} for inference 
+\item Abadie et. al (2010) suggest the use of \textbf{permutation methods} for inference 
 \vspace{0.2cm}
 	\begin{itemize}
 	%\item Similar to Fisher's exact test
@@ -1252,7 +1200,7 @@ our analysis does NOT provide significant evidence of causal effect
 	\begin{itemize}
 		\item \textbf{Step 1:} Estimate treatment effect for treated unit (e.g., California)
 		\begin{equation*}
-			\hat{\alpha}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w_j^* Y_{jt}, \quad t > T_0
+			\hat{\alpha}_{1t} = Y_{1t} - \sum_{j=2}^{J+1} w_i^* Y_{it}, \quad t > T_0
 \end{equation*}
 		\vspace{0.2cm}
 		\item \textbf{Step 2:} Conduct placebo studies
@@ -1362,7 +1310,7 @@ our analysis does NOT provide significant evidence of causal effect
 
 \begin{frame}{Statistical Inference of SC}
 \begin{itemize}
-\item The placebo effects may be quite large if those units were NOT matched well in the pre-treatment period
+\item The placebo effects may be quite large if those units where NOT matched well in the pre-treatment period
 \vspace{0.2cm}
 \item For example, when the SC fit is bad, we may get erroneous inferences 
 \vspace{0.2cm}
@@ -1665,7 +1613,7 @@ trunit(36) trperiod(2018) xperiod(2007(1)2017)
 
 \begin{frame}{Results: Unit Weights for SC}
 \begin{itemize}
-	\item Top 3 states that constitute the synthetic New York
+	\item Top 3 countries that consist synthetic China
 	\begin{itemize}
 		\vspace{0.2cm}
 		\item New Hampshire: 23.1\%
@@ -1689,7 +1637,7 @@ fert(2013) fert(2012) fert(2011) fert(2010) fert(2009) ///
 fert(2008) fert(2007), trunit(36) trperiod(2018) ///
 xperiod(2007(1)2017) placebo(unit cutoff(2))
 \end{lstlisting}
-	\item The \textbf{placebo(unit cutoff(2))} option excludes states where pre-treatment RMSPE is more than twice that of the treated unit (New York).
+	\item The \textbf{placebo(unit cutoff(2))} option excludes states where pre-treatment MSPE is twice that of the treated unit (New York).
 \end{itemize}
 \end{frame}
 
@@ -1806,7 +1754,7 @@ frames reset
 \begin{itemize}
 	\item Install required packages:
 	\vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 install.packages("tidysynth")
 
 
@@ -1824,7 +1772,7 @@ library(haven)
 \begin{itemize}
 \item Read and clean the data:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 fert_data <- fert_data_raw %>%
 # Drop specific states and years
 filter(!(ipums %in% c(6, 34, 44, 53))) %>%  
@@ -1849,7 +1797,7 @@ select(-statecode)
 \begin{itemize}
 \item Initialize synthetic control:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 synth_fert <- fert_data %>%
 synthetic_control(
 outcome = fert,
@@ -1875,7 +1823,7 @@ generate_placebos = TRUE
 \begin{itemize}
 \item Add demographic predictors:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 generate_predictor(
 time_window = 2007:2017,
 avg_income = mean(avginc, na.rm = TRUE),
@@ -1895,7 +1843,7 @@ hisp_pop = mean(hisp, na.rm = TRUE)
 \begin{itemize}
 \item Add lagged fertility rates:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 generate_predictor(
 time_window = 2017,
 fert_2017 = fert
@@ -1915,7 +1863,7 @@ fert_2016 = fert
 \begin{itemize}
 \item Generate synthetic control weights:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
  # Generate weights using default optimization parameters
 generate_weights(optimization_window = 2007:2017) %>%
 generate_control()
@@ -1934,7 +1882,7 @@ generate_control()
 \begin{itemize}
 \item Generate and display plots:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 plot_trends <- synth_fert %>%
 plot_trends() +
 labs(
@@ -1960,7 +1908,7 @@ ggsave("synth_fert.png", plot = plot_trends)
 \begin{itemize}
 	\item Generate and display difference plot:
 	\vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 plot_differences <- synth_fert %>%
 plot_differences() +
 labs(
@@ -1987,7 +1935,7 @@ plot = plot_differences)
 \begin{itemize}
 \item Generate and display placebo plot:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 plot_placebos <- synth_fert %>%
 plot_placebos() +
 labs(
@@ -2014,7 +1962,7 @@ plot = plot_placebos)
 \begin{itemize}
 \item Save results and tables:
 \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
+\begin{lstlisting}
 summary_tables <- synth_fert %>%
 grab_synthetic_control()
 predictor_balance <- synth_fert %>%
@@ -2037,705 +1985,6 @@ file.path(workdata, "ny_fert_balance.csv"))
 
 
 
-
-
-
-
-
-
-
-
-
-% ============================================================
-\title[]{Recent Development}
-\author{}
-\institute{}
-\date{}
-
-\begin{frame}{}
-	\titlepage
-\end{frame}
-
-
-\begin{frame}{Recent Developments}{Overview}
-\begin{itemize}
-	\item Standard SC method (Abadie et al., 2010) was designed for a \textbf{single treated unit}
-	\vspace{0.1cm}
-	\item Three important recent extensions:
-	\vspace{0.1cm}
-	\begin{itemize}
-		\item[1.] \textbf{Multiple Treated Units}
-		\vspace{0.05cm}
-		\begin{itemize}
-			\item Problem: \textbf{interpolation bias} when many treated units exist
-			\item Solution: Abadie \& L'Hour (2019)
-		\end{itemize}
-		\vspace{0.1cm}
-		\item[2.] \textbf{Regression-Based Methods}
-		\vspace{0.05cm}
-		\begin{itemize}
-			\item Problem: standard SC restricts weights to be non-negative and sum to one
-			\item Solution: Doudchenko \& Imbens (2016)
-		\end{itemize}
-		\vspace{0.1cm}
-		\item[3.] \textbf{Prediction Intervals}
-		\vspace{0.05cm}
-		\begin{itemize}
-			\item Problem: permutation tests do not quantify estimation uncertainty directly
-			\item Solution: Cattaneo et al.\ (2021)
-		\end{itemize}
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Multiple Treated Units}{Basic Setup}
-\begin{itemize}
-	\item Now suppose there are $I$ treated units ($i=1,\ldots,I$) and $J$ untreated (donor) units ($j=I+1,\ldots,I+J$)
-	\vspace{0.2cm}
-	\item \textbf{No conceptual problem}: construct a separate synthetic control for each treated unit $i$
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Individual treatment effect for unit $i$ at time $t > T_0$:
-		\begin{equation*}
-			\hat{\tau}_{it} = Y_{it} - \sum_{j=I+1}^{I+J} w_{ij}^{*}\,Y_{jt}
-		\end{equation*}
-		\vspace{0.1cm}
-		\item Average treatment effect across all treated units:
-		\begin{equation*}
-			\hat{\tau}_{t} = \frac{1}{I}\sum_{i=1}^{I}\hat{\tau}_{it}
-		\end{equation*}
-	\end{itemize}
-	\vspace{0.2cm}
-	\item \textbf{Practical challenge}: having many treated units makes choosing the optimal weights harder due to \textbf{interpolation bias}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Multiple Treated Units}{Interpolation Bias}
-\begin{itemize}
-	\item \textbf{Convex hull}: the smallest convex set that contains all donor units $\{X_{I+1},\ldots,X_{I+J}\}$
-	\vspace{0.2cm}
-	\item If $X_i$ lies \textbf{inside} the convex hull of the donor pool, there may be \textbf{infinitely many} feasible $W_i$ such that $X_i = X_0 W_i$
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Perfect pre-treatment fit does \textbf{not} uniquely pin down the weights
-		\vspace{0.2cm}
-		\item \textbf{Interpolation bias}: among the many feasible $W_i$'s, some place large weights on donor units \textbf{far from} unit $i$, producing a poor counterfactual even with perfect fit
-	\end{itemize}
-	\vspace{0.2cm}
-	\item With a \textbf{single} treated unit: non-uniqueness is rare; trimming the donor pool usually resolves it
-	\vspace{0.2cm}
-	\item With \textbf{many} treated units: choosing among many feasible $W_i$'s becomes a central estimation problem
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Multiple Treated Units}{Abadie \& L\'Hour (2019): Penalized Estimator}
-\begin{itemize}
-	\item Propose a \textbf{penalized} SC objective that discourages relying on distant donors
-	\vspace{0.1cm}
-	\item For each treated unit $i$, minimize:
-	\begin{equation*}
-		\|X_i - X_0 W_i\|^2
-		\;+\;
-		\lambda\sum_{j=I+1}^{I+J} w_{ij}\,\|X_i - X_j\|^2
-	\end{equation*}
-	subject to $w_{ij}\geq 0$ and $\sum_j w_{ij}=1$
-	\vspace{0.2cm}
-	\item \textbf{First term}: standard SC --- minimize mismatch in predictors $X$ between unit $i$ and its synthetic control
-	\vspace{0.2cm}
-	\item \textbf{Second term} (penalty): each donor $j$ is penalized by its \textbf{distance} $\|X_i - X_j\|^2$ from treated unit $i$
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item A distant donor contributes more to the penalty $\Rightarrow$ receives a smaller weight
-	\end{itemize}
-	\vspace{0.2cm}
-	\item $\lambda \geq 0$ governs the trade-off: larger $\lambda$ places more emphasis on using \textbf{nearby} donors
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Multiple Treated Units}{Abadie \& L\'Hour (2019): Properties}
-\begin{itemize}
-	\item \textbf{Why does the penalty resolve the non-uniqueness problem?}
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item When $\lambda=0$: standard SC; solution may be \textbf{non-unique} if $X_i$ is in the interior of the convex hull
-		\vspace{0.2cm}
-		\item When $\lambda>0$: among all weight vectors with equally good aggregate fit, the penalty selects the one using \textbf{closer} donors --- the solution becomes \textbf{unique}
-	\end{itemize}
-	\vspace{0.2cm}
-	\item \textbf{Key properties:}
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item \textbf{Unique solution} when $\lambda>0$ --- interpolation bias is reduced
-		\vspace{0.2cm}
-		\item \textbf{Sparsity}: only a few nearby donors receive positive weights, making the synthetic control transparent and interpretable
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Regression-Based Synthetic Control}{Motivation}
-\begin{itemize}
-	\item Standard SC constrains the weights:
-	\begin{equation*}
-		w_i \geq 0
-		\quad\text{and}\quad
-		\sum_{i=2}^{J+1} w_i = 1
-	\end{equation*}
-	\vspace{0.1cm}
-	\item These constraints ensure \textbf{no extrapolation}: the synthetic unit always lies \textbf{within} the convex hull of the donor pool
-	\vspace{0.2cm}
-	\item \textbf{Problem:} if the treated unit $X_1$ lies \textbf{outside} the convex hull, perfect pre-treatment fit is impossible
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item The synthetic unit cannot fully match the treated unit's trajectory
-		\vspace{0.2cm}
-		\item Residual pre-treatment mismatch may bias post-treatment estimates
-	\end{itemize}
-	\vspace{0.2cm}
-	\item \textbf{Idea:} relax the non-negativity and summation constraints to allow \textbf{extrapolation}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Regression-Based Synthetic Control}{Doudchenko \& Imbens (2016)}
-\begin{itemize}
-	\item Estimate the counterfactual with an \textbf{intercept} and \textbf{unconstrained} weights:
-	\begin{equation*}
-		\hat{Y}^{0}_{1t} = \hat{\alpha} + \sum_{j=2}^{J+1} \hat{w}_j\,Y_{jt},
-		\quad t > T_0
-	\end{equation*}
-	\item Choose parameters $(\alpha, w_2, \ldots, w_{J+1})$ to minimize an \textbf{elastic-net} penalized pre-treatment loss:
-	\begin{equation*}
-		\sum_{t=1}^{T_0}\!\left(Y_{1t} - \alpha - \sum_{j=2}^{J+1}w_j Y_{jt}\right)^{\!2}
-		+\,\lambda_1\!\left(\frac{1-\lambda_2}{2}\sum_j w_j^2
-		+\,\lambda_2\sum_j|w_j|\right)
-	\end{equation*}
-	\vspace{0.1cm}
-	\item \textbf{Features:}
-	\vspace{0.1cm}
-	\begin{itemize}
-		\item Weights may be \textbf{negative} and need \textbf{not sum to one} --- extrapolation allowed
-		\vspace{0.1cm}
-		\item $\hat{\alpha}$ absorbs a constant level difference between treated and donors
-		\vspace{0.1cm}
-		\item Regularization combines \textbf{ridge} ($\lambda_2=0$, shrinks all weights) and \textbf{lasso} ($\lambda_2=1$, produces sparse weights)
-		\vspace{0.1cm}
-		\item Trade-off: more flexible fit, but higher variance --- requires careful choice of $\lambda_1, \lambda_2$
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-% -------------------------------------------------------------------
-\begin{frame}{Prediction Intervals in SC}{Motivation}
-\begin{itemize}
-	\item So far, statistical inference in SC relies on \textbf{permutation (placebo) tests}
-	\vspace{0.3cm}
-	\item Permutation tests answer: ``Is the estimated treatment effect \textbf{unusually large} compared to placebo units?''
-	\vspace{0.3cm}
-	\item But they do \textbf{not} directly tell us:
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item How uncertain is our estimate $\hat{\alpha}_{1t}$ of the true effect $\alpha_{1t}$?
-		\vspace{0.2cm}
-		\item What is the plausible \textbf{range} of the true treatment effect?
-	\end{itemize}
-	\vspace{0.3cm}
-	\item \textbf{Prediction intervals} (Cattaneo et al., 2021) fill this gap by constructing a confidence band around $\hat{\alpha}_{1t}$ for each post-treatment period $t$
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Prediction Intervals in SC}{Two Sources of Uncertainty}
-\begin{itemize}
-	\item Why is $\hat{\alpha}_{1t}$ not exactly equal to $\alpha_{1t}$? There are \textbf{two reasons}:
-	\vspace{0.3cm}
-	\item \textbf{Source 1 --- In-sample uncertainty} (weight estimation error)
-	\vspace{0.1cm}
-	\begin{itemize}
-		\item We estimate the weights $\hat{w}_i$ from \textit{pre-treatment} data
-		\item They are close to, but not exactly, the ``true'' weights $w_i^0$
-		\item This error \textbf{shrinks} as the pre-treatment period $T_0$ grows longer
-	\end{itemize}
-	\vspace{0.3cm}
-	\item \textbf{Source 2 --- Out-of-sample uncertainty} (post-treatment shocks)
-	\vspace{0.1cm}
-	\begin{itemize}
-		\item Even with \textit{perfect} weights, unexpected shocks $e_t$ hit after treatment
-		\item The synthetic unit is a \textit{prediction}, not an exact mirror, of the counterfactual
-		\item This uncertainty \textbf{cannot} be reduced by having more pre-treatment data
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Prediction Intervals in SC}{Why Two Sources Matter}
-\begin{itemize}
-	\item The estimation error decomposes as:
-	\begin{equation*}
-		\underbrace{\hat{\alpha}_{1t} - \alpha_{1t}}_{\text{estimation error}}
-		\;=\;
-		\underbrace{-\sum_{i=2}^{J+1}(\hat{w}_i - w_i^0)\,Y_{it}}_{\text{Source 1: in-sample}}
-		\;+\;
-		\underbrace{e_t}_{\text{Source 2: out-of-sample}}
-	\end{equation*}
-	\vspace{0.2cm}
-	\item \textbf{Intuition for each term:}
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item \textbf{Source 1}: if estimated weights $\hat{w}_i$ deviate from $w_i^0$, the synthetic unit is built from slightly the ``wrong'' mix of donors $\Rightarrow$ introduces bias in post-treatment period
-		\vspace{0.2cm}
-		\item \textbf{Source 2}: after treatment, the real world experiences shocks that the pre-treatment model did not see $\Rightarrow$ even the best synthetic control will miss
-	\end{itemize}
-	\vspace{0.2cm}
-	\item Traditional permutation tests effectively capture neither source cleanly; prediction intervals account for \textbf{both}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Prediction Intervals in SC}{Intuition for Width of Intervals}
-\begin{itemize}
-	\item The prediction interval is wider when:
-	\vspace{0.3cm}
-	\begin{itemize}
-		\item \textbf{Pre-treatment period is short} ($T_0$ small)
-		\vspace{0.1cm}
-		\begin{itemize}
-			\item Weights $\hat{w}_i$ are estimated with less data $\Rightarrow$ more in-sample uncertainty
-		\end{itemize}
-		\vspace{0.3cm}
-		\item \textbf{Post-treatment shocks are large}
-		\vspace{0.1cm}
-		\begin{itemize}
-			\item Large $e_t$ after treatment $\Rightarrow$ more out-of-sample uncertainty
-		\end{itemize}
-		\vspace{0.3cm}
-		\item \textbf{Pre-treatment fit is poor}
-		\vspace{0.1cm}
-		\begin{itemize}
-			\item Suggests that donor units do not closely track the treated unit $\Rightarrow$ both sources of error are larger
-		\end{itemize}
-	\end{itemize}
-	\vspace{0.3cm}
-	\item \textbf{Key message}: good pre-treatment fit is necessary but not sufficient --- post-treatment shocks always remain
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Prediction Intervals in SC}{Implementation}
-\begin{itemize}
-	\item Cattaneo et al.\ (2021) develop formal prediction intervals for $\alpha_{1t}$ that account for both in-sample and out-of-sample uncertainty
-	\vspace{0.3cm}
-	\item Available in the \texttt{scpi} package in R (and Python/Stata)
-	\vspace{0.3cm}
-	\item The output provides, for each post-treatment period $t$:
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Point estimate $\hat{\alpha}_{1t}$
-		\vspace{0.2cm}
-		\item Prediction interval $[\hat{\alpha}_{1t} - \text{margin}_t,\;\hat{\alpha}_{1t} + \text{margin}_t]$
-	\end{itemize}
-	\vspace{0.3cm}
-	\item Can handle both single and multiple treated units
-\end{itemize}
-\end{frame}
-
-
-
-% ==================================================================
-%  Stata Example: Recent Developments  (scpi package)
-% ==================================================================
-
-\title[]{Stata Example: Recent Developments}
-\author{}
-\institute{}
-\date{}
-
-\begin{frame}{}
-\titlepage
-\end{frame}
-
-
-\begin{frame}[fragile]{Install Package}{scpi}
-\begin{itemize}
-    \item The \texttt{scpi} package (Cattaneo et al.) unifies all three recent extensions in a single framework
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-net install scpi, replace ///
-  from("https://raw.githubusercontent.com/" ///
-       "nppackages/scpi/master/stata")
-\end{lstlisting}
-    \vspace{0.2cm}
-    \item Key commands:
-    \vspace{0.1cm}
-    \begin{itemize}
-        \item \texttt{scdata} / \texttt{scdataMulti} --- prepare single / multiple treated unit data
-        \vspace{0.1cm}
-        \item \texttt{scest} --- point estimation (constraint set via \texttt{name()})
-        \vspace{0.1cm}
-        \item \texttt{scpi} --- point estimate + prediction intervals
-        \vspace{0.1cm}
-        \item \texttt{scplot} / \texttt{scplotMulti} --- plot results
-    \end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 0: Data Preparation}{scdata (Stata)}
-\begin{itemize}
-    \item \texttt{scpi} requires string unit IDs; decode the numeric \texttt{ipums} variable first
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-decode ipums, gen(state_str)
-drop if state_str == "D.C."
-
-scdata fert, dfname(df_si)            ///
-    id(state_str) time(year)          ///
-    outcome(fert) unittr("New York")  ///
-    period_pre(2007 2017)             ///
-    period_post(2018 2019)
-\end{lstlisting}
-    \vspace{0.2cm}
-    \item \texttt{dfname(df\_si)} stores the prepared data object for subsequent \texttt{scest} / \texttt{scpi} calls
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 1: Standard SC}{scest --- simplex (Stata)}
-\begin{itemize}
-    \item Baseline: non-negative weights that sum to one
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-scest df_si, name(simplex)
-scest_display
-\end{lstlisting}
-    \vspace{0.3cm}
-    \item \texttt{name(simplex)}: enforces $w_i \geq 0$ and $\sum_i w_i = 1$
-    \vspace{0.2cm}
-    \item Replicates the standard Abadie et al.\ (2010) estimator within the \texttt{scpi} framework
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 2: Penalized SC}{Abadie \& L'Hour (2019) spirit (Stata)}
-\begin{itemize}
-    \item Add an L1 (lasso) or L2 (ridge) penalty to the weight objective
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-* lasso: L1 penalty -- sparse weights, fewer donors
-scest df_si, name(lasso)
-scest_display
-
-* ridge: L2 penalty -- smooth shrinkage across all donors
-scest df_si, name(ridge)
-scest_display
-\end{lstlisting}
-    \vspace{0.2cm}
-    \item \texttt{lasso} promotes sparsity and a unique solution (reduces interpolation bias)
-    \vspace{0.1cm}
-    \item \texttt{ridge} shrinks all weights smoothly toward zero
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 3: Regression-Based SC}{Doudchenko \& Imbens (2016) spirit (Stata)}
-\begin{itemize}
-    \item Remove non-negativity and sum-to-one constraints; freely estimate an intercept
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-* ols: unconstrained -- weights can be negative
-scest df_si, name(ols)
-scest_display
-\end{lstlisting}
-    \vspace{0.3cm}
-    \item Useful when the treated unit lies \textbf{outside} the convex hull of donors
-    \vspace{0.2cm}
-    \item Trade-off: more flexible, but extrapolation may reduce interpretability
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 4: Prediction Intervals}{scpi (Stata)}
-\begin{itemize}
-    \item \texttt{scpi} computes formal prediction intervals accounting for both in-sample and out-of-sample uncertainty
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-scpi df_si, name(simplex)      ///
-    u_order(1) u_lags(0)       ///
-    u_sigma(HC1) sims(200)     ///
-    e_order(1)  e_lags(0)      ///
-    e_method(gaussian)         ///
-    u_alpha(0.05) e_alpha(0.05)
-scpi_display
-\end{lstlisting}
-    \vspace{0.2cm}
-    \item \texttt{u\_*} models in-sample (weight estimation) uncertainty; \texttt{e\_*} models out-of-sample (post-treatment shock) uncertainty
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 4: Prediction Intervals}{Plot (Stata)}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-cd "$figure"
-scplot, name(ny_fert_scpi) format(png) eout
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.4cm}
-    \item \texttt{eout} overlays the prediction interval band on the plot
-    \vspace{0.2cm}
-    \item The shaded region shows where the treated unit would plausibly fall in the absence of treatment, given both sources of uncertainty
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 5: Multiple Treated Units}{scdataMulti (Stata)}
-\begin{itemize}
-    \item When multiple units receive treatment, use \texttt{scdataMulti} with a 0/1 treatment indicator column
-    \vspace{0.2cm}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-* NY (2018) + Connecticut (2018) as second treated unit
-gen treatment = 0
-replace treatment = 1 ///
-    if state_str == "New York"    & year >= 2018
-replace treatment = 1 ///
-    if state_str == "Connecticut" & year >= 2018
-
-scdataMulti fert, dfname(df_multi)      ///
-    id(state_str) time(year)            ///
-    outcome(fert) treatment(treatment)  ///
-    period_pre(2007 2017) period_post(2018 2019)
-\end{lstlisting}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 5: Multiple Treated Units}{Estimation and Plot (Stata)}
-\begin{lstlisting}[language=Stata, style=stata-editor]
-* Point estimates -- one synthetic control per treated unit
-scest df_multi, name(simplex)
-scplotMulti
-
-* With prediction intervals
-scpi df_multi, name(simplex)       ///
-    u_order(1) u_lags(0)           ///
-    u_sigma(HC1) sims(200)         ///
-    e_order(1)  e_lags(0)          ///
-    e_method(gaussian)             ///
-    u_alpha(0.05) e_alpha(0.05)
-scplotMulti, type(series)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.1cm}
-    \item \texttt{type(series)} plots each treated unit separately with its prediction interval
-\end{itemize}
-\end{frame}
-
-
-% ==================================================================
-%  R Example: Recent Developments  (scpi package)
-% ==================================================================
-
-\title[]{R Example: Recent Developments}
-\author{}
-\institute{}
-\date{}
-
-\begin{frame}{}
-\titlepage
-\end{frame}
-
-
-\begin{frame}[fragile]{Install Package}{scpi (R)}
-\begin{itemize}
-    \item Install and load the \texttt{scpi} package
-    \vspace{0.2cm}
-\begin{lstlisting}[language=R, style=r-style]
-install.packages("scpi")
-library(scpi)
-\end{lstlisting}
-    \vspace{0.2cm}
-    \item Key functions (parallel to Stata commands):
-    \vspace{0.1cm}
-    \begin{itemize}
-        \item \texttt{scdata()} / \texttt{scdataMulti()} --- data preparation
-        \vspace{0.1cm}
-        \item \texttt{scest()} --- point estimation
-        \vspace{0.1cm}
-        \item \texttt{scpi()} --- point estimate + prediction intervals
-        \vspace{0.1cm}
-        \item \texttt{scplot()} / \texttt{scplotMulti()} --- visualization
-    \end{itemize}
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 0: Data Preparation}{scdata() (R)}
-\begin{lstlisting}[language=R, style=r-style]
-donors <- setdiff(unique(fert_data$state),
-                  "New York")
-
-df <- scdata(
-  df           = fert_data,
-  id.var       = "state",
-  time.var     = "year",
-  outcome.var  = "fert",
-  period.pre   = 2007:2017,
-  period.post  = 2018:2019,
-  unit.tr      = "New York",
-  unit.co      = donors,
-  cointegrated.data = TRUE
-)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.1cm}
-    \item \texttt{cointegrated.data = TRUE}: assumes a long-run linear relationship between the treated unit and donors in the pre-period
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 1: Standard SC}{scest() --- simplex (R)}
-\begin{lstlisting}[language=R, style=r-style]
-est.simplex <- scest(data = df,
-               w.constr = list(name = "simplex"))
-summary(est.simplex)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.3cm}
-    \item \texttt{w.constr = list(name = "simplex")}: $w_i \geq 0$, $\sum_i w_i = 1$
-    \vspace{0.2cm}
-    \item Replicates the classic Abadie et al.\ (2010) estimator
-    \vspace{0.2cm}
-    \item \texttt{summary()} reports estimated weights and pre-treatment fit statistics
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 2: Penalized SC}{Abadie \& L'Hour (2019) spirit (R)}
-\begin{lstlisting}[language=R, style=r-style]
-# lasso: L1 penalty -- sparse, fewer donors
-est.lasso <- scest(data = df,
-               w.constr = list(name = "lasso"))
-
-# ridge: L2 penalty -- smooth shrinkage
-est.ridge <- scest(data = df,
-               w.constr = list(name = "ridge"))
-
-summary(est.lasso)
-summary(est.ridge)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.2cm}
-    \item \texttt{lasso}: only a few donors receive non-zero weight $\rightarrow$ reduces interpolation bias
-    \vspace{0.1cm}
-    \item \texttt{ridge}: all donors receive some weight, shrunk toward zero
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 3: Regression-Based SC}{Doudchenko \& Imbens (2016) spirit (R)}
-\begin{lstlisting}[language=R, style=r-style]
-# ols: no weight constraints; intercept included
-est.ols <- scest(data = df,
-               w.constr = list(name = "ols"))
-summary(est.ols)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.3cm}
-    \item Weights estimated by OLS --- can be negative and need not sum to one
-    \vspace{0.2cm}
-    \item An intercept is freely estimated, capturing persistent level differences
-    \vspace{0.2cm}
-    \item Useful when the treated unit lies outside the donors' convex hull
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 4: Prediction Intervals}{scpi() (R)}
-\begin{lstlisting}[language=R, style=r-style]
-pi.si <- scpi(
-  data     = df,
-  w.constr = list(name = "simplex"),
-  u.order  = 1,  u.lags   = 0,
-  u.sigma  = "HC1", sims  = 200,
-  e.order  = 1,  e.lags   = 0,
-  e.method = "gaussian",
-  u.alpha  = 0.05, e.alpha = 0.05
-)
-summary(pi.si)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.15cm}
-    \item \texttt{u.*}: in-sample uncertainty (weight estimation error)
-    \item \texttt{e.*}: out-of-sample uncertainty (post-treatment shocks)
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 4: Prediction Intervals}{Plot (R)}
-\begin{lstlisting}[language=R, style=r-style]
-scplot(result     = pi.si,
-       fig.path   = figure,
-       fig.name   = "ny_fert_scpi",
-       fig.format = "png",
-       e.out      = TRUE)
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.4cm}
-    \item \texttt{e.out = TRUE} overlays the prediction interval band
-    \vspace{0.2cm}
-    \item The shaded region shows where the treated unit would plausibly fall absent treatment, given both in-sample and out-of-sample uncertainty
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 5: Multiple Treated Units}{scdataMulti() (R)}
-\begin{lstlisting}[language=R, style=r-style]
-# NY + Connecticut as hypothetical second treated unit
-fert_multi <- fert_data %>%
-  mutate(treatment = case_when(
-    state == "New York"    & year >= 2018 ~ 1L,
-    state == "Connecticut" & year >= 2018 ~ 1L,
-    TRUE ~ 0L
-  ))
-
-df.multi <- scdataMulti(
-  df = fert_multi, id.var = "state",
-  time.var = "year", outcome.var = "fert",
-  treatment.var = "treatment",
-  period.pre = 2007:2017, period.post = 2018:2019,
-  cointegrated.data = TRUE
-)
-\end{lstlisting}
-\end{frame}
-
-
-\begin{frame}[fragile]{Step 5: Multiple Treated Units}{Estimation and Plot (R)}
-\begin{lstlisting}[language=R, style=r-style]
-# Point estimates -- one synthetic control per unit
-res.multi <- scest(data = df.multi,
-               w.constr = list(name = "simplex"))
-scplotMulti(res.multi)
-
-# Add prediction intervals
-pi.multi <- scpi(
-  data = df.multi,
-  w.constr = list(name = "simplex"),
-  u.order = 1, u.lags = 0, u.sigma = "HC1",
-  sims = 200, e.order = 1, e.lags = 0,
-  e.method = "gaussian",
-  u.alpha = 0.05, e.alpha = 0.05
-)
-scplotMulti(pi.multi, type = "series")
-\end{lstlisting}
-\begin{itemize}
-    \vspace{0.1cm}
-    \item \texttt{type = "series"}: plots each unit's trajectory with its prediction interval separately
-\end{itemize}
-\end{frame}
 
 
 
@@ -2802,7 +2051,7 @@ scplotMulti(pi.multi, type = "series")
 %			\item Single treated problems only require placebo treated \textbf{units}, multiple treated problems require placebo \textbf{groups}
 %		\end{itemize}
 %		\vspace{0.2cm}
-%		\item Thus, it may be computationally infeasible to implement the Cavallo et al. (2013) method with a large $G$ and $J$
+%		\item Thus, it may be computationally infeasible to implement the Cavallo et. al (2013) method with a large $G$ and $J$
 %		%\begin{itemize}
 %		%\vspace{0.2cm}
 %		%\item Limit the number of placebo treatment groups to 5,000
@@ -2845,7 +2094,4 @@ scplotMulti(pi.multi, type = "series")
 
 
 
-
-
-
-\end{document}
+\end{document} 
