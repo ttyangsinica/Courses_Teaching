@@ -40,9 +40,9 @@
                    rast,crop,mask,vect,ext,res,crs,values,ncell,
                    extract,global,
                    gadm,st_as_sf,st_transform,st_drop_geometry,
-                   st_crs,st_geometry,
+                   st_crs,st_geometry,st_read,
                    ggplot,aes,geom_spatraster,geom_sf,
-                   scale_fill_viridis_c,scale_fill_gradient2,
+                   scale_fill_viridis_c,scale_fill_gradient,scale_fill_gradient2,
                    coord_sf,labs,theme_void,theme,ggsave,
                    element_text,unit,plot_annotation,plot_layout,
                    mutate,select,filter,arrange,desc,group_by,
@@ -113,16 +113,16 @@
 \begin{frame}{What We Do Today}
 \begin{itemize}
   \item \textbf{Goal:} read satellite raster data, process it in R,
-        and aggregate to a township-level panel ready for regression
+        and aggregate to a county-level panel ready for regression
   \vspace{0.3cm}
-  \item \textbf{Data: Harmonized Nighttime Lights}
+  \item \textbf{Data: Harmonized DMSP-OLS Nighttime Lights}
   \vspace{0.15cm}
   \begin{itemize}
-    \item Harmonized DMSP-OLS / VIIRS simulated NTL (GeoTIFF)
+    \item Harmonized calDMSP NTL --- same DMSP scale throughout
     \vspace{0.1cm}
-    \item Compare Taiwan in 2013 vs.\ 2024
+    \item Compare Taiwan in \textbf{1992 vs.\ 2024}
     \vspace{0.1cm}
-    \item Aggregate to township level (鄉鎮市區, $\approx$368 units)
+    \item Aggregate to county level (縣市, 22 units)
   \end{itemize}
   \vspace{0.3cm}
   \item \textbf{Key concepts covered:}
@@ -134,21 +134,21 @@
     \vspace{0.1cm}
     \item Crop, mask, and extract operations
   \end{itemize}
-  \vspace{0.3cm}
-  \item \textbf{Output files}
-  \vspace{0.15cm}
-  \begin{itemize}
-    \item Maps (PNG) $\Rightarrow$ \texttt{S3\_Geo\_data/figure/}
-    \vspace{0.05cm}
-    \item Township data $\Rightarrow$ \texttt{taiwan\_ntl\_township\_wide.csv / .dta}
-  \end{itemize}
+  % \vspace{0.3cm}
+  % \item \textbf{Output files}
+  % \vspace{0.15cm}
+  % \begin{itemize}
+  %   \item Maps (PNG) $\Rightarrow$ \texttt{S3\_Geo\_data/figure/}
+  %   \vspace{0.05cm}
+  %   \item County data $\Rightarrow$ \texttt{taiwan\_ntl\_county\_wide.csv / .dta}
+  % \end{itemize}
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}{R Script}
 \begin{itemize}
-  \item Full code: \texttt{Class\_Data/R\_code/nighttime\_lights\_taiwan\_v3.R}
+  \item Full code: \texttt{Class\_Data/R\_code/nighttime\_lights\_taiwan\_v4.R}
   \vspace{0.3cm}
   \item Key packages:
   \vspace{0.1cm}
@@ -160,7 +160,7 @@
     \midrule
     \texttt{terra}      & Raster operations (read, crop, mask, extract) \\
     \texttt{tidyterra}  & \texttt{ggplot2} + \texttt{terra} integration \\
-    \texttt{sf}         & Vector spatial data (shapefiles) \\
+    \texttt{sf}         & Vector spatial data (shapefiles, CRS) \\
     \texttt{geodata}    & Download GADM administrative boundaries \\
     \texttt{ggplot2}    & Map visualisation \\
     \texttt{patchwork}  & Combine multiple ggplots \\
@@ -207,7 +207,7 @@
   \begin{itemize}
     \item Available for regions where official GDP data are poor or absent
     \vspace{0.1cm}
-    \item Can capture \emph{within-country} spatial variation at fine scale
+    \item Captures \emph{within-country} spatial variation at fine scale
     \vspace{0.1cm}
     \item Consistent over time and across countries
   \end{itemize}
@@ -225,7 +225,7 @@
   Sensor        & DMSP / OLS      & Suomi-NPP VIIRS DNB \\
   Coverage      & 1992–2013       & 2012–present \\
   Resolution    & $\sim$1 km      & 500 m \\
-  Radiometric   & 6-bit (0–63)    & 14-bit, calibrated nW/sr/cm$^2$ \\
+  Radiometric   & 6-bit (0–63 DN) & 14-bit, calibrated nW/sr/cm$^2$ \\
   Saturation    & Yes (urban)     & No \\
   Moonlight corr.& No             & Yes \\
   Cloud mask    & Partial         & Yes \\
@@ -242,44 +242,60 @@
 \end{itemize}
 \end{frame}
 
-
 \begin{frame}{Harmonized DMSP-OLS / VIIRS Dataset}
 \begin{itemize}
-  \item \textbf{Data we use:} Harmonized simulated VIIRS (``simVIIRS'')
+  \item \textbf{Data we use:} Harmonized NTL on the DMSP scale
+        (``calDMSP'')
   \vspace{0.2cm}
   \begin{itemize}
-    \item Based on Li et al.\ (2020), \textit{Remote Sensing of Environment}
+    \item Li et al.\ (2020), \textit{Remote Sensing of Environment}
     \vspace{0.1cm}
-    \item DMSP-OLS data intercalibrated and converted to VIIRS-like scale
+    \item DMSP-OLS data inter-calibrated across satellites;
+          post-2013 VIIRS data converted to DMSP DN scale
     \vspace{0.1cm}
-    \item Coverage: 1992–2024, global, $\sim$1 km resolution
+    \item Coverage: 1992 to 2024, global, $\sim$1 km resolution
   \end{itemize}
   \vspace{0.3cm}
   \item \textbf{File naming:}
   \vspace{0.1cm}
   \begin{itemize}
-    \item \texttt{Harmonized\_DN\_NTL\_\{year\}\_simVIIRS.tif}
+    \item \texttt{Harmonized\_DN\_NTL\_\{year\}\_calDMSP.tif}
     \vspace{0.1cm}
-    \item ``DN'' = Digital Number (unitless brightness index)
+    \item DN range: 0 to 63 (same DMSP scale for all years)
     \vspace{0.1cm}
     \item One GeoTIFF per year, global extent
-  \end{itemize}
-  \vspace{0.3cm}
-  \item \textbf{Format: GeoTIFF}
-  \vspace{0.1cm}
-  \begin{itemize}
-    \item Standard raster format readable by \texttt{terra}, QGIS, Python, etc.
-    \vspace{0.1cm}
-    \item Contains embedded georeferencing information (CRS + extent)
   \end{itemize}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Harmonized DMSP-OLS / VIIRS Dataset}
+\begin{itemize}
+  \item \textbf{What is GeoTIFF?}
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item A standard raster image format (\texttt{.tif}) with
+          \emph{embedded geographic metadata}
+    \vspace{0.1cm}
+    \item Each pixel carries a real-world coordinate
+          (latitude / longitude) and a map projection,
+          so the file is self-describing: no separate
+          shapefile or header needed
+    \vspace{0.1cm}
+    \item Every pixel here stores one DN value (0 to 63)
+          representing the brightness of a
+          ${\sim}$1 km $\times$ 1 km ground cell
+    \vspace{0.1cm}
+    \item Readable by Python (\texttt{rasterio},
+          \texttt{gdal}), R (\texttt{terra}, \texttt{stars}),
+          QGIS, ArcGIS, etc.
+  \end{itemize}
+\end{itemize}
+\end{frame}
 
 \begin{frame}{What is a Raster?}
 \begin{itemize}
   \item A \textbf{raster} is a grid of regularly spaced cells (pixels),
-        each storing one or more numeric values
+        each storing a numeric value
   \vspace{0.3cm}
   \item Each cell covers a fixed geographic area (the \textbf{resolution}),
         e.g.\ $\sim$1 km $\times$ 1 km
@@ -295,7 +311,6 @@
     Extent   & Global: $-180^\circ$ to $180^\circ$, $-90^\circ$ to $90^\circ$ \\
     Resolution & $\approx 0.0083^\circ$ ($\approx 926$ m at equator) \\
     CRS      & WGS84 (EPSG:4326) \\
-    Dimensions & $\sim$43200 cols $\times$ 21600 rows \\
     Values   & Digital Number (DN), 0–63 \\
     \bottomrule
   \end{tabular}
@@ -303,6 +318,11 @@
   \vspace{0.3cm}
   \item In R, the \texttt{terra} package represents rasters as
         \texttt{SpatRaster} objects
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item Lazy loading: \texttt{rast()} reads only metadata;
+          pixel values are loaded when needed $\Rightarrow$ memory efficient
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -371,7 +391,7 @@
     \item Needed for accurate distance and area calculations
     \vspace{0.1cm}
     \item Example: TWD97 (Taiwan Datum 1997, EPSG:3826) ---
-          used by government shapefiles
+          used by Taiwan government shapefiles
     \vspace{0.1cm}
     \item All projections introduce some distortion --- choose one
           appropriate for your region
@@ -382,8 +402,7 @@
 
 \begin{frame}{EPSG Codes}
 \begin{itemize}
-  \item \textbf{EPSG} (European Petroleum Survey Group) maintains a
-        registry of standardized CRS codes
+  \item \textbf{EPSG} maintains a registry of standardized CRS codes
   \vspace{0.3cm}
   \begin{center}
   \small
@@ -392,7 +411,7 @@
     \textbf{EPSG} & \textbf{Name} & \textbf{Usage} \\
     \midrule
     4326 & WGS84         & Global; GPS, most satellite data \\
-    3826 & TWD97 / TM2   & Taiwan government data \\
+    3826 & TWD97 / TM2   & Taiwan government shapefiles \\
     3857 & Web Mercator  & Web maps (Google Maps, OSM) \\
     32651 & UTM Zone 51N & East Asia, metric distances \\
     \bottomrule
@@ -404,10 +423,11 @@
   \begin{itemize}
     \item NTL GeoTIFF $\Rightarrow$ WGS84 (EPSG:4326)
     \vspace{0.1cm}
-    \item GADM shapefile downloaded via \texttt{geodata::gadm()}
-          $\Rightarrow$ WGS84 (EPSG:4326)
+    \item GADM shapefile via \texttt{geodata::gadm()}
+          $\Rightarrow$ already WGS84
     \vspace{0.1cm}
-    \item Both layers already match $\Rightarrow$ no reprojection needed
+    \item Taiwan gov.\ shapefile $\Rightarrow$ TWD97 (EPSG:3826);
+          must \texttt{st\_transform} to 4326 before use
   \end{itemize}
 \end{itemize}
 \end{frame}
@@ -416,22 +436,22 @@
 \begin{frame}[fragile]{CRS in R: Checking and Transforming}
 \begin{lstlisting}
 # Check raster CRS
-terra::crs(tif_2013, describe = TRUE)
-# -> name: "WGS 84", authority: "EPSG", code: "4326"
+terra::crs(tif_1992, describe = TRUE)
+# -> name: "WGS 84", code: "4326"
 
 # Check vector CRS
 sf::st_crs(tw_sf)$epsg   # -> 4326
 
-# Transform vector to WGS84 (if needed)
+# Transform vector to WGS84 (required if using
+# Taiwan gov. shapefile, which is EPSG:3826)
 tw_sf <- sf::st_transform(tw_sf, crs = 4326)
 
 # Reproject raster (if CRS mismatch)
 # r_wgs84 <- terra::project(r, "EPSG:4326")
 \end{lstlisting}
 \begin{itemize}
-  \item The \texttt{terra} $\leftrightarrow$ \texttt{sf} interface:
-        use \texttt{terra::vect()} to convert \texttt{sf}
-        $\to$ \texttt{SpatVector} for raster operations
+  \item \texttt{terra::vect()} converts \texttt{sf} $\to$ \texttt{SpatVector}
+        for raster operations; both must share the same CRS
 \end{itemize}
 \end{frame}
 
@@ -446,69 +466,73 @@ tw_sf <- sf::st_transform(tw_sf, crs = 4326)
 \end{frame}
 
 
-\begin{frame}{GADM: Administrative Boundaries}
+\begin{frame}{Where to Get Taiwan Boundaries}
 \begin{itemize}
-  \item \textbf{GADM} (Global Administrative Areas) provides
-        free, consistent administrative boundary files for all countries
-  \vspace{0.15cm}
-  \begin{itemize}
-    \item Website: \href{https://gadm.org}{\texttt{gadm.org}}
-    \vspace{0.1cm}
-    \item Downloaded in R with \texttt{geodata::gadm()} (with local caching)
-  \end{itemize}
-  \vspace{0.3cm}
-  \item \textbf{GADM levels for Taiwan:}
-  \vspace{0.15cm}
-  \begin{center}
-  \small
-  \begin{tabular}{cll}
-    \toprule
-    \textbf{Level} & \textbf{Unit} & \textbf{Count} \\
-    \midrule
-    0 & Country (Taiwan)           & 1 \\
-    1 & Province / Special Municipality & 7 \\
-    2 & County / City (縣市)        & 22 \\
-    3 & Township / District (鄉鎮市區) & $\approx$368 \\
-    \bottomrule
-  \end{tabular}
-  \end{center}
-  \vspace{0.3cm}
-  \item We use \textbf{Level 3} to get township-level statistics
+  \item \textbf{Option 1: GADM} (recommended for reproducibility)
   \vspace{0.1cm}
   \begin{itemize}
-    \item Key column: \texttt{NAME\_1} (county),
-          \texttt{NAME\_3} (township name)
+    \item \href{https://gadm.org}{\texttt{gadm.org}} ---
+          download in R with \texttt{geodata::gadm()}
+    \vspace{0.1cm}
+    \item Taiwan GADM levels: \quad
+          Level 0 = country, \quad
+          Level 1 = province / special municipality (7),\quad
+          Level 2 = county / city (縣市, 22) $\leftarrow$ finest available
+    \vspace{0.1cm}
+    \item CRS: WGS84 --- no reprojection needed
+  \end{itemize}
+  \vspace{0.3cm}
+  \item \textbf{Option 2: Taiwan Government Open Data}
+        (if township level needed)
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item \href{https://data.gov.tw/dataset/7441}{\texttt{data.gov.tw/dataset/7441}}
+          --- 鄉鎮市區界線 (township / district boundaries,
+          $\approx$368 units)
+    \vspace{0.1cm}
+    \item National Land Surveying and Mapping Center:
+          \href{https://maps.nlsc.gov.tw}{\texttt{maps.nlsc.gov.tw}}
+    \vspace{0.1cm}
+    \item CRS: TWD97 (EPSG:3826) --- must convert to WGS84 first
+    \vspace{0.1cm}
+    \item Read in R: \texttt{sf::st\_read("TOWN\_MOI.shp")} then
+          \texttt{sf::st\_transform(crs = 4326)}
   \end{itemize}
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Downloading Taiwan Shapefile in R}
+\begin{frame}[fragile]{Downloading Taiwan Shapefile in R (GADM)}
 \begin{lstlisting}
 # geodata::gadm() downloads GADM and caches locally
 # Second run reads from cache (no internet needed)
 tw_sf <- geodata::gadm("TWN",
-                        level = 3,
+                        level = 2,     # county level (22)
                         path  = gadm_cache) |>
   sf::st_as_sf() |>
-  sf::st_transform(crs = 4326)
+  sf::st_transform(crs = 4326)   # ensure WGS84
 
-cat("Townships:", nrow(tw_sf))   # 368
+cat("Counties:", nrow(tw_sf))    # 22
+# NAME_1 = province (7), NAME_2 = county (22)
 
-# Name columns available
-names(tw_sf)[grepl("^NAME_", names(tw_sf))]
-# "NAME_1" "NAME_2" "NAME_3"
-# NAME_1 = county, NAME_3 = township
+# Convert to SpatVector for terra operations
+tw_vect <- terra::vect(tw_sf)
 \end{lstlisting}
+\vspace{0.1cm}
 \begin{itemize}
-  \item \texttt{st\_transform(crs = 4326)} ensures WGS84 ---
-        same CRS as the NTL raster
+  \item For \textbf{township level}, use Taiwan gov.\ shapefile
+        (\texttt{data.gov.tw/dataset/7442}):
+  \vspace{0.1cm}
+\begin{lstlisting}
+tw_twn <- sf::st_read("TOWN_MOI.shp") |>
+  sf::st_transform(crs = 4326)
+\end{lstlisting}
 \end{itemize}
 \end{frame}
 
 
 %=====================================================================
-\title[]{R Code Walkthrough}
+\title[]{R Example}
 \author{}
 \institute{}
 \date{}
@@ -540,44 +564,45 @@ p_load(
 \begin{lstlisting}
 # terra::rast() reads metadata only (lazy loading)
 # Pixels are loaded on demand -> memory efficient
-tif_2013 <- terra::rast(
+tif_1992 <- terra::rast(
   file.path(ntl_dir,
-            "Harmonized_DN_NTL_2013_simVIIRS.tif"))
+            "Harmonized_DN_NTL_1992_calDMSP.tif"))
 tif_2024 <- terra::rast(
   file.path(ntl_dir,
-            "Harmonized_DN_NTL_2024_simVIIRS.tif"))
+            "Harmonized_DN_NTL_2024_calDMSP.tif"))
 
-# Inspect the raster
-print(tif_2013)
-cat("CRS:", terra::crs(tif_2013, describe=TRUE)$name)
-cat("Extent:", as.vector(terra::ext(tif_2013)))
-cat("Resolution:", terra::res(tif_2013))
+# Always inspect before processing
+print(tif_1992)
+cat("CRS:", terra::crs(tif_1992, describe=TRUE)$name)
+cat("Extent:", as.vector(terra::ext(tif_1992)))
+cat("Resolution:", terra::res(tif_1992))
+# Value range: 0 to 63 (DMSP DN)
 \end{lstlisting}
 \begin{itemize}
-  \item \texttt{terra::rast()} returns a \texttt{SpatRaster} object
-  \vspace{0.1cm}
-  \item Always inspect CRS and extent before any spatial operations
+  \item Both files use the same calDMSP scale (DN 0--63)
+        $\Rightarrow$ directly comparable across years
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Step 2: Load Shapefile (GADM Level 3)}
+\begin{frame}[fragile]{Step 2: Load Shapefile (GADM Level 2)}
 \begin{lstlisting}
-tw_sf <- geodata::gadm("TWN", level = 3,
+tw_sf <- geodata::gadm("TWN", level = 2,
                         path = gadm_cache) |>
   sf::st_as_sf() |>
   sf::st_transform(crs = 4326)  # harmonize CRS
 
 # Convert sf -> SpatVector for terra operations
 tw_vect <- terra::vect(tw_sf)
+# NAME_1 = province (7 units)
+# NAME_2 = county  (22 units) <- our unit of analysis
 \end{lstlisting}
 \vspace{0.1cm}
 \begin{itemize}
-  \item \texttt{terra} operates on \texttt{SpatVector}; \texttt{sf} uses
-        \texttt{sf} objects --- \texttt{terra::vect()} bridges the two
+  \item \texttt{terra::vect()} bridges \texttt{sf} $\leftrightarrow$ \texttt{terra}
   \vspace{0.2cm}
-  \item Both NTL raster and shapefile are now in WGS84 $\Rightarrow$
-        CRS is consistent
+  \item Both NTL raster and shapefile are in WGS84
+        $\Rightarrow$ CRS is consistent, no reprojection needed
 \end{itemize}
 \end{frame}
 
@@ -586,9 +611,9 @@ tw_vect <- terra::vect(tw_sf)
 \begin{lstlisting}
 # Two-step spatial subsetting
 #  crop()  : rectangular clip to bounding box (fast)
-#  mask()  : zero out pixels outside polygons
+#  mask()  : set pixels outside polygons to NA
 
-ntl_2013 <- tif_2013 |>
+ntl_1992 <- tif_1992 |>
   terra::crop(tw_vect) |>
   terra::mask(tw_vect)
 
@@ -596,75 +621,65 @@ ntl_2024 <- tif_2024 |>
   terra::crop(tw_vect) |>
   terra::mask(tw_vect)
 
-names(ntl_2013) <- "ntl_2013"
+names(ntl_1992) <- "ntl_1992"
 names(ntl_2024) <- "ntl_2024"
 \end{lstlisting}
 \begin{itemize}
-  \item Why two steps? \texttt{crop()} first reduces the global raster
-        to Taiwan's bounding box; \texttt{mask()} then sets pixels
-        outside Taiwan's polygon to \texttt{NA}
-  \item Doing \texttt{mask()} alone on the full global raster would be
-        very slow
+  \item Why two steps? \texttt{crop()} reduces the global raster
+        to Taiwan's bounding box first; \texttt{mask()} then removes
+        ocean pixels --- doing \texttt{mask()} on the full global
+        raster would be very slow
 \end{itemize}
 \end{frame}
 
 
 \begin{frame}[fragile]{Step 4: Visualize --- Raster Maps}
 \begin{lstlisting}
-# Log transform: NTL is right-skewed
-ntl_2013_log <- log(ntl_2013 + 1)
-names(ntl_2013_log) <- "log_ntl"
+# Shared upper limit for comparable color scales
+val_max <- max(
+  max(terra::values(ntl_1992, na.rm = TRUE)),
+  max(terra::values(ntl_2024, na.rm = TRUE)))
 
-# Map function using geom_spatraster (tidyterra)
-make_ntl_map <- function(r_log, title_text, tw_sf,
-                          midpoint) {
+# Map function: white (DN=0) -> red (high DN)
+make_ntl_map <- function(r, title_text,
+                          tw_sf, val_max) {
   ggplot() +
-    geom_spatraster(data = r_log) +
+    geom_spatraster(data = r) +
     geom_sf(data = tw_sf, fill = NA,
-            color = "gray60", linewidth = 0.1) +
-    scale_fill_gradient2(
-      low="black", mid="orange", high="white",
-      midpoint = midpoint, na.value="transparent",
-      name = "log(NTL+1)") +
-    coord_sf(expand = FALSE) +
-    labs(title = title_text, x = NULL, y = NULL) +
-    theme_void(base_size = 11)
+            color = "gray60", linewidth = 0.15) +
+    scale_fill_gradient(
+      low = "white", high = "firebrick3",
+      limits = c(0, val_max),
+      oob = scales::squish,
+      na.value = "transparent", name = "DN") +
+    coord_sf(expand = FALSE) + theme_void()
 }
-\end{lstlisting}
-\end{frame}
 
+p_1992 <- make_ntl_map(ntl_1992,
+  "Taiwan NTL 1992", tw_sf, val_max)
+p_2024 <- make_ntl_map(ntl_2024,
+  "Taiwan NTL 2024", tw_sf, val_max)
 
-\begin{frame}[fragile]{Step 4 (cont.): Save Maps}
-\begin{lstlisting}
-# Shared midpoint for comparable color scales
-all_log_vals <- c(
-  terra::values(ntl_2013_log, na.rm = TRUE),
-  terra::values(ntl_2024_log, na.rm = TRUE))
-mid_shared <- median(all_log_vals[all_log_vals > 0],
-                     na.rm = TRUE)
-
-p_2013 <- make_ntl_map(ntl_2013_log,
-  "Taiwan NTL 2013", tw_sf, mid_shared)
-p_2024 <- make_ntl_map(ntl_2024_log,
-  "Taiwan NTL 2024", tw_sf, mid_shared)
-
-# Side-by-side comparison
-p_compare <- p_2013 + p_2024 +
+# Side-by-side
+p_compare <- p_1992 + p_2024 +
   plot_layout(guides = "collect")
-
-ggsave(file.path(fig_path, "ntl_taiwan_compare.png"),
+ggsave("ntl_taiwan_compare.png",
        p_compare, width = 11, height = 6, dpi = 300)
 \end{lstlisting}
+\begin{itemize}
+  \item \texttt{limits = c(0, val\_max)} is the same in both panels
+        $\Rightarrow$ color scale is directly comparable across years
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}[fragile]{Step 4 (cont.): Change Map}
 \begin{lstlisting}
-ntl_change        <- ntl_2024 - ntl_2013
+ntl_change        <- ntl_2024 - ntl_1992
 names(ntl_change) <- "change"
 ntl_change        <- terra::mask(ntl_change, tw_vect)
 
-# Cap at 99th percentile to handle outliers
+# Cap color scale at 99th percentile (handles outliers)
 change_cap <- quantile(
   abs(terra::values(ntl_change, na.rm = TRUE)),
   0.99, na.rm = TRUE)
@@ -672,7 +687,7 @@ change_cap <- quantile(
 p_change <- ggplot() +
   geom_spatraster(data = ntl_change) +
   geom_sf(data = tw_sf, fill = NA,
-          color = "gray50", linewidth = 0.1) +
+          color = "gray50", linewidth = 0.15) +
   scale_fill_gradient2(
     low = "royalblue3", mid = "white",
     high = "firebrick3", midpoint = 0,
@@ -681,21 +696,20 @@ p_change <- ggplot() +
     na.value = "transparent", name = "Change (DN)")
 \end{lstlisting}
 \begin{itemize}
-  \item Blue = decreased; Red = increased brightness
+  \item Blue = declined; Red = increased brightness (2024 vs.\ 1992)
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}[fragile]{Step 5: Extract Township-Level Statistics}
+\begin{frame}[fragile]{Step 5: Extract County-Level Statistics}
 \begin{lstlisting}
-# terra::extract(): assign each raster pixel to a polygon
+# terra::extract(): assign each pixel to a county polygon
 # fun = NULL -> returns all pixel values per polygon
 extract_stats <- function(r, tw_vect) {
   ex <- terra::extract(r, tw_vect,
                         fun = NULL, na.rm = TRUE)
-  layer_nm <- names(r)
   ex |>
-    rename(value = all_of(layer_nm)) |>
+    rename(value = all_of(names(r))) |>
     group_by(ID) |>
     summarise(
       ntl_mean   = mean(value,   na.rm = TRUE),
@@ -706,58 +720,60 @@ extract_stats <- function(r, tw_vect) {
       n_valid    = sum(!is.na(value)),
       .groups = "drop")
 }
+
+stats_1992 <- extract_stats(ntl_1992, tw_vect) |>
+  rename_with(~ paste0(., "_1992"), -ID)
+stats_2024 <- extract_stats(ntl_2024, tw_vect) |>
+  rename_with(~ paste0(., "_2024"), -ID)
 \end{lstlisting}
 \end{frame}
 
 
 \begin{frame}[fragile]{Step 5 (cont.): Join and Compute Changes}
 \begin{lstlisting}
-stats_2013 <- extract_stats(ntl_2013, tw_vect) |>
-  rename_with(~ paste0(., "_2013"), -ID)
-stats_2024 <- extract_stats(ntl_2024, tw_vect) |>
-  rename_with(~ paste0(., "_2024"), -ID)
-
-# Township metadata (county + township name)
+# County metadata from shapefile
+# NAME_2 = county name (22 counties/cities)
 tw_meta <- tw_sf |>
   sf::st_drop_geometry() |>
   mutate(ID = row_number()) |>
-  select(ID, county = NAME_1, township = NAME_3)
+  select(ID, province = NAME_1, county = NAME_2)
 
-# Wide-format dataset: one row per township
+# Wide-format: one row per county
 tw_ntl <- tw_meta |>
-  left_join(stats_2013, by = "ID") |>
+  left_join(stats_1992, by = "ID") |>
   left_join(stats_2024, by = "ID") |>
+  select(-ID) |>
   mutate(
-    ntl_change_mean = ntl_mean_2024 - ntl_mean_2013,
-    ntl_pct_change  = (ntl_mean_2024 - ntl_mean_2013) /
-                      (ntl_mean_2013 + 1) * 100)
+    ntl_change_mean = ntl_mean_2024 - ntl_mean_1992,
+    ntl_pct_change  =
+      (ntl_mean_2024 - ntl_mean_1992) /
+      (ntl_mean_1992 + 1) * 100)
 \end{lstlisting}
 \end{frame}
 
 
 \begin{frame}[fragile]{Step 6: Export Data}
 \begin{lstlisting}
-# Each year as a separate long-format file
-tw_ntl_2013 <- tw_ntl |>
-  select(county, township,
-         ntl_mean = ntl_mean_2013,
-         ntl_sum  = ntl_sum_2013,
-         ntl_sd   = ntl_sd_2013) |>
-  mutate(year = 2013)
+# Per-year files
+tw_ntl_1992 <- tw_ntl |>
+  select(province, county,
+         ntl_mean=ntl_mean_1992, ntl_sum=ntl_sum_1992,
+         ntl_sd=ntl_sd_1992) |>
+  mutate(year = 1992)
 
-write_csv(tw_ntl_2013,
-  file.path(out_path, "taiwan_ntl_township_2013.csv"))
-haven::write_dta(tw_ntl_2013,
-  file.path(out_path, "taiwan_ntl_township_2013.dta"))
+write_csv(tw_ntl_1992,
+  file.path(out_path, "taiwan_ntl_county_1992.csv"))
+haven::write_dta(tw_ntl_1992,
+  file.path(out_path, "taiwan_ntl_county_1992.dta"))
 
-# Wide-format: both years, one row per township
+# Wide-format: both years, one row per county
 write_csv(tw_ntl,
-  file.path(out_path, "taiwan_ntl_township_wide.csv"))
+  file.path(out_path, "taiwan_ntl_county_wide.csv"))
 haven::write_dta(tw_ntl,
-  file.path(out_path, "taiwan_ntl_township_wide.dta"))
+  file.path(out_path, "taiwan_ntl_county_wide.dta"))
 \end{lstlisting}
 \begin{itemize}
-  \item \texttt{.dta} can be opened in Stata with \texttt{use}
+  \item \texttt{.dta} files can be opened in Stata with \texttt{use}
 \end{itemize}
 \end{frame}
 
@@ -772,9 +788,9 @@ haven::write_dta(tw_ntl,
 \end{frame}
 
 
-\begin{frame}{Taiwan Nighttime Lights: 2013}
+\begin{frame}{Taiwan Nighttime Lights: 1992}
   \begin{center}
-    \includegraphics[width=0.75\textwidth]{figure/ntl_taiwan_2013.png}
+    \includegraphics[width=0.75\textwidth]{figure/ntl_taiwan_1992.png}
   \end{center}
 \end{frame}
 
@@ -786,38 +802,38 @@ haven::write_dta(tw_ntl,
 \end{frame}
 
 
-\begin{frame}{Taiwan Nighttime Lights: 2013 vs.\ 2024}
+% \begin{frame}{Taiwan Nighttime Lights: 1992 vs.\ 2024}
+%   \begin{center}
+%     \includegraphics[width=\textwidth]{figure/ntl_taiwan_compare.png}
+%   \end{center}
+% \end{frame}
+
+
+\begin{frame}{Change in Nighttime Lights: 2024 $-$ 1992}
   \begin{center}
-    \includegraphics[width=\textwidth]{figure/ntl_taiwan_compare.png}
+    \includegraphics[width=0.78\textwidth]{figure/ntl_taiwan_change_1992_2024.png}
   \end{center}
 \end{frame}
 
 
-\begin{frame}{Change in Nighttime Lights: 2024 $-$ 2013}
+\begin{frame}{County-Level Mean Nighttime Lights}
   \begin{center}
-    \includegraphics[width=0.78\textwidth]{figure/ntl_taiwan_change_2013_2024.png}
+    \includegraphics[width=\textwidth]{figure/ntl_county_compare.png}
   \end{center}
 \end{frame}
 
 
-\begin{frame}{Township-Level Mean Nighttime Lights}
+\begin{frame}{Change in County NTL: 2024 $-$ 1992}
   \begin{center}
-    \includegraphics[width=\textwidth]{figure/ntl_township_compare.png}
+    \includegraphics[width=0.72\textwidth]{figure/ntl_county_change.png}
   \end{center}
 \end{frame}
 
 
-\begin{frame}{Change in Township NTL: 2024 $-$ 2013}
-  \begin{center}
-    \includegraphics[width=0.72\textwidth]{figure/ntl_township_change.png}
-  \end{center}
-\end{frame}
-
-
-\begin{frame}{Township-Level Dataset}
+\begin{frame}{County-Level Dataset}
 \begin{itemize}
-  \item After aggregation, each row is a \textbf{township} (鄉鎮市區),
-        $\approx$368 units
+  \item After aggregation, each row is a \textbf{county/city} (縣市),
+        22 units
   \vspace{0.3cm}
   \item Variables produced (wide format):
   \vspace{0.1cm}
@@ -825,136 +841,136 @@ haven::write_dta(tw_ntl,
   \small
   \begin{tabular}{ll}
     \toprule
-    \textbf{Variable}    & \textbf{Description} \\
+    \textbf{Variable}     & \textbf{Description} \\
     \midrule
-    \texttt{county}           & County / municipality name \\
-    \texttt{township}         & Township / district name \\
-    \texttt{ntl\_mean\_2013}  & Mean brightness 2013 (DN) \\
-    \texttt{ntl\_sum\_2013}   & Total brightness 2013 \\
-    \texttt{ntl\_mean\_2024}  & Mean brightness 2024 \\
-    \texttt{ntl\_change\_mean}& Change in mean DN (2024$-$2013) \\
-    \texttt{ntl\_pct\_change} & \% change in mean DN \\
+   % \texttt{province}          & Province / special municipality \\
+    \texttt{county}            & County / city name (縣市) \\
+    \texttt{ntl\_mean\_1992}   & Mean brightness 1992 (DN, 0--63) \\
+    \texttt{ntl\_sum\_1992}    & Total brightness 1992 \\
+    \texttt{ntl\_mean\_2024}   & Mean brightness 2024 \\
+    \texttt{ntl\_change\_mean} & Change in mean DN (2024$-$1992) \\
+    \texttt{ntl\_pct\_change}  & \% change in mean DN \\
     \bottomrule
   \end{tabular}
   \end{center}
   \vspace{0.3cm}
-  \item Merge with other township-level variables for regression analysis
+  \item Merge with other county-level variables for regression analysis
 \end{itemize}
 \end{frame}
 
 
-%=====================================================================
-\title[]{Other Satellite Data}
-\author{}
-\institute{}
-\date{}
-\begin{frame}{}
-  \titlepage
-\end{frame}
+% %=====================================================================
+% \title[]{Other Satellite Data}
+% \author{}
+% \institute{}
+% \date{}
+% \begin{frame}{}
+%   \titlepage
+% \end{frame}
 
 
-\begin{frame}{NDVI: Vegetation Index}
-\begin{itemize}
-  \item \textbf{What it measures:} the ``greenness'' of land surface ---
-        vegetation health and density
-  \vspace{0.2cm}
-  \[
-    \text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}
-    \quad \in [-1,\,+1]
-  \]
-  \item Higher values $\Rightarrow$ denser, healthier vegetation;
-        negative values $\Rightarrow$ water bodies
-  \vspace{0.3cm}
-  \item \textbf{Data:} NASA MODIS MOD13 (250 m -- 1 km, 16-day or monthly)
-  \vspace{0.2cm}
-  \item \textbf{R package:} \texttt{MODIStsp} or \texttt{appeears} API
-  \vspace{0.3cm}
-  \item \textbf{Applications in economics:}
-  \vspace{0.1cm}
-  \begin{itemize}
-    \item Proxy for agricultural productivity and crop yields
-    \item Instrument for income shocks in conflict / migration research
-  \end{itemize}
-\end{itemize}
-\end{frame}
+% \begin{frame}{NDVI: Vegetation Index}
+% \begin{itemize}
+%   \item \textbf{What it measures:} the ``greenness'' of land surface ---
+%         vegetation health and density
+%   \vspace{0.2cm}
+%   \[
+%     \text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}
+%     \quad \in [-1,\,+1]
+%   \]
+%   \item Higher values $\Rightarrow$ denser, healthier vegetation;
+%         negative values $\Rightarrow$ water bodies
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD13 (250 m -- 1 km, 16-day or monthly)
+%   \vspace{0.2cm}
+%   \item \textbf{R package:} \texttt{MODIStsp} or \texttt{appeears} API
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Proxy for agricultural productivity and crop yields
+%     \item Instrument for income shocks in conflict / migration research
+%   \end{itemize}
+% \end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Land Surface Temperature (LST)}
-\begin{itemize}
-  \item \textbf{What it measures:} temperature of the Earth's surface
-        itself (not air temperature)
-  \vspace{0.3cm}
-  \item \textbf{Data:} NASA MODIS MOD11A2 (1 km, 8-day composites)
-  \vspace{0.2cm}
-  \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{appeears}
-  \vspace{0.3cm}
-  \item \textbf{Applications in economics:}
-  \vspace{0.1cm}
-  \begin{itemize}
-    \item Urban heat islands: link green space and land use to housing prices
-    \vspace{0.1cm}
-    \item Labor productivity: causal effect of heat on wages and output
-    \vspace{0.1cm}
-    \item Energy demand: high temperatures raise cooling demand
-  \end{itemize}
-  \vspace{0.3cm}
-  \item \textbf{Advantage over weather stations:}
-        globally uniform coverage, no interpolation needed
-\end{itemize}
-\end{frame}
+% \begin{frame}{Land Surface Temperature (LST)}
+% \begin{itemize}
+%   \item \textbf{What it measures:} temperature of the Earth's surface
+%         itself (not air temperature)
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD11A2 (1 km, 8-day composites)
+%   \vspace{0.2cm}
+%   \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{appeears}
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Urban heat islands: link green space and land use to housing prices
+%     \vspace{0.1cm}
+%     \item Labor productivity: causal effect of heat on wages and output
+%     \vspace{0.1cm}
+%     \item Energy demand: high temperatures raise cooling demand
+%   \end{itemize}
+%   \vspace{0.3cm}
+%   \item \textbf{Advantage over weather stations:}
+%         globally uniform coverage, no interpolation needed
+% \end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Aerosol Optical Depth (AOD) --- Air Pollution}
-\begin{itemize}
-  \item \textbf{What it measures:} how much sunlight is blocked by suspended
-        particles (PM$_{2.5}$, dust, smoke) across the atmospheric column
-  \vspace{0.3cm}
-  \item AOD $= 0$: clean atmosphere;\quad AOD $= 1$: heavy particulate loading
-  \vspace{0.3cm}
-  \item \textbf{Data:} NASA MODIS MOD04 (3 km -- 10 km, daily);
-        also available from Sentinel-5P (TROPOMI)
-  \vspace{0.2cm}
-  \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{sen2r}, \texttt{openeo}
-  \vspace{0.3cm}
-  \item \textbf{Applications in economics:}
-  \vspace{0.1cm}
-  \begin{itemize}
-    \item Pollution effects on health, cognition, and productivity
-    \vspace{0.1cm}
-    \item Evaluation of environmental regulations
-    \vspace{0.1cm}
-    \item Caveat: AOD measures full atmospheric column; conversion to
-          ground-level PM$_{2.5}$ requires additional calibration
-  \end{itemize}
-\end{itemize}
-\end{frame}
+% \begin{frame}{Aerosol Optical Depth (AOD) --- Air Pollution}
+% \begin{itemize}
+%   \item \textbf{What it measures:} how much sunlight is blocked by suspended
+%         particles (PM$_{2.5}$, dust, smoke) across the atmospheric column
+%   \vspace{0.3cm}
+%   \item AOD $= 0$: clean atmosphere;\quad AOD $= 1$: heavy particulate loading
+%   \vspace{0.3cm}
+%   \item \textbf{Data:} NASA MODIS MOD04 (3 km -- 10 km, daily);
+%         also available from Sentinel-5P (TROPOMI)
+%   \vspace{0.2cm}
+%   \item \textbf{R packages:} \texttt{MODIStsp}, \texttt{sen2r}, \texttt{openeo}
+%   \vspace{0.3cm}
+%   \item \textbf{Applications in economics:}
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Pollution effects on health, cognition, and productivity
+%     \vspace{0.1cm}
+%     \item Evaluation of environmental regulations
+%     \vspace{0.1cm}
+%     \item Caveat: AOD measures full atmospheric column; conversion to
+%           ground-level PM$_{2.5}$ requires additional calibration
+%   \end{itemize}
+% \end{itemize}
+% \end{frame}
 
 
-\begin{frame}{Summary: Satellite Data Packages in R}
-\begin{center}
-\small
-\begin{tabular}{lll}
-  \toprule
-  \textbf{Data} & \textbf{R Package} & \textbf{Source} \\
-  \midrule
-  Nighttime lights    & \texttt{blackmarbler}    & NASA LAADS DAAC \\
-  NDVI / LST / AOD    & \texttt{MODIStsp}        & NASA MODIS \\
-                      & \texttt{appeears}         & NASA AppEEARS API \\
-  Sentinel-2 imagery  & \texttt{sen2r}            & ESA / Copernicus \\
-  Google Earth Engine & \texttt{rgee}             & Google EE \\
-  Harmonized NTL      & (direct download)         & Li et al.\ (2020) \\
-  Elevation (DEM)     & \texttt{elevatr}          & USGS / Amazon \\
-  Population          & \texttt{wpgpDataR}        & WorldPop \\
-  \bottomrule
-\end{tabular}
-\end{center}
-\vspace{0.3cm}
-\begin{itemize}
-  \item All sources are free; most require a one-time account registration
-  \item See also: \href{https://earthdata.nasa.gov}{\texttt{earthdata.nasa.gov}}
-        and \href{https://browser.dataspace.copernicus.eu}{\texttt{Copernicus Browser}}
-\end{itemize}
-\end{frame}
+% \begin{frame}{Summary: Satellite Data Packages in R}
+% \begin{center}
+% \small
+% \begin{tabular}{lll}
+%   \toprule
+%   \textbf{Data} & \textbf{R Package} & \textbf{Source} \\
+%   \midrule
+%   Nighttime lights    & \texttt{blackmarbler}    & NASA LAADS DAAC \\
+%   Harmonized NTL      & (direct download)         & Li et al.\ (2020) \\
+%   NDVI / LST / AOD    & \texttt{MODIStsp}        & NASA MODIS \\
+%                       & \texttt{appeears}         & NASA AppEEARS API \\
+%   Sentinel-2 imagery  & \texttt{sen2r}            & ESA / Copernicus \\
+%   Google Earth Engine & \texttt{rgee}             & Google EE \\
+%   Elevation (DEM)     & \texttt{elevatr}          & USGS / Amazon \\
+%   Population          & \texttt{wpgpDataR}        & WorldPop \\
+%   \bottomrule
+% \end{tabular}
+% \end{center}
+% \vspace{0.3cm}
+% \begin{itemize}
+%   \item All sources are free; most require a one-time account registration
+%   \item See also: \href{https://earthdata.nasa.gov}{\texttt{earthdata.nasa.gov}}
+%         and \href{https://browser.dataspace.copernicus.eu}{\texttt{Copernicus Browser}}
+% \end{itemize}
+% \end{frame}
 
 
 \end{document}

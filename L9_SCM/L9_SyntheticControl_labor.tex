@@ -2746,7 +2746,7 @@ scplotMulti(pi.multi, type = "series")
 %  Recent Development: Regression-Based Synthetic Control
 % ==================================================================
 
-\title[]{Recent Development: Regression-Based SCM}
+\title[]{Recent Development}
 \author{}
 \institute{}
 \date{}
@@ -2975,8 +2975,8 @@ scplotMulti(pi.multi, type = "series")
 		\item Compute two statistics per unit:
 		\begin{itemize}
 			\item \textbf{RMSPE ratio}: $\;\dfrac{\sqrt{\text{post-MSPE}}}{\sqrt{\text{pre-MSPE}}}$ --- adjusts for units that are hard to fit in-sample
-			\vspace{0.1cm}
-			\item \textbf{Mean signed post-gap}: $\;\dfrac{1}{T_1}\sum_{t>T_0}(Y_{it}-\hat{Y}^{(0)}_{it})$ --- tests direction and magnitude
+			% \vspace{0.1cm}
+			% \item \textbf{Mean signed post-gap}: $\;\dfrac{1}{T_1}\sum_{t>T_0}(Y_{it}-\hat{Y}^{(0)}_{it})$ --- tests direction and magnitude
 		\end{itemize}
 		\vspace{0.1cm}
 		\item \textbf{P-value} $=$ fraction of placebo statistics $\geq$ the treated unit's statistic
@@ -2988,7 +2988,7 @@ scplotMulti(pi.multi, type = "series")
 
 
 % ── R Example title page ───────────────────────────────────────────
-\title[]{R Example: Regression-Based SCM}
+\title[]{R Example}
 \author{}\institute{}\date{}
 \begin{frame}{}\titlepage\end{frame}
 
@@ -3120,44 +3120,43 @@ run_sc_one <- function(unit_id, df_long) {
 }
 \end{lstlisting}
 \begin{itemize}
-    \vspace{0.05cm}
     \item Returns \texttt{NULL} if the LASSO solver fails for a given unit
     (filtered out before computing p-values)
 \end{itemize}
 \end{frame}
 
 
-% ── Two p-values ───────────────────────────────────────────────────
-\begin{frame}{Two P-values}{What Do They Measure?}
-\begin{itemize}
-    \item \textbf{P1 --- RMSPE ratio}
-    $\;=\; \dfrac{\sqrt{\text{post-MSPE}}}{\sqrt{\text{pre-MSPE}}}$
-    \begin{itemize}
-        \vspace{0.05cm}
-        \item How much larger is the post-treatment misfit relative to pre-treatment fit?
-        \vspace{0.05cm}
-        \item Adjusts for units that inherently fit worse in-sample
-    \end{itemize}
-    \vspace{0.2cm}
-    \item \textbf{P2 --- Mean signed post-gap}
-    $\;=\; \dfrac{1}{T_1}\sum_{t>T_0}\text{gap}_{it}$
-    \begin{itemize}
-        \vspace{0.05cm}
-        \item Tests whether the direction and magnitude of the post-treatment gap is unusual
-        \vspace{0.05cm}
-        \item One-tailed: direction auto-detected from NY's gap sign
-    \end{itemize}
-    \vspace{0.2cm}
-    \item \textbf{Pre-MSPE filter}: exclude placebos with
-    pre-MSPE $> 5\times$ NY's
-    \begin{itemize}
-        \vspace{0.05cm}
-        \item Poor-fitting placebos inflate the reference distribution
-        \vspace{0.05cm}
-        \item Filtering focuses inference on ``well-matched'' placebos
-    \end{itemize}
-\end{itemize}
-\end{frame}
+% % ── Two p-values ───────────────────────────────────────────────────
+% \begin{frame}{Two P-values}{What Do They Measure?}
+% \begin{itemize}
+%     \item \textbf{P1 --- RMSPE ratio}
+%     $\;=\; \dfrac{\sqrt{\text{post-MSPE}}}{\sqrt{\text{pre-MSPE}}}$
+%     \begin{itemize}
+%         \vspace{0.05cm}
+%         \item How much larger is the post-treatment misfit relative to pre-treatment fit?
+%         \vspace{0.05cm}
+%         \item Adjusts for units that inherently fit worse in-sample
+%     \end{itemize}
+%     \vspace{0.2cm}
+%     \item \textbf{P2 --- Mean signed post-gap}
+%     $\;=\; \dfrac{1}{T_1}\sum_{t>T_0}\text{gap}_{it}$
+%     \begin{itemize}
+%         \vspace{0.05cm}
+%         \item Tests whether the direction and magnitude of the post-treatment gap is unusual
+%         \vspace{0.05cm}
+%         \item One-tailed: direction auto-detected from NY's gap sign
+%     \end{itemize}
+%     \vspace{0.2cm}
+%     \item \textbf{Pre-MSPE filter}: exclude placebos with
+%     pre-MSPE $> 5\times$ NY's
+%     \begin{itemize}
+%         \vspace{0.05cm}
+%         \item Poor-fitting placebos inflate the reference distribution
+%         \vspace{0.05cm}
+%         \item Filtering focuses inference on ``well-matched'' placebos
+%     \end{itemize}
+% \end{itemize}
+% \end{frame}
 
 
 % ── P-value computation ────────────────────────────────────────────

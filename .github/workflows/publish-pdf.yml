@@ -260,6 +260,30 @@ jobs:
           path: |
             L10_IV/*.pdf
 
+      # ---- L14_Stag_DID ----
+      - name: Compile L14_Stag_DID PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L14_Stag_DID
+          root_file: |
+            L14_Stag_DID_data.tex
+            L14_Stag_DID_labor.tex
+            L14_Stag_DID_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L14_Stag_DID)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L14_Stag_DID
+          path: |
+            L14_Stag_DID/*.pdf
+
       # ---- L11_SSIV ---- (temporarily disabled: tex not ready)
       # - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)
       #   uses: xu-cheng/latex-action@v3
