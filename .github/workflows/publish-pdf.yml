@@ -341,6 +341,9 @@ jobs:
             HW1_labor.tex
             HW1_data.tex
             HW1_metrics.tex
+            HW2_labor.tex
+            HW2_data.tex
+            HW2_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

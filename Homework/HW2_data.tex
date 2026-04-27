@@ -1,0 +1,181 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Homework 2: R / Stata Practice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{enumerate}
+
+\usepackage{sectsty}
+\allsectionsfont{\normalfont\scshape}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true,citecolor=blue,pdfborder=000, urlcolor=red}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt}
+
+% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+% Hint box: indented block with label
+\newcommand{\hint}[2]{%
+  \vspace{0.15cm}%
+  \hspace{1em}\textit{\textbf{Hint (#1):}} #2%
+  \vspace{0.1cm}%
+}
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge Homework 2: R / Stata Practice \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof. Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+
+
+%----------------------------------------------------------------------------------------
+%	INSTRUCTION
+%----------------------------------------------------------------------------------------
+
+\section*{Instruction}
+
+\begin{itemize}
+\item[\textbullet] You should submit Homework 2 before 5/27 11:00pm.
+\item[\textbullet] There is no late submission (zero points after the deadline).
+\item[\textbullet] Homework 2 accounts for 15 points in your final grade.
+\item[\textbullet] This homework will help you make progress on your term paper.
+\item[\textbullet] You may use \textbf{either Stata or R}. Submit \textbf{two files}:
+  \begin{enumerate}
+    \item \textbf{Empirical analysis record (HTML)}: A single HTML file documenting your current empirical workflow, generated from your code using markdown.
+    \begin{itemize}
+      \item \textbf{Stata}: Write code and narrative in a \texttt{.stmd} file and compile with \texttt{markstat using ``filename'', bundle}.
+      \item \textbf{R}: Write code and narrative in an \texttt{.Rmd} file and knit to HTML via ``Knit to HTML'' in RStudio or \texttt{rmarkdown::render()}.
+    \end{itemize}
+    \item \textbf{Answer sheet (PDF)}: A PDF answering all questions (1--6), including tables and figures.
+  \end{enumerate}
+\item[\textbullet] Recommended R packages: \texttt{haven}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{fixest}, \texttt{rmarkdown}.
+\item[\textbullet] Upload files here: \textbf{\url{https://www.dropbox.com/request/c3m4qdykIQ89IwmPRxdJ}}
+\item[\textbullet] File name format: \texttt{StudentID\_YourName\_HW2.html} and \texttt{StudentID\_YourName\_HW2.pdf}.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 1
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 1 \quad Empirical Analysis Record}
+
+Submit an HTML file that documents your \textbf{current R or Stata code} and results. Generate the HTML from your code using markdown. The HTML should include:
+\begin{itemize}
+  \item All code you have written so far (data loading, cleaning, visualization, regression).
+  \item Output from each code block (tables, figures, regression results).
+  \item Brief narrative text explaining what each step does.
+\end{itemize}
+
+\medskip
+\textit{\textbf{Hint (Stata):}} Create a \texttt{.stmd} file with markdown text and Stata code blocks, then compile:
+\begin{quote}\texttt{markstat using ``your\_file'', bundle}\end{quote}
+The \texttt{bundle} option embeds all figures directly into the HTML. \\
+
+\textit{\textbf{Hint (R):}} Create an \texttt{.Rmd} file with YAML header \texttt{output: html\_document} and embed R code in \texttt{\`{}\`{}\`{}\{r\}} chunks. Render with:
+\begin{quote}\texttt{rmarkdown::render("your\_file.Rmd")}\end{quote}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 2
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 2 \quad Introduction}
+
+Write a paragraph to introduce your research topic. Include:
+\begin{itemize}
+  \item A brief description of your research question.
+  \item Why you chose to study this topic.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 3
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 3 \quad Sample Construction}
+
+Write a paragraph describing your sample construction process. Include:
+\begin{itemize}
+  \item Data cleaning steps.
+  \item Sample selection criteria.
+  \item Final sample size and time period.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 4
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 4 \quad Descriptive Statistics}
+
+Create a table to display descriptive statistics of your sample and provide a brief explanation. Specify this as Table 1 in your answer sheet. Include:
+\begin{itemize}
+  \item Means and standard deviations for your outcome and control variables.
+  \item Comparison between treatment and control groups if applicable.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 5
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 5 \quad Empirical Methodology}
+
+Describe your empirical methodology for estimating causal relationships. Include:
+\begin{itemize}
+  \item Description of your identification strategy.
+  \item Mathematical expressions of your empirical model.
+  \item Key assumptions for this method.
+\end{itemize}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+%	QUESTION 6
+%----------------------------------------------------------------------------------------
+
+\subsection*{Question 6 \quad Preliminary Results or AI Assistance}
+
+\textbf{If you have preliminary results}, create a table or figure to present your findings and write a paragraph explaining them. Specify this as Figure 1 (or Table 2) in your answer sheet. Include:
+\begin{itemize}
+  \item Interpretation of your main estimates.
+\end{itemize}
+
+\medskip
+\textbf{If you do not have preliminary results yet}, describe how you used generative AI (e.g., ChatGPT, Claude) to assist your research. Include:
+\begin{itemize}
+  \item What kind of tasks generative AI helped you complete; provide a specific example.
+  \item The prompts you gave to the AI.
+\end{itemize}
+
+\end{document}
