@@ -21,6 +21,113 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ================================================================
+      # PRIORITY GROUP — compiled first
+      # ================================================================
+
+      # ---- L10_IV [PRIORITY] ----
+      - name: Compile L10_IV PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L10_IV
+          root_file: |
+            L10_IV_data.tex
+            L10_IV_labor.tex
+            L10_IV_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L10_IV)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L10_IV
+          path: |
+            L10_IV/*.pdf
+
+      # ---- L11_SSIV [PRIORITY] ----
+      - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L11_SSIV
+          root_file: |
+            L11_ShiftShareIV_data.tex
+            L11_ShiftShareIV_labor.tex
+            L11_ShiftShareIV_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L11_SSIV)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L11_SSIV
+          path: |
+            L11_SSIV/*.pdf
+
+      # ---- L14_Stag_DID [PRIORITY] ----
+      - name: Compile L14_Stag_DID PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L14_Stag_DID
+          root_file: |
+            L14_Stag_DID_data.tex
+            L14_Stag_DID_labor.tex
+            L14_Stag_DID_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L14_Stag_DID)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L14_Stag_DID
+          path: |
+            L14_Stag_DID/*.pdf
+
+      # ---- Homework [PRIORITY] ----
+      - name: Compile Homework PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: Homework
+          root_file: |
+            HW1_labor.tex
+            HW1_data.tex
+            HW1_metrics.tex
+            HW2_labor.tex
+            HW2_data.tex
+            HW2_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (Homework)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_Homework
+          path: |
+            Homework/*.pdf
+
+      # ================================================================
+      # REMAINING LECTURES — compiled after priority group
+      # ================================================================
+
       # ---- L1_Intro ----
       - name: Compile L1_Intro PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
@@ -165,28 +272,6 @@ jobs:
           path: |
             L6_ML/*.pdf
 
-      # ---- S3_Geo_data ----
-      - name: Compile S3_Geo_data PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: S3_Geo_data
-          root_file: |
-            S3_geo_data_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (S3_Geo_data)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_S3_Geo_data
-          path: |
-            S3_Geo_data/*.pdf
-
       # ---- L7_FE ----
       - name: Compile L7_FE PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
@@ -210,6 +295,30 @@ jobs:
           name: pdf_L7_FE
           path: |
             L7_FE/*.pdf
+
+      # ---- L8_DID ----
+      - name: Compile L8_DID PDFs (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: L8_DID
+          root_file: |
+            L8_DID_data.tex
+            L8_DID_labor.tex
+            L8_DID_metrics.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (L8_DID)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_L8_DID
+          path: |
+            L8_DID/*.pdf
 
       # ---- L9_SCM ----
       - name: Compile L9_SCM PDFs (XeLaTeX + CJK)
@@ -236,78 +345,6 @@ jobs:
           path: |
             L9_SCM/*.pdf
 
-      # ---- L10_IV ----
-      - name: Compile L10_IV PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L10_IV
-          root_file: |
-            L10_IV_data.tex
-            L10_IV_labor.tex
-            L10_IV_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (L10_IV)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L10_IV
-          path: |
-            L10_IV/*.pdf
-
-      # ---- L14_Stag_DID ----
-      - name: Compile L14_Stag_DID PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L14_Stag_DID
-          root_file: |
-            L14_Stag_DID_data.tex
-            L14_Stag_DID_labor.tex
-            L14_Stag_DID_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (L14_Stag_DID)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L14_Stag_DID
-          path: |
-            L14_Stag_DID/*.pdf
-
-      # ---- L11_SSIV ----
-      - name: Compile L11_SSIV PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L11_SSIV
-          root_file: |
-            L11_ShiftShareIV_data.tex
-            L11_ShiftShareIV_labor.tex
-            L11_ShiftShareIV_metrics.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (L11_SSIV)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L11_SSIV
-          path: |
-            L11_SSIV/*.pdf
-
       # ---- L12_RDD ----
       - name: Compile L12_RDD PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
@@ -332,18 +369,13 @@ jobs:
           path: |
             L12_RDD/*.pdf
 
-      # ---- Homework ----
-      - name: Compile Homework PDFs (XeLaTeX + CJK)
+      # ---- L13_CausalForest ----
+      - name: Compile L13_CausalForest PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
-          working_directory: Homework
+          working_directory: L13_CausalForest
           root_file: |
-            HW1_labor.tex
-            HW1_data.tex
-            HW1_metrics.tex
-            HW2_labor.tex
-            HW2_data.tex
-            HW2_metrics.tex
+            L13_CausalForest_labor.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
@@ -351,23 +383,21 @@ jobs:
             font-noto-cjk
           continue_on_error: true
 
-      - name: Upload PDFs (Homework)
+      - name: Upload PDFs (L13_CausalForest)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdf_Homework
+          name: pdf_L13_CausalForest
           path: |
-            Homework/*.pdf
+            L13_CausalForest/*.pdf
 
-      # ---- L8_DID ----
-      - name: Compile L8_DID PDFs (XeLaTeX + CJK)
+      # ---- S3_Geo_data ----
+      - name: Compile S3_Geo_data PDFs (XeLaTeX + CJK)
         uses: xu-cheng/latex-action@v3
         with:
-          working_directory: L8_DID
+          working_directory: S3_Geo_data
           root_file: |
-            L8_DID_data.tex
-            L8_DID_labor.tex
-            L8_DID_metrics.tex
+            S3_geo_data_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
@@ -375,13 +405,35 @@ jobs:
             font-noto-cjk
           continue_on_error: true
 
-      - name: Upload PDFs (L8_DID)
+      - name: Upload PDFs (S3_Geo_data)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pdf_L8_DID
+          name: pdf_S3_Geo_data
           path: |
-            L8_DID/*.pdf
+            S3_Geo_data/*.pdf
+
+      # ---- S3_satellite_practical ----
+      - name: Compile S3_satellite_practical PDF (XeLaTeX + CJK)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: S3_Geo_data
+          root_file: |
+            S3_satellite_practical.tex
+          latexmk_use_xelatex: true
+          args: -interaction=nonstopmode -file-line-error -halt-on-error
+          extra_system_packages: |
+            fontconfig
+            font-noto-cjk
+          continue_on_error: true
+
+      - name: Upload PDFs (S3_satellite_practical)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf_S3_satellite_practical
+          path: |
+            S3_Geo_data/S3_satellite_practical.pdf
 
       # ---- RQ ----
       - name: Compile RQ PDFs (XeLaTeX + CJK)
@@ -431,96 +483,6 @@ jobs:
           name: pdf_Reading_list
           path: |
             Reading_list/*.pdf
-
-      # ---- L13_CausalForest ----
-      - name: Compile L13_CausalForest PDFs (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: L13_CausalForest
-          root_file: |
-            L13_CausalForest_labor.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (L13_CausalForest)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_L13_CausalForest
-          path: |
-            L13_CausalForest/*.pdf
-
-      # ---- S3_satellite_practical ----
-      - name: Compile S3_satellite_practical PDF (XeLaTeX + CJK)
-        uses: xu-cheng/latex-action@v3
-        with:
-          working_directory: S3_Geo_data
-          root_file: |
-            S3_satellite_practical.tex
-          latexmk_use_xelatex: true
-          args: -interaction=nonstopmode -file-line-error -halt-on-error
-          extra_system_packages: |
-            fontconfig
-            font-noto-cjk
-          continue_on_error: true
-
-      - name: Upload PDFs (S3_satellite_practical)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdf_S3_satellite_practical
-          path: |
-            S3_Geo_data/S3_satellite_practical.pdf
-
-      # ---- S1_Data ---- (temporarily disabled: tex not ready)
-      # - name: Compile S1_Data PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: S1_Data
-      #     root_file: |
-      #       P1_Data_sources_data.tex
-      #       P1_Data_sources_labor_2026_v1.tex
-      #       P1_Data_sources_metrics_2026_v1.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
-
-      # - name: Upload PDFs (S1_Data)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_S1_Data
-      #     path: |
-      #       S1_Data/*.pdf
-
-      # ---- S2_AI_Calude ---- (temporarily disabled: tex not ready)
-      # - name: Compile S2_AI_Calude PDFs (XeLaTeX + CJK)
-      #   uses: xu-cheng/latex-action@v3
-      #   with:
-      #     working_directory: S2_AI_Calude
-      #     root_file: |
-      #       S2_AI_Claude.tex
-      #     latexmk_use_xelatex: true
-      #     args: -interaction=nonstopmode -file-line-error -halt-on-error
-      #     extra_system_packages: |
-      #       fontconfig
-      #       font-noto-cjk
-      #     continue_on_error: true
-
-      # - name: Upload PDFs (S2_AI_Calude)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: pdf_S2_AI_Calude
-      #     path: |
-      #       S2_AI_Calude/*.pdf
 
       # ---- Syllabus ----
       - name: Compile Syllabus PDFs (XeLaTeX + CJK)
