@@ -204,8 +204,8 @@
 }
 
 
-%\usepackage{beamerthemeshadow}
-%\usecolortheme{seahorse}
+% \usepackage{beamerthemeshadow}
+% %\usecolortheme{seahorse}
 % \setbeamertemplate{footline}{%
 % 	\hfill\usebeamercolor[fg]{page number in head/foot}%
 % 	\usebeamerfont{page number in head/foot}%
@@ -762,7 +762,7 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Potential Outcomes Framework}{Treatment Assignment}
+\begin{frame}{Potential Outcomes Framework}
 	\begin{itemize}
 		
 		\item \textcolor{blue}{Treatment Assignment}
@@ -792,7 +792,7 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Potential Outcomes Framework}{Potential Treatments}
+\begin{frame}{Potential Outcomes Framework}
 	\begin{itemize}
 		
 		\item \textcolor{blue}{Potential Treatments}
@@ -836,55 +836,44 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Potential Outcomes Framework}{Potential Outcomes}
+\begin{frame}{Potential Outcomes Framework}
 	
 	
 	
 	\begin{itemize}
 		
 		\item \textcolor{blue}{Potential Outcomes}
-		\vspace{0.2cm}
+					\vspace{0.2cm}
 		\begin{itemize}
-			\item $\mathrm{Y}^{1}_{i}$: earnings if individual $i$ serves in the military
+			\item $\mathrm{Y}^{1}_{i}$: outcome if an individual $i$ get treatment 
+					\vspace{0.2cm}
+				\begin{itemize}	
+			\item Either $\mathrm{D}^{1}_{i}=1$ or $\mathrm{D}^{0}_{i}=1$
 			\vspace{0.2cm}
-			\item $\mathrm{Y}^{0}_{i}$: earnings if individual $i$ does not serve in the military
+					\end{itemize}
+			\item $\mathrm{Y}^{0}_{i}$: outcome if an individual $i$ does not get treatment 
 			\vspace{0.2cm}
+			\begin{itemize}	
+			\item Either $\mathrm{D}^{0}_{i}=0$ or $\mathrm{D}^{1}_{i}=0$
+								\end{itemize}
 		\end{itemize}
 		\vspace{0.2cm}
-		\item \textcolor{blue}{Observed Outcome}
-		\begin{equation*}
-			Y_{i}=D_{i}\mathrm{Y}^{1}_{i}+(1-D_{i})\mathrm{Y}^{0}_{i}
-		\end{equation*}
-		\vspace{0.2cm}
-		\item This notation already imposes the exclusion idea: once treatment status is fixed, $Z_{i}$ has no separate effect on $Y_{i}$
+		\item \textcolor{blue}{Observed Outcomes}
+		\begin{align*}
+		Y_{i}=\left\lbrace
+		\begin{array}{l}
+		\mathrm{Y}^{1}_{i}\quad \text{if $\mathrm{D}^{1}_{i}=1$ or $\mathrm{D}^{0}_{i}=1$} \\
+		\mathrm{Y}^{0}_{i}\quad \text{if $\mathrm{D}^{0}_{i}=0$ or $\mathrm{D}^{1}_{i}=0$}
+		\end{array}\right.
+		\end{align*}
+		\item or, in a more compact notation: 
+		$\mathrm{Y}_{i}=D^{z}_{i}\mathrm{Y}^{1}_{i}+(1-D^{z}_{i})\mathrm{Y}^{0}_{i} $
 		
 	\end{itemize}
 \end{frame}
 
 
-\begin{frame}{Identification Roadmap}
-	\begin{itemize}
-		\item We observe how outcomes and treatment rates differ by draft eligibility:
-		\begin{equation*}
-			\alpha_{IV}=
-			\dfrac{\mathrm{E}[Y_{i}|Z_{i}=1]-\mathrm{E}[Y_{i}|Z_{i}=0]}
-			{\mathrm{E}[D_{i}|Z_{i}=1]-\mathrm{E}[D_{i}|Z_{i}=0]}
-		\end{equation*}
-		\vspace{0.2cm}
-		\item To interpret this ratio causally, we need to answer three questions:
-		\vspace{0.2cm}
-		\begin{itemize}
-			\item Why does comparing $Z_i=1$ and $Z_i=0$ recover causal variation?
-			\vspace{0.2cm}
-			\item Through which channel can $Z_i$ affect earnings?
-			\vspace{0.2cm}
-			\item Whose treatment status is actually changed by $Z_i$?
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Identification Results for IV}{Observed Wald Ratio}
+\begin{frame}{Identification Results for IV}
 	\begin{figure}
 	\begin{tikzpicture}[comment/.style={rectangle, text centered}]
 		\centering
@@ -911,14 +900,14 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 	
 	
 	\begin{itemize}
-		\item IV uses the causal chain from draft eligibility $Z_{i}$ to military service $D_{i}$ to earnings $Y_{i}$
+		\item The IV method characterize a causal chain reaction leading from the instrument $Z_{i}$ (draft eligibility) to outcome $Y_{i}$ (earnings)
 		\vspace{0.2cm}
 		\item Intuitively:
 		\begin{equation*}
 		\begin{aligned}
-		& \text{Effect of } Z_i \text{ on } Y_i \\ 
-		&=	(\text{Effect of } Z_i \text{ on } D_i)
-		\times (\text{Effect of } D_i \text{ on } Y_i)
+		& \text{Effect of instrument on outcome} \\ 
+		&=	(\text{Effect of instrument on treatment}) \\
+		&\times (\text{Effect of treatment on outcome})
 		\end{aligned}
 		\end{equation*}
 		
@@ -930,29 +919,42 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Results for IV}{Observed Wald Ratio}
+\begin{frame}{Identification Results for IV}
 	\begin{itemize}
-		
-		\item Rearranging gives the Wald estimand:
+
+		\item Rearranging, the causal effect of military service on earnings is:
+		\begin{equation*}
+			\begin{aligned}
+				& \text{Effect of treatment on outcome} \\
+				&= \dfrac{\text{Effect of instrument on outcome}}{\text{Effect of instrument on treatment}}
+			\end{aligned}
+		\end{equation*}
+		\item Formal representation (the \textbf{Wald estimator}):
 		\begin{equation*}
 			\alpha_{IV}=\dfrac{\mathrm{E}[Y_{i}|Z_{i}=1]-\mathrm{E}[Y_{i}|Z_{i}=0]}{\mathrm{E}[D_{i}|Z_{i}=1]-\mathrm{E}[D_{i}|Z_{i}=0]}
-		\end{equation*} 
-		
-		\item This ratio has two observable pieces:
+		\end{equation*}
+
+		\item This ratio has a natural two-part interpretation:
 				\vspace{0.2cm}
 		\begin{itemize}
-			\item Reduced-form effect: the numerator captures how draft eligibility changes average earnings
-					\vspace{0.2cm}
-			\item First-stage effect: the denominator captures how draft eligibility changes the probability of military service
-					\vspace{0.2cm}
-			%\item We divide by this proportion because the total effect is "diluted" across all individuals, but only compliers are actually affected by the treatment
-			%\item Therefore, to recover the per-person treatment effect, we must scale up by dividing by the proportion of compliers
+			\item \textbf{Reduced-form} (numerator): total effect of the instrument on the outcome
+				\vspace{0.2cm}
+			\item \textbf{First-stage} (denominator): how strongly the instrument shifts treatment take-up
+				\vspace{0.2cm}
+			\item Dividing ``undilutes'' the effect --- because the lottery moves only \emph{some} people into treatment, we scale up to recover the per-person causal effect for those actually affected
 		\end{itemize}
-		
-		\item The remaining question: what causal effect does this ratio identify?
-		
+
 	\end{itemize}
 \end{frame}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1019,10 +1021,35 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 %
 
 
+
+
+
+
+
+\begin{frame}{Identification Assumptions for IV}
+	\begin{itemize}
+		\item The Wald estimator identifies a causal effect only when certain conditions hold
+		\vspace{0.2cm}
+		\item We need \textbf{four identification assumptions}:
+		\vspace{0.2cm}
+		\begin{enumerate}
+			\item \textbf{First-stage}: The instrument $Z_i$ must actually affect treatment $D_i$
+			\vspace{0.2cm}
+			\item \textbf{Independence}: The instrument is as good as randomly assigned
+			\vspace{0.2cm}
+			\item \textbf{Exclusion Restriction}: The instrument affects outcomes \emph{only} through the treatment
+			\vspace{0.2cm}
+			\item \textbf{Monotonicity}: The instrument moves everyone in the same direction (no defiers)
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+
+
+
 \begin{frame}{Identification Assumptions for IV}{First-Stage Relationship}
 	\begin{itemize}
 		
-		\item \textbf{First-Stage Relationship}: $Z_{i}$ affects treatment status $D_{i}$
+		\item \textbf{First-Stage Relationship}: $Z_{i}$ can affect treatment $D_{i}$
 		
 		\begin{equation*}
 			\mathrm{E}[D_{i}|Z_{i}=1]-\mathrm{E}[D_{i}|Z_{i}=0] \neq 0
@@ -1040,21 +1067,31 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Assumptions for IV}{Independence}
+\begin{frame}{Identification Assumptions for IV}{Independent Assumption}
 	\begin{itemize}
 	
-		\item \textbf{Independence Assumption}: $Z_{i}$ is independent of potential outcomes and potential treatments
+		\item \textbf{Independent Assumption}: $Z_{i}$ is independent of potential  outcomes and potential treatment (i.e. as good as randomly assigned)
 		
 		\begin{equation*}
 			(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i}, \mathrm{D}^{1}_{i},\mathrm{D}^{0}_{i})\indep Z_{i}
 		\end{equation*}
 		\vspace{0.2cm}
 				\begin{itemize}
-		\item Draft eligibility is as good as randomly assigned
-		\vspace{0.2cm}
-		\item Therefore, potential earnings and potential treatment choices are balanced across $Z_i=1$ and $Z_i=0$
-		\vspace{0.2cm}
-		\item This lets us replace conditional expectations given $Z_i$ with unconditional expectations in the proof
+		\item Draft eligibility is unrelated to people's potential earnings and potential treatment status 
+		
+		\begin{itemize}
+			\vspace{0.2cm}
+			\item $\mathrm{E}[\mathrm{D}^{\textbf{0}}_{i}|Z_i=1]=\mathrm{E}[\mathrm{D}^{\textbf{0}}_{i}|Z_i=0]$ 
+			\vspace{0.2cm}
+			\item $\mathrm{E}[\mathrm{D}^{\textbf{1}}_{i}|Z_i=1]=\mathrm{E}[\mathrm{D}^{\textbf{1}}_{i}|Z_i=0]$ 
+			
+			\vspace{0.2cm}
+			\item $\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|Z_i=1]=\mathrm{E}[\mathrm{Y}^{\textbf{0}}_{i}|Z_i=0]$ 
+			\vspace{0.2cm}
+			\item $\mathrm{E}[\mathrm{Y}^{\textbf{1}}_{i}|Z_i=1]=\mathrm{E}[\mathrm{Y}^{\textbf{1}}_{i}|Z_i=0]$ 
+			\vspace{0.2cm}
+			
+		\end{itemize}
 				\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -1071,13 +1108,15 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 		\item \textbf{Exclusion Restriction}: $Z_{i}$ affects outcome $Y_{i}$ only through changing treatment status $D_{i}$
 		\vspace{0.2cm}
 		\begin{itemize}	
-			\item The instrument has no direct effect on the outcome once treatment status is fixed
-			\vspace{0.2cm}
-			\item In the draft lottery example, draft eligibility should affect earnings only by changing military service
+			\item The instrument has no direct effect on the outcome, once we fix the value of the treatment	
 		
-			\begin{equation*}
-				Y_i = D_i \mathrm{Y}^{1}_{i}+(1-D_i)\mathrm{Y}^{0}_{i}
-			\end{equation*}
+			\begin{align*}
+			Y_{i}=\left\lbrace
+			\begin{array}{l}
+				\mathrm{Y}^{1}_{i}\quad \text{if $\mathrm{D}^{z=1}_{i}=1$ or $\mathrm{D}^{z=0}_{i}=1$} \\
+				\mathrm{Y}^{0}_{i}\quad \text{if $\mathrm{D}^{z=0}_{i}=0$ or $\mathrm{D}^{z=1}_{i}=0$}
+			\end{array}\right.
+		\end{align*}
 		
 		
 			\end{itemize}
@@ -1105,7 +1144,8 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 		\end{itemize}
 		%\item Note if this holds in the opposite direction $\mathrm{D}^{1}_{i} \leq \mathrm{D}^{0}_{i}$, we can always rescale $D_i$ to make the assumption hold
 		\vspace{0.2cm}
-		\item In the draft lottery example, eligibility should weakly encourage military service
+		\item In the draft lottery example: draft eligibility 
+		should encourage people to join military service 
 			\end{itemize}
 		
 	\end{itemize}
@@ -1113,19 +1153,25 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{IV and Compliance Types}
+\begin{frame}{IV and Compliers}
 	\begin{itemize}
-		\item Because draft eligibility does not perfectly determine military service, people can react differently to $Z_i$
+		\item The variation in treatment $D_{i}$ (veteran status) was not entirely from the draft eligibility $Z_{i}$ but also from individual choice
 		\vspace{0.2cm}
-		\item Each individual has two potential treatment statuses:
+		\item Thus, $\mathrm{D}^{1}_{i} = 1$ or $\mathrm{D}^{1}_{i}=0$
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item $\mathrm{D}^{1}_{i}$: treatment status if draft eligible
+			\item $\mathrm{D}^{1}_{i} = 1$: Those who get draft eligibility choose to join military service  
 			\vspace{0.2cm}
-			\item $\mathrm{D}^{0}_{i}$: treatment status if not draft eligible
+			\item $\mathrm{D}^{1}_{i}=0$: Those who get draft eligibility choose not to join military service
 		\end{itemize}
 		\vspace{0.2cm}
-		\item The pair $(\mathrm{D}^{1}_{i},\mathrm{D}^{0}_{i})$ tells us whose behavior the instrument can change
+		\item Similarly, $\mathrm{D}^{0}_{i} = 1$ or $\mathrm{D}^{0}_{i}=0$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item $\mathrm{D}^{0}_{i} = 1$: Those who did not get draft eligibility choose to join military service
+			\vspace{0.2cm}
+			\item $\mathrm{D}^{0}_{i}=0$: Those who did not get draft eligibility choose not to join military service
+		\end{itemize}
 		
 	\end{itemize}
 \end{frame}
@@ -1171,59 +1217,28 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-% \begin{frame}{IV and Compliance Types}
-% 	\begin{itemize}
-		
-% 		\item Four types of individuals:
-% 		\vspace{0.2cm}
-% 		\begin{itemize}
-% 			\vspace{0.3cm}
-% 			\item \textbf{Compliers}: $\mathrm{D}^{1}_{i}=1$ and $\mathrm{D}^{0}_{i}=0$
-% 			\begin{itemize}
-% 				\item Serve only when draft eligible
-% 			\end{itemize}
-% 			\item \textbf{Always-takers}: $\mathrm{D}^{1}_{i}=\mathrm{D}^{0}_{i}=1$
-% 			\begin{itemize}
-% 				\item Serve regardless of draft eligibility
-% 				\vspace{0.2cm}
-% 			\end{itemize}			
-% 			\item \textbf{Never-takers}: $\mathrm{D}^{1}_{i}=\mathrm{D}^{0}_{i}=0$
-% 			\begin{itemize}
-% 				\item Do not serve regardless of draft eligibility
-% 				\vspace{0.2cm}
-% 			\end{itemize}			
-% 			\item \textbf{Defiers}: $\mathrm{D}^{1}_{i}=0$ and $\mathrm{D}^{0}_{i}=1$
-% 			\begin{itemize}
-% 				\item Serve only when not draft eligible
-% 			\end{itemize}
-			
-			
-% 		\end{itemize}
-		
-% 	\end{itemize}
-% \end{frame}
-
-
-
-\begin{frame}{Identification Results for IV}{What the Wald Ratio Identifies}
+\begin{frame}{Identification Results for IV}
 	\begin{itemize}
-		
-		\begin{block}{IV Identify LATE}
-			\begin{equation*}
-			\alpha_{IV}=\dfrac{\mathrm{E}[Y_{i}|Z_{i}=1]-\mathrm{E}[Y_{i}|Z_{i}=0]}{\mathrm{E}[D_{i}|Z_{i}=1]-\mathrm{E}[D_{i}|Z_{i}=0]} 
-			= \mathrm{E}[ \mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | \mathrm{D}^{1}_{i} > \mathrm{D}^{0}_{i}]
-			\end{equation*} 
-		\end{block}
-		
-		\item IV identifies the average causal effect for individuals whose treatment status is changed by the instrument
+
+		\item Under the four identification assumptions, we can prove that the Wald estimator identifies the \textbf{Local Average Treatment Effect (LATE)}
+
+\begin{block}{IV Identifies LATE}
+	\begin{equation*}
+		\alpha_{IV}=\dfrac{\mathrm{E}[Y_{i}|Z_{i}=1]-\mathrm{E}[Y_{i}|Z_{i}=0]}{\mathrm{E}[D_{i}|Z_{i}=1]-\mathrm{E}[D_{i}|Z_{i}=0]}
+		= \mathrm{E}[ \mathrm{Y}^{1}_{i} - \mathrm{Y}^{0}_{i} | \mathrm{D}^{1}_{i} > \mathrm{D}^{0}_{i}]
+	\end{equation*}
+\end{block}
+
 		\vspace{0.2cm}
-		\item In the draft lottery example, this is the effect of military service for men induced to serve because they became draft eligible
+		\item The IV estimator identifies the causal effect \emph{only} for compliers
+		\vspace{0.2cm}
+		\item Lottery IV identifies the causal effect of military service on lifetime earnings for those who follow the lottery result (e.g.\ David and Tim)
 	\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Identification Results for IV}{Proof: Convert Observed Differences}
+\begin{frame}{Identification Results for IV}
 	\textcolor{blue}{Proof:}
 	\begin{equation*}
 		\begin{aligned}
@@ -1236,25 +1251,26 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 \end{frame}
 
 
-\begin{frame}{Identification Results for IV}{Proof: Use Compliance Types}
+\begin{frame}{Identification Results for IV}
 	\begin{itemize}
 		
-		\item Since $\mathrm{D}^{z}_{i}$ is a dummy, $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}$ can only be $1$, $0$, or $-1$
+		\item Note that since $\mathrm{D}^{z}_{i}$ is a dummy 
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item \textbf{Always-takers} and \textbf{never-takers}: $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=0$
+			\item IV estimates cannot say anything about causal effect for \textbf{always takers} or \textbf{never takers}: $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=0$
 			\vspace{0.2cm}
-			\item \textbf{Compliers}: $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1$
+			\item $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1$ (\textbf{compliers}) or $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=-1$ (\textbf{defiers})	
 			\vspace{0.2cm}
-			\item \textbf{Defiers}: $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=-1$	
+			\item Using Monotonicity Assumption: only $\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1$ exists	
 			\vspace{0.2cm}	
 		\end{itemize}	
-		\item Under monotonicity, defiers are ruled out:
+		\item $\mathrm{E}[(\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i})(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i})]$ can become the following terms:
 		\begin{equation*}
 			\begin{aligned}
 				& \mathrm{E}[(\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i})(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i})]  \\
 				& = \mathrm{E}[(\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}) \times (1)|\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1] \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1) \\
-				& = \mathrm{E}[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|\mathrm{D}^{1}_{i}>\mathrm{D}^{0}_{i}] \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1)
+				&+ \mathrm{E}[(\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}) \times (-1)|\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=-1] \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=-1) \\
+				& = \mathrm{E}[(\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}) \times (1)|\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1] \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1)
 			\end{aligned}
 		\end{equation*}
 		
@@ -1266,7 +1282,7 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Results for IV}{Proof: Interpret the First Stage}
+\begin{frame}{Identification Results for IV}
 	\begin{itemize}
 %		\item This equality holds due to properties of binary variables:
 %		\vspace{0.2cm}
@@ -1283,7 +1299,9 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 %			\end{itemize}
 %		\end{itemize}
 %		\vspace{0.2cm}
-		\item The denominator is the first-stage effect:
+\item Note that	$\mathrm{E}[\mathrm{D}^{1}_{i}]-\mathrm{E}[\mathrm{D}^{0}_{i}] = \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1)$
+\vspace{0.2cm}
+		\item Breaking down the equation:
 		\begin{equation*}
 			\begin{aligned}
 				\mathrm{E}[\mathrm{D}^{1}_{i}]-\mathrm{E}[\mathrm{D}^{0}_{i}] &= \Pr(\mathrm{D}^{1}_{i}=1) - \Pr(\mathrm{D}^{0}_{i}=1) \\
@@ -1293,12 +1311,13 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 			\end{aligned}
 		\end{equation*}
 		\vspace{0.2cm}
-		\item Under monotonicity, $\Pr(\mathrm{D}^{0}_{i}=1, \mathrm{D}^{1}_{i}=0) = 0$
+		\item Under monotonicity, $\Pr(\mathrm{D}^{0}_{i}=1, \mathrm{D}^{1}_{i}=0) = 0$ (no defiers)
 		\vspace{0.2cm}
-		\item Therefore, the first stage is the share of compliers:
+		\item Therefore:
 		\begin{equation*}
 			\mathrm{E}[\mathrm{D}^{1}_{i}]-\mathrm{E}[\mathrm{D}^{0}_{i}] = \Pr(\mathrm{D}^{1}_{i}=1, \mathrm{D}^{0}_{i}=0) = \Pr(\mathrm{D}^{1}_{i}-\mathrm{D}^{0}_{i}=1)
 		\end{equation*}
+		\item This confirms that the first-stage coefficient measures the proportion of compliers
 	\end{itemize}
 \end{frame}
 
@@ -1306,9 +1325,9 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Results for IV}{Proof: LATE}
+\begin{frame}{Identification Results for IV}
 	\begin{itemize}
-		\item Combine the numerator and denominator results
+		\item Continue the LATE proof
 	\end{itemize}			
 	\vspace{0.2cm}
 	\textcolor{blue}{Proof:}
@@ -1331,21 +1350,21 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Results for IV}{Why Local?}
+\begin{frame}{Identification Results for IV}
 	
 	\begin{itemize}
 		\vspace{0.2cm}
-		\item \textbf{Never-takers} and \textbf{always-takers} do not change treatment status when the instrument changes
+		\item \textbf{Never takers} and \textbf{always takers} do NOT change their treatment status when the instrument gets switched on and off
 		\vspace{0.2cm}
 		\begin{itemize}
-			\item They do not contribute to the first stage
+			\item So only \textbf{defiers} and \textbf{compliers} contribute to IV estimate 
 			\vspace{0.2cm}
-			\item Their treatment effects are not revealed by this instrument
+			\item IV estimate is the sum of those two effects
 			\vspace{0.2cm}
 		\end{itemize}
-		\item Monotonicity rules out \textbf{defiers}
+		\item By using monotonicity assumption, we rule out the effect from \textbf{defiers}
 		\vspace{0.2cm}
-		\item Therefore, IV identifies the average treatment effect for \textbf{compliers}
+		\item Therefore, IV design can identify the \textbf{average treatment effect for compliers}
 	\end{itemize}
 \end{frame}
 
@@ -1356,25 +1375,25 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Identification Results for IV}{LATE}
+\begin{frame}{Identification Results for IV}
 	\textcolor{blue}{LATE}\\
-	$\alpha_{\text{LATE}}=E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|\mathrm{D}^{1}_{i}>\mathrm{D}^{0}_{i}]$, the average treatment effect for compliers, is called the \textbf{Local Average Treatment Effect (LATE)}.
+	$\alpha_{\text{LATE}}=E[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}|\mathrm{D}^{1}_{i}>\mathrm{D}^{0}_{i}]$, the average treatment effect (ATE) for compliers is often called \textbf{Local Average Treatment Effect (LATE)}.
 	\begin{itemize}
 		\vspace{0.2cm}
-		\item It is local because it applies to the subpopulation whose treatment status is changed by the instrument
+		\item ATE for the individuals whose treatment status (join military service) are changed by the instrument (lottery draft)
 		\vspace{0.2cm}
 			\begin{itemize}
-		\item In this example: men induced into military service by draft eligibility
+		\item This is the ATE among the compliers
 		\vspace{0.2cm}
 			\end{itemize}
 		%\begin{itemize}
 		%\item Those that take the treatment when encouraged to do so
 		%\vspace{0.2cm}
 		%\end{itemize}
-		\item Different instruments may move different groups of compliers
+		\item LATE ($\alpha_{\text{LATE}}$) is different when using different instruments, $Z_{i}$
 		\vspace{0.2cm}
 					\begin{itemize}
-		\item Whether LATE is interesting depends on whether those compliers are substantively important
+		\item Whether LATE is interesting or not depends on the instrument
 					\end{itemize}
 	\end{itemize}
 \end{frame}
