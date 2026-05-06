@@ -353,7 +353,7 @@ jobs:
           root_file: |
             L12_RDD_data.tex
             L12_RDD_labor.tex
-            L12_RDD_labor_v2.tex
+        #   L12_RDD_labor_v2.tex
             L12_RDD_metrics.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
