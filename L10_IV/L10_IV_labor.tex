@@ -1511,39 +1511,39 @@ Joshua D. Angrist (1990) ``\textbf{Lifetime Earnings and the Vietnam Era Draft L
 
 
 
-\begin{frame}{Review: IV Estimation}{A intuitive way}
-	\begin{itemize} 
+% \begin{frame}{Review: IV Estimation}{A intuitive way}
+% 	\begin{itemize} 
 		
-		\item We can estimate $\alpha_{IV}$ by running the following two regressions:
-		\vspace{0.2cm}
-		\item Reduced form regression: the effect of lottery draft on earnings
-		\begin{equation*}
-		\begin{aligned}
-		\mathrm{Y}_i =\mu+\alpha_{RF} Z_i+X'\delta+\varepsilon_i  \\
-		\alpha_{RF}=\dfrac{Cov(Y_{i},Z_{i})}{V(Z_{i})}
-		\end{aligned}
-		\end{equation*}
-		\item First-Stage regression: the effect of lottery draft on military service
-		\begin{equation*}
-		\begin{aligned}
-		\mathrm{D}_i=\kappa + \alpha_{FS} Z_i+X'\beta + \zeta_i  \\
-		\alpha_{FS}=\dfrac{Cov(D_{i},Z_{i})}{V(Z_{i})}
-		\end{aligned}
-		\end{equation*}
-		\item The IV estimator is:
-		\begin{equation*}
-		\hat{\alpha}_{IV} = \dfrac{\hat{\alpha}_{RF}}{\hat{\alpha}_{FS}}=\dfrac{\hat{Cov}(Y_{i},Z_{i})}{\hat{Cov}(D_{i},Z_{i})}
-		\end{equation*}
-	\end{itemize}
-\end{frame}
+% 		\item We can estimate $\alpha_{IV}$ by running the following two regressions:
+% 		\vspace{0.2cm}
+% 		\item Reduced form regression: the effect of lottery draft on earnings
+% 		\begin{equation*}
+% 		\begin{aligned}
+% 		\mathrm{Y}_i =\mu+\alpha_{RF} Z_i+X'\delta+\varepsilon_i  \\
+% 		\alpha_{RF}=\dfrac{Cov(Y_{i},Z_{i})}{V(Z_{i})}
+% 		\end{aligned}
+% 		\end{equation*}
+% 		\item First-Stage regression: the effect of lottery draft on military service
+% 		\begin{equation*}
+% 		\begin{aligned}
+% 		\mathrm{D}_i=\kappa + \alpha_{FS} Z_i+X'\beta + \zeta_i  \\
+% 		\alpha_{FS}=\dfrac{Cov(D_{i},Z_{i})}{V(Z_{i})}
+% 		\end{aligned}
+% 		\end{equation*}
+% 		\item The IV estimator is:
+% 		\begin{equation*}
+% 		\hat{\alpha}_{IV} = \dfrac{\hat{\alpha}_{RF}}{\hat{\alpha}_{FS}}=\dfrac{\hat{Cov}(Y_{i},Z_{i})}{\hat{Cov}(D_{i},Z_{i})}
+% 		\end{equation*}
+% 	\end{itemize}
+% \end{frame}
 
 \begin{frame}{Review: IV Estimation}{Two Stage Least Squares (TSLS)}
 	\begin{itemize} 
 		
-	\item In practice, IV is often estimated using Two Stage Least Squares (TSLS).
-	\vspace{0.2cm}
+	\item In practice,  We can estimate $\alpha_{IV}$ by using Two Stage Least Squares (TSLS).
+	% \vspace{0.2cm}
 
-	\item TSLS is especially useful when we include covariates, $X_i$, or have multiple instruments.
+	% \item TSLS is especially useful when we include covariates, $X_i$, or have multiple instruments.
 	\vspace{0.2cm}
 
 	\item TSLS involves two steps:
@@ -2821,7 +2821,7 @@ ivreg(logpgp95 ~ avexpr + lat_abst | logem4 + lat_abst, data = data)
 		\item \textbf{First-stage F-statistic} (homoskedastic case):
 				\vspace{0.2cm}
 		\begin{itemize}
-			\item Standard F-test from first-stage regression
+			\item Cragg-Donald F-statistic from first-stage regression
 					\vspace{0.2cm}
 			\item Compare to Stock-Yogo critical values
 		\end{itemize}
@@ -2914,34 +2914,66 @@ ivreg(logpgp95 ~ avexpr + lat_abst | logem4 + lat_abst, data = data)
 
 
 
+% \begin{frame}{Statistical Inference Robust to Weak Instruments}
+% 	\begin{itemize}
+	
+% 		\item Practical implementation using Stata:
+% 		\begin{itemize}
+% 			\vspace{0.2cm}
+% 			\item \texttt{ivreghdfe} supports weak IV diagnostics.
+% 						\vspace{0.2cm}
+% 			\item Use the \texttt{first} option to obtain Cragg-Donald F-statistic and Anderson-Rubin tests
+% 			%			\vspace{0.2cm}
+% 			%\item Use the \texttt{ar} option to perform Anderson-Rubin tests robust to weak instruments.
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
+
+
+
 \begin{frame}{Statistical Inference Robust to Weak Instruments}
 	\begin{itemize}
 	
 		\item Practical implementation using Stata:
 		\begin{itemize}
 			\vspace{0.2cm}
-			\item \texttt{ivreghdfe} supports weak IV diagnostics.
-						\vspace{0.2cm}
-			\item Use the \texttt{first} option to obtain Cragg-Donald F-statistic and Anderson-Rubin tests
-			%			\vspace{0.2cm}
-			%\item Use the \texttt{ar} option to perform Anderson-Rubin tests robust to weak instruments.
+
+			\item Use \texttt{ivreg2} or \texttt{ivreghdfe} with the \texttt{first} option.
+			\vspace{0.2cm}
+
+			\item Example without high-dimensional fixed effects:
+			\begin{equation*}
+			\texttt{ivreg2 Y X (D = Z), robust first}
+			\end{equation*}
+
+			\item Example with high-dimensional fixed effects:
+			\begin{equation*}
+			\texttt{ivreghdfe Y X (D = Z), absorb(fe) cluster(id) first}
+			\end{equation*}
+
+			\item The output reports weak-IV diagnostics, including:
+			\begin{itemize}
+				\item Cragg-Donald Wald F statistic
+				\item Kleibergen-Paap rk LM statistic
+				\item Kleibergen-Paap rk Wald F statistic
+			\end{itemize}
+
+			\vspace{0.2cm}
+
+			\item With robust or clustered standard errors, focus on the Kleibergen-Paap rk Wald F statistic rather than the Cragg-Donald statistic.
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
-
-
-
-
-\begin{frame}{Statistical Inference Robust to Weak Instruments}
+% \begin{frame}{Statistical Inference Robust to Weak Instruments}
 	
-	\begin{center}
-		\begin{figure}[p]
-			\centering
-			\includegraphics[width=0.5\textwidth]{figure/weak_iv_stata.png}
-		\end{figure}
-	\end{center}
-\end{frame}
+% 	\begin{center}
+% 		\begin{figure}[p]
+% 			\centering
+% 			\includegraphics[width=0.5\textwidth]{figure/weak_iv_stata.png}
+% 		\end{figure}
+% 	\end{center}
+% \end{frame}
 
 
 
