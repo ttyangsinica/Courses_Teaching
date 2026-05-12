@@ -2527,6 +2527,17 @@ ggplot(cate_df, aes(x = tau_hat)) +
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Step 6: CATE Distribution}{LaLonde Job Training Data}
+\begin{center}
+  \includegraphics[width=0.82\textwidth]{figure/cate_distribution.png}
+\end{center}
+\vspace{-0.2cm}
+\begin{itemize}\small
+  \item The red dashed line marks the mean CATE (close to the ATE estimate).
+  \item The spread shows substantial heterogeneity: some workers benefit far more than others.
+\end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]{Step 7: Summarize Heterogeneity}
 \begin{itemize}
   \item Use BLP and variable importance:
@@ -2544,6 +2555,17 @@ sort(vi, decreasing = TRUE)
   \item BLP helps interpret which covariates are associated with larger effects.
   \item Variable importance helps identify which covariates are useful for splitting.
   \item Read them as summaries of heterogeneity, not as a replacement for the research design.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Step 7: Variable Importance}{LaLonde Job Training Data}
+\begin{center}
+  \includegraphics[width=0.82\textwidth]{figure/variable_importance.png}
+\end{center}
+\vspace{-0.2cm}
+\begin{itemize}\small
+  \item \textbf{Age} and \textbf{pre-training earnings} (re74, re75) drive most of the splits.
+  \item Workers who were younger or had lower pre-training earnings tend to benefit more from training.
 \end{itemize}
 \end{frame}
 
