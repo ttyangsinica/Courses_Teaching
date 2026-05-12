@@ -251,44 +251,49 @@
 
 \section{Main Idea}
 
-\begin{frame}{Today's Goal}
+\begin{frame}{Main Idea of Causal Forest}{}
 \begin{itemize}
-  \item Understand what problem causal forest solves.
+  \item In previous lectures, we focused on one average causal parameter --- the \textbf{Average Treatment Effect (ATE)}:
+  \[
+    \alpha_{\text{ATE}} = \mathrm{E}\!\left[Y_i^1 - Y_i^0\right]
+  \]
   \vspace{0.2cm}
-  \item Learn just enough decision tree and random forest intuition to understand causal forest.
+  \item But treatment effects may \textbf{vary across individuals}: a job training program may help young low-education workers more than older workers
   \vspace{0.2cm}
-  \item Know what assumptions are needed for causal interpretation.
+  \item Causal forest estimates the \textbf{Conditional Average Treatment Effect (CATE)}:
+  \[
+    \tau(x) = \mathrm{E}\!\left[Y_i^1 - Y_i^0 \mid X_i = x\right]
+  \]
   \vspace{0.2cm}
-  \item Read the main outputs: ATE, CATE distribution, BLP, variable importance.
-  \vspace{0.2cm}
-  \item See how to run a simple example using the \texttt{grf} package in R.
+  \item It answers the policy question: \textbf{who benefits more} from a program?
 \end{itemize}
 \end{frame}
 
-\begin{frame}{One-Sentence Summary}
-\begin{block}{Causal forest}
-  A causal forest estimates how the treatment effect varies with observed characteristics $X$ by averaging many honest causal trees.
-\end{block}
-
-\vspace{0.25cm}
+\begin{frame}{Main Idea of Causal Forest}{}
+\begin{itemize}
+  \item Instead of estimating one average effect, we want a function $\tau(x)$ that varies with observed characteristics $X_i$
+  \vspace{0.2cm}
+  \item A simple regression of $Y_i$ on $D_i$ and $X_i$ gives a linear, parametric answer --- it cannot capture flexible heterogeneity
+  \vspace{0.2cm}
+  \item Causal forest adapts the idea of \textbf{random forest} to the causal inference setting:
+\end{itemize}
+\vspace{0.15cm}
 \begin{center}
 \begin{tikzpicture}[
-  node distance=0.55cm,
-  box/.style={draw, rounded corners, align=center, minimum width=2.7cm, minimum height=0.85cm},
+  node distance=0.6cm,
+  box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
   arrow/.style={-{Latex[length=2mm]}, thick}
 ]
-  \node[box, fill=Blue!8] (data) {Data\\$(\mathrm{Y},D,X)$};
-  \node[box, fill=Green!8, right=of data] (trees) {Many honest\\causal trees};
-  \node[box, fill=Orange!10, right=of trees] (cate) {CATE\\$\hat{\tau}(x)$};
-  \draw[arrow] (data) -- (trees);
+  \node[box, fill=Blue!8]    (data)  {Data\\$(\mathrm{Y},D,X)$};
+  \node[box, fill=Green!8,  right=of data]  (trees) {Many honest\\causal trees};
+  \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
+  \draw[arrow] (data)  -- (trees);
   \draw[arrow] (trees) -- (cate);
 \end{tikzpicture}
 \end{center}
-
-\vspace{0.2cm}
+\vspace{0.1cm}
 \begin{itemize}
-  \item It is not just a prediction tool.
-  \item It is a way to learn \textbf{who benefits more} from a policy or program.
+  \item Each tree uses a \textbf{random subset} of observations and covariates; averaging trees removes noise and gives a stable $\hat{\tau}(x)$
 \end{itemize}
 \end{frame}
 
