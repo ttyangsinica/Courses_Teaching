@@ -9,10 +9,15 @@
 \usepackage{lmodern}
 \usepackage{fontspec}
 \usepackage{xeCJK}
-\setCJKmainfont{Noto Sans CJK TC}
-%（可選）若你會用到無襯線中文或等寬中文，建議補上：
-\setCJKsansfont{Noto Sans CJK TC}
-\setCJKmonofont{Noto Sans Mono CJK TC}
+\IfFontExistsTF{Noto Sans TC}{
+  \setCJKmainfont{Noto Sans TC}
+  \setCJKsansfont{Noto Sans TC}
+  \setCJKmonofont{Noto Sans TC}
+}{
+  \setCJKmainfont{Noto Sans CJK TC}
+  \setCJKsansfont{Noto Sans CJK TC}
+  \setCJKmonofont{Noto Sans Mono CJK TC}
+}
 
 \usepackage[english]{babel}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
@@ -198,7 +203,7 @@
 {\today}
 
 % \usetheme{CambridgeUS}
-%\usecolortheme{seahorse}
+% %\usecolortheme{seahorse}
 % \setbeamertemplate{footline}{%
 % 	\hfill\usebeamercolor[fg]{page number in head/foot}%
 % 	\usebeamerfont{page number in head/foot}%
@@ -218,12 +223,12 @@
 
 
 % \usepackage{beamerthemeshadow}
-%\usecolortheme{seahorse}
-\setbeamertemplate{footline}{%
-	\hfill\usebeamercolor[fg]{page number in head/foot}%
-	\usebeamerfont{page number in head/foot}%
-	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
-}
+% %\usecolortheme{seahorse}
+% \setbeamertemplate{footline}{%
+% 	\hfill\usebeamercolor[fg]{page number in head/foot}%
+% 	\usebeamerfont{page number in head/foot}%
+% 	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+% }
 
 
 %\usepackage{beamerthemeshadow}
@@ -251,7 +256,7 @@
 
 \section{Main Idea}
 
-\begin{frame}{Main Idea of Causal Forest}{}
+\begin{frame}{Treatment Effect Heterogeneity}{}
 \begin{itemize}
   \item In previous lectures, we focused on one average causal parameter --- the \textbf{Average Treatment Effect (ATE)}:
   \[
@@ -269,35 +274,8 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Main Idea of Causal Forest}{}
-\begin{itemize}
-  \item Instead of estimating one average effect, we want a function $\tau(x)$ that varies with observed characteristics $X_i$
-  \vspace{0.2cm}
-  \item A simple regression of $Y_i$ on $D_i$ and $X_i$ gives a linear, parametric answer --- it cannot capture flexible heterogeneity
-  \vspace{0.2cm}
-  \item Causal forest adapts the idea of \textbf{random forest} to the causal inference setting:
-\end{itemize}
-\vspace{0.15cm}
-\begin{center}
-\begin{tikzpicture}[
-  node distance=0.6cm,
-  box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
-  arrow/.style={-{Latex[length=2mm]}, thick}
-]
-  \node[box, fill=Blue!8]    (data)  {Data\\$(\mathrm{Y},D,X)$};
-  \node[box, fill=Green!8,  right=of data]  (trees) {Many honest\\causal trees};
-  \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
-  \draw[arrow] (data)  -- (trees);
-  \draw[arrow] (trees) -- (cate);
-\end{tikzpicture}
-\end{center}
-\vspace{0.1cm}
-\begin{itemize}
-  \item Each tree uses a \textbf{random subset} of observations and covariates; averaging trees removes noise and gives a stable $\hat{\tau}(x)$
-\end{itemize}
-\end{frame}
 
-\begin{frame}{Running Example: Job Training}
+\begin{frame}{Motivating Example: Job Training}
 \begin{itemize}
   \item Suppose a government offers a job training program.
   \vspace{0.2cm}
@@ -336,27 +314,44 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{The Fundamental Causal Problem}
-\begin{itemize}
-  \item Each person has two potential outcomes:
-  \[
-    \mathrm{Y}^{1}_{i} \quad \text{if treated}, \qquad
-    \mathrm{Y}^{0}_{i} \quad \text{if untreated}.
-  \]
-  \vspace{0.15cm}
-  \item The individual treatment effect is $\tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$, but we only observe one outcome:
-  \[
-    \mathrm{Y}_i = D_i\mathrm{Y}^{1}_{i} + (1-D_i)\mathrm{Y}^{0}_{i}.
-  \]
-\end{itemize}
 
-\vspace{0.2cm}
-\begin{block}{Causal forest does not observe individual effects.}
-  It estimates average effects for workers with \emph{similar} $X$ --- and it needs identification (RCT, DID, RDD, \ldots) to give these averages a causal interpretation.
-\end{block}
+\begin{frame}{Why Heterogeneity Matters}
+\begin{itemize}
+
+  \item Youth employment programs: which youth benefit most?
+  \vspace{0.2cm}
+  \item Education policy: do returns differ by background or local labor market?
+  \vspace{0.2cm}
+  \item Minimum wage: do effects differ by worker skill, firm size, or region?
+  \vspace{0.2cm}
+  \item Parental leave: do effects differ by previous earnings or occupation?
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Traditional Approaches to Treatment Effect Heterogeneity}{}
+
+
+
+% \begin{frame}{The Fundamental Causal Problem}
+% \begin{itemize}
+%   \item Each person has two potential outcomes:
+%   \[
+%     \mathrm{Y}^{1}_{i} \quad \text{if treated}, \qquad
+%     \mathrm{Y}^{0}_{i} \quad \text{if untreated}.
+%   \]
+%   \vspace{0.15cm}
+%   \item The individual treatment effect is $\tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$, but we only observe one outcome:
+%   \[
+%     \mathrm{Y}_i = D_i\mathrm{Y}^{1}_{i} + (1-D_i)\mathrm{Y}^{0}_{i}.
+%   \]
+% \end{itemize}
+
+% \vspace{0.2cm}
+% \begin{block}{Causal forest does not observe individual effects.}
+%   It estimates average effects for workers with \emph{similar} $X$ --- and it needs identification (RCT, DID, RDD, \ldots) to give these averages a causal interpretation.
+% \end{block}
+% \end{frame}
+
+\begin{frame}{Treatment Effect Heterogeneity}{Traditional Approaches}
 \begin{itemize}
   \item Researchers have traditionally explored heterogeneity in two ways:
   \vspace{0.2cm}
@@ -374,7 +369,38 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Causal Forest: A Data-Driven Approach}{}
+
+
+\begin{frame}{Treatment Effect Heterogeneity}{Causal Forest: A Data-Driven Approach}
+\begin{itemize}
+  \item Instead of estimating one average effect, we want a function $\tau(x)$ that varies with observed characteristics $X_i$
+  \vspace{0.2cm}
+  \item A simple regression of $Y_i$ on $D_i$ and $X_i$ gives a linear, parametric answer --- it cannot capture flexible heterogeneity
+  \vspace{0.2cm}
+  \item Causal forest adapts the idea of \textbf{random forest} to the causal inference setting:
+\end{itemize}
+\vspace{0.15cm}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.6cm,
+  box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+  \node[box, fill=Blue!8]    (data)  {Data\\$(\mathrm{Y},D,X)$};
+  \node[box, fill=Green!8,  right=of data]  (trees) {Many honest\\causal trees};
+  \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
+  \draw[arrow] (data)  -- (trees);
+  \draw[arrow] (trees) -- (cate);
+\end{tikzpicture}
+\end{center}
+\vspace{0.1cm}
+\begin{itemize}
+  \item Each tree uses a \textbf{random subset} of observations and covariates; averaging trees removes noise and gives a stable $\hat{\tau}(x)$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Treatment Effect Heterogeneity}{Causal Forest: A Data-Driven Approach}
 \begin{itemize}
   \item Causal forest is \textbf{not} an identification strategy --- it does not solve the selection bias problem on its own
   \vspace{0.2cm}
@@ -388,7 +414,13 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
     \item \textbf{RDD}: who benefits most near the discontinuity threshold?
   \end{itemize}
   \vspace{0.2cm}
-  \item Unlike subgroup analysis or interaction terms, causal forest \textbf{searches the data} for which characteristics drive heterogeneity --- without the researcher pre-specifying them
+  \item Unlike subgroup analysis or interaction terms, causal forest \textbf{searches the data} for which characteristics drive heterogeneity
+    \vspace{0.2cm}
+  \begin{itemize}
+
+  \item Without the researcher pre-specifying them
+  \end{itemize}
+
 \end{itemize}
 \end{frame}
 
@@ -406,7 +438,9 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
     \item It estimates a richer object $\tau(x)$ first, and policy summaries such as ATE or ATT are recovered by averaging.
   \end{itemize}
   \vspace{0.2cm}
-  \item This also means: if heterogeneity is small, $\tau(x) \approx \alpha_{\text{ATE}}$ for all $x$ --- causal forest collapses back to the usual ATE.
+  \item This also means: if heterogeneity is small, $\tau(x) \approx \alpha_{\text{ATE}}$ for all $x$ 
+
+%--- causal forest collapses back to the usual ATE.
 \end{itemize}
 \end{frame}
 
@@ -425,195 +459,960 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
 
 \section{Decision Tree and Random Forest}
 
-\begin{frame}{Why We Need a Flexible Method}
-\begin{itemize}
-  \item One simple approach is to interact treatment with covariates:
-  \[
-    \mathrm{Y}_i
-    =
-    \delta+\alpha D_i+X_i\beta+(D_i\times X_i)\gamma+\epsilon_i.
-  \]
+%=============================================================
+\title[]
+{Decision Trees}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Decision Trees}{Main Idea}
+	\begin{itemize}
+		\item A \textbf{decision tree} partitions the covariate space into rectangular regions, and fits a simple model (e.g., a mean) within each region
+		\vspace{0.3cm}
+
+       % (Recursive Binary Splitting)
+		\item \textbf{Algorithm :}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item[1] Find the variable $X^j$ and split point $s$ that minimizes prediction error
+			\vspace{0.2cm}
+			\item[2] Divide the data into two regions: $\{X^j < s\}$ and $\{X^j \geq s\}$
+			\vspace{0.2cm}
+			\item[3] Repeat within each region until a stopping rule is met
+		\end{itemize}
+		\vspace{0.3cm}
+		\item The final estimate in each \textbf{leaf} (terminal node) is the mean of $Y$ for observations that fall in that leaf
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Decision Trees}{Finding the Best Split}
+\textbf{How to find $(X^j,\, s)$ that minimises prediction error:}
+\vspace{0.2cm}
+\begin{enumerate}
+  \item For each variable $X^j$ and each candidate split point $s$ (every observed value):
   \vspace{0.2cm}
-  \item This imposes a mostly linear structure.
-  \vspace{0.2cm}
-  \item But treatment effects may depend on nonlinear patterns:
+
   \begin{itemize}
-    \item young \textit{and} low education,
-    \item low previous earnings \textit{and} unmarried,
-    \item thresholds such as age below 25 or earnings below zero.
+    \item Divide data into two regions:
+ 
+
+      $R_1(j,s) = \{i : X^j_i < s\}$ and $R_2(j,s) = \{i : X^j_i \geq s\}$
+         \vspace{0.2cm}
+    \item Compute the \textbf{residual sum of squares (RSS)} after the split:
+    \begin{align*}
+      \text{RSS}(j,s) \;=\;
+      \sum_{i\in R_1}\!\bigl(Y_i - \bar{Y}_{R_1}\bigr)^2
+      \;+\;
+      \sum_{i\in R_2}\!\bigl(Y_i - \bar{Y}_{R_2}\bigr)^2
+    \end{align*}
+    where $\bar{Y}_{R_1},\bar{Y}_{R_2}$ are the mean $Y$ in each region\
+    \vspace{0.2cm}
+
+  \end{itemize}
+  \item Choose the $(j^*, s^*)$ that gives the \textbf{smallest} $\text{RSS}(j,s)$
+  \vspace{0.2cm}
+  \item Repeat recursively inside each region
+\end{enumerate}
+
+% \vspace{0.2cm}
+% \textbf{Common stopping rules (hyperparameters):}
+% \vspace{0.1cm}
+
+% \begin{tabular}{ll}
+% \texttt{min\_node\_size} & Stop if a region has $<k$ observations (e.g.\ $k=5$) \\[3pt]
+% \texttt{max\_depth}      & Stop after $d$ levels of splits (e.g.\ $d=5$) \\[3pt]
+% \texttt{min\_decrease}   & Stop if best split reduces RSS by $<\varepsilon$ \\
+% \end{tabular}
+
+% \vspace{0.15cm}
+% \begin{itemize}
+%   \item These rules \textbf{prevent overfitting}: a tree that keeps splitting until every leaf has 1 observation perfectly fits training data but predicts nothing
+% \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}{Decision Trees}{When to Stop Splitting}
+
+\textbf{Stopping rules} control tree complexity and prevent overfitting:
+\vspace{0.3cm}
+\begin{itemize}
+  \item \textbf{Minimum leaf size}: 
+  \begin{itemize}
+    \vspace{0.2cm}
+\item  Do not split a region if it contains fewer than $k$ observations (e.g.\ $k = 5$). 
+     \vspace{0.05cm}
+    \item  Ensures each leaf has enough data for a reliable estimate of $\bar{Y}$.
   \end{itemize}
   \vspace{0.2cm}
-  \item Causal forest searches for these patterns more flexibly.
+  \item \textbf{Maximum tree depth}:
+  \begin{itemize}
+    \vspace{0.2cm}
+
+    \item Halt after $d$ levels of recursive splits (e.g.\ $d = 5$). 
+      \vspace{0.2cm}
+
+    \item Limits the total number of leaves to at most $2^d$.
+  \end{itemize}
 \end{itemize}
+
 \end{frame}
 
-\begin{frame}{What Is a Decision Tree?}
+
+\begin{frame}{Decision Trees}{When to Stop Splitting}
+
 \begin{itemize}
-  \item A decision tree repeatedly asks yes/no questions about covariates $X_i$.
-  \vspace{0.2cm}
-  \item Each question splits the sample into smaller groups.
-  \vspace{0.2cm}
-  \item The final groups are called \textbf{leaves} or \textbf{terminal nodes}.
-  \vspace{0.2cm}
-  \item Within each leaf, the model uses a simple estimate:
-  \[
-    \hat{m}(\ell)=\frac{1}{N_\ell}\sum_{i:X_i\in \ell}\mathrm{Y}_i.
-  \]
-  \vspace{0.2cm}
-  \item So a tree is a flexible way to create data-driven subgroups.
+  \item \textbf{Minimum RSS reduction}:
+  \begin{itemize}
+   \vspace{0.2cm}
+   \item Stop splitting a region if the best available split reduces RSS by less than $\varepsilon$. 
+     \vspace{0.2cm}
+   \item  Skips splits that add complexity without meaningfully improving fit.
+     \vspace{0.2cm}
 \end{itemize}
-\end{frame}
-
-\begin{frame}{Decision Tree: The Prediction Version}
-\begin{center}
-\begin{tikzpicture}[
-  level distance=1.05cm,
-  sibling distance=3.4cm,
-  edge from parent/.style={draw,-{Latex[length=2mm]}},
-  every node/.style={draw, rounded corners, align=center, font=\small, fill=gray!6}
-]
-\node {Age $<25$?}
-  child {node {Education $<12$?}
-    child {node {$\hat{\mathrm{Y}}=9{,}000$}}
-    child {node {$\hat{\mathrm{Y}}=12{,}000$}}
-  }
-  child {node {Prior earnings $<5{,}000$?}
-    child {node {$\hat{\mathrm{Y}}=10{,}500$}}
-    child {node {$\hat{\mathrm{Y}}=18{,}000$}}
-  };
-\end{tikzpicture}
-\end{center}
-
-\vspace{0.25cm}
-\begin{itemize}
-  \item A tree partitions the covariate space into leaves.
-  \item Prediction tree: each leaf predicts the average outcome $\hat{\mathrm{Y}}$.
-  \item It is easy to interpret, but a single tree is unstable.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Decision Tree: Partition of Covariate Space}
-\begin{center}
-\begin{tikzpicture}[x=0.12cm,y=0.12cm]
-  \draw[->] (0,0) -- (60,0) node[right] {age};
-  \draw[->] (0,0) -- (0,38) node[above] {education};
-  \draw[thick, Blue] (25,0) -- (25,38);
-  \draw[thick, Blue] (25,18) -- (60,18);
-  \draw[thick, Blue] (0,24) -- (25,24);
-  \node at (12,12) {Leaf 1};
-  \node at (12,31) {Leaf 2};
-  \node at (42,9) {Leaf 3};
-  \node at (42,27) {Leaf 4};
-  \node[below] at (25,0) {$25$};
-  \node[left] at (0,24) {$12$};
-  \node[left] at (0,18) {$10$};
-\end{tikzpicture}
-\end{center}
-
 \vspace{0.2cm}
-\begin{itemize}
-  \item A tree divides the $X$-space into rectangular regions.
-  \item People in the same leaf receive the same prediction.
-  \item Deeper trees create smaller groups and more flexible predictions.
+
+  \item \textbf{Why necessary?} 
+\vspace{0.2cm}
+
+    \begin{itemize}  
+  \item A tree that splits until every leaf has exactly one observation fits the training data \emph{perfectly} but has no predictive power --- this is \textbf{overfitting}
+
+  \end{itemize}
+
 \end{itemize}
+
+
 \end{frame}
 
-\begin{frame}{How a Prediction Tree Chooses Splits}
-\begin{itemize}
-  \item A prediction tree chooses the split that best predicts $\mathrm{Y}_i$.
-  \vspace{0.2cm}
-  \item For each candidate split, compare prediction errors:
-  \[
-    \sum_{i\in R_1}\left(\mathrm{Y}_i-\bar{Y}_{R_1}\right)^2
-    +
-    \sum_{i\in R_2}\left(\mathrm{Y}_i-\bar{Y}_{R_2}\right)^2.
-  \]
-  \vspace{0.2cm}
-  \item The tree chooses the split with the smallest residual sum of squares.
-  \vspace{0.2cm}
-  \item Intuition: put people with similar outcomes into the same leaf.
-\end{itemize}
+
+\begin{frame}{Decision Trees}{Illustration}
+	\begin{itemize}
+		\item Suppose we want to predict wages $Y$ using age and education $X$
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Split 1: age $< 30$ vs. age $\geq 30$
+			\vspace{0.2cm}
+			\item Split 2 (within age $\geq 30$): educ $< 12$ vs. educ $\geq 12$
+		\end{itemize}
+		\vspace{0.3cm}
+		\item Each leaf contains observations with similar $X$ and similar predicted $Y$
+		% \vspace{0.3cm}
+		% \item \textbf{Advantages:}
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item Flexible: can capture nonlinear and interaction effects automatically
+		% 	\vspace{0.2cm}
+		% 	\item Interpretable: easy to visualize and explain
+		% \end{itemize}
+		% \vspace{0.3cm}
+		% \item \textbf{Disadvantage:} A single tree tends to \textbf{overfit} (high variance)
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item Solution: aggregate many trees (\textbf{Random Forest})
+		% \end{itemize}
+	\end{itemize}
 \end{frame}
 
-\begin{frame}{Why a Single Tree Is Not Enough}
-\begin{itemize}
-  \item A single decision tree is easy to interpret.
-  \vspace{0.2cm}
-  \item But it has \textbf{high variance}:
+
+
+
+\begin{frame}{Decision Trees: Tree Structure Example}
+\begin{columns}[T]
+	\begin{column}{0.52\textwidth}
+		\begin{center}
+		\begin{tikzpicture}[
+			level 1/.style={sibling distance=3.5cm, level distance=1.8cm},
+			level 2/.style={sibling distance=2.1cm, level distance=1.6cm},
+			internal/.style={draw, rounded corners, fill=orange!25,
+				align=center, font=\small,
+				minimum width=2.2cm, minimum height=0.7cm},
+			leaf/.style={draw, rounded corners, fill=green!25,
+				align=center, font=\footnotesize,
+				minimum width=1.7cm, minimum height=0.85cm},
+			edge from parent/.style={draw, -stealth, thick}
+		]
+		\node[internal] {age $< 30$?}
+			child {node[leaf] {Leaf 1\\ $\hat{\mathrm{Y}}=\$8{,}200$}
+				edge from parent node[left, draw=none, fill=none,
+					font=\footnotesize] {Yes}
+			}
+			child {node[internal] {educ $< 12$?}
+				child {node[leaf] {Leaf 2\\ $\hat{\mathrm{Y}}=\$10{,}100$}
+					edge from parent node[left, draw=none, fill=none,
+						font=\footnotesize] {Yes}
+				}
+				child {node[leaf] {Leaf 3\\ $\hat{\mathrm{Y}}=\$11{,}500$}
+					edge from parent node[right, draw=none, fill=none,
+						font=\footnotesize] {No}
+				}
+				edge from parent node[right, draw=none, fill=none,
+					font=\footnotesize] {No}
+			};
+		\end{tikzpicture}
+		\end{center}
+	\end{column}
+	\begin{column}{0.48\textwidth}
+		\small
+		\begin{itemize}
+			\item \textbf{Internal nodes} (orange): decision rules on $X$
+			\vspace{0.2cm}
+			\item \textbf{Leaves} (green): prediction $\hat{\mathrm{Y}}$ = mean of $\mathrm{Y}_i$ in that region
+			\vspace{0.3cm}
+			\item \textbf{Prediction}: follow branches until reaching a leaf
+			\vspace{0.3cm}
+			\item \textit{Example}: age $= 35$, educ $= 14$\\[4pt]
+			$\rightarrow$ age $\geq 30$, educ $\geq 12$\\[2pt]
+			$\rightarrow$ \textbf{Leaf 3}: $\hat{\mathrm{Y}} = \$11{,}500$
+		\end{itemize}
+	\end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+\begin{frame}{Decision Trees: Partition of Feature Space}
+\begin{columns}[T]
+	\begin{column}{0.52\textwidth}
+		\vspace{0.3cm}
+		\begin{center}
+		\begin{tikzpicture}[scale=0.88]
+			% Fill regions first
+			\fill[green!20]  (0,0) rectangle (2.8,4.0);
+			\fill[orange!20] (2.8,0) rectangle (5.6,2.0);
+			\fill[blue!20]   (2.8,2.0) rectangle (5.6,4.0);
+			% Outer border
+			\draw[thick] (0,0) rectangle (5.6,4.0);
+			% Split 1: vertical at age=30
+			\draw[thick, NavyBlue] (2.8,0) -- (2.8,4.0);
+			% Split 2: horizontal at educ=12 (right half only)
+			\draw[thick, NavyBlue] (2.8,2.0) -- (5.6,2.0);
+			% Region labels
+			\node[font={\small\bfseries}] at (1.4, 2.8) {Leaf 1};
+			\node[font=\small] at (1.4, 2.2) {\$8,200};
+			\node[font={\small\bfseries}] at (4.2, 1.0) {Leaf 2};
+			\node[font=\small] at (4.2, 0.4) {\$10,100};
+			\node[font={\small\bfseries}] at (4.2, 3.2) {Leaf 3};
+			\node[font=\small] at (4.2, 2.6) {\$11,500};
+			% Axes
+			\draw[->] (0,-0.15) -- (5.8,-0.15) node[right, font=\small] {age};
+			\draw[->] (-0.15,0) -- (-0.15,4.3) node[above, font=\small] {educ};
+			% Axis ticks
+			\draw (2.8,-0.05) -- (2.8,-0.25) node[below, font=\footnotesize] {30};
+			\draw (-0.05,2.0) -- (-0.25,2.0) node[left, font=\footnotesize] {12};
+		\end{tikzpicture}
+		\end{center}
+	\end{column}
+	\begin{column}{0.48\textwidth}
+		\small
+		\begin{itemize}
+			\item Each split divides the feature space into \textbf{rectangular regions}
+			\vspace{0.3cm}
+			\item All observations in the same region receive the \textbf{same prediction} (the in-region mean of $\mathrm{Y}$)
+			\vspace{0.3cm}
+			\item A \textbf{deeper tree} $\Rightarrow$ more splits $\Rightarrow$ smaller regions $\Rightarrow$ more flexible, but risks \textbf{overfitting}
+			\vspace{0.3cm}
+			\item The tree approximates any nonlinear relationship between $\mathrm{Y}$ and $X$ without specifying a functional form
+		\end{itemize}
+	\end{column}
+\end{columns}
+\end{frame}
+
+
+
+
+%=============================================================
+\title[]
+{Random Forest}
+
+\author{}
+\institute{}
+\date{}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+
+
+\begin{frame}{Why a Single Decision Tree Is Not Enough}
+	\begin{itemize}
+		\item A single deep tree has a fundamental weakness: \textbf{high variance}
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item The tree ``memorizes'' the training data rather than learning the true pattern
+			\vspace{0.2cm}
+			\item Small changes in the data (e.g.\ adding or removing a few observations) can lead to a completely different tree structure
+			\vspace{0.2cm}
+			\item Predictions on new data are unstable and often poor
+		\end{itemize}
+		% \vspace{0.2cm}
+		% \item \textbf{Intuition:} Like asking one person for an opinion --- noisy and unreliable
+		% \vspace{0.2cm}
+		% \item \textbf{Solution:} Ask many people independently and take the average
+		% \vspace{0.2cm}
+		% \begin{itemize}
+		% 	\item In ML: grow many diverse trees on different random subsamples and average their predictions
+  %           		\vspace{0.2cm}
+		% 	\item This is \textbf{Random Forest} (Breiman, 2001)
+		% \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Why a Single Decision Tree Is Not Enough}{High Variance}
+\begin{columns}[T]
+
+\begin{column}{0.44\textwidth}
+  \begin{center}\textbf{Sample A}\end{center}
+  \begin{center}\small
+  \begin{tabular}{@{}ccc@{}}
+    \toprule
+    Age & Educ & Wage \\
+    \midrule
+    20 &  9 & \$8  \\
+    25 &  9 & \$9  \\
+    40 &  9 & \$21 \\
+    45 &  9 & \$22 \\
+    50 & 12 & \$23 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Age $<30$: wages \$8--9
+          \vspace{0.1cm}
+    \item Age $\geq30$: wages \$21--23
+  \end{itemize}
   \vspace{0.1cm}
-  \begin{itemize}
-    \item small changes in the data can change the first split,
-    \item changing the first split changes all later splits,
-    \item predictions can be unstable.
+  $\Rightarrow$ \textbf{Tree splits on Age}
+\end{column}
+\hfill
+\begin{column}{0.50\textwidth}
+  \begin{center}\textbf{Sample B}\end{center}
+  \begin{center}\small
+  \begin{tabular}{@{}ccc@{}}
+    \toprule
+    Age & Educ & Wage \\
+    \midrule
+    20 &  9 & \$8                  \\
+    \textcolor{red}{25} & \textcolor{red}{12} & \textcolor{red}{\$30} \\
+    40 &  9 & \$21                 \\
+    45 &  9 & \$22                 \\
+    50 & 12 & \$23                 \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \begin{itemize}\small
+    \item Age $<30$: wages \$8 and \$30 
+          \vspace{0.1cm}
+    \item Age $\geq30$: wages \$21--23
   \end{itemize}
-  \vspace{0.25cm}
-  \item This matters even more for causal inference because treatment-effect estimates are noisier than outcome means.
-\end{itemize}
+  \vspace{0.1cm}
+  $\Rightarrow$ \textbf{Tree switches to Education}
+\end{column}
+\end{columns}
+\end{frame}
+
+%--- Page 2: RSS explanation ---
+\begin{frame}{Why a Single Decision Tree Is Not Enough}{High Variance}
+
+\textbf{Why does the tree change its split?}
 
 \vspace{0.2cm}
-\begin{block}{Core problem}
-One tree is too dependent on one particular sample.
-\end{block}
-\end{frame}
-
-\begin{frame}{Random Forest: Stabilize Trees by Averaging}
-\begin{itemize}
-  \item A random forest grows many trees on different random subsamples.
-  \vspace{0.2cm}
-  \item Each tree is noisy, but the average is more stable:
-  \[
-    \hat{m}(x)=\frac{1}{B}\sum_{b=1}^B \hat{m}_b(x).
-  \]
-  \vspace{0.2cm}
-  \item Prediction random forest estimates:
-  \[
-    m(x)=\mathrm{E}\!\left[\mathrm{Y}_i\mid X_i=x\right].
-  \]
-  \vspace{0.2cm}
-  \item Causal forest keeps the forest idea, but changes the target from outcome prediction to treatment effect estimation.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Random Forest: Two Sources of Diversity}
-\begin{itemize}
-  \item A random forest makes trees different from one another.
-  \vspace{0.25cm}
-  \item \textbf{Subsampling:}
-  \begin{itemize}
-    \item each tree sees a different random subset of observations,
-    \item each tree learns a slightly different pattern.
-  \end{itemize}
-  \vspace{0.25cm}
-  \item \textbf{Random split variables:}
-  \begin{itemize}
-    \item at each split, the tree considers only a random subset of covariates,
-    \item this prevents all trees from looking too similar.
-  \end{itemize}
-  \vspace{0.25cm}
-  \item Averaging works best when trees are individually useful but not identical.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Bridge to Causal Forest}
 \begin{center}
-\small
-\begin{tabular}{lll}
-\toprule
-Step & Prediction forest & Causal forest \\
-\midrule
-Tree creates leaves & similar outcomes & similar treatment effects \\
-Leaf estimate & $\bar{Y}_{\ell}$ & $\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$ \\
-Forest average & $\hat{m}(x)$ & $\hat{\tau}(x)$ \\
-Main question & what outcome is likely? & who benefits more? \\
-\bottomrule
+\begin{tabular}{@{}lcc@{}}
+  \toprule
+  Candidate split & RSS in Sample A & RSS in Sample B \\
+  \midrule
+  Age $< 30$  & \textbf{2.5} & 244             \\
+  Educ $< 11$ & 170          & \textbf{147}    \\
+  \bottomrule
 \end{tabular}
 \end{center}
 
-\vspace{0.3cm}
-\begin{block}{The key transition}
-Causal forest keeps the tree-and-forest machinery, but replaces prediction of $\mathrm{Y}$ with estimation of $\tau(x)$.
-\end{block}
+\vspace{0.2cm}
+\begin{itemize}
+\item The tree always picks the split with the lowest RSS:
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item Replacing 1 worker causes the RSS of the age split to explode:
+          $2.5 \to 244$
+          \vspace{0.2cm}
+    % \item In Sample A, low-education workers (Educ $< 11$) include both
+    %       young \emph{and} old workers with very different wages
+    %       (\$8--\$22) $\Rightarrow$ RSS $= 170$
+    %       \vspace{0.1cm}
+    % \item In Sample B, the young low-education worker (\$9) is replaced
+    %       by a high-education, high-wage worker (\$30); the remaining
+    %       low-education workers are now all old (\$21, \$22)
+    %       $\Rightarrow$ RSS drops to $147 < 244$
+    %       \vspace{0.1cm}
+    \item[$\Rightarrow$] \textbf{High variance}: a tiny data change leads
+          to a completely different tree
+  \end{itemize}
+\end{itemize}
+
 \end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Why a Single Decision Tree Is Not Enough}{High Variance}
+\begin{center}
+\begin{tikzpicture}[
+  inode/.style={draw, rounded corners, fill=orange!20,
+                align=center, font=\small,
+                minimum width=2.3cm, minimum height=0.65cm},
+  lnode/.style={draw, rounded corners, fill=green!20,
+                align=center, font=\small,
+                minimum width=1.7cm, minimum height=0.65cm},
+  arr/.style={->, >=stealth, thick},
+  level 1/.style={sibling distance=3.0cm, level distance=1.6cm},
+  level 2/.style={sibling distance=1.9cm, level distance=1.5cm},
+]
+  %% ---- TREE A ----
+  \begin{scope}[xshift=0.5cm]
+    \node[font=\small, align=center] at (0,0.4)
+      {\textbf{Tree A}};
+    \node[inode] at (0,-0.5) {Age $< 30$?}
+      child { node[lnode] {\$8.5/hr} edge from parent node[left,  font=\scriptsize]{Yes} }
+      child { node[lnode] {\$22/hr}  edge from parent node[right, font=\scriptsize]{No}  };
+  \end{scope}
+
+  %% ---- VS label ----
+  %\node[font=\large\bfseries, gray] at (5.5,-1.2) {vs.};
+
+  %% ---- TREE B ----
+  \begin{scope}[xshift=7.5cm]
+    \node[font=\small, align=center] at (0,0.4)
+      {\textbf{Tree B}};
+    \node[inode] at (0,-0.5) {Educ $< 11$?}
+      child { node[lnode] {\$17/hr}   edge from parent node[left,  font=\scriptsize]{Yes} }
+      child { node[lnode] {\$26.5/hr} edge from parent node[right, font=\scriptsize]{No}  };
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.2cm}
+\begin{itemize}
+  \item Tree A splits on \textbf{Age}; Tree B splits on \textbf{Education} 
+  \vspace{0.2cm}
+  \item Changing only one worker makes different trees
+\end{itemize}
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Why a Single Decision Tree Is Not Enough}{High Variance}
+\begin{itemize}
+
+\item Suppose we want to predict new worker's wage: Age = 22, Education = 16 years
+\vspace{0.2cm}
+
+\begin{center}
+ 
+  \small
+  \begin{tabular}{@{}llc@{}}
+    \toprule
+     & Decision path & Predicted wage \\
+    \midrule
+    Tree A & Age $< 30$ $\to$ \textbf{Yes} & \$8.5/hr \\
+    Tree B & Educ $< 11$ $\to$ \textbf{No} & \$30/hr \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+
+  \item Same worker, same features: yet predictions differ by \$21.5/hr
+  \begin{itemize}
+
+  \vspace{0.2cm}
+
+  \item This is \textbf{high variance}: replacing just 1 training observation leads to wildly different predictions
+  \vspace{0.2cm}
+
+  \item Solution: average over many trees grown on different subsamples $\Rightarrow$ \textbf{Random Forest}
+  \end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Random Forest: How It Works}{Two Sources of Randomness}
+
+\textbf{Random Forest makes trees different from one another in two ways.}
+
+\vspace{0.25cm}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+
+\textbf{1. Random subsampling}
+\begin{itemize}
+  \item Draw a random subset of observations for each tree
+  \vspace{0.1cm}
+  \item Each tree sees a different version of the data
+  \vspace{0.1cm}
+  \item Some observations are used often; some are left out
+\end{itemize}
+
+\vspace{0.25cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.62, transform shape,
+  obs/.style={rectangle, draw, minimum width=0.45cm, minimum height=0.35cm,
+              font=\tiny, fill=blue!15},
+  samp/.style={rectangle, draw, minimum width=0.45cm, minimum height=0.35cm,
+               font=\tiny, fill=orange!20},
+  arrow/.style={->, thick}
+]
+\node[font=\scriptsize\bfseries] at (0,2.2) {Full data};
+\foreach \i in {1,...,6} {
+  \node[obs] at ({(\i-3.5)*0.55},1.65) {\i};
+}
+
+\draw[arrow] (-0.9,1.25) -- (-1.7,0.45);
+\draw[arrow] (0,1.25) -- (0,0.45);
+\draw[arrow] (0.9,1.25) -- (1.7,0.45);
+
+\node[font=\scriptsize] at (-1.7,0.15) {Tree 1};
+\foreach \i/\v in {1/1,2/2,3/2,4/4,5/6} {
+  \node[samp] at ({-1.7+(\i-3)*0.45},-0.35) {\v};
+}
+
+\node[font=\scriptsize] at (0,0.15) {Tree 2};
+\foreach \i/\v in {1/1,2/3,3/4,4/4,5/5} {
+  \node[samp, fill=green!20] at ({0+(\i-3)*0.45},-0.35) {\v};
+}
+
+\node[font=\scriptsize] at (1.7,0.15) {Tree $B$};
+\foreach \i/\v in {1/2,2/3,3/5,4/6,5/6} {
+  \node[samp, fill=purple!15] at ({1.7+(\i-3)*0.45},-0.35) {\v};
+}
+\end{tikzpicture}
+\end{center}
+
+\end{column}
+
+\begin{column}{0.48\textwidth}
+
+\textbf{2. Random feature selection}
+\begin{itemize}
+  \item At each split, consider only $m$ randomly selected covariates
+  \vspace{0.1cm}
+  \item Typical choice: $m=\sqrt{p}$
+  \vspace{0.1cm}
+  \item Prevents all trees from using the same strongest variable
+\end{itemize}
+
+\vspace{0.25cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.62, transform shape,
+  var/.style={rectangle, draw, rounded corners, minimum width=0.75cm,
+              minimum height=0.35cm, font=\tiny, fill=blue!12},
+  pick/.style={rectangle, draw, rounded corners, minimum width=0.75cm,
+               minimum height=0.35cm, font=\tiny, fill=green!20},
+  arrow/.style={->, thick}
+]
+\node[font=\scriptsize\bfseries] at (0,2.2) {All $p$ covariates};
+\foreach \x/\name in {-2/age,-1/educ,0/re74,1/re75,2/race} {
+  \node[var] at (\x,1.6) {\name};
+}
+\node at (2.85,1.6) {$\cdots$};
+
+\draw[arrow] (-1.1,1.15) -- (-1.8,0.45);
+\draw[arrow] (1.1,1.15) -- (1.8,0.45);
+
+\node[font=\scriptsize] at (-1.8,0.15) {Split in Tree 1};
+\node[pick] at (-2.6,-0.35) {age};
+\node[pick] at (-1.8,-0.35) {re74};
+\node[pick] at (-1.0,-0.35) {educ};
+
+\node[font=\scriptsize] at (1.8,0.15) {Split in Tree 2};
+\node[pick, fill=orange!20] at (1.0,-0.35) {race};
+\node[pick, fill=orange!20] at (1.8,-0.35) {re75};
+\node[pick, fill=orange!20] at (2.6,-0.35) {age};
+\end{tikzpicture}
+\end{center}
+
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+
+\begin{center}
+\fbox{%
+\parbox{0.86\textwidth}{%
+\centering
+\textbf{Result:} trees are useful but not identical
+$\Rightarrow$ their errors partly cancel when averaged.
+}}
+\end{center}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Random Forest: How It Works}{Algorithm}
+
+\textbf{For a new observation with covariates $x$:}
+
+\vspace{0.2cm}
+
+\begin{enumerate}
+  \item Grow $B$ different decision trees.
+  \vspace{0.15cm}
+  \begin{itemize}
+    \item Each tree uses a random subsample of observations.
+    \item Each split considers a random subset of covariates.
+  \end{itemize}
+
+  \vspace{0.2cm}
+  \item Let each tree produce one prediction:
+  \[
+    \hat{\mathrm{Y}}_1(x),\;
+    \hat{\mathrm{Y}}_2(x),\;
+    \ldots,\;
+    \hat{\mathrm{Y}}_B(x).
+  \]
+
+  \vspace{0.2cm}
+  \item Average all tree predictions:
+  \[
+    \hat{\mathrm{Y}}(x)
+    =
+    \frac{1}{B}\sum_{b=1}^{B}\hat{\mathrm{Y}}_b(x).
+  \]
+\end{enumerate}
+
+\vspace{0.1cm}
+
+\begin{block}{Key intuition}
+A single tree is unstable; many diverse trees averaged together are much more stable.
+\end{block}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Random Forest: Illustration}{Many Trees, One Averaged Prediction}
+
+\vspace{-0.15cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.78, transform shape,
+  data/.style={rectangle, draw, fill=gray!15, rounded corners,
+               minimum width=3.8cm, minimum height=0.7cm, align=center, font=\small},
+  note/.style={font=\scriptsize, align=center, text=gray!70},
+  dnode/.style={circle, draw, fill=blue!15, minimum size=0.42cm},
+  leaf/.style={rectangle, draw, fill=orange!25, rounded corners,
+               minimum width=1.1cm, minimum height=0.45cm,
+               font=\scriptsize\bfseries, align=center},
+  avg/.style={rectangle, draw, fill=green!25, rounded corners, thick,
+              minimum width=3.0cm, minimum height=0.7cm, align=center, font=\small},
+  final/.style={rectangle, draw, fill=yellow!30, rounded corners, thick,
+                minimum width=4.8cm, minimum height=0.75cm, align=center, font=\small},
+  arrow/.style={->, >=stealth, thick}
+]
+
+% Input
+\node[data] (x) at (0,4.15) {New observation $x$};
+\node[note] at (0,3.55) {Each tree follows a different path because it was trained differently};
+
+% Tree 1
+\node[dnode] (A0) at (-4.2,2.8) {};
+\node[dnode] (A1) at (-4.7,2.05) {};
+\node[dnode] (A2) at (-3.7,2.05) {};
+\node[leaf]  (A3) at (-4.2,1.25) {$\$9{,}800$};
+\draw[arrow] (A0) -- (A1);
+\draw[arrow] (A0) -- (A2);
+\draw[arrow, red!70, very thick] (A0) -- (A1);
+\draw[arrow, red!70, very thick] (A1) -- (A3);
+\node[font=\scriptsize] at (-4.2,0.72) {Tree 1: $\hat{\mathrm{Y}}_1(x)$};
+
+% Tree 2
+\node[dnode] (B0) at (-1.45,2.8) {};
+\node[dnode] (B1) at (-1.95,2.05) {};
+\node[dnode] (B2) at (-0.95,2.05) {};
+\node[leaf]  (B3) at (-1.45,1.25) {$\$10{,}500$};
+\draw[arrow] (B0) -- (B1);
+\draw[arrow] (B0) -- (B2);
+\draw[arrow, red!70, very thick] (B0) -- (B2);
+\draw[arrow, red!70, very thick] (B2) -- (B3);
+\node[font=\scriptsize] at (-1.45,0.72) {Tree 2: $\hat{\mathrm{Y}}_2(x)$};
+
+% Dots
+\node at (0.55,2.05) {$\cdots$};
+
+% Tree B-1
+\node[dnode] (C0) at (1.65,2.8) {};
+\node[dnode] (C1) at (1.15,2.05) {};
+\node[dnode] (C2) at (2.15,2.05) {};
+\node[leaf]  (C3) at (1.65,1.25) {$\$9{,}200$};
+\draw[arrow] (C0) -- (C1);
+\draw[arrow] (C0) -- (C2);
+\draw[arrow, red!70, very thick] (C0) -- (C1);
+\draw[arrow, red!70, very thick] (C1) -- (C3);
+\node[font=\scriptsize] at (1.65,0.72) {Tree $B-1$};
+
+% Tree B
+\node[dnode] (D0) at (4.25,2.8) {};
+\node[dnode] (D1) at (3.75,2.05) {};
+\node[dnode] (D2) at (4.75,2.05) {};
+\node[leaf]  (D3) at (4.25,1.25) {$\$10{,}100$};
+\draw[arrow] (D0) -- (D1);
+\draw[arrow] (D0) -- (D2);
+\draw[arrow, red!70, very thick] (D0) -- (D2);
+\draw[arrow, red!70, very thick] (D2) -- (D3);
+\node[font=\scriptsize] at (4.25,0.72) {Tree $B$: $\hat{\mathrm{Y}}_B(x)$};
+
+% Average
+\node[avg] (avg) at (0,-0.35) {Average};
+
+\draw[arrow, orange!70] (A3.south) -- (-4.2,0.25) -- (avg.north);
+\draw[arrow, orange!70] (B3.south) -- (-1.45,0.25) -- (avg.north);
+\draw[arrow, orange!70] (C3.south) -- (1.65,0.25) -- (avg.north);
+\draw[arrow, orange!70] (D3.south) -- (4.25,0.25) -- (avg.north);
+
+\node[font=\small, align=left] at (3.25,-0.35)
+{$\displaystyle
+\hat{\mathrm{Y}}(x)
+=
+\frac{1}{B}\sum_{b=1}^{B}\hat{\mathrm{Y}}_b(x)$};
+
+\node[final] (final) at (0,-1.75)
+{Final prediction for $x$: average of all tree predictions};
+
+\draw[arrow, red!70] (avg.south) -- (final.north);
+
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+% \begin{frame}{Random Forest: How It Works}{Why Does Averaging Reduce Variance?}
+
+% \textbf{Intuition:} one tree is noisy; averaging many diverse trees gives a more reliable prediction.
+
+% \vspace{0.25cm}
+
+% \begin{columns}[T]
+% \begin{column}{0.54\textwidth}
+% \begin{itemize}
+%   \item Suppose each tree predicts
+%   \[
+%     \hat{\mathrm{Y}}_b(x)
+%     =
+%     m(x)+\varepsilon_b.
+%   \]
+
+%   \item Averaging gives
+%   \[
+%     \hat{\mathrm{Y}}(x)
+%     =
+%     m(x)
+%     +
+%     \frac{1}{B}\sum_{b=1}^{B}\varepsilon_b.
+%   \]
+
+%   \item If tree-specific errors partly cancel,
+%   \[
+%     \frac{1}{B}\sum_{b=1}^{B}\varepsilon_b
+%     \approx 0.
+%   \]
+% \end{itemize}
+% \end{column}
+
+% \begin{column}{0.42\textwidth}
+% \begin{center}
+% \small
+% \begin{tabular}{lcc}
+%   \toprule
+%                    & Single tree & Forest \\
+%   \midrule
+%   Flexible         & Yes & Yes \\
+%   Variance         & High & Low \\
+%   Stable prediction & No & Yes \\
+%   Overfitting risk & High & Lower \\
+%   \bottomrule
+% \end{tabular}
+% \end{center}
+
+% \vspace{0.2cm}
+
+% \begin{block}{Why randomness matters}
+% Averaging helps most when trees make different errors.
+% \end{block}
+% \end{column}
+% \end{columns}
+
+% \vspace{0.15cm}
+
+% \begin{center}
+% \textbf{Randomness creates diversity; averaging converts diversity into stability.}
+% \end{center}
+
+% \end{frame}
+
+
+
+
+
+
+
+
+
+
+
+% \begin{frame}{Random Forest: How It Works}{Algorithm}
+
+% \textbf{Two sources of randomness} ensure each tree is unique:
+% \vspace{0.2cm}
+% \begin{itemize}
+%   \item[\textbf{1.}] \textbf{Random subsampling}
+%   \begin{itemize}
+%     \vspace{0.1cm}
+%     \item Draw a random subset of observations and train each tree on it
+%     \vspace{0.1cm}
+%     \item Each tree sees different data $\Rightarrow$ learns a slightly different pattern
+%   \end{itemize}
+%   \vspace{0.25cm}
+%   \item[\textbf{2.}] \textbf{Random feature selection at each split}
+%   \begin{itemize}
+%     \vspace{0.1cm}
+%     \item At every candidate split, consider only $m$ randomly chosen covariates out of $p$ total
+%     \vspace{0.1cm}
+%     \item Typical choice: $m = \sqrt{p}$; \enspace e.g.\ 9 covariates $\Rightarrow$ consider only 3 at each split
+%     \vspace{0.1cm}
+%     \item Each tree uses different variables $\Rightarrow$ trees are diverse
+%   \end{itemize}
+% \end{itemize}
+
+% \vspace{0.35cm}
+% \textbf{Prediction for a new observation $x$:} average over all $B$ trees
+% \begin{equation*}
+%   \hat{Y}(x) \;=\; \frac{1}{B}\sum_{b=1}^{B} \hat{Y}_{b}(x)
+% \end{equation*}
+% \end{frame}
+
+
+
+
+% %-------------------------------------------------------------
+% \begin{frame}{Random Forest: How It Works}{Why Does Averaging Reduce Variance?}
+
+% \textbf{Intuition}: asking one person for an opinion is noisy; asking 100 people and averaging is far more reliable --- Random Forest does the same with trees
+
+% \vspace{0.3cm}
+% \begin{itemize}
+%   \item If $B$ independent trees each have variance $\sigma^2$, the average has variance
+%   \begin{equation*}
+%     \operatorname{Var}\!\left(\frac{1}{B}\sum_{b=1}^{B}\hat{Y}_{b}\right)
+%     = \frac{\sigma^2}{B} \;\xrightarrow{B\to\infty}\; 0
+%   \end{equation*}
+
+%   \item Trees trained on the same dataset are not fully independent, but the two sources of randomness keep correlation between trees low
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item Low correlation $\Rightarrow$ averaging still substantially reduces variance
+%   \end{itemize}
+% \end{itemize}
+
+% \vspace{0.3cm}
+% \begin{center}
+% \begin{tabular}{lccc}
+%   \toprule
+%                    & Bias & Variance       & Overfitting risk \\
+%   \midrule
+%   Single deep tree & Low  & \textbf{High}  & High \\
+%   Random Forest    & Low  & \textbf{Low}   & Low  \\
+%   \bottomrule
+% \end{tabular}
+% \end{center}
+% \end{frame}
+
+
+
+
+% \begin{frame}{Random Forest: Illustration}
+% \begin{center}
+% \begin{tikzpicture}[scale=0.83,
+% 	box/.style={draw, rounded corners, minimum width=2.1cm, minimum height=0.75cm,
+% 		align=center, font=\small},
+% 	arr/.style={-stealth, thick}
+% ]
+% 	% Full dataset
+% 	\node[box, fill=gray!20, minimum width=5.8cm] (data) at (0, 4.2)
+% 		{Training Data ($N$ observations)};
+
+% 	% Subsamples
+% 	\node[box, fill=orange!20] (s1) at (-3.6, 2.8) {Subsample 1};
+% 	\node[box, fill=orange!20] (s2) at (0,    2.8) {Subsample 2};
+% 	\node[box, fill=orange!20] (s3) at (3.6,  2.8) {Subsample $B$};
+% 	\node at (1.8, 2.8) {$\cdots$};
+
+% 	\draw[arr] (data) -- (s1);
+% 	\draw[arr] (data) -- (s2);
+% 	\draw[arr] (data) -- (s3);
+
+% 	% Trees
+% 	\node[box, fill=blue!15] (t1) at (-3.6, 1.2)
+% 		{Tree 1\\ $\hat{\mathrm{Y}}_1(x)$};
+% 	\node[box, fill=blue!15] (t2) at (0,    1.2)
+% 		{Tree 2\\ $\hat{\mathrm{Y}}_2(x)$};
+% 	\node[box, fill=blue!15] (t3) at (3.6,  1.2)
+% 		{Tree $B$\\ $\hat{\mathrm{Y}}_B(x)$};
+% 	\node at (1.8, 1.2) {$\cdots$};
+
+% 	\draw[arr] (s1) -- (t1);
+% 	\draw[arr] (s2) -- (t2);
+% 	\draw[arr] (s3) -- (t3);
+
+% 	% Average prediction
+% 	\node[box, fill=green!25, minimum width=5.8cm] (avg) at (0, -0.3)
+% 		{$\hat{\mathrm{Y}}(x)=\dfrac{1}{B}{\displaystyle\sum_{b=1}^{B}}\hat{\mathrm{Y}}_{b}(x)$};
+
+% 	\draw[arr] (t1) -- (avg);
+% 	\draw[arr] (t2) -- (avg);
+% 	\draw[arr] (t3) -- (avg);
+% \end{tikzpicture}
+% \end{center}
+% \vspace{-0.2cm}
+% \begin{itemize}
+% 	\item Each tree is grown on a different subsample $\Rightarrow$ trees are diverse and their errors tend to cancel
+% \end{itemize}
+% \end{frame}
+
+
+
 
 %=============================================================
 \title[]
@@ -630,150 +1429,412 @@ Causal forest keeps the tree-and-forest machinery, but replaces prediction of $\
 
 \section{Causal Tree}
 
-\begin{frame}{From Prediction Tree to Causal Tree}
+\begin{frame}{From Prediction Tree to Causal Tree}{Same Tree Logic, Different Target}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Prediction tree}
+\vspace{0.1cm}
+\begin{itemize}
+  \item Goal: predict outcome $\mathrm{Y}_i$
+  \vspace{0.1cm}
+  \item Split rule: find groups with different outcome levels
+  \vspace{0.1cm}
+  \item Leaf value:
+  \[
+    \hat{\mathrm{Y}}(\ell)=\bar{Y}_{\ell}
+  \]
+\end{itemize}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\textbf{Causal tree}
+\vspace{0.1cm}
+\begin{itemize}
+  \item Goal: estimate treatment effect $\tau(x)$
+  \vspace{0.1cm}
+  \item Split rule: find groups with different treatment effects
+  \vspace{0.1cm}
+  \item Leaf value:
+  \[
+    \hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}
+  \]
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.25cm}
 \begin{center}
-\small
-\begin{tabular}{lll}
-\toprule
- & Prediction tree & Causal tree \\
-\midrule
-Target & outcome $\mathrm{Y}$ & treatment effect $\tau(x)$ \\
-Split tries to find & different levels of $\mathrm{Y}$ & different effects of $D$ \\
-Leaf estimate & $\bar{Y}$ & $\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$ \\
-Question & who has high earnings? & who gains more from training? \\
-\bottomrule
-\end{tabular}
+\fbox{%
+\parbox{0.88\textwidth}{%
+\centering
+\textbf{Key analogy:} prediction trees search for outcome heterogeneity; causal trees search for treatment-effect heterogeneity.
+}}
 \end{center}
 
-\vspace{0.35cm}
-\begin{block}{Key change}
-Instead of grouping people with similar outcomes, a causal tree groups people with similar treatment effects.
-\end{block}
 \end{frame}
 
-\begin{frame}{Causal Tree: Leaf-Level Intuition}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Tree}{What Does a Leaf Estimate?}
+
+\textbf{In each leaf, compare treated and control observations.}
+
+\vspace{0.2cm}
 \begin{center}
 \small
 \begin{tabular}{lccc}
 \toprule
-Leaf & Treated mean & Control mean & Estimated effect \\
+Leaf $\ell$ & Treated mean & Control mean & Leaf effect \\
 \midrule
-Young, low education & \$11,000 & \$8,000 & \$3,000 \\
-Older, high experience & \$18,500 & \$18,000 & \$500 \\
+Young, low education
+  & $\bar{Y}^{1}_{\ell}=\$11{,}000$
+  & $\bar{Y}^{0}_{\ell}=\$8{,}000$
+  & $\hat{\tau}(\ell)=\$3{,}000$ \\
+Older, high experience
+  & $\bar{Y}^{1}_{\ell}=\$18{,}500$
+  & $\bar{Y}^{0}_{\ell}=\$18{,}000$
+  & $\hat{\tau}(\ell)=\$500$ \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\vspace{0.3cm}
+\vspace{0.25cm}
 \begin{itemize}
-  \item Within each leaf, compare treated and control workers.
-  \vspace{0.2cm}
-  \item The leaf estimate is a local average treatment effect:
+  \item A new worker with covariates $x$ falls into one leaf $\ell(x)$.
+  \vspace{0.1cm}
+  \item The tree predicts that worker's CATE using the leaf comparison:
   \[
-    \hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}.
+    \hat{\tau}(x)=\hat{\tau}(\ell(x)).
   \]
-  \vspace{0.2cm}
-  \item A new worker receives the estimate from the leaf containing their $X_i$.
+  \vspace{0.1cm}
+  \item Interpretation: workers with similar characteristics have similar treatment effects.
 \end{itemize}
+
 \end{frame}
 
-\begin{frame}{Causal Tree: Finding a Split}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Tree}{Finding the Best Split}
+
+\textbf{Prediction tree:} choose splits that make outcomes within each leaf more similar 
+
+%choose the split that makes outcomes within leaves easier to predict.
+
+\vspace{0.2cm}
+
+\textbf{Causal tree:} choose splits that make treatment effects across leaves more different
+
+%choose the split that creates the largest treatment-effect heterogeneity.
+
+\vspace{0.25cm}
 \begin{enumerate}
-  \item For each variable $X^j$ and candidate split point $s$, create two regions:
+  \item For a candidate split $(X^j,s)$, define two regions:
   \[
-    R_1(j,s)=\{i:X_i^j<s\},
-    \qquad
-    R_2(j,s)=\{i:X_i^j\geq s\}.
+    R_1=\{i:X_i^j<s\}, \qquad R_2=\{i:X_i^j\geq s\}.
   \]
-  \vspace{0.15cm}
-  \item Estimate the treatment effect in each region:
+  \vspace{0.1cm}
+  \item Estimate treatment effects in each region:
   \[
-    \hat{\tau}(R)=\bar{Y}^{1}_{R}-\bar{Y}^{0}_{R}.
+    \hat{\tau}(R_k)=\bar{Y}^{1}_{R_k}-\bar{Y}^{0}_{R_k}, \qquad k=1,2.
   \]
-  \vspace{0.15cm}
-  \item Choose splits that reveal treatment-effect heterogeneity:
+  \vspace{0.1cm}
+  \item Prefer splits with large differences:
   \[
-    \Delta(j,s)
-    =
-    \left|\hat{\tau}(R_1)-\hat{\tau}(R_2)\right|.
+    \Delta(j,s)=\left|\hat{\tau}(R_1)-\hat{\tau}(R_2)\right|.
   \]
 \end{enumerate}
 
-\vspace{0.1cm}
-\begin{center}
-\textbf{A causal tree looks for different effects, not just different outcomes.}
-\end{center}
 \end{frame}
 
-\begin{frame}{Causal Tree: A Small Split Example}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Tree}{A Small Split Example}
+
+\textbf{Question:} which split best separates high-effect and low-effect workers?
+
+\vspace{0.2cm}
 \begin{center}
-\small
+\scriptsize
 \begin{tabular}{lccc}
 \toprule
-Candidate split & $\hat{\tau}(R_1)$ & $\hat{\tau}(R_2)$ & $\Delta$ \\
+Split & $\hat{\tau}(R_1)$ & $\hat{\tau}(R_2)$ & $\Delta$ \\
 \midrule
-Age $<30$ & \$3,000 & \$600 & \textbf{\$2,400} \\
-Education $<12$ & \$2,100 & \$1,400 & \$700 \\
-Prior earnings $<5{,}000$ & \$2,600 & \$1,000 & \$1,600 \\
+Age $<30$                 & \$3,000 & \$600  & \textbf{\$2,400} \\
+Education $<12$           & \$2,100 & \$1,400 & \$700 \\
+Prior earn. $<5{,}000$    & \$2,600 & \$1,000 & \$1,600 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\vspace{0.3cm}
+\vspace{0.18cm}
 \begin{itemize}
-  \item In this toy example, the tree would first split on age.
-  \vspace{0.2cm}
-  \item The point is not that age is always important.
-  \vspace{0.2cm}
-  \item The tree selects the variable and threshold that best separate high-effect and low-effect groups in the data.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{The Main Problem: Double Dipping}
-\begin{itemize}
-  \item If the same data are used to:
-  \begin{enumerate}
-    \item choose the split, and
-    \item estimate the treatment effect in the leaves,
-  \end{enumerate}
-  the tree can overfit random noise.
-  \vspace{0.3cm}
-  \item A split may look good simply because it got lucky in this sample.
-  \vspace{0.3cm}
-  \item Then leaf treatment effects are biased upward in magnitude.
+  \item In this toy example, the tree first splits on \textbf{Age $<30$}.
+  \vspace{0.05cm}
+  \item Not because young and old workers have the most different earnings levels.
+  \vspace{0.05cm}
+  \item But because their \textbf{treatment effects} are most different.
 \end{itemize}
 
-\vspace{0.25cm}
-\begin{block}{Teaching intuition}
-The tree used the data to search over many possible splits, so the chosen split may look too good.
-\end{block}
 \end{frame}
 
-\begin{frame}{Honest Estimation}
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Tree}{Honest Estimation}
+
+\textbf{In practice, causal trees use separate data for two different jobs.}
+
+\vspace{0.2cm}
+
 \begin{center}
-\begin{tikzpicture}[
-  box/.style={draw, rounded corners, align=center, minimum height=0.9cm},
-  arrow/.style={-{Latex[length=2mm]}, thick},
-  node distance=0.65cm
+\begin{tikzpicture}[scale=0.82, transform shape,
+  box/.style={rectangle, draw, rounded corners, align=center,
+              minimum width=3.0cm, minimum height=0.75cm, font=\small},
+  arrow/.style={->, >=stealth, thick}
 ]
-\node[box, fill=gray!8, minimum width=3.4cm] (sample) {Subsample};
-\node[box, fill=Blue!8, below left=of sample, minimum width=3.2cm] (split) {Splitting sample\\choose tree structure};
-\node[box, fill=Green!8, below right=of sample, minimum width=3.2cm] (estimate) {Estimation sample\\estimate leaf effects};
-\node[box, fill=Orange!10, below=1.15cm of sample, minimum width=3.5cm] (tree) {Honest causal tree};
+\node[box, fill=gray!15, minimum width=4.2cm] (sample) at (0,2.9)
+  {Random subsample};
+
+\node[box, fill=blue!12] (split) at (-3.2,1.35)
+  {Splitting sample\\learn where to split};
+\node[box, fill=green!15] (est) at (3.2,1.35)
+  {Estimation sample\\estimate leaf effects};
+
+\node[box, fill=orange!20, minimum width=4.4cm] (tree) at (0,-0.35)
+  {Honest causal tree};
+
 \draw[arrow] (sample) -- (split);
-\draw[arrow] (sample) -- (estimate);
+\draw[arrow] (sample) -- (est);
 \draw[arrow] (split) -- (tree);
-\draw[arrow] (estimate) -- (tree);
+\draw[arrow] (est) -- (tree);
+
+\node[font=\scriptsize, align=center] at (-3.2,0.35)
+  {Use data to find groups\\with different effects};
+
+\node[font=\scriptsize, align=center] at (3.2,0.35)
+  {Use fresh data to compute\\$\hat{\tau}(\ell)=\bar{Y}^1_\ell-\bar{Y}^0_\ell$};
 \end{tikzpicture}
 \end{center}
 
-\vspace{0.2cm}
+\vspace{0.05cm}
+
 \begin{itemize}
-  \item One part of the data decides where to split.
-  \item A separate part estimates treatment effects in the final leaves.
-  \item This reduces overfitting and supports valid inference.
+  \item The splitting sample answers: \textbf{which subgroups should we compare?}
+  \vspace{0.1cm}
+  \item The estimation sample answers: \textbf{how large is the treatment effect in each subgroup?}
+  \vspace{0.1cm}
+  \item This avoids using the same observations to both discover a pattern and report its size.
 \end{itemize}
+
+\vspace{0.1cm}
+
+\begin{center}
+\fbox{%
+\parbox{0.86\textwidth}{%
+\centering
+\textbf{Why ``honest''?} The effect is estimated using data that did not choose the split.
+}}
+\end{center}
+
 \end{frame}
+
+
+
+
+% %-------------------------------------------------------------
+% \begin{frame}{Prediction Tree vs. Causal Tree}{What Changes?}
+
+% \begin{center}
+% \scriptsize
+% \begin{tabular}{p{0.22\textwidth}p{0.33\textwidth}p{0.35\textwidth}}
+% \toprule
+%  & Prediction tree & Causal tree \\
+% \midrule
+% Data needed
+%   & $(\mathrm{Y},X)$
+%   & $(\mathrm{Y},D,X)$ \\
+% \addlinespace[2pt]
+% Target
+%   & $\mathrm{E}[\mathrm{Y}_i\mid X_i=x]$
+%   & $\tau(x)=\mathrm{E}[\mathrm{Y}^1_i-\mathrm{Y}^0_i\mid X_i=x]$ \\
+% \addlinespace[2pt]
+% Good split
+%   & high vs.\ low outcome
+%   & high vs.\ low treatment effect \\
+% \addlinespace[2pt]
+% Leaf estimate
+%   & $\bar{Y}_{\ell}$
+%   & $\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$ \\
+% \addlinespace[2pt]
+% Output
+%   & $\hat{\mathrm{Y}}(x)$
+%   & $\hat{\tau}(x)$ \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+
+% % \vspace{0.18cm}
+% % \begin{block}{Main message}
+% % The tree structure is familiar; only the object being optimized changes.
+% % \end{block}
+
+% \end{frame}
+
+
+% %-------------------------------------------------------------
+% \begin{frame}{Causal Tree}{The Double-Dipping Problem}
+
+% \textbf{Key intuition:} if we search hard enough, we may find a split that looks good just by chance.
+
+% \vspace{0.25cm}
+
+% \begin{columns}[T]
+% \begin{column}{0.52\textwidth}
+
+% \begin{itemize}
+%   \item A causal tree tries many possible splits:
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item age $<30$,
+%     \item education $<12$,
+%     \item prior earnings $<5{,}000$,
+%     \item many other variables and cutoffs.
+%   \end{itemize}
+
+%   \vspace{0.2cm}
+%   \item It then chooses the split with the largest estimated difference:
+%   \[
+%     \left|\hat{\tau}(R_1)-\hat{\tau}(R_2)\right|.
+%   \]
+
+%   \vspace{0.2cm}
+%   \item But the largest difference may be large because of \textbf{random noise}.
+% \end{itemize}
+
+% \end{column}
+
+% \begin{column}{0.43\textwidth}
+% \begin{center}
+% \begin{tikzpicture}[
+%   scale=0.82, transform shape,
+%   split/.style={rectangle, draw, rounded corners, minimum width=3.0cm,
+%                 minimum height=0.55cm, align=center, font=\scriptsize},
+%   arrow/.style={->, >=stealth, thick}
+% ]
+% \node[split, fill=gray!10] (s1) at (0,2.6) {Age $<30$\\ $\Delta=\$2{,}400$};
+% \node[split, fill=gray!10] (s2) at (0,1.8) {Educ $<12$\\ $\Delta=\$700$};
+% \node[split, fill=gray!10] (s3) at (0,1.0) {re74 $<5{,}000$\\ $\Delta=\$1{,}600$};
+% \node[split, fill=gray!10] (s4) at (0,0.2) {$\cdots$};
+% \node[split, fill=orange!25, thick] (best) at (0,-0.9)
+%   {Chosen split\\ largest $\Delta$};
+
+% \draw[arrow] (s1) -- (best);
+% \draw[arrow] (s2) -- (best);
+% \draw[arrow] (s3) -- (best);
+% \draw[arrow] (s4) -- (best);
+
+% \node[font=\scriptsize, align=center, text=red!70] at (0,-1.75)
+%   {Maybe true heterogeneity;\\ maybe just luck.};
+% \end{tikzpicture}
+% \end{center}
+% \end{column}
+% \end{columns}
+
+% \vspace{0.15cm}
+
+% \begin{center}
+% \fbox{%
+% \parbox{0.88\textwidth}{%
+% \centering
+% \textbf{Double dipping:} using the same data to \emph{discover} the best split
+% and then \emph{evaluate} that split makes treatment effects look too large.
+% }}
+% \end{center}
+
+% \end{frame}
+
+
+
+
+
+% %-------------------------------------------------------------
+% \begin{frame}{Causal Tree}{The Double-Dipping Problem}
+
+% \begin{itemize}
+%   \item A causal tree searches over many possible splits and selects the one with the largest treatment-effect difference.
+%   \vspace{0.25cm}
+%   \item If we use the \textbf{same data} to both:
+%   \vspace{0.1cm}
+%   \begin{itemize}
+%     \item choose the split, and
+%     \item estimate treatment effects in the final leaves,
+%   \end{itemize}
+%   \vspace{0.15cm}
+%   the estimated leaf effects can be too optimistic.
+%   \vspace{0.25cm}
+%   \item Intuition: among many candidate splits, some look good just by chance.
+% \end{itemize}
+
+% \vspace{0.25cm}
+% \begin{center}
+% \fbox{%
+% \parbox{0.86\textwidth}{%
+% \centering
+% \textbf{Problem:} the tree may confuse random noise with true treatment-effect heterogeneity.
+% }}
+% \end{center}
+
+% \end{frame}
+
+
+
+%-------------------------------------------------------------
+% \begin{frame}{Causal Tree}{Honest Estimation}
+
+% \textbf{Solution: separate the data used for splitting from the data used for estimation.}
+
+% \vspace{0.25cm}
+% \begin{center}
+% \begin{tikzpicture}[scale=0.82, transform shape,
+%   box/.style={rectangle, draw, rounded corners, align=center,
+%               minimum width=3.0cm, minimum height=0.75cm, font=\small},
+%   arrow/.style={->, >=stealth, thick}
+% ]
+% \node[box, fill=gray!15, minimum width=4.2cm] (sample) at (0,2.9)
+%   {Random subsample};
+
+% \node[box, fill=blue!12] (split) at (-3.2,1.4)
+%   {Splitting sample\\choose tree structure};
+% \node[box, fill=green!15] (est) at (3.2,1.4)
+%   {Estimation sample\\estimate leaf effects};
+
+% \node[box, fill=orange!20, minimum width=4.4cm] (tree) at (0,-0.2)
+%   {Honest causal tree};
+
+% \draw[arrow] (sample) -- (split);
+% \draw[arrow] (sample) -- (est);
+% \draw[arrow] (split) -- (tree);
+% \draw[arrow] (est) -- (tree);
+
+% \node[font=\scriptsize, align=center] at (-3.2,0.45)
+%   {Find splits with large\\$\Delta(j,s)$};
+% \node[font=\scriptsize, align=center] at (3.2,0.45)
+%   {Compute\\$\hat{\tau}(\ell)=\bar{Y}^1_\ell-\bar{Y}^0_\ell$};
+% \end{tikzpicture}
+% \end{center}
+
+% \vspace{0.1cm}
+% \begin{itemize}
+%   \item Honesty , from searching over many splits.
+%   \item This is one reason causal forest can support statistical inference.
+% \end{itemize}
+
+% \end{frame}
+
+
 
 %=============================================================
 \title[]
@@ -790,228 +1851,514 @@ The tree used the data to search over many possible splits, so the chosen split 
 
 \section{Causal Forest}
 
-\begin{frame}{Causal Forest Algorithm}
-\begin{enumerate}
-  \item Draw a random subsample of observations.
-  \vspace{0.15cm}
-  \item Split the subsample into two parts:
-  \begin{itemize}
-    \item one for choosing splits,
-    \item one for estimating treatment effects.
-  \end{itemize}
-  \vspace{0.15cm}
-  \item Grow an honest causal tree.
-  \vspace{0.15cm}
-  \item Repeat many times, for example $B=2{,}000$ trees.
-  \vspace{0.15cm}
-  \item For each observation, average the estimates from all trees:
-  \[
-    \hat{\tau}(x_i)=\frac{1}{B}\sum_{b=1}^B \hat{\tau}_b(x_i).
-  \]
-\end{enumerate}
-\end{frame}
+\begin{frame}{From Random Forest to Causal Forest}{Same Averaging Logic}
 
-\begin{frame}{Causal Forest as Adaptive Weighting}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Random Forest}
 \begin{itemize}
-  \item Another useful way to view causal forest:
+  \item Build many prediction trees
   \vspace{0.1cm}
-  \begin{itemize}
-    \item for a target worker with characteristics $x$,
-    \item the forest finds other workers who often fall in the same leaves as $x$,
-    \item those workers receive larger weights in estimating $\tau(x)$.
-  \end{itemize}
-  \vspace{0.25cm}
-  \item Conceptually:
+  \item Each tree predicts outcome:
   \[
-    \hat{\tau}(x)
-    \approx
-    \sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
-    -
-    \sum_{i:D_i=0} a_i(x)\mathrm{Y}_i,
+    \hat{\mathrm{Y}}_b(x)
   \]
-  where $a_i(x)$ is larger when observation $i$ is similar to $x$ according to the forest.
-  \vspace{0.25cm}
-  \item This is why causal forest is like a flexible matching method plus valid forest-based inference.
+  \vspace{0.1cm}
+  \item Average predictions:
+  \[
+    \hat{\mathrm{Y}}(x)=\frac{1}{B}\sum_{b=1}^{B}\hat{\mathrm{Y}}_b(x)
+  \]
 \end{itemize}
-\end{frame}
+\end{column}
 
-\begin{frame}{Why Averaging Helps}
+\begin{column}{0.48\textwidth}
+\textbf{Causal Forest}
 \begin{itemize}
-  \item A single causal tree is interpretable but noisy.
-  \vspace{0.2cm}
-  \item Different subsamples produce different trees.
-  \vspace{0.2cm}
-  \item Averaging many trees reduces variance:
+  \item Build many honest causal trees
+  \vspace{0.1cm}
+  \item Each tree estimates CATE:
   \[
-    \hat{\tau}_b(x)=\tau(x)+\varepsilon_b,
-    \qquad
-    \frac{1}{B}\sum_{b=1}^B \hat{\tau}_b(x)
-    =
-    \tau(x)+\frac{1}{B}\sum_{b=1}^B \varepsilon_b.
+    \hat{\tau}_b(x)
   \]
-  \vspace{0.2cm}
-  \item If the tree-specific errors partly cancel out, the forest estimate is more stable.
+  \vspace{0.1cm}
+  \item Average treatment effects:
+  \[
+    \hat{\tau}(x)=\frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x)
+  \]
 \end{itemize}
-\end{frame}
+\end{column}
+\end{columns}
 
-\begin{frame}{Random Forest vs. Causal Forest}
+\vspace{0.2cm}
 \begin{center}
-\small
-\begin{tabular}{lll}
-\toprule
- & Random forest & Causal forest \\
-\midrule
-Main goal & predict outcome & estimate treatment effect \\
-Input & $(\mathrm{Y},X)$ & $(\mathrm{Y},D,X)$ \\
-Object & $\hat{m}(x)$ & $\hat{\tau}(x)$ \\
-Split criterion & reduce prediction error & find effect heterogeneity \\
-Leaf value & mean outcome & treated-control difference \\
-Honesty & usually no & yes \\
-\bottomrule
-\end{tabular}
+\textbf{Random forest stabilizes outcome prediction; causal forest stabilizes CATE estimation.}
 \end{center}
 
-\vspace{0.3cm}
-\begin{block}{Do not confuse these two}
-A causal forest is not just a random forest with treatment added as another predictor.
-\end{block}
 \end{frame}
 
-\begin{frame}{Statistical Properties: What to Know}
-\begin{itemize}
-  \item Honest causal forest is designed for both estimation and inference.
-  \vspace{0.2cm}
-  \item Under regularity conditions:
-  \[
-    \hat{\tau}(x)\xrightarrow{p}\tau(x)
-    \qquad \text{as } N\to\infty.
-  \]
-  \vspace{0.2cm}
-  \item The \texttt{grf} package reports standard errors for ATE and related summaries.
-  \vspace{0.2cm}
-  \item For teaching purposes, the key idea is:
-  \vspace{0.1cm}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Forest: How It Works}{Algorithm}
+
+\begin{enumerate}
+  \item Draw a random subsample of observations.
+  \vspace{0.08cm}
+  \item Split that subsample into two parts:
+  \vspace{0.05cm}
   \begin{itemize}
-    \item honesty controls adaptive bias,
-    \item averaging many trees reduces variance,
-    \item valid causal interpretation still comes from the research design.
+    \item \textbf{splitting sample}: choose splits that maximize treatment-effect heterogeneity;
+    \item \textbf{estimation sample}: estimate treatment effects in leaves.
   \end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}{What Does $\hat{\tau}(x_i)$ Mean?}
-\begin{itemize}
-  \item $\hat{\tau}(x_i)$ is not the true individual treatment effect.
-  \vspace{0.2cm}
-  \item It estimates the average treatment effect for people similar to worker $i$.
-  \vspace{0.2cm}
-  \item Similarity is learned by the forest from covariates $X$.
-  \vspace{0.2cm}
-  \item Interpretation in the job training example:
+  \vspace{0.08cm}
+  \item Grow one honest causal tree.
+  \vspace{0.08cm}
+  \item Repeat for $B$ trees.
+  \vspace{0.08cm}
+  \item For a worker with characteristics $x$, average all tree-specific CATE estimates:
   \[
-    \hat{\tau}(x_i)=2{,}000
+    \hat{\tau}(x)
+    =
+    \frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x).
   \]
-  means workers with similar characteristics to worker $i$ are estimated to gain about \$2,000 from training.
-\end{itemize}
+\end{enumerate}
+
 \end{frame}
 
-\begin{frame}{What Causal Forest Gives Us}
-\begin{itemize}
-  \item \textbf{ATE}: $\hat{\alpha}_{\text{ATE}}$ in the target sample.
-  \vspace{0.2cm}
-  \item \textbf{ATT}: $\hat{\alpha}_{\text{ATT}}$ for treated observations.
-  \vspace{0.2cm}
-  \item \textbf{CATE estimates}: one $\hat{\tau}(x_i)$ for each observation.
-  \vspace{0.2cm}
-  \item \textbf{CATE distribution}: whether effects are concentrated or very different across people.
-  \vspace{0.2cm}
-  \item \textbf{Best linear projection}: which covariates are associated with larger effects.
-  \vspace{0.2cm}
-  \item \textbf{Variable importance}: which variables are often used to split treatment-effect heterogeneity.
-\end{itemize}
-\end{frame}
 
-\begin{frame}{How to Read the CATE Distribution}
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Forest: Illustration}{Many Causal Trees, One CATE Estimate}
+
+\vspace{-0.1cm}
 \begin{center}
-\begin{tikzpicture}[x=0.09cm,y=0.09cm]
-  \draw[->] (0,0) -- (70,0) node[right] {$\hat{\tau}(x)$};
-  \draw[->] (0,0) -- (0,28) node[above] {count};
-  \foreach \x/\h in {5/3,10/6,15/10,20/15,25/21,30/25,35/22,40/16,45/10,50/6,55/3}
-    \draw[fill=Blue!25, draw=Blue!70] (\x,0) rectangle ++(4,\h);
-  \draw[red, thick, dashed] (34,0) -- (34,27);
-  \node[red, above] at (34,27) {$\hat{\alpha}_{\text{ATE}}$};
+\begin{tikzpicture}[scale=0.76, transform shape,
+  data/.style={rectangle, draw, fill=gray!15, rounded corners,
+               minimum width=3.8cm, minimum height=0.7cm, align=center, font=\small},
+  note/.style={font=\scriptsize, align=center, text=gray!70},
+  dnode/.style={circle, draw, fill=blue!15, minimum size=0.42cm},
+  leaf/.style={rectangle, draw, fill=orange!25, rounded corners,
+               minimum width=1.1cm, minimum height=0.45cm,
+               font=\scriptsize\bfseries, align=center},
+  avg/.style={rectangle, draw, fill=green!25, rounded corners, thick,
+              minimum width=3.0cm, minimum height=0.7cm, align=center, font=\small},
+  final/.style={rectangle, draw, fill=yellow!30, rounded corners, thick,
+                minimum width=5.2cm, minimum height=0.75cm, align=center, font=\small},
+  arrow/.style={->, >=stealth, thick}
+]
+
+\node[data] (x) at (0,4.15) {Worker with covariates $x$};
+\node[note] at (0,3.55) {Each honest causal tree gives one CATE estimate};
+
+% Tree 1
+\node[dnode] (A0) at (-4.2,2.8) {};
+\node[dnode] (A1) at (-4.7,2.05) {};
+\node[dnode] (A2) at (-3.7,2.05) {};
+\node[leaf]  (A3) at (-4.2,1.25) {$\$2{,}800$};
+\draw[arrow] (A0) -- (A1);
+\draw[arrow] (A0) -- (A2);
+\draw[arrow, red!70, very thick] (A0) -- (A1);
+\draw[arrow, red!70, very thick] (A1) -- (A3);
+\node[font=\scriptsize] at (-4.2,0.72) {Tree 1: $\hat{\tau}_1(x)$};
+
+% Tree 2
+\node[dnode] (B0) at (-1.45,2.8) {};
+\node[dnode] (B1) at (-1.95,2.05) {};
+\node[dnode] (B2) at (-0.95,2.05) {};
+\node[leaf]  (B3) at (-1.45,1.25) {$\$2{,}200$};
+\draw[arrow] (B0) -- (B1);
+\draw[arrow] (B0) -- (B2);
+\draw[arrow, red!70, very thick] (B0) -- (B2);
+\draw[arrow, red!70, very thick] (B2) -- (B3);
+\node[font=\scriptsize] at (-1.45,0.72) {Tree 2: $\hat{\tau}_2(x)$};
+
+\node at (0.55,2.05) {$\cdots$};
+
+% Tree B-1
+\node[dnode] (C0) at (1.65,2.8) {};
+\node[dnode] (C1) at (1.15,2.05) {};
+\node[dnode] (C2) at (2.15,2.05) {};
+\node[leaf]  (C3) at (1.65,1.25) {$\$3{,}100$};
+\draw[arrow] (C0) -- (C1);
+\draw[arrow] (C0) -- (C2);
+\draw[arrow, red!70, very thick] (C0) -- (C1);
+\draw[arrow, red!70, very thick] (C1) -- (C3);
+\node[font=\scriptsize] at (1.65,0.72) {Tree $B-1$};
+
+% Tree B
+\node[dnode] (D0) at (4.25,2.8) {};
+\node[dnode] (D1) at (3.75,2.05) {};
+\node[dnode] (D2) at (4.75,2.05) {};
+\node[leaf]  (D3) at (4.25,1.25) {$\$2{,}500$};
+\draw[arrow] (D0) -- (D1);
+\draw[arrow] (D0) -- (D2);
+\draw[arrow, red!70, very thick] (D0) -- (D2);
+\draw[arrow, red!70, very thick] (D2) -- (D3);
+\node[font=\scriptsize] at (4.25,0.72) {Tree $B$: $\hat{\tau}_B(x)$};
+
+% Average
+\node[avg] (avg) at (0,-0.35) {Average};
+
+\draw[arrow, orange!70] (A3.south) -- (-4.2,0.25) -- (avg.north);
+\draw[arrow, orange!70] (B3.south) -- (-1.45,0.25) -- (avg.north);
+\draw[arrow, orange!70] (C3.south) -- (1.65,0.25) -- (avg.north);
+\draw[arrow, orange!70] (D3.south) -- (4.25,0.25) -- (avg.north);
+
+\node[font=\small, align=left] at (3.25,-0.35)
+{$\displaystyle
+\hat{\tau}(x)
+=
+\frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x)$};
+
+\node[final] (final) at (0,-1.75)
+{Final CATE estimate: average of all causal-tree estimates};
+
+\draw[arrow, red!70] (avg.south) -- (final.north);
+
 \end{tikzpicture}
 \end{center}
 
-\vspace{0.2cm}
-\begin{itemize}
-  \item A wide distribution suggests substantial heterogeneity.
-  \item A narrow distribution suggests the treatment effect is similar for most people.
-  \item The average can hide both winners and non-responders.
-\end{itemize}
 \end{frame}
 
-\begin{frame}{BLP: A Simple Summary of Heterogeneity}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Why Does Causal Forest Help?}{Same Benefit as Random Forest}
+
+\begin{itemize}
+  \item A single causal tree is easy to explain, but it is noisy.
+  \vspace{0.2cm}
+  \item Different subsamples may produce different splits and different leaf effects.
+  \vspace{0.2cm}
+  \item Causal forest averages many honest causal trees:
+  \[
+    \hat{\tau}(x)
+    =
+    \tau(x)
+    +
+    \frac{1}{B}\sum_{b=1}^{B}\varepsilon_b(x).
+  \]
+  \vspace{0.2cm}
+  \item If tree-specific errors partly cancel, the average is more stable.
+\end{itemize}
+
+\vspace{0.25cm}
+\begin{center}
+\fbox{%
+\parbox{0.86\textwidth}{%
+\centering
+\textbf{Random forest:} average noisy outcome predictions.\\
+\textbf{Causal forest:} average noisy treatment-effect estimates.
+}}
+\end{center}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Forest}{Adaptive Matching Intuition}
+
+\begin{itemize}
+  \item For a target worker with covariates $x$, each tree places that worker into a leaf.
+  \vspace{0.15cm}
+  \item Other workers who often fall in the same leaves as $x$ receive more weight.
+  \vspace{0.15cm}
+  \item The forest then compares treated and control outcomes among these ``similar'' workers.
+\end{itemize}
+
+\vspace{0.2cm}
+\[
+  \hat{\tau}(x)
+  \approx
+  \sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
+  -
+  \sum_{i:D_i=0} a_i(x)\mathrm{Y}_i,
+\]
+
+\vspace{0.1cm}
+\begin{itemize}
+  \item $a_i(x)$ is large when observation $i$ is often grouped with $x$ by the forest.
+  \vspace{0.1cm}
+  \item This is like matching, but the notion of similarity is learned by the forest.
+\end{itemize}
+
+\end{frame}
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Forest}{What Do We Get After Estimation?}
+
+\begin{itemize}
+  \item \textbf{Individual CATE estimates}: $\hat{\tau}(x_i)$ for each worker.
+  \vspace{0.15cm}
+  \item \textbf{ATE}: average the CATE over all observations:
+  \[
+    \hat{\alpha}_{\text{ATE}}
+    \approx
+    \frac{1}{N}\sum_{i=1}^{N}\hat{\tau}(x_i).
+  \]
+  \vspace{0.15cm}
+  \item \textbf{ATT}: average the CATE among treated workers:
+  \[
+    \hat{\alpha}_{\text{ATT}}
+    \approx
+    \frac{1}{N_1}\sum_{i:D_i=1}\hat{\tau}(x_i).
+  \]
+  \vspace{0.15cm}
+  \item \textbf{Heterogeneity summaries}: CATE distribution, BLP, variable importance.
+\end{itemize}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{Causal Forest}{How to Interpret $\hat{\tau}(x_i)$}
+
+\begin{itemize}
+  \item $\hat{\tau}(x_i)$ is \textbf{not} the true individual treatment effect.
+  \vspace{0.2cm}
+  \item We still observe only one potential outcome for worker $i$.
+  \vspace{0.2cm}
+  \item Better interpretation:
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item $\hat{\tau}(x_i)$ is the estimated average treatment effect for workers with characteristics similar to $x_i$.
+  \end{itemize}
+\end{itemize}
+
+\vspace{0.25cm}
+\begin{block}{Example}
+If $\hat{\tau}(x_i)=\$2{,}500$, workers similar to worker $i$ are estimated to gain about \$2,500 from job training.
+\end{block}
+
+\vspace{0.1cm}
+\begin{center}
+\textbf{Causal forest estimates CATE, not each person's true counterfactual outcome.}
+\end{center}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{After Causal Forest}{CATE Distribution}
+
+\textbf{Question:} How much do estimated treatment effects vary across workers?
+
+\vspace{0.2cm}
+
+\begin{columns}[T]
+\begin{column}{0.50\textwidth}
+\begin{center}
+\begin{tikzpicture}[x=0.075cm,y=0.075cm]
+  \draw[->] (0,0) -- (62,0) node[right, font=\scriptsize] {$\hat{\tau}(x_i)$};
+  \draw[->] (0,0) -- (0,34) node[above, font=\scriptsize] {count};
+
+  \foreach \x/\h in {4/3,8/6,12/10,16/15,20/22,24/28,28/25,32/20,36/15,40/9,44/5,48/2} {
+    \draw[fill=blue!25, draw=blue!60] (\x,0) rectangle ++(3.2,\h);
+  }
+
+  \draw[red, thick, dashed] (27,0) -- (27,31);
+  \node[red, font=\scriptsize, above] at (27,31) {mean};
+\end{tikzpicture}
+\end{center}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+  \item Plot all individual CATE estimates $\hat{\tau}(x_i)$.
+  \vspace{0.15cm}
+  \item The center of the distribution is related to the ATE.
+  \vspace{0.15cm}
+  \item A \textbf{wide} distribution means treatment effects differ substantially across workers.
+  \vspace{0.15cm}
+  \item A \textbf{narrow} distribution means most workers have similar estimated effects.
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+
+\begin{center}
+\fbox{%
+\parbox{0.86\textwidth}{%
+\centering
+\textbf{Use:} tells us whether policy targeting may be valuable.
+}}
+\end{center}
+
+\end{frame}
+
+
+
+%-------------------------------------------------------------
+\begin{frame}{After Causal Forest}{Best Linear Projection (BLP)}
+
+\textbf{Question:} Which worker characteristics are associated with larger estimated treatment effects?
+
+\vspace{0.2cm}
+
 \begin{itemize}
   \item CATE estimates can be hard to summarize one by one.
-  \vspace{0.2cm}
-  \item Best linear projection asks:
+  \vspace{0.15cm}
+  \item BLP gives a simple linear summary:
   \[
     \hat{\tau}(x_i)
     =
-    \beta_0+\beta_1\,\text{age}_i+\beta_2\,\text{educ}_i+\beta_3\,\text{re74}_i+\cdots+\varepsilon_i.
+    \beta_0
+    +\beta_1\,\text{age}_i
+    +\beta_2\,\text{educ}_i
+    +\beta_3\,\text{re74}_i
+    +\cdots
+    +\varepsilon_i.
   \]
-  \vspace{0.2cm}
-  \item Example interpretations:
+  \vspace{0.15cm}
+  \item Example interpretation:
+  \vspace{0.1cm}
   \begin{itemize}
-    \item $\hat{\beta}_1<0$: older workers tend to benefit less.
+    \item $\hat{\beta}_1<0$: older workers tend to have smaller training effects.
+    \vspace{0.1cm}
     \item $\hat{\beta}_3<0$: workers with higher previous earnings tend to benefit less.
   \end{itemize}
-  \vspace{0.2cm}
-  \item BLP is descriptive: it summarizes the forest's estimated heterogeneity.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Variable Importance}
-\begin{itemize}
-  \item Variable importance asks which variables the forest often uses to split.
-  \vspace{0.2cm}
-  \item A high value means the variable is useful for finding groups with different treatment effects.
-  \vspace{0.2cm}
-  \item It can detect nonlinearities and interactions.
-  \vspace{0.2cm}
-  \item But it does not tell the sign of the relationship.
 \end{itemize}
 
-\vspace{0.3cm}
+\vspace{0.2cm}
+
 \begin{center}
-\small
-\begin{tabular}{ll}
-\toprule
-BLP & direction and standard errors \\
-Variable importance & which variables help split the forest \\
-\bottomrule
-\end{tabular}
+\fbox{%
+\parbox{0.88\textwidth}{%
+\centering
+\textbf{Use:} translates complex CATE estimates into familiar regression-style summaries.
+}}
 \end{center}
+
 \end{frame}
 
-\begin{frame}{Practical Warnings}
+
+
+%-------------------------------------------------------------
+\begin{frame}{After Causal Forest}{Variable Importance}
+
+\textbf{Question:} Which covariates does the forest use most often to find treatment-effect heterogeneity?
+
+\vspace{0.2cm}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{center}
+\begin{tikzpicture}[x=0.75cm,y=0.55cm]
+  \node[anchor=east, font=\scriptsize] at (0,4) {prior earnings};
+  \node[anchor=east, font=\scriptsize] at (0,3) {age};
+  \node[anchor=east, font=\scriptsize] at (0,2) {education};
+  \node[anchor=east, font=\scriptsize] at (0,1) {married};
+  \node[anchor=east, font=\scriptsize] at (0,0) {race};
+
+  \draw[fill=blue!35, draw=blue!60] (0.2,3.8) rectangle (4.2,4.2);
+  \draw[fill=blue!35, draw=blue!60] (0.2,2.8) rectangle (3.3,3.2);
+  \draw[fill=blue!35, draw=blue!60] (0.2,1.8) rectangle (2.5,2.2);
+  \draw[fill=blue!35, draw=blue!60] (0.2,0.8) rectangle (1.4,1.2);
+  \draw[fill=blue!35, draw=blue!60] (0.2,-0.2) rectangle (0.9,0.2);
+
+  \node[font=\scriptsize] at (2.3,-0.85) {importance};
+\end{tikzpicture}
+\end{center}
+\end{column}
+
+\begin{column}{0.50\textwidth}
 \begin{itemize}
-  \item Do not interpret CATE estimates causally without a credible identification strategy.
-  \vspace{0.2cm}
-  \item Do not overinterpret one person's estimate; think in terms of similar groups.
-  \vspace{0.2cm}
-  \item Check overlap: for each region of $X$, we need both treated and control observations.
-  \vspace{0.2cm}
-  \item Use forests for exploration and targeting, then report simple summaries carefully.
-  \vspace{0.2cm}
-  \item In small samples, heterogeneity estimates can be noisy.
+  \item Counts how often variables are used in forest splits.
+  \vspace{0.1cm}
+  \item High importance means the variable helps separate high-effect and low-effect groups.
+  \vspace{0.1cm}
+  \item It can capture nonlinearities and interactions.
+  \vspace{0.1cm}
+  \item But it does \textbf{not} tell us the direction of the relationship.
 \end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{0.1cm}
+
+\begin{center}
+\fbox{%
+\parbox{0.88\textwidth}{%
+\centering
+\textbf{Use:} identifies which variables are useful for discovering heterogeneity.
+}}
+\end{center}
+
 \end{frame}
+
+
+
+%-------------------------------------------------------------
+% \begin{frame}{After Causal Forest}{How These Outputs Work Together}
+
+% \begin{center}
+% \small
+% \begin{tabular}{lll}
+% \toprule
+% Output & Main question & Interpretation \\
+% \midrule
+% CATE distribution
+%   & Is there heterogeneity?
+%   & Are effects concentrated or spread out? \\
+% \addlinespace[3pt]
+% BLP
+%   & Which covariates predict larger effects?
+%   & Direction and linear summary \\
+% \addlinespace[3pt]
+% Variable importance
+%   & Which variables drive splits?
+%   & Nonlinear and interaction patterns \\
+% \bottomrule
+% \end{tabular}
+% \end{center}
+
+% \vspace{0.35cm}
+
+% \begin{itemize}
+%   \item Start with the CATE distribution: is targeting potentially useful?
+%   \vspace{0.15cm}
+%   \item Use BLP to explain heterogeneity in simple regression language.
+%   \vspace{0.15cm}
+%   \item Use variable importance to see which covariates the forest relied on.
+% \end{itemize}
+
+% \vspace{0.2cm}
+
+% \begin{block}{Important}
+% These are summaries of estimated heterogeneity; causal credibility still comes from the research design.
+% \end{block}
+
+% \end{frame}
+
+
+% %-------------------------------------------------------------
+% \begin{frame}{Causal Forest}{Key Assumptions and Warnings}
+
+% \begin{itemize}
+%   \item Causal forest is an \textbf{estimator}, not an identification strategy.
+%   \vspace{0.2cm}
+%   \item We still need credible identification, for example:
+%   \[
+%     (\mathrm{Y}^1_i,\mathrm{Y}^0_i)\indep D_i\mid X_i
+%   \]
+%   in an unconfoundedness design, or another design such as RCT, DID, or RDD.
+%   \vspace{0.2cm}
+%   \item We need overlap: comparable treated and control observations in relevant regions of $X$.
+%   \vspace{0.2cm}
+%   \item In small samples, estimated heterogeneity can be noisy; report summaries carefully.
+% \end{itemize}
+
+% \end{frame}
+
+
 
 %=============================================================
 \title[]
-{R Example: Job Training Program}
+{R Example}
 
 \subtitle{}
 \author{}
@@ -1222,114 +2569,108 @@ write.csv(results, "cate_results.csv",
 \end{frame}
 
 %=============================================================
-\title[]
-{Labor Economics Application}
+% \title[]
+% {Labor Economics Application}
 
-\subtitle{}
-\author{}
-\institute{}
-\date{}
+% \subtitle{}
+% \author{}
+% \institute{}
+% \date{}
 
-\begin{frame}{}
-  \titlepage
-\end{frame}
+% \begin{frame}{}
+%   \titlepage
+% \end{frame}
 
-\section{Application and Wrap-Up}
+% \section{Application and Wrap-Up}
 
-\begin{frame}{Labor Economics Applications}
-\begin{itemize}
-  \item Active labor market programs: who benefits from job search assistance?
-  \vspace{0.2cm}
-  \item Youth employment programs: which youth benefit most?
-  \vspace{0.2cm}
-  \item Education policy: do returns differ by background or local labor market?
-  \vspace{0.2cm}
-  \item Minimum wage: do effects differ by worker skill, firm size, or region?
-  \vspace{0.2cm}
-  \item Parental leave: do effects differ by previous earnings or occupation?
-\end{itemize}
-\end{frame}
+% \begin{frame}{Labor Economics Applications}
+% \begin{itemize}
+%   \item Active labor market programs: who benefits from job search assistance?
+%   \vspace{0.2cm}
+%   \item Youth employment programs: which youth benefit most?
+%   \vspace{0.2cm}
+%   \item Education policy: do returns differ by background or local labor market?
+%   \vspace{0.2cm}
+%   \item Minimum wage: do effects differ by worker skill, firm size, or region?
+%   \vspace{0.2cm}
+%   \item Parental leave: do effects differ by previous earnings or occupation?
+% \end{itemize}
+% \end{frame}
 
-\begin{frame}{What Students Should Remember}
-\begin{enumerate}
-  \item Earlier lectures focused on $\alpha_{\text{ATE}}$ and $\alpha_{\text{ATT}}$.
-  \vspace{0.2cm}
-  \item CATE asks how effects vary with $X_i$:
-  \[
-    \tau(x)=\mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
-  \]
-  \vspace{0.2cm}
-  \item A decision tree creates data-driven subgroups; a random forest stabilizes trees by averaging.
-  \vspace{0.2cm}
-  \item A causal tree changes the target from outcome prediction to treatment-effect heterogeneity.
-  \vspace{0.2cm}
-  \item Honesty separates split selection from effect estimation.
-  \vspace{0.2cm}
-  \item A causal forest averages many honest causal trees to stabilize $\hat{\tau}(x)$.
-\end{enumerate}
-\end{frame}
+% \begin{frame}{What Students Should Remember}
+% \begin{enumerate}
+%   \item Earlier lectures focused on $\alpha_{\text{ATE}}$ and $\alpha_{\text{ATT}}$.
+%   \vspace{0.2cm}
+%   \item CATE asks how effects vary with $X_i$:
+%   \[
+%     \tau(x)=\mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
+%   \]
+%   \vspace{0.2cm}
+%   \item A decision tree creates data-driven subgroups; a random forest stabilizes trees by averaging.
+%   \vspace{0.2cm}
+%   \item A causal tree changes the target from outcome prediction to treatment-effect heterogeneity.
+%   \vspace{0.2cm}
+%   \item Honesty separates split selection from effect estimation.
+%   \vspace{0.2cm}
+%   \item A causal forest averages many honest causal trees to stabilize $\hat{\tau}(x)$.
+% \end{enumerate}
+% \end{frame}
 
-\begin{frame}{Checklist for Using Causal Forest}
-\begin{enumerate}
-  \item Define the outcome $\mathrm{Y}_i$, treatment $D_i$, and pre-treatment covariates $X_i$.
-  \vspace{0.15cm}
-  \item Explain the causal identification assumption.
-  \vspace{0.15cm}
-  \item Check overlap: both treated and control observations should exist across relevant $X_i$ regions.
-  \vspace{0.15cm}
-  \item Estimate the forest and report $\hat{\alpha}_{\text{ATE}}$ or $\hat{\alpha}_{\text{ATT}}$.
-  \vspace{0.15cm}
-  \item Use CATE distribution, BLP, and variable importance to describe heterogeneity.
-\end{enumerate}
-\end{frame}
+% \begin{frame}{Checklist for Using Causal Forest}
+% \begin{enumerate}
+%   \item Define the outcome $\mathrm{Y}_i$, treatment $D_i$, and pre-treatment covariates $X_i$.
+%   \vspace{0.15cm}
+%   \item Explain the causal identification assumption.
+%   \vspace{0.15cm}
+%   \item Check overlap: both treated and control observations should exist across relevant $X_i$ regions.
+%   \vspace{0.15cm}
+%   \item Estimate the forest and report $\hat{\alpha}_{\text{ATE}}$ or $\hat{\alpha}_{\text{ATT}}$.
+%   \vspace{0.15cm}
+%   \item Use CATE distribution, BLP, and variable importance to describe heterogeneity.
+% \end{enumerate}
+% \end{frame}
 
 %=============================================================
-\title[]
-{Recommended Resources}
-
-\subtitle{}
-\author{}
-\institute{}
-\date{}
-
-\begin{frame}{}
-  \titlepage
-\end{frame}
-
 \begin{frame}{Recommended Resources}
 \begin{itemize}
-  \item Wager and Athey (2018), ``Estimation and Inference of Heterogeneous Treatment Effects using Random Forests.''
+  \item Wager and Athey (2018), ``Estimation and Inference of Heterogeneous Treatment Effects using Random Forests.'' 
+  \textit{Journal of the American Statistical Association}, 113(523), 1228--1242.
   \vspace{0.2cm}
-  \item Athey, Tibshirani, and Wager (2019), ``Generalized Random Forests.''
+
+  \item Athey, Tibshirani, and Wager (2019), ``Generalized Random Forests.'' 
+  \textit{The Annals of Statistics}, 47(2), 1148--1178.
   \vspace{0.2cm}
+
   \item \texttt{grf} documentation:
   \begin{center}
     \url{https://grf-labs.github.io/grf/}
   \end{center}
   \vspace{0.2cm}
-  \item Athey and Imbens (2019), ``Machine Learning Methods That Economists Should Know About.''
+
+  \item Athey and Imbens (2019), ``Machine Learning Methods That Economists Should Know About.'' 
+  \textit{Annual Review of Economics}, 11, 685--725.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Final Takeaway}
-\begin{center}
-\large
-Causal forest helps us move from
+% \begin{frame}{Final Takeaway}
+% \begin{center}
+% \large
+% Causal forest helps us move from
 
-\vspace{0.25cm}
-\textbf{``Does the policy work on average?''}
+% \vspace{0.25cm}
+% \textbf{``Does the policy work on average?''}
 
-\vspace{0.25cm}
-to
+% \vspace{0.25cm}
+% to
 
-\vspace{0.25cm}
-\textbf{``For whom does the policy work best?''}
-\end{center}
+% \vspace{0.25cm}
+% \textbf{``For whom does the policy work best?''}
+% \end{center}
 
-\vspace{0.3cm}
-\begin{block}{But}
-The forest estimates heterogeneity. The research design still provides the causal credibility.
-\end{block}
-\end{frame}
+% \vspace{0.3cm}
+% \begin{block}{But}
+% The forest estimates heterogeneity. The research design still provides the causal credibility.
+% \end{block}
+% \end{frame}
 
 \end{document}
