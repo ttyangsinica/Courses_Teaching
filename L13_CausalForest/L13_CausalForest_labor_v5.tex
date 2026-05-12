@@ -297,31 +297,6 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Connection to Earlier Lectures}
-\begin{itemize}
-  \item Earlier lectures mostly focused on one average causal parameter:
-  \[
-    \alpha_{\text{ATE}}
-    =
-    \mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\right].
-  \]
-  \vspace{0.2cm}
-  \item Some policy questions focus on treated units:
-  \[
-    \alpha_{\text{ATT}}
-    =
-    \mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid D_i=1\right].
-  \]
-  \vspace{0.2cm}
-  \item This lecture asks a more granular question:
-  \[
-    \alpha_{\text{CATE}}(x)
-    =
-    \mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
-  \]
-\end{itemize}
-\end{frame}
-
 \begin{frame}{Running Example: Job Training}
 \begin{itemize}
   \item Suppose a government offers a job training program.
@@ -339,64 +314,6 @@
 \end{block}
 \end{frame}
 
-\begin{frame}{From ATE to CATE}
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\textbf{Average Treatment Effect}
-\[
-  \alpha_{\text{ATE}}
-  =
-  \mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\right]
-\]
-\begin{itemize}
-  \item One number for the whole sample.
-  \item Useful, but it hides heterogeneity.
-\end{itemize}
-\end{column}
-\begin{column}{0.48\textwidth}
-\textbf{Conditional Average Treatment Effect}
-\[
-  \tau(x)
-  =
-  \mathrm{E}\!\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right]
-\]
-\begin{itemize}
-  \item A treatment effect for people with characteristics $x$.
-  \item Useful for targeting and mechanism.
-\end{itemize}
-\end{column}
-\end{columns}
-
-\vspace{0.4cm}
-\begin{center}
-\textbf{In the causal forest literature, CATE is usually written as $\tau(x)$.}
-\end{center}
-\end{frame}
-
-\begin{frame}{How ATE and ATT Relate to CATE}
-\begin{itemize}
-  \item Once we know the CATE function $\tau(x)$, familiar estimands are averages of it:
-  \[
-    \alpha_{\text{ATE}}
-    =
-    \mathrm{E}\!\left[\tau(X_i)\right].
-  \]
-  \vspace{0.2cm}
-  \item For treated workers:
-  \[
-    \alpha_{\text{ATT}}
-    =
-    \mathrm{E}\!\left[\tau(X_i)\mid D_i=1\right].
-  \]
-  \vspace{0.2cm}
-  \item Therefore, causal forest does not replace ATE or ATT.
-  \vspace{0.1cm}
-  \begin{itemize}
-    \item It estimates a richer object first, then we can average it for policy summaries.
-  \end{itemize}
-\end{itemize}
-\end{frame}
-
 \begin{frame}{Why Heterogeneity Matters}
 \begin{center}
 \small
@@ -411,10 +328,10 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
 \end{tabular}
 \end{center}
 
-\vspace{0.35cm}
+\vspace{0.3cm}
 \begin{itemize}
-  \item The average effect may be positive.
-  \item But policy decisions often require knowing \textbf{where} the effect is large.
+  \item The average effect may look positive but modest.
+  \item Policy decisions often require knowing \textbf{where} the effect is large.
   \item CATE helps answer: who should be prioritized if resources are limited?
 \end{itemize}
 \end{frame}
@@ -427,62 +344,69 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
     \mathrm{Y}^{0}_{i} \quad \text{if untreated}.
   \]
   \vspace{0.15cm}
-  \item The individual treatment effect is:
+  \item The individual treatment effect is $\tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}$, but we only observe one outcome:
   \[
-    \tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}.
-  \]
-  \vspace{0.15cm}
-  \item But we only observe one of them:
-  \[
-    \mathrm{Y}_i
-    =
-    D_i\mathrm{Y}^{1}_{i}
-    +(1-D_i)\mathrm{Y}^{0}_{i}.
+    \mathrm{Y}_i = D_i\mathrm{Y}^{1}_{i} + (1-D_i)\mathrm{Y}^{0}_{i}.
   \]
 \end{itemize}
-
-\vspace{0.25cm}
-\begin{block}{So causal forest does not magically observe individual effects.}
-It estimates average effects for people with similar $X$.
-\end{block}
-\end{frame}
-
-\begin{frame}{Identification Assumption}
-\begin{block}{Conditional independence}
-\[
-  \left(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i}\right)
-  \indep D_i \mid X_i
-\]
-\end{block}
 
 \vspace{0.2cm}
+\begin{block}{Causal forest does not observe individual effects.}
+  It estimates average effects for workers with \emph{similar} $X$ --- and it needs identification (RCT, DID, RDD, \ldots) to give these averages a causal interpretation.
+\end{block}
+\end{frame}
+
+\begin{frame}{Traditional Approaches to Treatment Effect Heterogeneity}{}
 \begin{itemize}
-  \item After controlling for observed covariates $X_i$, treatment is as good as random.
+  \item Researchers have traditionally explored heterogeneity in two ways:
   \vspace{0.2cm}
-  \item This is automatically credible in a randomized experiment.
+  \begin{itemize}
+    \item[1.] \textbf{Theory-based subgroup analysis}: guided by economic theory, split the sample by gender, age group, or education level and estimate the ATE in each subgroup
+    \vspace{0.15cm}
+    \item[2.] \textbf{Interaction terms in regression}:
+    \[
+      Y_i = \alpha + \beta D_i + \gamma X_i + \delta\,(D_i \times X_i) + \varepsilon_i
+    \]
+    the coefficient $\delta$ captures how the effect of $D_i$ varies linearly with $X_i$
+  \end{itemize}
   \vspace{0.2cm}
-  \item In observational data, it requires rich covariates and careful design.
-  \vspace{0.2cm}
-  \item Causal forest is a powerful estimator, not a substitute for identification.
+  \item Both require the researcher to \textbf{pre-specify} which $X$ matters and assume a \textbf{linear, parametric} form for heterogeneity
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Identification of CATE}
+\begin{frame}{Causal Forest: A Data-Driven Approach}{}
 \begin{itemize}
-  \item Under conditional independence, we can write:
+  \item Causal forest is \textbf{not} an identification strategy --- it does not solve the selection bias problem on its own
+  \vspace{0.2cm}
+  \item It is a flexible, \textbf{data-driven estimator} of CATE that can be paired with any identification strategy:
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item \textbf{RCT}: who benefits more from a randomized treatment?
+    \vspace{0.1cm}
+    \item \textbf{DID}: are treatment effects heterogeneous across groups?
+    \vspace{0.1cm}
+    \item \textbf{RDD}: who benefits most near the discontinuity threshold?
+  \end{itemize}
+  \vspace{0.2cm}
+  \item Unlike subgroup analysis or interaction terms, causal forest \textbf{searches the data} for which characteristics drive heterogeneity --- without the researcher pre-specifying them
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How ATE and ATT Relate to CATE}
+\begin{itemize}
+  \item Once we know the CATE function $\tau(x)$, familiar estimands are just averages of it:
   \[
-    \tau(x)
-    =
-    \mathrm{E}\!\left[\mathrm{Y}_i\mid X_i=x,D_i=1\right]
-    -
-    \mathrm{E}\!\left[\mathrm{Y}_i\mid X_i=x,D_i=0\right].
+    \alpha_{\text{ATE}} = \mathrm{E}\!\left[\tau(X_i)\right], \qquad
+    \alpha_{\text{ATT}} = \mathrm{E}\!\left[\tau(X_i)\mid D_i=1\right].
   \]
   \vspace{0.2cm}
-  \item This is the same treated-control comparison as before, but now conditional on $X_i=x$.
+  \item Causal forest therefore does not \emph{replace} ATE or ATT.
+  \vspace{0.1cm}
+  \begin{itemize}
+    \item It estimates a richer object $\tau(x)$ first, and policy summaries such as ATE or ATT are recovered by averaging.
+  \end{itemize}
   \vspace{0.2cm}
-  \item The hard part is that $X_i$ can have many variables, so exact cells become too small.
-  \vspace{0.2cm}
-  \item Causal forest uses trees to find useful local comparisons automatically.
+  \item This also means: if heterogeneity is small, $\tau(x) \approx \alpha_{\text{ATE}}$ for all $x$ --- causal forest collapses back to the usual ATE.
 \end{itemize}
 \end{frame}
 
