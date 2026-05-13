@@ -301,7 +301,7 @@ Worker type & Control earnings & Training earnings & Effect \\
 \midrule
 Young, low education & \$8,000 & \$11,000 & \$3,000 \\
 Older, high experience & \$18,000 & \$18,500 & \$500 \\
-Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
+Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -961,111 +961,108 @@ Disconnected worker & \$2,000 & \$6,000 & \$4,000 \\
 
 %-------------------------------------------------------------
 \begin{frame}{Random Forest: How It Works}{Two Sources of Randomness}
+\small
 
 \textbf{Random Forest makes trees different from one another in two ways.}
 
-\vspace{0.25cm}
+\vspace{0.1cm}
 
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
 
 \textbf{1. Random subsampling}
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{0.04cm}
   \item Draw a random subset of observations for each tree
-  \vspace{0.1cm}
   \item Each tree sees a different version of the data
-  \vspace{0.1cm}
   \item Some observations are used often; some are left out
 \end{itemize}
 
-\vspace{0.25cm}
+\vspace{0.05cm}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.62, transform shape,
+\begin{tikzpicture}[scale=0.53, transform shape,
   obs/.style={rectangle, draw, minimum width=0.45cm, minimum height=0.35cm,
               font=\tiny, fill=blue!15},
   samp/.style={rectangle, draw, minimum width=0.45cm, minimum height=0.35cm,
                font=\tiny, fill=orange!20},
   arrow/.style={->, thick}
 ]
-\node[font=\scriptsize\bfseries] at (0,2.2) {Full data};
+\node[font=\scriptsize\bfseries] at (0,2.05) {Full data};
 \foreach \i in {1,...,6} {
-  \node[obs] at ({(\i-3.5)*0.55},1.65) {\i};
+  \node[obs] at ({(\i-3.5)*0.55},1.5) {\i};
 }
 
-\draw[arrow] (-0.9,1.25) -- (-1.7,0.45);
-\draw[arrow] (0,1.25) -- (0,0.45);
-\draw[arrow] (0.9,1.25) -- (1.7,0.45);
+\draw[arrow] (-0.9,1.1) -- (-1.7,0.35);
+\draw[arrow] (0,1.1) -- (0,0.35);
+\draw[arrow] (0.9,1.1) -- (1.7,0.35);
 
-\node[font=\scriptsize] at (-1.7,0.15) {Tree 1};
+\node[font=\scriptsize] at (-1.7,0.05) {Tree 1};
 \foreach \i/\v in {1/1,2/2,3/2,4/4,5/6} {
-  \node[samp] at ({-1.7+(\i-3)*0.45},-0.35) {\v};
+  \node[samp] at ({-1.7+(\i-3)*0.45},-0.42) {\v};
 }
 
-\node[font=\scriptsize] at (0,0.15) {Tree 2};
+\node[font=\scriptsize] at (0,0.05) {Tree 2};
 \foreach \i/\v in {1/1,2/3,3/4,4/4,5/5} {
-  \node[samp, fill=green!20] at ({0+(\i-3)*0.45},-0.35) {\v};
+  \node[samp, fill=green!20] at ({0+(\i-3)*0.45},-0.42) {\v};
 }
 
-\node[font=\scriptsize] at (1.7,0.15) {Tree $B$};
+\node[font=\scriptsize] at (1.7,0.05) {Tree $B$};
 \foreach \i/\v in {1/2,2/3,3/5,4/6,5/6} {
-  \node[samp, fill=purple!15] at ({1.7+(\i-3)*0.45},-0.35) {\v};
+  \node[samp, fill=purple!15] at ({1.7+(\i-3)*0.45},-0.42) {\v};
 }
 \end{tikzpicture}
 \end{center}
 
 \end{column}
 
-\begin{column}{0.48\textwidth}
+\begin{column}{0.49\textwidth}
 
 \textbf{2. Random feature selection}
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{0.04cm}
   \item At each split, consider only $m$ randomly selected covariates
-  \vspace{0.1cm}
   \item Typical choice: $m=\sqrt{p}$
-  \vspace{0.1cm}
   \item Prevents all trees from using the same strongest variable
 \end{itemize}
 
-\vspace{0.25cm}
+\vspace{0.05cm}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.62, transform shape,
+\begin{tikzpicture}[scale=0.53, transform shape,
   var/.style={rectangle, draw, rounded corners, minimum width=0.75cm,
               minimum height=0.35cm, font=\tiny, fill=blue!12},
   pick/.style={rectangle, draw, rounded corners, minimum width=0.75cm,
                minimum height=0.35cm, font=\tiny, fill=green!20},
   arrow/.style={->, thick}
 ]
-\node[font=\scriptsize\bfseries] at (0,2.2) {All $p$ covariates};
+\node[font=\scriptsize\bfseries] at (0,2.05) {All $p$ covariates};
 \foreach \x/\name in {-2/age,-1/educ,0/re74,1/re75,2/race} {
-  \node[var] at (\x,1.6) {\name};
+  \node[var] at (\x,1.5) {\name};
 }
-\node at (2.85,1.6) {$\cdots$};
+\node at (2.85,1.5) {$\cdots$};
 
-\draw[arrow] (-1.1,1.15) -- (-1.8,0.45);
-\draw[arrow] (1.1,1.15) -- (1.8,0.45);
+\draw[arrow] (-1.1,1.05) -- (-1.8,0.35);
+\draw[arrow] (1.1,1.05) -- (1.8,0.35);
 
-\node[font=\scriptsize] at (-1.8,0.15) {Split in Tree 1};
-\node[pick] at (-2.6,-0.35) {age};
-\node[pick] at (-1.8,-0.35) {re74};
-\node[pick] at (-1.0,-0.35) {educ};
+\node[font=\scriptsize] at (-1.8,0.05) {Split in Tree 1};
+\node[pick] at (-2.6,-0.42) {age};
+\node[pick] at (-1.8,-0.42) {re74};
+\node[pick] at (-1.0,-0.42) {educ};
 
-\node[font=\scriptsize] at (1.8,0.15) {Split in Tree 2};
-\node[pick, fill=orange!20] at (1.0,-0.35) {race};
-\node[pick, fill=orange!20] at (1.8,-0.35) {re75};
-\node[pick, fill=orange!20] at (2.6,-0.35) {age};
+\node[font=\scriptsize] at (1.8,0.05) {Split in Tree 2};
+\node[pick, fill=orange!20] at (1.0,-0.42) {race};
+\node[pick, fill=orange!20] at (1.8,-0.42) {re75};
+\node[pick, fill=orange!20] at (2.6,-0.42) {age};
 \end{tikzpicture}
 \end{center}
 
 \end{column}
 \end{columns}
 
-\vspace{0.2cm}
+\vspace{-0.05cm}
 
 \begin{center}
 \fbox{%
-\parbox{0.86\textwidth}{%
+\parbox{0.80\textwidth}{%
 \centering
 \textbf{Result:} trees are useful but not identical
 $\Rightarrow$ their errors partly cancel when averaged.
@@ -1073,8 +1070,6 @@ $\Rightarrow$ their errors partly cancel when averaged.
 \end{center}
 
 \end{frame}
-
-
 
 %-------------------------------------------------------------
 \begin{frame}{Random Forest: How It Works}{Algorithm}
@@ -1584,26 +1579,27 @@ Prior earn. $<5{,}000$    & \$2,600 & \$1,000 & \$1,600 \\
 
 %-------------------------------------------------------------
 \begin{frame}{Causal Tree}{Honest Estimation}
+\small
 
 \textbf{In practice, causal trees use separate data for two different jobs.}
 
-\vspace{0.2cm}
+\vspace{0.08cm}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.82, transform shape,
+\begin{tikzpicture}[scale=0.68, transform shape,
   box/.style={rectangle, draw, rounded corners, align=center,
-              minimum width=3.0cm, minimum height=0.75cm, font=\small},
+              minimum width=2.8cm, minimum height=0.65cm, font=\small},
   arrow/.style={->, >=stealth, thick}
 ]
-\node[box, fill=gray!15, minimum width=4.2cm] (sample) at (0,2.9)
+\node[box, fill=gray!15, minimum width=3.8cm] (sample) at (0,2.55)
   {Random subsample};
 
-\node[box, fill=blue!12] (split) at (-3.2,1.35)
+\node[box, fill=blue!12] (split) at (-3.0,1.15)
   {Splitting sample\\learn where to split};
-\node[box, fill=green!15] (est) at (3.2,1.35)
+\node[box, fill=green!15] (est) at (3.0,1.15)
   {Estimation sample\\estimate leaf effects};
 
-\node[box, fill=orange!20, minimum width=4.4cm] (tree) at (0,-0.35)
+\node[box, fill=orange!20, minimum width=4.0cm] (tree) at (0,-0.35)
   {Honest causal tree};
 
 \draw[arrow] (sample) -- (split);
@@ -1611,36 +1607,33 @@ Prior earn. $<5{,}000$    & \$2,600 & \$1,000 & \$1,600 \\
 \draw[arrow] (split) -- (tree);
 \draw[arrow] (est) -- (tree);
 
-\node[font=\scriptsize, align=center] at (-3.2,0.35)
+\node[font=\scriptsize, align=center] at (-3.0,0.25)
   {Use data to find groups\\with different effects};
 
-\node[font=\scriptsize, align=center] at (3.2,0.35)
+\node[font=\scriptsize, align=center] at (3.0,0.25)
   {Use fresh data to compute\\$\hat{\tau}(\ell)=\bar{Y}^1_\ell-\bar{Y}^0_\ell$};
 \end{tikzpicture}
 \end{center}
 
-\vspace{0.05cm}
+\vspace{-0.05cm}
 
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{0.04cm}
   \item The splitting sample answers: \textbf{which subgroups should we compare?}
-  \vspace{0.1cm}
   \item The estimation sample answers: \textbf{how large is the treatment effect in each subgroup?}
-  \vspace{0.1cm}
   \item This avoids using the same observations to both discover a pattern and report its size.
 \end{itemize}
 
-\vspace{0.1cm}
+\vspace{-0.03cm}
 
 \begin{center}
 \fbox{%
-\parbox{0.86\textwidth}{%
+\parbox{0.82\textwidth}{%
 \centering
 \textbf{Why ``honest''?} The effect is estimated using data that did not choose the split.
 }}
 \end{center}
 
 \end{frame}
-
 
 
 
@@ -2057,33 +2050,33 @@ Prior earn. $<5{,}000$    & \$2,600 & \$1,000 & \$1,600 \\
 
 
 %-------------------------------------------------------------
-\begin{frame}{Causal Forest}{Adaptive Matching Intuition}
+% \begin{frame}{Causal Forest}{Adaptive Matching Intuition}
 
-\begin{itemize}
-  \item For a target worker with covariates $x$, each tree places that worker into a leaf.
-  \vspace{0.15cm}
-  \item Other workers who often fall in the same leaves as $x$ receive more weight.
-  \vspace{0.15cm}
-  \item The forest then compares treated and control outcomes among these ``similar'' workers.
-\end{itemize}
+% \begin{itemize}
+%   \item For a target worker with covariates $x$, each tree places that worker into a leaf.
+%   \vspace{0.15cm}
+%   \item Other workers who often fall in the same leaves as $x$ receive more weight.
+%   \vspace{0.15cm}
+%   \item The forest then compares treated and control outcomes among these ``similar'' workers.
+% \end{itemize}
 
-\vspace{0.2cm}
-\[
-  \hat{\tau}(x)
-  \approx
-  \sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
-  -
-  \sum_{i:D_i=0} a_i(x)\mathrm{Y}_i,
-\]
+% \vspace{0.2cm}
+% \[
+%   \hat{\tau}(x)
+%   \approx
+%   \sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
+%   -
+%   \sum_{i:D_i=0} a_i(x)\mathrm{Y}_i,
+% \]
 
-\vspace{0.1cm}
-\begin{itemize}
-  \item $a_i(x)$ is large when observation $i$ is often grouped with $x$ by the forest.
-  \vspace{0.1cm}
-  \item This is like matching, but the notion of similarity is learned by the forest.
-\end{itemize}
+% \vspace{0.1cm}
+% \begin{itemize}
+%   \item $a_i(x)$ is large when observation $i$ is often grouped with $x$ by the forest.
+%   \vspace{0.1cm}
+%   \item This is like matching, but the notion of similarity is learned by the forest.
+% \end{itemize}
 
-\end{frame}
+% \end{frame}
 
 %-------------------------------------------------------------
 \begin{frame}{Causal Forest}{What Do We Get After Estimation?}
