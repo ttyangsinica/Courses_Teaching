@@ -2382,14 +2382,28 @@ If $\hat{\tau}(x_i)=\$2{,}500$, workers similar to worker $i$ are estimated to g
   \item Covariates $X_i$: age, education, race, marital status, no degree, earnings in 1974 and 1975.
   \vspace{0.2cm}
   \item Main question: which workers gain more from training?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data and Program}{R Implementation}
+\begin{itemize}
+  \item See \texttt{causal\_forest.R}
   \vspace{0.2cm}
-  \item R workflow:
+  \item Data: \texttt{lalonde} (built into the \texttt{Matching} package; no separate file needed)
+  \vspace{0.2cm}
+  \item Install required packages:
   \begin{itemize}
-    \item Step 1: install packages and load data
-    \item Step 2: prepare $\mathrm{Y}_i$, $D_i$, and $X_i$
-    \item Step 3: estimate causal forest
-    \item Step 4: report ATE/ATT and CATE heterogeneity
+    \vspace{0.1cm}
+    \item \texttt{grf} --- causal forest estimation (\texttt{causal\_forest}, \texttt{variable\_importance}, \texttt{best\_linear\_projection})
+    \vspace{0.1cm}
+    \item \texttt{Matching} --- includes the LaLonde dataset
+    \vspace{0.1cm}
+    \item \texttt{ggplot2} --- CATE distribution and variable importance plots
+    \vspace{0.1cm}
+    \item \texttt{dplyr} --- subgroup summaries
   \end{itemize}
+  \vspace{0.2cm}
+  \item Key steps: prepare $(\mathrm{Y}, D, X)$ $\to$ estimate forest $\to$ ATE/ATT $\to$ CATE $\to$ variable importance $\to$ export
 \end{itemize}
 \end{frame}
 
