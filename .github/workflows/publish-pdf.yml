@@ -377,6 +377,7 @@ jobs:
         with:
           working_directory: L13_CausalForest
           root_file: |
+            L13_CausalForest_data_v5.tex
             L13_CausalForest_labor.tex
             L13_CausalForest_labor_v5.tex
             L13_CausalForest_metrics_v5.tex
