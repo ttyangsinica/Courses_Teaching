@@ -1,0 +1,625 @@
+\documentclass[dvipsnames,hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{threeparttable}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+
+\title[]  
+{Guidelines for Term Paper}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{\today}
+
+
+%\usetheme{Copenhagen}  %applied
+%\usetheme{CambridgeUS}  %labor
+%\usepackage{beamerthemeshadow}  % data (commented: use default beamer theme)
+%\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+%\usepackage{beamerthemeshadow}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+ \titlepage
+\end{frame}
+
+
+\begin{frame}{Term Paper Deadline: 6/18}
+\begin{itemize}
+	
+	\item You should submit your term paper before 6/18
+	\vspace{0.2cm} 
+	\begin{itemize}
+		\item No late submission 
+		\vspace{0.2cm}
+		\item Let me know if you want me to submit grade earlier
+	\end{itemize}
+	\vspace{0.2cm}
+	\item Write your paper in Chinese or English
+   \vspace{0.2cm}
+    \item You need to type your paper using \textbf{Latex}
+	
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Term Paper Deadline: 6/18}
+	\begin{itemize}
+		
+	  \item \textbf{Please upload your paper before 11:59pm 6/18 using the following link}
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item \url{https://www.dropbox.com/request/aBeYTc1TAe2LUXbRj4VA}
+		\vspace{0.2cm}
+		\item Format of file name: studentID+name
+		\vspace{0.2cm}
+		\item Example: 1095323010\_TzuTingYang
+		\vspace{0.2cm}
+	\end{itemize}
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Term Paper Deadline: 6/18}
+\begin{itemize}
+	
+\item Letter style: roughly 2,000-3,000 words (less than 10 pages)
+\vspace{0.3cm}
+\item The maximum number of exhibits (figures + tables) is five
+%6-10 pages including tables, figures, footnotes, appendices, and references
+\vspace{0.3cm}
+\begin{itemize} 
+	\item See \textbf{Economics letters}
+	\vspace{0.3cm}
+	\item \url{https://www.sciencedirect.com/journal/economics-letters}
+		\vspace{0.3cm}
+	\item \url{https://www.sciencedirect.com/science/article/pii/S0165176524001617}
+	
+			\vspace{0.3cm}
+	
+	\item \url{https://www.sciencedirect.com/science/article/pii/S0165176524001836}
+	
+\end{itemize}
+\vspace{0.3cm}
+	
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Guideline for Writing a Term Paper}
+\begin{itemize} 
+	
+	\item Use credible causal inference methods to answer an empirical question
+	\vspace{0.3cm}
+	\begin{itemize} 
+		\item Test economics (social science) theory
+		\vspace{0.3cm}
+		\item Estimate policy effect
+		\vspace{0.3cm}
+		\item Any interesting questions regarding to human behavior/social phenomenon
+	\end{itemize}
+	
+	
+\end{itemize}
+\end{frame}
+
+
+
+%\item Co-authorship is allowed, but comes with higher expectations
+%\vspace{0.3cm}
+%\item At most two authors
+%\vspace{0.3cm}
+%\item Discuss your research question (3/22) and empirical strategy (4/26) with me
+%\vspace{0.3cm}
+%\item Presentation (6/21) and final paper (7/31)
+%\end{itemize}
+%\end{frame}
+
+
+
+\begin{frame}{Guideline for Writing a Term Paper}
+\begin{itemize} 
+\item The Typical Structure of an Empirical Paper
+\vspace{0.3cm}
+\begin{itemize} 
+\item[1] \textbf{Introduction/Motivation}
+\vspace{0.3cm}
+\item[2] Literature Review
+\vspace{0.3cm}
+\item[3] Theoretical Framework 
+\vspace{0.3cm}
+\item[4] \textbf{Data and Sample}
+\vspace{0.3cm}
+\item[5] \textbf{Empirical Method}
+\vspace{0.3cm}
+\item[6] \textbf{Results} 
+\vspace{0.3cm}
+\item[7] \textbf{Discussion and Conclusion}
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Guideline for Writing a Term Paper}
+	\begin{itemize} 
+		\item[0] Title of the paper
+		\vspace{0.3cm}
+		\begin{itemize} 
+			
+			\item You need to give the title of your paper
+					\vspace{0.3cm}
+			\item Use one sentence to summarize the research question you want to answer in this paper
+			
+			\vspace{0.3cm}
+			\begin{itemize} 
+			\item 失業對健康的影響
+						\vspace{0.3cm}
+			\item The Effect of Financial Resource on Fertility: Evidence from Lottery Winners
+					\end{itemize}
+		\end{itemize}
+		
+		
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{1. Introduction/Motivation}
+	\begin{itemize} 
+		
+		\item The question you are trying to address
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item Stating the hypothesis to be tested directly is a good way to do this
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Briefly state why we should care about this question 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Is it an unproven theoretical result?
+			\vspace{0.2cm} 
+			\item An important policy question or an interesting human behavior/social phenomenon?
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Briefly state how you answer this question 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Empirical strategy you use to answer the question
+			\vspace{0.2cm} 
+			\item What data you are using
+			\vspace{0.2cm}
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Briefly discuss your main findings  and contributions
+		\vspace{0.2cm}
+		\item \textbf{We usually finish ``Introduction" in the end of project}
+		
+		
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+
+\begin{frame}{2. Literature Review}
+	\begin{itemize} 
+		
+		\item The first section should discuss previous research that is \textbf{directly relevant to your paper}
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item Not every single paper written on the topic
+		\end{itemize}
+		\vspace{0.2cm}
+		\item The second section should explain your contribution in more detail
+		\vspace{0.2cm}
+		\item You should discuss how your approach is different from what has been done before
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Answer a question more broadly/specifically
+			\vspace{0.2cm}
+			\item Use different data
+			\vspace{0.2cm} 
+			\item Use different empirical strategy
+			\vspace{0.2cm} 
+			\item Comparing how you are improving on a previous paper is useful
+		\end{itemize}
+		\vspace{0.2cm}
+		\item You can combine introduction with literature review when you mention your contributions.
+		
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+
+
+\begin{frame}{3. Theoretical Framework}
+	\begin{itemize} 
+		
+		\item If your paper does not try to verify economics theory, you might not need this part
+		\vspace{0.2cm}
+		\item Not every paper will require the development of a full theoretical model
+		\vspace{0.2cm}
+		\item In the end, you need an empirical model, so the theoretical model you develop must lead somehow to what you are testing
+		
+		
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+
+\begin{frame}{4. Data and Sample }{Data}
+	\begin{itemize} 
+		
+		\item Describe the name and source of the data you are using and the period it covers
+		\vspace{0.2cm}
+		\item Describe whether you have a panel, cross section or
+		time series, what the unit of observation is and how many observations you have
+		\vspace{0.2cm}
+		\item You may want to highlight the important limitations of this data
+		
+		
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+\begin{frame}{4. Data and Sample }{Sample}
+	\begin{itemize} 
+		
+		\item The second section should present (relevant) descriptive statistics of the estimated sample
+		\vspace{0.2cm}
+		\item You should have a couple of tables with means and standard deviations for the variables you will be using in the analysis
+		\vspace{0.2cm}
+		\item You may want to present these descriptive statistics
+		for different subgroups
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{5. Empirical Method}
+	\begin{itemize} 
+		
+		\item You should write down the basic econometric specification first and explain each of the variables and the parameters of interest
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item The model could be OLS, PDS, matching, IV, DID, RDD, SCM or others
+			\vspace{0.2cm}
+			\item Since IV, DID, RDD, and SCM can deal with unobserved confounding factors, these methods usually give us more credible results
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Discuss the identification assumption of your method.
+		\vspace{0.2cm}
+		\item Discuss why this is the correct/best specification for the
+		question you wish to address.
+		\vspace{0.2cm}
+		\item Discuss why you want to control for certain variables
+		
+		%certain variables are included and others not.
+		
+	\end{itemize}
+	
+	
+	
+\end{frame}
+
+
+
+
+
+\begin{frame}{6. Results}
+	\begin{itemize} 
+		
+		\item You should present results in a way that develops your argument step-by-step
+		\vspace{0.1cm}
+		\begin{itemize} 
+			\item For example, 1. main results; 2. break those results down by subgroups; 3. perform robustness checks
+		\end{itemize}
+		\vspace{0.1cm} 
+		\item Any tables with parameter estimates should clearly state which outcome variable you are using
+		\vspace{0.1cm}
+		\item You should let readers know which control variables are included in your empirical models (put this information in table notes)
+		\vspace{0.1cm}
+		\item Just discuss the most interesting and important
+		estimates in your discussion of the table: \textbf{estimated causal effects}
+		\vspace{0.1cm}
+		\item Make sure you report standard errors with your estimates in the tables
+		\vspace{0.1cm}
+		\item Just look at some economics journals for a good table
+		format
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+\begin{frame}{6. Results}
+	\begin{itemize} 
+		
+		\item Interpret the magnitude of your parameter estimates in an economically meaningful way
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item For example, ``we find that b=0.3, so that increasing X by
+			one unit increases y by 0.3. The implied elasticity is..."
+		\end{itemize}
+		\vspace{0.2cm} 
+		
+		\item \textbf{Graphical evidence is a very convincing way to show your reader that you have found something real}
+		\begin{itemize} 
+			\vspace{0.2cm}
+			\item Graphs are worth a thousand words
+		\end{itemize}
+		\vspace{0.2cm}
+		\item Discuss whether the key estimates are statistically significant
+		\vspace{0.2cm}
+		\begin{itemize} 
+			\item Compare your results to what others have found
+			\vspace{0.2cm}
+		\end{itemize}
+		\item \textbf{Don't worry if you don't find anything significant as long as your methods are credible and you have interpreted the results well}
+		
+	\end{itemize}
+	
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{7. Discussion and Conclusion }
+	\begin{itemize} 
+		
+		\item Briefly summarize your findings
+		\vspace{0.2cm}
+		\item Discuss some limitations in this paper 
+		\vspace{0.2cm}
+		\item Discuss your future plan about this project if you have more time and data
+	\end{itemize}
+	
+\end{frame}
+
+
+
+%
+%\title[]  
+%{Utilize AI as Your Research Assistant}
+%
+%
+%\author 
+%{}
+%
+%%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+%\institute{}
+%
+%%\author 
+%%{楊子霆 \\ 中研院經濟所}
+%
+%%\institute 
+%%{中正大學國際經濟專題研討}
+%
+%
+%
+%
+%\date
+%{}
+%
+%
+%\begin{frame}{}
+%	\titlepage
+%\end{frame}
+%
+%
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}
+%	\begin{itemize} 
+%		\item You should use the available AI tools to help you conduct research
+%		\vspace{0.2cm}
+%		\item Utilizing these tools can substantially increase your productivity
+%	
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}{Literature Review}
+%	\begin{itemize} 
+%		\item \textbf{ChatDOC}
+%		
+%		\vspace{0.2cm}
+%			\begin{itemize} 
+%				\item \url{https://chatdoc.com/}	
+%								\vspace{0.2cm}
+%		\item It can help you summarize the paper and answer any questions about the paper
+%				\vspace{0.2cm}
+%		\item You might still need to read the paper by yourself but this tool can help understand it better and save your time		
+%	
+%			\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}{Coding}
+%	\begin{itemize} 
+%		\item \textbf{ChatGPT}
+%		
+%		\vspace{0.2cm}
+%		\begin{itemize} 
+%			\item \url{https://chat.openai.com/auth/login}	
+%			\vspace{0.2cm}
+%			\item ChatGPT can help you draft the initial code 
+%			\vspace{0.2cm}
+%			\item It will explain every line in details so that you actually can learn how to coding from it
+%			\vspace{0.2cm}
+%			\item It can also help you debug or optimize your code
+%			
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}{Coding}
+%	\begin{itemize} 
+%		\item \textbf{ChatGPT}
+%		
+%		\vspace{0.2cm}
+%		\begin{itemize} 
+%			\item \url{https://res.cloudinary.com/dyd911kmh/image/upload/v1678453027/Marketing/Blog/ChatGPT_Cheat_Sheet.pdf}	
+%			\vspace{0.2cm}
+%			\item Whether ChatGPT can help you or not depends on how you ask it (give the informative prompts)  
+%			\vspace{0.2cm}
+%			\item The above cheat sheet will show some good examples 
+%			
+%			
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}{Polish Your Writing}
+%	\begin{itemize} 
+%		\item \textbf{ChatGPT}
+%		
+%		\vspace{0.2cm}
+%		\begin{itemize} 
+%			\item You can use ChatGPT to polish your English writing
+%					\vspace{0.2cm}
+%			\item Rewrite or summarize your paragraph
+%				\vspace{0.2cm}
+%			\item It can also do a great job in translation		
+%			
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+%
+%
+%\begin{frame}{Utilize AI as Your Research Assistant}{Polish Your Writing}
+%	\begin{itemize} 
+%		\item \textbf{Claude 3}
+%		
+%		\vspace{0.2cm}
+%		\begin{itemize} 
+%			\item \url{https://claude.ai/chats}
+%			\vspace{0.2cm}
+%			\item Claude 3 is also good at polishing and proofreading writing
+%						\vspace{0.2cm}
+%			\item It can also do coding very well			
+%
+%			
+%		\end{itemize}
+%	\end{itemize}
+%\end{frame}
+
+
+
+\end{document} 
