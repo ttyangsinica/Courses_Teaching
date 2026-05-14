@@ -473,6 +473,7 @@ jobs:
           root_file: |
             Term_Paper_data.tex
             Final_presentations_data.tex
+            Oral_Exam_data.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

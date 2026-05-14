@@ -1,0 +1,255 @@
+\documentclass[dvipsnames,hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{threeparttable}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+\title[]
+{Guidelines for Oral Exam \\ {\normalsize 口試說明}}
+
+\author
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+
+\date{\today}
+
+
+%\usepackage{beamerthemeshadow}  % data (commented: use default beamer theme)
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+\begin{frame}{}
+	\titlepage
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Oral Exam: Overview}{口試概述}
+
+\begin{itemize}
+	\item 口試可視為 \textbf{term paper 的深度討論}
+	\vspace{0.3cm}
+
+	\item 目的是測試兩件事：
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item[(1)] 你在 term paper 中實際使用的\textbf{實證方法}，你是否真正理解？
+		\vspace{0.2cm}
+		\item[(2)] 你在 homework 中使用的\textbf{程式指令}（R 或 Stata），你是否理解其運作？
+	\end{itemize}
+	\vspace{0.3cm}
+
+	\item 口試將有\textbf{至少兩個問題}，分別對應上述兩個面向
+	\vspace{0.3cm}
+
+	\item 若回答引發進一步疑問，教授將當場追問 follow-up 問題
+\end{itemize}
+
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Question 1: Empirical Method}{第一題：實證方法}
+
+\begin{block}{測試內容}
+	你在 term paper 中使用的\textbf{實證方法}，需能當場：
+	\begin{itemize}
+		\vspace{0.1cm}
+		\item \textbf{寫出數學式}（例如：迴歸方程式、識別假設、估計量公式）
+		\vspace{0.1cm}
+		\item \textbf{解釋每個符號的意義}，以及整個方法的直覺
+		\vspace{0.1cm}
+		\item 回答關於該方法的 \textbf{follow-up 問題}
+	\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{準備建議}
+	\begin{itemize}
+		\item 重讀你 term paper 的 empirical strategy 段落
+		\vspace{0.1cm}
+		\item 確認你能\textbf{不看投影片}，從頭到尾口頭說明你的方法
+		\vspace{0.1cm}
+		\item 思考：這個方法的\textbf{關鍵假設}是什麼？若假設不成立會怎樣？
+	\end{itemize}
+\end{exampleblock}
+
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Question 1: Examples}{第一題：範例}
+
+\vspace{0.1cm}
+\small
+以下為可能被問到的問題範例（依你的 term paper 方法而定）：
+
+\vspace{0.3cm}
+\begin{tabular}{p{0.30\textwidth} p{0.62\textwidth}}
+\toprule
+\textbf{方法} & \textbf{可能被問} \\
+\midrule
+OLS / 迴歸 &
+請寫出你的迴歸方程式，並解釋係數 $\hat{\beta}$ 的意義 \\[6pt]
+Difference-in-Differences &
+請寫出 DiD 的識別假設，平行趨勢假設是什麼意思？ \\[6pt]
+Instrumental Variables &
+請寫出 2SLS 的第一階段，你的工具變數為什麼有效？ \\[6pt]
+Regression Discontinuity &
+請說明 RDD 的識別策略，斷點前後的估計量代表什麼？ \\[6pt]
+Matching / PSM &
+請說明 propensity score 的定義，匹配的直覺是什麼？ \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Question 2: Programming Code}{第二題：程式碼}
+
+\begin{block}{測試內容}
+	根據你在 homework 使用的程式語言（\textbf{R} 或 \textbf{Stata}），需能解釋：
+	\begin{itemize}
+		\vspace{0.1cm}
+		\item 某段\textbf{程式碼的功能}是什麼？每個指令或選項代表什麼意思？
+		\vspace{0.1cm}
+		\item 輸出結果（output）如何\textbf{解讀}？
+		\vspace{0.1cm}
+		\item 若改變某個參數，\textbf{結果會如何變化}？
+	\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{準備建議}
+	\begin{itemize}
+		\item 重新執行你的 homework 程式碼，確認每一行你都看得懂
+		\vspace{0.1cm}
+		\item 不需要背指令，但需要理解\textbf{每個指令在做什麼}
+		\vspace{0.1cm}
+		\item 重點在於：看到一段程式碼，\textbf{能說出它對應到哪個統計概念}
+	\end{itemize}
+\end{exampleblock}
+
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Question 2: Examples}{第二題：範例}
+
+\vspace{0.1cm}
+\small
+以下為可能被問到的程式碼問題範例：
+
+\vspace{0.25cm}
+\begin{block}{R 範例}
+\texttt{feols(y \textasciitilde{} x1 + x2 | id + year, data = df, cluster = \textasciitilde{}id)}
+\begin{itemize}
+	\item \texttt{| id + year} 代表什麼？為什麼需要加 fixed effects？
+	\item \texttt{cluster = \textasciitilde{}id} 的作用是什麼？不加會怎樣？
+\end{itemize}
+\end{block}
+
+\vspace{0.2cm}
+\begin{block}{Stata 範例}
+\texttt{ivregress 2sls y x1 (x2 = z), robust first}
+\begin{itemize}
+	\item \texttt{(x2 = z)} 的意思是什麼？\texttt{z} 扮演什麼角色？
+	\item \texttt{first} 這個選項輸出什麼？你如何判斷工具變數夠強？
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+
+%-------------------------------------------------------------
+\begin{frame}{Summary}{總結}
+
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={rectangle, draw, rounded corners, align=center,
+              minimum width=3.8cm, minimum height=1.1cm,
+              font=\small, fill=blue!8},
+  qbox/.style={rectangle, draw, rounded corners, align=center,
+               minimum width=5.0cm, minimum height=1.3cm,
+               font=\small},
+  arrow/.style={->, >=stealth, thick}
+]
+
+\node[box] (tp) at (0, 2.2) {Term Paper\\討論 \& 深度理解};
+
+\node[qbox, fill=orange!20] (q1) at (-3.0, 0.4)
+  {\textbf{Q1: 實證方法}\\寫出數學式\\解釋意義 + follow-up};
+
+\node[qbox, fill=green!15] (q2) at (3.0, 0.4)
+  {\textbf{Q2: 程式碼}\\R 或 Stata\\解釋指令 \& 輸出};
+
+\draw[arrow] (tp) -- (q1);
+\draw[arrow] (tp) -- (q2);
+
+\node[font=\scriptsize, align=center] at (-3.0, -0.75)
+  {依據你的 term paper 方法};
+\node[font=\scriptsize, align=center] at (3.0, -0.75)
+  {依據你的 homework 程式語言};
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.1cm}
+\begin{center}
+\fbox{\parbox{0.85\textwidth}{\centering
+	口試的目的不是為難你，而是確認你真正理解\\
+	自己在 term paper 和 homework 中做了什麼。
+}}
+\end{center}
+
+\end{frame}
+
+
+\end{document}
