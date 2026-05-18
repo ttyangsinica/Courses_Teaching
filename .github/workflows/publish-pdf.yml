@@ -472,7 +472,11 @@ jobs:
           working_directory: Final
           root_file: |
             Term_Paper_data.tex
+            Term_Paper_labor.tex
+            Term_Paper_metrics.tex
             Final_presentations_data.tex
+            Final_presentations_labor.tex
+            Final_presentations_metrics.tex
             Oral_Exam_data.tex
             Oral_Exam_data_v2.tex
             Oral_Exam_labor_v2.tex
