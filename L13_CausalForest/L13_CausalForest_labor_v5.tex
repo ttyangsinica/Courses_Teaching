@@ -263,7 +263,13 @@
     \alpha_{\text{ATE}} = \mathrm{E}\!\left[Y_i^1 - Y_i^0\right]
   \]
   \vspace{0.2cm}
-  \item But treatment effects may \textbf{vary across individuals}: a job training program may help young low-education workers more than older workers
+  \item But treatment effects may \textbf{vary across individuals} 
+  \vspace{0.2cm}
+\begin{itemize}
+
+  \item A job training program may help young low-education workers more than older workers
+ \end{itemize}
+ 
   \vspace{0.2cm}
   \item Causal forest estimates the \textbf{Conditional Average Treatment Effect (CATE)}:
   \[
@@ -292,16 +298,21 @@
 \end{block}
 \end{frame}
 
+
 \begin{frame}{Why Heterogeneity Matters}
 \begin{center}
 \small
 \begin{tabular}{lccc}
 \toprule
-Worker type & Control earnings & Training earnings & Effect \\
+Worker type & Training earnings & Control earnings & Effect \\
 \midrule
-Young, low education & \$8,000 & \$11,000 & \$3,000 \\
-Older, high experience & \$18,000 & \$18,500 & \$500 \\
-Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
+\multicolumn{4}{l}{\textit{Age $\times$ Education}} \\
+\quad Young, low education  & \$11,000 & \$8,000  & \$3,000 \\
+\quad Young, high education & \$15,000 & \$14,000 & \$1,000 \\
+\quad Older, low education  & \$10,500 & \$8,500  & \$2,000 \\
+\quad Older, high education & \$22,000 & \$21,500 & \$500   \\
+\midrule
+Average treatment effect     & \$14,625 & \$13,000 & \$1,625 \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -318,13 +329,61 @@ Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
 \begin{frame}{Why Heterogeneity Matters}
 \begin{itemize}
 
-  \item Youth employment programs: which youth benefit most?
-  \vspace{0.2cm}
+  % \item Youth employment programs: which youth benefit most?
+  % \vspace{0.2cm}
   \item Education policy: do returns differ by background or local labor market?
   \vspace{0.2cm}
   \item Minimum wage: do effects differ by worker skill, firm size, or region?
   \vspace{0.2cm}
   \item Parental leave: do effects differ by previous earnings or occupation?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Treatment Effect Heterogeneity}{Traditional Approaches}
+\begin{itemize}
+  \item Two common ways to explore heterogeneity:
+  \vspace{0.2cm}
+  \begin{itemize}
+    \item[1.] \textbf{Subgroup analysis}: split the sample by gender, age, or education and compare ATE across groups
+    \vspace{0.15cm}
+    \item[2.] \textbf{Interaction terms}:
+    \[
+      Y_i = \alpha + \beta D_i + \gamma X_i + \delta\,(D_i \times X_i) + \varepsilon_i
+    \]
+    $\delta$ tells us how the treatment effect changes with $X_i$
+  \end{itemize}
+  \vspace{0.25cm}
+  \item \textbf{Limitation}: you must decide in advance which $X$ matters --- and the interaction is assumed to be linear
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Treatment Effect Heterogeneity}{A Data-Driven Approach}
+\begin{itemize}
+  \item Goal: estimate $\tau(x)$, the treatment effect for a worker \emph{with characteristics $x$}
+  \vspace{0.25cm}
+  \item Idea: let the data tell us which characteristics matter --- no need to pre-specify
+  \vspace{0.25cm}
+  \item We will use \textbf{Causal Forest}, a machine-learning method that does this automatically:
+\end{itemize}
+\vspace{0.2cm}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.6cm,
+  box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+  \node[box, fill=Blue!8]   (data)  {Data\\$(\mathrm{Y},D,X)$};
+  \node[box, fill=Green!8,  right=of data]  (trees) {Many causal\\trees};
+  \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
+  \draw[arrow] (data)  -- (trees);
+  \draw[arrow] (trees) -- (cate);
+\end{tikzpicture}
+\end{center}
+\vspace{0.15cm}
+\begin{itemize}
+  \item We will explain the details shortly --- for now, think of it as an automatic subgroup finder
 \end{itemize}
 \end{frame}
 
@@ -351,53 +410,53 @@ Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
 % \end{block}
 % \end{frame}
 
-\begin{frame}{Treatment Effect Heterogeneity}{Traditional Approaches}
-\begin{itemize}
-  \item Researchers have traditionally explored heterogeneity in two ways:
-  \vspace{0.2cm}
-  \begin{itemize}
-    \item[1.] \textbf{Theory-based subgroup analysis}: guided by economic theory, split the sample by gender, age group, or education level and estimate the ATE in each subgroup
-    \vspace{0.15cm}
-    \item[2.] \textbf{Interaction terms in regression}:
-    \[
-      Y_i = \alpha + \beta D_i + \gamma X_i + \delta\,(D_i \times X_i) + \varepsilon_i
-    \]
-    the coefficient $\delta$ captures how the effect of $D_i$ varies linearly with $X_i$
-  \end{itemize}
-  \vspace{0.2cm}
-  \item Both require the researcher to \textbf{pre-specify} which $X$ matters and assume a \textbf{linear, parametric} form for heterogeneity
-\end{itemize}
-\end{frame}
+% \begin{frame}{Treatment Effect Heterogeneity}{Traditional Approaches}
+% \begin{itemize}
+%   \item Researchers have traditionally explored heterogeneity in two ways:
+%   \vspace{0.2cm}
+%   \begin{itemize}
+%     \item[1.] \textbf{Theory-based subgroup analysis}: guided by economic theory, split the sample by gender, age group, or education level and estimate the ATE in each subgroup
+%     \vspace{0.15cm}
+%     \item[2.] \textbf{Interaction terms in regression}:
+%     \[
+%       Y_i = \alpha + \beta D_i + \gamma X_i + \delta\,(D_i \times X_i) + \varepsilon_i
+%     \]
+%     the coefficient $\delta$ captures how the effect of $D_i$ varies linearly with $X_i$
+%   \end{itemize}
+%   \vspace{0.2cm}
+%   \item Both require the researcher to \textbf{pre-specify} which $X$ matters and assume a \textbf{linear, parametric} form for heterogeneity
+% \end{itemize}
+% \end{frame}
 
 
 
-\begin{frame}{Treatment Effect Heterogeneity}{Causal Forest: A Data-Driven Approach}
-\begin{itemize}
-  \item Instead of estimating one average effect, we want a function $\tau(x)$ that varies with observed characteristics $X_i$
-  \vspace{0.2cm}
-  \item A simple regression of $Y_i$ on $D_i$ and $X_i$ gives a linear, parametric answer --- it cannot capture flexible heterogeneity
-  \vspace{0.2cm}
-  \item Causal forest adapts the idea of \textbf{random forest} to the causal inference setting:
-\end{itemize}
-\vspace{0.15cm}
-\begin{center}
-\begin{tikzpicture}[
-  node distance=0.6cm,
-  box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
-  arrow/.style={-{Latex[length=2mm]}, thick}
-]
-  \node[box, fill=Blue!8]    (data)  {Data\\$(\mathrm{Y},D,X)$};
-  \node[box, fill=Green!8,  right=of data]  (trees) {Many honest\\causal trees};
-  \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
-  \draw[arrow] (data)  -- (trees);
-  \draw[arrow] (trees) -- (cate);
-\end{tikzpicture}
-\end{center}
-\vspace{0.1cm}
-\begin{itemize}
-  \item Each tree uses a \textbf{random subset} of observations and covariates; averaging trees removes noise and gives a stable $\hat{\tau}(x)$
-\end{itemize}
-\end{frame}
+% \begin{frame}{Treatment Effect Heterogeneity}{Causal Forest: A Data-Driven Approach}
+% \begin{itemize}
+%   \item Instead of estimating one average effect, we want a function $\tau(x)$ that varies with observed characteristics $X_i$
+%   \vspace{0.2cm}
+%   \item A simple regression of $Y_i$ on $D_i$ and $X_i$ gives a linear, parametric answer --- it cannot capture flexible heterogeneity
+%   \vspace{0.2cm}
+%   \item Causal forest adapts the idea of \textbf{random forest} to the causal inference setting:
+% \end{itemize}
+% \vspace{0.15cm}
+% \begin{center}
+% \begin{tikzpicture}[
+%   node distance=0.6cm,
+%   box/.style={draw, rounded corners, align=center, minimum width=2.9cm, minimum height=0.85cm},
+%   arrow/.style={-{Latex[length=2mm]}, thick}
+% ]
+%   \node[box, fill=Blue!8]    (data)  {Data\\$(\mathrm{Y},D,X)$};
+%   \node[box, fill=Green!8,  right=of data]  (trees) {Many honest\\causal trees};
+%   \node[box, fill=Orange!10, right=of trees] (cate)  {CATE\\$\hat{\tau}(x)$};
+%   \draw[arrow] (data)  -- (trees);
+%   \draw[arrow] (trees) -- (cate);
+% \end{tikzpicture}
+% \end{center}
+% \vspace{0.1cm}
+% \begin{itemize}
+%   \item Each tree uses a \textbf{random subset} of observations and covariates; averaging trees removes noise and gives a stable $\hat{\tau}(x)$
+% \end{itemize}
+% \end{frame}
 
 
 \begin{frame}{Treatment Effect Heterogeneity}{Causal Forest: A Data-Driven Approach}
@@ -543,7 +602,7 @@ Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
 \textbf{How to find $(X^j,\, s)$ that minimises prediction error:}
 \vspace{0.2cm}
 \begin{enumerate}
-  \item For each variable $X^j$ and candidate split point $s$:
+  \item For each variable $X^j$ and candidate split point $s$: 
   \vspace{0.15cm}
   \begin{itemize}
     \item Divide data into two regions:
@@ -959,14 +1018,14 @@ Young, low experience & \$2,000 & \$6,000 & \$4,000 \\
      & Decision path & Predicted wage \\
     \midrule
     Tree A & Age $< 30$ $\to$ \textbf{Yes} & \$8.5/hr \\
-    Tree B & Educ $< 11$ $\to$ \textbf{No} & \$30/hr \\
+    Tree B & Educ $< 11$ $\to$ \textbf{No} & \$26.5/hr \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \vspace{0.2cm}
 
-  \item Same worker, same features: yet predictions differ by \$21.5/hr
+  \item Same worker, same features: yet predictions differ by \$18/hr
   \begin{itemize}
 
   \vspace{0.2cm}
@@ -1503,28 +1562,28 @@ $\hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$
 \vspace{0.1cm}
 \begin{columns}[T]
 
-\begin{column}{0.52\textwidth}
+\begin{column}{0.54\textwidth}
 \begin{center}
-\begin{tikzpicture}[
-  level 1/.style={sibling distance=3.3cm, level distance=1.9cm},
+\begin{tikzpicture}[scale=0.85, transform shape,
+  level 1/.style={sibling distance=3.2cm, level distance=2.0cm},
   internal/.style={draw, rounded corners, fill=orange!25,
     align=center, font=\scriptsize,
-    minimum width=2.1cm, minimum height=0.62cm},
+    minimum width=2.1cm, minimum height=0.65cm},
   leaf/.style={draw, rounded corners, fill=green!20,
     align=center, font=\scriptsize,
-    minimum width=2.45cm, minimum height=1.25cm},
+    minimum width=2.5cm, minimum height=1.2cm},
   edge from parent/.style={draw, -stealth, thick}
 ]
 \node[internal] {age $<30$?}
   child {node[leaf] {$\bar{Y}^{1}=\$11{,}000$\\
-                     $\bar{Y}^{0}=\phantom{1}\$8{,}000$\\[1pt]
+                     $\bar{Y}^{0}=\$8{,}000$\\[2pt]
                      $\hat{\tau}=\$3{,}000$}
     edge from parent node[left, draw=none, fill=none,
       font=\scriptsize] {Yes}
   }
   child {node[leaf] {$\bar{Y}^{1}=\$18{,}500$\\
-                     $\bar{Y}^{0}=\$18{,}000$\\[1pt]
-                     $\hat{\tau}=\phantom{3{,}}\$500$}
+                     $\bar{Y}^{0}=\$18{,}000$\\[2pt]
+                     $\hat{\tau}=\$500$}
     edge from parent node[right, draw=none, fill=none,
       font=\scriptsize] {No}
   };
@@ -1532,20 +1591,20 @@ $\hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$
 \end{center}
 \end{column}
 
-\begin{column}{0.46\textwidth}
+\begin{column}{0.44\textwidth}
 \small
-\vspace{0.25cm}
+\vspace{0.3cm}
 \begin{itemize}
-  \item Each \textbf{leaf} = a subgroup of workers\\with similar covariates $x$
+  \item Each \textbf{leaf} = a subgroup of workers with similar $x$
   \vspace{0.15cm}
-  \item Within each leaf, estimate CATE by\\comparing treated vs.\ control means
+  \item Within each leaf, estimate CATE: treated mean $-$ control mean
   \vspace{0.15cm}
   \item A new worker falls into leaf $\ell(x)$:
   \[
     \hat{\tau}(x)=\hat{\tau}(\ell(x))
   \]
   \vspace{0.05cm}
-  \item Workers with similar $x$ share the\\same estimated treatment effect
+  \item Workers with similar $x$ share the same estimated effect
 \end{itemize}
 \end{column}
 
@@ -1933,29 +1992,34 @@ Prior earn. $<5{,}000$    & \$2,600 & \$1,000 & \$1,600 \\
 \end{frame}
 
 
-
 %-------------------------------------------------------------
 \begin{frame}{Causal Forest: How It Works}{Algorithm}
 
 \begin{enumerate}
-  \item Draw a random subsample of observations.
-  \vspace{0.08cm}
-  \item Split that subsample into two parts:
+  \item For each tree $b = 1, \ldots, B$, independently:
   \vspace{0.05cm}
   \begin{itemize}
-    \item \textbf{splitting sample}: choose splits that maximize treatment-effect heterogeneity;
-    \item \textbf{estimation sample}: estimate treatment effects in leaves.
+    \item Draw a \textbf{random subsample} of observations
+    \item At each split node, consider only a \textbf{random subset of covariates}\\
+          {\scriptsize (these two sources of randomness make each tree different)}
   \end{itemize}
   \vspace{0.08cm}
-  \item Grow one honest causal tree.
+  \item Split the subsample into two parts:
+  \vspace{0.05cm}
+  \begin{itemize}
+    \item \textbf{Splitting sample}: find \emph{where} to split ---
+          choose splits that maximise treatment-effect heterogeneity
+    \item \textbf{Estimation sample}: estimate \emph{how large} the effect is
+          in each leaf: $\hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}$
+  \end{itemize}
   \vspace{0.08cm}
-  \item Repeat for $B$ trees.
+  \item Grow one honest causal tree $\hat{\tau}_b(x)$
   \vspace{0.08cm}
-  \item For a worker with characteristics $x$, average all tree-specific CATE estimates:
+  \item For a worker with characteristics $x$, average across all $B$ trees:
   \[
     \hat{\tau}(x)
     =
-    \frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x).
+    \frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x)
   \]
 \end{enumerate}
 
