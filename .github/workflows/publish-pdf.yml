@@ -109,6 +109,14 @@ jobs:
             HW2_labor.tex
             HW2_data.tex
             HW2_metrics.tex
+            r_markdown_data.tex
+            r_markdown_labor.tex
+            r_markdown_metrics.tex
+            r_markdown_guide.tex
+            stata_markdown_data.tex
+            stata_markdown_labor.tex
+            stata_markdown_metrics.tex
+            stata_markdown_guide.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

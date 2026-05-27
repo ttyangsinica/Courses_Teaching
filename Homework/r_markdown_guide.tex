@@ -1,0 +1,566 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Guide: Creating R Markdown Documents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+\usepackage{sectsty}
+\allsectionsfont{\normalfont\scshape}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, citecolor=blue, urlcolor=blue, pdfborder=000}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt}
+
+% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+% R code styling
+\lstdefinestyle{rcode}{
+  backgroundcolor=\color{gray!8},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!40},
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  language=R,
+  keywordstyle=\color{NavyBlue},
+  stringstyle=\color{Maroon},
+  commentstyle=\color{OliveGreen},
+}
+
+\lstdefinestyle{yaml}{
+  backgroundcolor=\color{gray!8},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!40},
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+\lstdefinestyle{shell}{
+  backgroundcolor=\color{black!90},
+  basicstyle=\ttfamily\small\color{white},
+  breaklines=true,
+  frame=single,
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+% Tip / warning box
+\newmdenv[
+  backgroundcolor=blue!5,
+  linecolor=blue!40,
+  linewidth=1pt,
+  leftmargin=0pt, rightmargin=0pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{tipbox}
+
+\newmdenv[
+  backgroundcolor=orange!8,
+  linecolor=orange!60,
+  linewidth=1pt,
+  leftmargin=0pt, rightmargin=0pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+]{warnbox}
+
+%----------------------------------------------------------------------------------------
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge A Step-by-Step Guide to \\[0.2cm] R Markdown (\texttt{.Rmd}) \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof.\ Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{What Is R Markdown?}
+%----------------------------------------------------------------------------------------
+
+An \textbf{R Markdown} file (\texttt{.Rmd}) is a plain-text document that combines
+\textit{narrative text} (written in Markdown) with \textit{R code chunks}.
+When you \textit{knit} it, R runs all the code, captures every output and figure,
+and the \texttt{rmarkdown} package converts the result into a polished
+\textbf{HTML} (or PDF, Word) report.
+
+\medskip
+The workflow is:
+\[
+\texttt{.Rmd file}
+\;\xrightarrow{\texttt{knitr}}\;
+\text{R runs code} + \text{captures output}
+\;\xrightarrow{\texttt{rmarkdown}}\;
+\texttt{.html}
+\]
+
+\begin{tipbox}
+\textbf{Advantage over Stata Markdown:} R Markdown does \textit{not} require a
+separate Pandoc installation --- the \texttt{rmarkdown} package bundles Pandoc
+automatically. Setup is simpler: install R, RStudio, and two packages.
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Course Templates on Dropbox}
+%----------------------------------------------------------------------------------------
+
+\textbf{Goal:} produce a single \texttt{.html} file that records all your
+code, output, and figures in one document.
+
+\medskip
+Complete working templates are available in the \textbf{course Dropbox folder}.
+Two sub-folders are relevant:
+
+\medskip
+\begin{center}
+\begin{tabular}{p{4.5cm} p{9.5cm}}
+\toprule
+\textbf{Folder} & \textbf{Contents} \\
+\midrule
+\texttt{R\_code/} &
+Regular \texttt{.R} scripts for each method.
+Use these to understand the R code before converting to \texttt{.Rmd}. \\[4pt]
+\texttt{R\_code/R\_Markdown/} &
+Ready-to-knit \texttt{.Rmd} templates --- one per method.
+These are your \textbf{main reference} when writing your own \texttt{.Rmd} file. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+The available templates in \texttt{R\_code/R\_Markdown/} are:
+
+\medskip
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{File} & \textbf{Method} \\
+\midrule
+\texttt{regression.Rmd}     & OLS regression and controls \\
+\texttt{DID.Rmd}            & Difference-in-Differences \\
+\texttt{Stag\_DID.Rmd}      & Staggered DID \\
+\texttt{Syn\_DID.Rmd}       & Synthetic DID \\
+\texttt{fixed\_effects.Rmd} & Fixed effects \\
+\texttt{matching.Rmd}       & Matching estimators \\
+\texttt{RDD.Rmd}            & Regression Discontinuity Design \\
+\texttt{IV.Rmd}             & Instrumental Variables \\
+\texttt{SSIV.Rmd}           & Shift-Share IV \\
+\texttt{SCM.Rmd}            & Synthetic Control Method \\
+\texttt{ML.Rmd}             & Machine Learning \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tipbox}
+\textbf{Recommended workflow:}
+\begin{enumerate}
+  \item Open the \texttt{.Rmd} template closest to your method (e.g.\ \texttt{DID.Rmd}).
+  \item Read how the YAML header, path setup chunk, and \texttt{\{r\}} code chunks are structured.
+  \item Create your own \texttt{.Rmd} file following the same structure, replacing the
+        example data and code with your own.
+  \item Click \textbf{Knit} in RStudio (or run \texttt{rmarkdown::render()}) to produce
+        \texttt{yourfile.html}.
+\end{enumerate}
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{What You Need to Install (One-Time Setup)}
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{Step} & \textbf{What} & \textbf{Where} & \textbf{Required?} \\
+\midrule
+1 & R (base language) & \url{https://cran.r-project.org} & Yes \\
+2 & RStudio (IDE)     & \url{https://posit.co/download/rstudio-desktop} & Strongly recommended \\
+3 & \texttt{rmarkdown} R package & Inside R & Yes \\
+4 & \texttt{knitr} R package     & Inside R & Yes \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tipbox}
+\textbf{No separate Pandoc install needed!} Unlike Stata Markdown,
+\texttt{rmarkdown} bundles its own Pandoc. Once you install \texttt{rmarkdown},
+you are ready to compile HTML reports immediately.
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 1 \& 2 --- Install R and RStudio}
+%----------------------------------------------------------------------------------------
+
+\begin{enumerate}
+  \item \textbf{Install R}: go to \url{https://cran.r-project.org}, choose your OS,
+        download and run the installer. Accept all defaults.
+  \item \textbf{Install RStudio}: go to \url{https://posit.co/download/rstudio-desktop},
+        download the free Desktop version, and install it.
+\end{enumerate}
+
+\begin{tipbox}
+Always install \textbf{R first}, then RStudio. RStudio detects R automatically during
+installation.
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 3 \& 4 --- Install R Packages}
+%----------------------------------------------------------------------------------------
+
+Open RStudio and run the following once in the \textbf{Console}:
+
+\begin{lstlisting}[style=rcode]
+install.packages(c("rmarkdown", "knitr"))
+\end{lstlisting}
+
+Also install the analysis packages used throughout the course:
+
+\begin{lstlisting}[style=rcode]
+install.packages(c(
+  "haven",     # read Stata .dta files
+  "dplyr",     # data manipulation
+  "ggplot2",   # graphs
+  "fixest",    # fast fixed effects / IV regression
+  "estimatr",  # robust standard errors
+  "broom",     # tidy regression output
+  "modelsummary" # publication-quality regression tables
+))
+\end{lstlisting}
+
+Verify the installation:
+
+\begin{lstlisting}[style=rcode]
+library(rmarkdown)   # should load silently
+rmarkdown::pandoc_version()  # prints Pandoc version bundled with rmarkdown
+\end{lstlisting}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 5 --- Write Your \texttt{.Rmd} File}
+%----------------------------------------------------------------------------------------
+
+An \texttt{.Rmd} file has three parts: a YAML header, Markdown narrative text,
+and R code chunks.
+
+\subsection*{5a. YAML Header}
+
+The YAML header sits between two \texttt{-{}-{}-} lines at the very top of the file.
+It controls the document title, author, date, and output format.
+
+\begin{lstlisting}[style=yaml]
+---
+title: "My Empirical Report"
+author: "Your Name"
+date: "2025"
+output:
+  html_document:
+    toc: true          # table of contents
+    toc_float: true    # floating TOC sidebar
+    theme: flatly      # Bootstrap theme
+    highlight: tango   # code syntax highlighting
+    number_sections: true
+---
+\end{lstlisting}
+
+\subsection*{5b. Setup Chunk}
+
+Place this immediately after the YAML header.
+It sets global chunk options and configures file paths.
+
+\begin{lstlisting}[style=rcode]
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+rm(list = ls())
+
+username <- Sys.info()[["user"]]
+if (username == "alice") {
+  rawdata <- "C:/Users/alice/Desktop/data"
+} else if (username == "bob") {
+  rawdata <- "/Users/bob/Documents/data"
+}
+```
+\end{lstlisting}
+
+\texttt{include=FALSE} means the chunk runs but neither the code nor its output
+appears in the HTML. Find your username in R with \texttt{Sys.info()[["user"]]}.
+
+\subsection*{5c. Install Packages (show but do not run)}
+
+\begin{lstlisting}[style=rcode]
+```{r packages, eval=FALSE}
+install.packages(c("haven", "ggplot2", "dplyr", "fixest"))
+```
+\end{lstlisting}
+
+\texttt{eval=FALSE} displays the code in the report but does \textit{not} run it
+during knitting --- important, because \texttt{install.packages()} should never run
+automatically.
+
+\subsection*{5d. Load Libraries}
+
+\begin{lstlisting}[style=rcode]
+```{r libraries}
+library(haven)
+library(ggplot2)
+library(dplyr)
+library(fixest)
+```
+\end{lstlisting}
+
+\subsection*{5e. Analysis Sections}
+
+Use Markdown headings (\texttt{\#}, \texttt{\#\#}) between chunks to add narrative:
+
+\begin{lstlisting}[style=yaml]
+# 1. Load Data
+
+```{r load}
+df <- read_dta(file.path(rawdata, "mydata.dta"))
+summary(df)
+```
+
+# 2. Regression
+
+```{r reg}
+model <- feols(y ~ treat + x1 + x2 | id + year, data = df)
+summary(model)
+```
+\end{lstlisting}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Chunk Options Reference}
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{lll p{6cm}}
+\toprule
+\textbf{Option} & \textbf{Values} & \textbf{Default} & \textbf{Effect} \\
+\midrule
+\texttt{echo}    & TRUE/FALSE & TRUE  & Show the R code in the report \\
+\texttt{eval}    & TRUE/FALSE & TRUE  & Run the code \\
+\texttt{include} & TRUE/FALSE & TRUE  & Include any output at all \\
+\texttt{warning} & TRUE/FALSE & TRUE  & Show R warning messages \\
+\texttt{message} & TRUE/FALSE & TRUE  & Show R messages (e.g.\ from \texttt{library()}) \\
+\texttt{fig.width} & number & 7 & Figure width in inches \\
+\texttt{fig.height} & number & 5 & Figure height in inches \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+Recommended global defaults (in the setup chunk):
+
+\begin{lstlisting}[style=rcode]
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+\end{lstlisting}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 6 --- Compile to HTML}
+%----------------------------------------------------------------------------------------
+
+\subsection*{Method A --- Knit Button (RStudio)}
+
+Click the \textbf{Knit} button at the top of the editor (blue yarn icon).
+RStudio saves the \texttt{.html} file in the same folder as your \texttt{.Rmd} and
+opens it automatically in the Viewer.
+
+\subsection*{Method B --- R Console}
+
+\begin{lstlisting}[style=rcode]
+rmarkdown::render("myreport.Rmd")
+\end{lstlisting}
+
+Or with an explicit output path:
+
+\begin{lstlisting}[style=rcode]
+rmarkdown::render("myreport.Rmd",
+                  output_file = "myreport.html",
+                  output_dir  = "C:/Users/YourName/output")
+\end{lstlisting}
+
+\begin{tipbox}
+The HTML output is \textbf{self-contained by default} --- all figures are embedded
+inline. You do not need a separate \texttt{bundle} option like Stata Markdown.
+Simply submit the single \texttt{.html} file.
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Troubleshooting Common Errors}
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{p{5cm} p{9cm}}
+\toprule
+\textbf{Error / Problem} & \textbf{Cause and Fix} \\
+\midrule
+\texttt{could not find function "feols"} &
+Package not loaded. Add \texttt{library(fixest)} at the top of your \texttt{.Rmd}. \\[6pt]
+
+\texttt{there is no package called 'X'} &
+Package not installed. Run \texttt{install.packages("X")} in the Console (not in a chunk with \texttt{eval=TRUE}). \\[6pt]
+
+\texttt{cannot open file: No such file} &
+Path is wrong or \texttt{rawdata} not set. Check your path setup chunk and \texttt{Sys.info()[["user"]]}. \\[6pt]
+
+Figures not showing in HTML &
+Make sure the chunk that generates the plot does not have \texttt{include=FALSE}. \\[6pt]
+
+Knit fails at \texttt{install.packages()} &
+Always use \texttt{eval=FALSE} on install chunks. \texttt{install.packages()} must not run during knitting. \\[6pt]
+
+Code output missing &
+Check if \texttt{echo=FALSE} is set globally or on that chunk.
+Remove it or set \texttt{echo=TRUE}. \\
+
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Quick Reference: Complete Setup Checklist}
+%----------------------------------------------------------------------------------------
+
+\begin{enumerate}
+  \item[\(\square\)] Install \textbf{R} from \url{https://cran.r-project.org}
+  \item[\(\square\)] Install \textbf{RStudio} from \url{https://posit.co/download/rstudio-desktop}
+  \item[\(\square\)] In RStudio Console: \texttt{install.packages(c("rmarkdown","knitr"))}
+  \item[\(\square\)] Install analysis packages: \texttt{haven}, \texttt{dplyr}, \texttt{ggplot2}, \texttt{fixest}, etc.
+  \item[\(\square\)] Verify: \texttt{rmarkdown::pandoc\_version()} prints a version number
+  \item[\(\square\)] Write your \texttt{.Rmd} file: YAML header + setup chunk + \texttt{\{r\}} chunks
+  \item[\(\square\)] Set paths using \texttt{Sys.info()[["user"]]} in the setup chunk
+  \item[\(\square\)] Click \textbf{Knit} (or run \texttt{rmarkdown::render("file.Rmd")})
+  \item[\(\square\)] Open \texttt{file.html} in any browser --- done!
+\end{enumerate}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{A Complete \texttt{.Rmd} Template}
+%----------------------------------------------------------------------------------------
+
+Copy and save the following as \texttt{myreport.Rmd}.
+
+\begin{lstlisting}[style=yaml]
+---
+title: "Your Report Title"
+author: "Your Name"
+date: "2025"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+rm(list = ls())
+
+username <- Sys.info()[["user"]]
+if (username == "alice") {
+  rawdata <- "C:/Users/alice/Desktop/data"
+} else if (username == "bob") {
+  rawdata <- "/Users/bob/Documents/data"
+}
+```
+
+# 1. Install Packages (run once)
+
+```{r packages, eval=FALSE}
+install.packages(c("haven", "dplyr", "ggplot2", "fixest"))
+```
+
+# 2. Load Libraries
+
+```{r libraries}
+library(haven)
+library(dplyr)
+library(ggplot2)
+library(fixest)
+```
+
+# 3. Load Data
+
+```{r load}
+df <- read_dta(file.path(rawdata, "mydata.dta"))
+summary(df)
+```
+
+# 4. Visualize
+
+```{r plot, fig.width=7, fig.height=4}
+ggplot(df, aes(x = treatment, y = outcome)) +
+  geom_boxplot() +
+  theme_minimal()
+```
+
+# 5. Regression
+
+```{r reg}
+model <- feols(outcome ~ treatment + control1 + control2 | id + year, data = df)
+summary(model)
+```
+\end{lstlisting}
+
+\medskip
+Knit with the button in RStudio, or from the Console:
+
+\begin{lstlisting}[style=rcode]
+rmarkdown::render("myreport.Rmd")
+\end{lstlisting}
+
+\end{document}
