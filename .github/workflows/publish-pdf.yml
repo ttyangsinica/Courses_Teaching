@@ -353,7 +353,9 @@ jobs:
           root_file: |
             L12_RDD_data.tex
             L12_RDD_labor.tex
+            L12_RDD_labor_v5.tex
             L12_RDD_metrics.tex
+            L12_RDD_metrics_v5.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |
@@ -376,6 +378,8 @@ jobs:
           working_directory: L13_CausalForest
           root_file: |
             L13_CausalForest_labor.tex
+            L13_CausalForest_labor_v5.tex
+            L13_CausalForest_metrics_v5.tex
           latexmk_use_xelatex: true
           args: -interaction=nonstopmode -file-line-error -halt-on-error
           extra_system_packages: |

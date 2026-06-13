@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW" xml:lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>第十三講：因果森林 講稿</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="" />
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+
+<style>
+  body {
+    font-family: "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    font-size: 12pt;
+    line-height: 1.8;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 30px;
+    color: #222;
+  }
+  h1 { font-size: 18pt; border-bottom: 2px solid #333; padding-bottom: 6px; }
+  h2 { font-size: 15pt; color: #1a1a6e; margin-top: 28px; }
+  h3 { font-size: 13pt; color: #444; margin-top: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #bbb; padding: 6px 10px; }
+  th { background: #eef; }
+  code { background: #f4f4f4; padding: 1px 4px; border-radius: 3px; font-size: 0.9em; }
+  pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+  blockquote { border-left: 4px solid #aaa; margin-left: 0; padding-left: 16px; color: #555; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">第十三講：因果森林 講稿</h1>
+</header>
+<h1
+id="第十三講因果機器學習三因果森林">第十三講：因果機器學習（三）：因果森林</h1>
+<h2 id="講稿台灣中文">講稿（台灣中文）</h2>
+<hr />
+<h2 id="封面頁">封面頁</h2>
+<p>各位同學好，今天我們進入因果機器學習的第三講，主題是<strong>因果森林（Causal
+Forest）</strong>。</p>
+<p>前面幾講我們介紹了 LASSO
+等預測型機器學習工具，以及雙重差分搭配機器學習的做法。今天我們要討論一個不同的問題：我們不只想知道政策的平均效果，還想知道效果是不是因人而異——有些人效果大、有些人效果小——以及這種差異和哪些個人特徵有關。</p>
+<hr />
+<h2 id="第一部分主要概念">【第一部分：主要概念】</h2>
+<hr />
+<h3 id="今天的目標">今天的目標</h3>
+<p>這張投影片列出今天的五個學習目標，讓我一一說明。</p>
+<p><strong>第一個目標：了解因果森林在解決什麼問題。</strong>
+簡單來說，它在解決「誰從政策中受益」這個問題，也就是處理效果的異質性。</p>
+<p><strong>第二個目標：學習決策樹和隨機森林的基本直觀。</strong>
+因果森林建立在隨機森林的技術基礎上，所以我們要先理解這些工具的核心邏輯，才能真正理解因果森林在做什麼。我們不會把所有數學細節都推導出來，重點是掌握直觀。</p>
+<p><strong>第三個目標：了解因果解釋所需的假設。</strong>
+機器學習很靈活，但靈活不代表就能做因果推論。我們需要和之前一樣的識別假設，這一點非常重要。</p>
+<p><strong>第四個目標：讀懂主要輸出結果。</strong> 包括 ATE、CATE
+分布、BLP（最佳線性投影）以及變數重要性這幾個報表。</p>
+<p><strong>第五個目標：看懂 R 的 <code>grf</code>
+套件如何操作。</strong> 我們會用 LaLonde
+就業訓練資料走一遍完整流程。</p>
+<hr />
+<h3 id="一句話摘要">一句話摘要</h3>
+<p>先給大家一個最簡單的定義：</p>
+<blockquote>
+<p><strong>因果森林估計處理效果如何隨可觀測特徵 <span
+class="math inline">\(X\)</span>
+變化，方法是平均許多棵誠實的因果樹。</strong></p>
+</blockquote>
+<p>圖中的三個方塊表示流程：我們把資料 <span class="math inline">\((Y, D,
+X)\)</span> 輸入進去，長出許多棵誠實的因果樹，然後得到每個人的 CATE
+估計值 <span class="math inline">\(\hat{\tau}(x)\)</span>。</p>
+<p>有兩點很重要，底下特別強調： -
+因果森林<strong>不只是</strong>一個預測工具。 -
+它的核心用途是幫我們了解「<strong>誰受益更多</strong>」。</p>
+<p>這個區別很關鍵。一般的機器學習是預測 <span
+class="math inline">\(Y\)</span>；因果森林是估計 <span
+class="math inline">\(\tau(x) = E[Y^1 - Y^0 \mid X =
+x]\)</span>，這是一個因果量。</p>
+<hr />
+<h3 id="和前面幾講的連結">和前面幾講的連結</h3>
+<p>我們來看一下這一講如何接續之前的內容。</p>
+<p>在大多數之前的講次中，我們估計的是一個<strong>平均</strong>因果參數，就是
+ATE： <span class="math display">\[\alpha_{\text{ATE}} = E[Y^1_i -
+Y^0_i]\]</span> 這是對全樣本的平均效果，一個數字。</p>
+<p>有時我們更關心受處理者的效果，也就是 ATT： <span
+class="math display">\[\alpha_{\text{ATT}} = E[Y^1_i - Y^0_i \mid D_i =
+1]\]</span></p>
+<p>今天這一講問的問題更細： <span
+class="math display">\[\alpha_{\text{CATE}}(x) = E[Y^1_i - Y^0_i \mid
+X_i = x]\]</span></p>
+<p>也就是說，對於特徵為 <span class="math inline">\(x\)</span>
+的那一群人，處理效果是多少？這是一個<strong>函數</strong>，而不是一個單一數字。</p>
+<hr />
+<h3 id="運行範例就業訓練">運行範例：就業訓練</h3>
+<p>今天整堂課我們會用一個勞動經濟學的例子來說明。</p>
+<p>設想政府提供一個就業訓練計劃： - <strong>結果 <span
+class="math inline">\(Y_i\)</span></strong>：參加計劃後的薪資所得 -
+<strong>處理 <span class="math inline">\(D_i\)</span></strong>：工作者
+<span class="math inline">\(i\)</span> 是否接受訓練 - <strong>共變數
+<span
+class="math inline">\(X_i\)</span></strong>：年齡、教育年數、種族、婚姻狀況、過去所得</p>
+<p><strong>核心政策問題是</strong>：訓練計劃對所有人的效果都一樣嗎？還是對某些人特別有效？</p>
+<p>這個問題在實務上非常重要。如果預算有限，我們想把訓練資源集中給效果最大的群體。</p>
+<hr />
+<h3 id="從-ate-到-cate">從 ATE 到 CATE</h3>
+<p>左邊是 ATE，右邊是 CATE，我們來比較一下。</p>
+<p>ATE
+是全樣本的平均效果，只有一個數字，雖然有用，但它把效果的異質性給平均掉了。</p>
+<p>CATE 是條件平均處理效果，對特徵為 <span
+class="math inline">\(x\)</span>
+的人，處理效果是多少。它對目標資源分配和機制研究都很有用。</p>
+<p>在因果森林的文獻中，CATE 通常寫成 <span
+class="math inline">\(\tau(x)\)</span>，我在這堂課也會用這個符號。</p>
+<hr />
+<h3 id="ate-和-att-與-cate-的關係">ATE 和 ATT 與 CATE 的關係</h3>
+<p>這邊有一個很重要的概念：ATE 和 ATT 其實都是 CATE 的平均值。</p>
+<p>一旦我們知道了 CATE 函數 <span
+class="math inline">\(\tau(x)\)</span>，就可以對它取平均： <span
+class="math display">\[\alpha_{\text{ATE}} = E[\tau(X_i)]\]</span> <span
+class="math display">\[\alpha_{\text{ATT}} = E[\tau(X_i) \mid D_i =
+1]\]</span></p>
+<p>所以因果森林<strong>並不取代</strong> ATE 或 ATT
+的估計。它估計的是一個更豐富的對象，我們再從這個對象推導出熟悉的政策摘要統計量。</p>
+<p>這個順序很重要：先估計 CATE，再平均得 ATE 或 ATT。</p>
+<hr />
+<h3 id="為什麼異質性很重要">為什麼異質性很重要</h3>
+<p>來看這張表。同樣是接受訓練：</p>
+<table>
+<thead>
+<tr>
+<th>工作者類型</th>
+<th>未訓練薪資</th>
+<th>訓練後薪資</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>年輕、低教育</td>
+<td>$8,000</td>
+<td>$11,000</td>
+<td><strong>$3,000</strong></td>
+</tr>
+<tr>
+<td>年長、高經驗</td>
+<td>$18,000</td>
+<td>$18,500</td>
+<td>$500</td>
+</tr>
+<tr>
+<td>長期失業者</td>
+<td>$2,000</td>
+<td>$6,000</td>
+<td><strong>$4,000</strong></td>
+</tr>
+</tbody>
+</table>
+<p>三種人的效果差距非常大。如果只看平均效果，我們可能說「訓練計劃有效」，但其實效果高度集中在某幾類人身上。</p>
+<p><strong>政策含義</strong>：如果政府知道哪類人效果最大，就可以做更精準的目標設計（targeting），用有限的預算創造最大效益。這就是
+CATE 的價值所在。</p>
+<hr />
+<h3 id="因果推論的根本問題">因果推論的根本問題</h3>
+<p>在進入技術之前，我們要先承認一個根本問題——這和我們第一講就強調的一樣。</p>
+<p>每個人有兩個潛在結果： <span class="math display">\[Y^1_i \quad
+\text{（如果接受處理）}, \qquad Y^0_i \quad
+\text{（如果未接受處理）}\]</span></p>
+<p>個體處理效果是： <span class="math display">\[\tau_i = Y^1_i -
+Y^0_i\]</span></p>
+<p>但我們只觀察到其中一個： <span class="math display">\[Y_i = D_i Y^1_i
++ (1 - D_i) Y^0_i\]</span></p>
+<p><strong>所以因果森林沒有魔法，它不能直接觀察個體效果。</strong>
+它估計的是「特徵相似的人」的平均效果。這一點務必清楚。</p>
+<hr />
+<h3 id="識別假設">識別假設</h3>
+<p>要對 CATE
+做因果解釋，我們需要和之前一樣的<strong>條件獨立假設</strong>： <span
+class="math display">\[(Y^1_i, Y^0_i) \perp D_i \mid X_i\]</span></p>
+<p>意思是：在控制可觀測共變數 <span class="math inline">\(X_i\)</span>
+之後，接受處理與否對潛在結果而言如同隨機分配。</p>
+<p>幾個重點： - 在隨機實驗中，這個假設自動成立。 -
+在觀察性資料中，這個假設需要豐富的共變數，而且研究設計要很謹慎。 -
+<strong>因果森林是一個估計工具，不是識別策略的替代品。</strong>
+識別問題還是要靠研究設計來解決。</p>
+<p>這是很多同學容易誤解的地方：機器學習方法越精巧，不代表識別假設就自動得到滿足。</p>
+<hr />
+<h3 id="cate-的識別">CATE 的識別</h3>
+<p>在條件獨立假設成立的前提下，CATE 可以寫成： <span
+class="math display">\[\tau(x) = E[Y_i \mid X_i = x, D_i = 1] - E[Y_i
+\mid X_i = x, D_i = 0]\]</span></p>
+<p>這個式子和我們熟悉的「處理組減去對照組」是一樣的，只是現在是<strong>條件在
+<span class="math inline">\(X_i = x\)</span></strong> 的比較。</p>
+<p>困難之處在於：<span class="math inline">\(X_i\)</span>
+可能有很多個變數，如果要精確地把 <span class="math inline">\(X_i =
+x\)</span> 的人找出來，每個格子裡的人數會非常少，估計就會很不穩定。</p>
+<p>因果森林的作用就是用決策樹自動找到有用的局部比較，不需要我們事先指定格子。</p>
+<hr />
+<h2 id="第二部分決策樹與隨機森林">【第二部分：決策樹與隨機森林】</h2>
+<hr />
+<h3 id="為什麼需要彈性的方法">為什麼需要彈性的方法</h3>
+<p>一個直觀的想法是在迴歸中加入交叉項： <span class="math display">\[Y_i
+= \delta + \alpha D_i + X_i \beta + (D_i \times X_i) \gamma +
+\epsilon_i\]</span></p>
+<p>這個方法有用，但有限制：它假設處理效果是 <span
+class="math inline">\(X_i\)</span> 的線性函數。</p>
+<p>現實中，處理效果可能取決於非線性模式，例如： -
+<strong>年輕「而且」教育程度低</strong>才有大效果（交叉作用） -
+只有<strong>過去所得低於某個門檻</strong>的人才受益（閾值效果）</p>
+<p>這些模式很難事先猜到應該加哪些交叉項。因果森林能更彈性地搜尋這些模式。</p>
+<hr />
+<h3 id="什麼是決策樹">什麼是決策樹</h3>
+<p>決策樹是一種利用共變數做分組的工具。它的邏輯非常簡單：</p>
+<p>不斷問是非題（例如「年齡是否小於25？」），每問一個問題就把樣本分成兩組，最終形成一些小的分組，稱為<strong>葉節點（leaf）</strong>或<strong>終端節點（terminal
+node）</strong>。</p>
+<p>在每個葉節點裡，用一個簡單的估計： <span
+class="math display">\[\hat{m}(\ell) = \frac{1}{N_\ell} \sum_{i: X_i \in
+\ell} Y_i\]</span></p>
+<p>就是葉節點裡所有人的平均結果。</p>
+<p>所以決策樹的本質是：<strong>用資料自動找出有意義的分組</strong>，而不是事先指定分組。</p>
+<hr />
+<h3 id="決策樹預測版本">決策樹：預測版本</h3>
+<p>圖中是一棵預測樹的例子。</p>
+<p>第一個問題：年齡是否小於25？ - 如果是，再問：教育年數是否小於12？ -
+如果是：預測薪資 $9,000 - 如果否：預測薪資 $12,000 -
+如果否，再問：過去所得是否小於 $5,000？ - 如果是：預測薪資 $10,500 -
+如果否：預測薪資 $18,000</p>
+<p>每個葉節點給一個預測值，就是那個葉節點裡所有人的平均薪資。</p>
+<p>這棵樹很好解讀，但有一個大問題：<strong>單一決策樹非常不穩定</strong>。換一批資料，第一個分割可能就不同了，後面的結構也會跟著全變。</p>
+<hr />
+<h3 id="決策樹共變數空間的分割">決策樹：共變數空間的分割</h3>
+<p>這張圖展示的是決策樹的幾何意義。</p>
+<p>以年齡和教育為兩個軸，決策樹把這個空間切割成幾個矩形區域（葉節點）。</p>
+<p>落在同一個葉節點的人，就用同一個預測值。樹越深、切割越多，每個區域越小，預測越靈活，但也越容易過度配適（overfitting）。</p>
+<hr />
+<h3 id="預測樹如何選擇分割">預測樹如何選擇分割</h3>
+<p>預測樹選擇分割的標準是：找到讓「預測誤差最小」的分割點。</p>
+<p>對每個候選分割，計算兩個子群的殘差平方和： <span
+class="math display">\[\sum_{i \in R_1}(Y_i - \bar{Y}_{R_1})^2 + \sum_{i
+\in R_2}(Y_i - \bar{Y}_{R_2})^2\]</span></p>
+<p>選最小的那個分割。</p>
+<p>直觀上就是：把「結果相似的人」放進同一個葉節點。</p>
+<hr />
+<h3 id="為什麼單一決策樹不夠">為什麼單一決策樹不夠</h3>
+<p>單一決策樹雖然好解讀，但<strong>變異數非常高</strong>。</p>
+<ul>
+<li>資料小幅變動，第一個分割就可能改變</li>
+<li>第一個分割改變，後面所有分割都連帶改變</li>
+<li>預測結果因此很不穩定</li>
+</ul>
+<p>這個問題在因果推論中更嚴重，因為處理效果的估計本來就比平均結果更難、訊噪比更低。</p>
+<p>核心問題：<strong>一棵樹太依賴某一個特定樣本</strong>。</p>
+<hr />
+<h3
+id="隨機森林平均許多棵樹來穩定估計">隨機森林：平均許多棵樹來穩定估計</h3>
+<p>隨機森林的解決方案很直觀：長很多棵樹，然後平均。</p>
+<p>每棵樹在不同的隨機子樣本上生長，每棵樹的估計都有雜訊，但平均之後會更穩定：
+<span class="math display">\[\hat{m}(x) = \frac{1}{B} \sum_{b=1}^{B}
+\hat{m}_b(x)\]</span></p>
+<p>預測型隨機森林估計的是： <span class="math display">\[m(x) = E[Y_i
+\mid X_i = x]\]</span></p>
+<p>因果森林保留了森林的技術架構，但把目標從「預測 <span
+class="math inline">\(Y\)</span>」換成「估計處理效果 <span
+class="math inline">\(\tau(x)\)</span>」。</p>
+<hr />
+<h3
+id="隨機森林兩個產生多樣性的機制">隨機森林：兩個產生多樣性的機制</h3>
+<p>隨機森林讓每棵樹都不一樣，靠的是兩個機制：</p>
+<p><strong>第一：子取樣（subsampling）</strong> -
+每棵樹只看到一個隨機的子樣本 - 不同棵樹學到略微不同的模式</p>
+<p><strong>第二：隨機分割變數</strong> -
+在每個節點，只從隨機選出的部分共變數中挑選分割變數 -
+這樣可以避免所有樹都長得太像</p>
+<p>為什麼這樣做有效？因為<strong>平均獨立的、有用但不相同的估計</strong>，比平均高度相關的估計效果好得多。想像10個獨立觀點的平均，和10個幾乎相同觀點的平均，哪個更有資訊？</p>
+<hr />
+<h3 id="橋接到因果森林">橋接到因果森林</h3>
+<p>這張表是關鍵的橋接點：</p>
+<table>
+<thead>
+<tr>
+<th>步驟</th>
+<th>預測森林</th>
+<th>因果森林</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>樹怎麼長葉節點</td>
+<td>結果相似的人</td>
+<td>處理效果相似的人</td>
+</tr>
+<tr>
+<td>葉節點估計值</td>
+<td><span class="math inline">\(\bar{Y}_\ell\)</span></td>
+<td><span class="math inline">\(\bar{Y}^1_\ell -
+\bar{Y}^0_\ell\)</span></td>
+</tr>
+<tr>
+<td>森林平均</td>
+<td><span class="math inline">\(\hat{m}(x)\)</span></td>
+<td><span class="math inline">\(\hat{\tau}(x)\)</span></td>
+</tr>
+<tr>
+<td>核心問題</td>
+<td>結果可能是多少？</td>
+<td>誰受益更多？</td>
+</tr>
+</tbody>
+</table>
+<p><strong>關鍵轉換</strong>：因果森林保留樹和森林的機制，但把分割的目標從「預測
+<span
+class="math inline">\(Y\)</span>」改成「找到處理效果不同的群體」。</p>
+<hr />
+<h2 id="第三部分因果樹">【第三部分：因果樹】</h2>
+<hr />
+<h3 id="從預測樹到因果樹">從預測樹到因果樹</h3>
+<p>這張表再次整理預測樹和因果樹的差別。</p>
+<p>最核心的差別是<strong>分割的邏輯</strong>： - 預測樹：找「結果 <span
+class="math inline">\(Y\)</span> 水準不同」的切割點 -
+因果樹：找「處理效果 <span class="math inline">\(D\)</span>
+不同」的切割點</p>
+<p>葉節點的估計也不同： - 預測樹：那個葉的平均 <span
+class="math inline">\(Y\)</span> - 因果樹：處理組減去對照組的差，也就是
+<span class="math inline">\(\bar{Y}^1_\ell - \bar{Y}^0_\ell\)</span></p>
+<p>對應的問題分別是：「誰的薪資高？」vs.「誰從訓練中獲益更多？」</p>
+<hr />
+<h3 id="因果樹葉節點的直觀">因果樹：葉節點的直觀</h3>
+<p>來看一個具體例子。</p>
+<table>
+<thead>
+<tr>
+<th>葉節點</th>
+<th>處理組平均</th>
+<th>對照組平均</th>
+<th>估計效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>年輕、低教育</td>
+<td>$11,000</td>
+<td>$8,000</td>
+<td><strong>$3,000</strong></td>
+</tr>
+<tr>
+<td>年長、高經驗</td>
+<td>$18,500</td>
+<td>$18,000</td>
+<td>$500</td>
+</tr>
+</tbody>
+</table>
+<p>在每個葉節點內，直接比較處理組和對照組。葉節點的估計就是一個局部平均處理效果：
+<span class="math display">\[\hat{\tau}(\ell) = \bar{Y}^1_\ell -
+\bar{Y}^0_\ell\]</span></p>
+<p>一個新的工作者，根據他的特徵 <span class="math inline">\(X_i\)</span>
+落在哪個葉節點，就得到那個葉節點的效果估計。</p>
+<hr />
+<h3 id="因果樹如何找分割點">因果樹：如何找分割點</h3>
+<p>因果樹找分割點的步驟如下：</p>
+<ol type="1">
+<li><p>對每個變數 <span class="math inline">\(X^j\)</span> 和候選分割點
+<span class="math inline">\(s\)</span>，建立兩個區域： <span
+class="math display">\[R_1(j,s) = \{i: X_i^j &lt; s\}, \quad R_2(j,s) =
+\{i: X_i^j \geq s\}\]</span></p></li>
+<li><p>在每個區域估計處理效果： <span
+class="math display">\[\hat{\tau}(R) = \bar{Y}^1_R -
+\bar{Y}^0_R\]</span></p></li>
+<li><p>選擇讓兩個區域的處理效果差距最大的分割： <span
+class="math display">\[\Delta(j,s) = |\hat{\tau}(R_1) -
+\hat{\tau}(R_2)|\]</span></p></li>
+</ol>
+<p><strong>因果樹在找「效果不同的群體」，而不是「結果水準不同的群體」</strong>。這是和預測樹最根本的區別。</p>
+<hr />
+<h3 id="因果樹一個小型分割範例">因果樹：一個小型分割範例</h3>
+<p>來看一個具體的數字範例。</p>
+<table>
+<thead>
+<tr>
+<th>候選分割</th>
+<th><span class="math inline">\(\hat{\tau}(R_1)\)</span></th>
+<th><span class="math inline">\(\hat{\tau}(R_2)\)</span></th>
+<th><span class="math inline">\(\Delta\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>年齡 <span class="math inline">\(&lt; 30\)</span></td>
+<td>$3,000</td>
+<td>$600</td>
+<td><strong>$2,400</strong></td>
+</tr>
+<tr>
+<td>教育 <span class="math inline">\(&lt; 12\)</span></td>
+<td>$2,100</td>
+<td>$1,400</td>
+<td>$700</td>
+</tr>
+<tr>
+<td>過去所得 <span class="math inline">\(&lt; 5,000\)</span></td>
+<td>$2,600</td>
+<td>$1,000</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<p>在這個例子中，樹會先用年齡來分割，因為年齡分割造成的效果差距最大（$2,400）。</p>
+<p>注意：這不是說年齡「永遠」是最重要的，只是在這個資料中，年齡分割最能把效果大的人和效果小的人區分開來。</p>
+<hr />
+<h3
+id="主要問題雙重使用資料double-dipping">主要問題：雙重使用資料（Double
+Dipping）</h3>
+<p>因果樹有一個嚴重的問題，叫做「雙重使用資料」（double dipping）。</p>
+<p>如果用同一批資料： 1. 決定在哪裡切割（tree structure selection） 2.
+估計葉節點的處理效果</p>
+<p>那麼樹可以對隨機雜訊過度配適。一個切割看起來很好，可能只是因為它在這個樣本中運氣好，而不是真的有意義。</p>
+<p>結果是：<strong>葉節點的處理效果估計值在量值上會偏高</strong>，因為樹已經「看過」這些資料才選出這個切割。</p>
+<p>這就像考試作弊：如果你看過考題再寫答案，成績當然好，但反映的不是真實能力。</p>
+<hr />
+<h3 id="誠實估計honest-estimation">誠實估計（Honest Estimation）</h3>
+<p>解決方法是「誠實估計」（honest estimation）。</p>
+<p>每個子樣本被分成兩個部分： -
+<strong>分割樣本</strong>：用來決定樹的結構（在哪裡切割） -
+<strong>估計樣本</strong>：用來估計最終葉節點的處理效果</p>
+<p>這兩個樣本完全獨立。分割結構是根據一批資料決定的，但葉節點的效果估計用的是另一批沒有參與分割決策的資料。</p>
+<p>效果： - 減少過度配適 - 支持有效的統計推論（valid inference）</p>
+<p>這是因果樹和一般決策樹最關鍵的技術差別，也是讓因果森林具備統計有效性的基礎。</p>
+<hr />
+<h2 id="第四部分因果森林">【第四部分：因果森林】</h2>
+<hr />
+<h3 id="因果森林算法">因果森林算法</h3>
+<p>完整的因果森林算法如下：</p>
+<ol type="1">
+<li>抽一個隨機子樣本</li>
+<li>把子樣本分成兩部分：一個選分割，一個估計效果</li>
+<li>長一棵誠實的因果樹</li>
+<li>重複很多次，例如 <span class="math inline">\(B = 2,000\)</span>
+棵樹</li>
+<li>對每個觀察值，平均所有樹的估計： <span
+class="math display">\[\hat{\tau}(x_i) = \frac{1}{B} \sum_{b=1}^{B}
+\hat{\tau}_b(x_i)\]</span></li>
+</ol>
+<p>就這樣。每棵樹都是誠實的，每棵樹的雜訊都略有不同，平均之後估計更穩定。</p>
+<hr />
+<h3 id="因果森林作為自適應加權">因果森林作為自適應加權</h3>
+<p>另一個理解因果森林的角度是把它看成<strong>自適應加權</strong>的局部比較。</p>
+<p>對目標工作者 <span class="math inline">\(x\)</span>： -
+森林找出其他和 <span class="math inline">\(x\)</span>
+特徵相似的人（常常落在同一個葉節點） - 這些人在估計 <span
+class="math inline">\(\tau(x)\)</span> 時得到較大的權重</p>
+<p>概念上： <span class="math display">\[\hat{\tau}(x) \approx \sum_{i:
+D_i=1} a_i(x) Y_i - \sum_{i: D_i=0} a_i(x) Y_i\]</span></p>
+<p>其中 <span class="math inline">\(a_i(x)\)</span> 是根據「觀察值 <span
+class="math inline">\(i\)</span> 和 <span
+class="math inline">\(x\)</span> 的相似程度」決定的權重。</p>
+<p>所以因果森林有點像是<strong>彈性的配對方法</strong>：它自動找到和你最像的處理組和對照組，用他們來估計你的效果。而且這個配對標準是從資料中自動學習的，不需要事先指定。</p>
+<hr />
+<h3 id="為什麼平均有效">為什麼平均有效</h3>
+<p>單棵因果樹的估計可以這樣想： <span
+class="math display">\[\hat{\tau}_b(x) = \tau(x) +
+\varepsilon_b\]</span></p>
+<p><span class="math inline">\(\varepsilon_b\)</span> 是第 <span
+class="math inline">\(b\)</span> 棵樹的估計誤差。</p>
+<p>當我們平均 <span class="math inline">\(B\)</span> 棵樹： <span
+class="math display">\[\frac{1}{B} \sum_{b=1}^{B} \hat{\tau}_b(x) =
+\tau(x) + \frac{1}{B} \sum_{b=1}^{B} \varepsilon_b\]</span></p>
+<p>如果每棵樹的誤差部分互相抵消（因為每棵樹用的是不同的隨機子樣本），平均之後的估計就會越來越接近真實值。這就是<strong>偏差-變異數取捨</strong>的一個應用：每棵樹偏差小但變異大，平均之後變異大幅降低。</p>
+<hr />
+<h3 id="隨機森林-vs.-因果森林">隨機森林 vs. 因果森林</h3>
+<p>這是一張很重要的比較表：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>隨機森林</th>
+<th>因果森林</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主要目標</td>
+<td>預測結果</td>
+<td>估計處理效果</td>
+</tr>
+<tr>
+<td>輸入</td>
+<td><span class="math inline">\((Y, X)\)</span></td>
+<td><span class="math inline">\((Y, D, X)\)</span></td>
+</tr>
+<tr>
+<td>估計對象</td>
+<td><span class="math inline">\(\hat{m}(x)\)</span></td>
+<td><span class="math inline">\(\hat{\tau}(x)\)</span></td>
+</tr>
+<tr>
+<td>分割標準</td>
+<td>降低預測誤差</td>
+<td>找處理效果異質性</td>
+</tr>
+<tr>
+<td>葉節點值</td>
+<td>平均結果</td>
+<td>處理-對照差距</td>
+</tr>
+<tr>
+<td>誠實估計</td>
+<td>通常沒有</td>
+<td>有</td>
+</tr>
+</tbody>
+</table>
+<p><strong>特別要強調這一點：因果森林不是把處理變數 <span
+class="math inline">\(D\)</span>
+當作一個額外的預測變數加進隨機森林而已。</strong>
+這兩個是完全不同的東西：隨機森林在預測，因果森林在估計因果效果。</p>
+<hr />
+<h3 id="統計性質需要知道什麼">統計性質：需要知道什麼</h3>
+<p>對這門課的程度，技術性質的部分不需要記公式，但要知道幾個關鍵點：</p>
+<ul>
+<li>誠實因果森林在理論上既可以估計 CATE，也支持統計推論（confidence
+intervals）。</li>
+<li>在一些正則條件下：<span class="math inline">\(\hat{\tau}(x)
+\xrightarrow{p} \tau(x)\)</span>，也就是樣本越大，估計越準。</li>
+<li><code>grf</code> 套件對 ATE 和相關匯總統計量會報告標準誤。</li>
+</ul>
+<p>對教學而言，核心直觀是： -
+<strong>誠實性</strong>控制了因為自適應分割造成的偏差 -
+<strong>平均很多棵樹</strong>降低了變異數 -
+但<strong>因果解釋</strong>仍然必須依靠研究設計（識別策略），機器學習無法自動提供</p>
+<hr />
+<h3 id="hattaux_i-是什麼意思"><span
+class="math inline">\(\hat{\tau}(x_i)\)</span> 是什麼意思</h3>
+<p>這個問題很重要，我想特別說清楚。</p>
+<p><span class="math inline">\(\hat{\tau}(x_i)\)</span>
+<strong>不是</strong>工作者 <span class="math inline">\(i\)</span>
+真正的個體處理效果。</p>
+<p>它估計的是「和工作者 <span class="math inline">\(i\)</span>
+特徵相似的人」的平均處理效果。相似程度由森林從共變數 <span
+class="math inline">\(X\)</span> 中學習得到。</p>
+<p>舉例：如果 <span class="math inline">\(\hat{\tau}(x_i) =
+2,000\)</span>，意思是：和工作者 <span class="math inline">\(i\)</span>
+特徵相似的那群人，估計從訓練中平均獲益約 $2,000 元的薪資增加。</p>
+<p>所以報告時，應該說「具有類似特徵的工作者」而不是「這個人」。</p>
+<hr />
+<h3 id="因果森林給我們什麼">因果森林給我們什麼</h3>
+<p>因果森林的輸出包含以下幾項：</p>
+<ol type="1">
+<li><strong>ATE（平均處理效果）</strong>：對目標樣本的平均效果估計值</li>
+<li><strong>ATT（受處理者平均處理效果）</strong>：對處理組的平均效果</li>
+<li><strong>個別的 CATE 估計值</strong>：每個觀察值一個 <span
+class="math inline">\(\hat{\tau}(x_i)\)</span></li>
+<li><strong>CATE 分布</strong>：效果是集中的還是非常分散？</li>
+<li><strong>最佳線性投影（BLP）</strong>：哪些共變數和較大的效果有關？</li>
+<li><strong>變數重要性</strong>：哪些變數常常被用來分割樹？</li>
+</ol>
+<p>接下來我會一一說明最後幾項。</p>
+<hr />
+<h3 id="如何解讀-cate-分布">如何解讀 CATE 分布</h3>
+<p>圖中是 CATE 分布的直方圖，紅色虛線是 ATE。</p>
+<p>解讀方式： -
+<strong>分布很寬</strong>：表示處理效果在不同人之間差異很大（高異質性）
+- <strong>分布很窄</strong>：表示大多數人的處理效果類似，不太有異質性 -
+<strong>平均值（ATE）可能隱藏了「贏家」和「無反應者」</strong></p>
+<p>例如，如果 ATE = $1,500，但分布很寬，意味著有些人效果
+$4,000，有些人效果幾乎是
+$0，而這兩群人的需求和政策設計可能完全不同。</p>
+<hr />
+<h3 id="blp異質性的簡單摘要">BLP：異質性的簡單摘要</h3>
+<p>CATE 估計值一個一個看很難摘要。<strong>最佳線性投影（BLP）</strong>
+提供了一個簡便的整理方式：</p>
+<p>用線性回歸把 CATE 估計值對共變數回歸： <span
+class="math display">\[\hat{\tau}(x_i) = \beta_0 + \beta_1 \text{age}_i
++ \beta_2 \text{educ}_i + \beta_3 \text{re74}_i + \cdots +
+\varepsilon_i\]</span></p>
+<p>解讀範例： - <span class="math inline">\(\hat{\beta}_1 &lt;
+0\)</span>：年齡較大的工作者，估計效果較小 - <span
+class="math inline">\(\hat{\beta}_3 &lt;
+0\)</span>：過去所得較高的工作者，估計效果較小</p>
+<p><strong>重要提醒</strong>：BLP
+是描述性的，它總結了森林估計出的異質性，本身不能做因果解釋。</p>
+<hr />
+<h3 id="變數重要性">變數重要性</h3>
+<p>變數重要性衡量「哪些變數常常被森林用來分割」。</p>
+<p>重要性高 =
+這個變數對找出處理效果不同的群體很有用。它能偵測非線性關係和交叉作用。</p>
+<p><strong>但注意：變數重要性不告訴你方向（正負）</strong>，也就是說，一個重要性高的變數，可能是效果在高值時大，也可能在低值時大。</p>
+<p>比較 BLP 和變數重要性的用途： -
+BLP：給方向和標準誤，有助於解釋哪類人效果大/小 -
+變數重要性：告訴你哪些變數對分類有用，但不說方向</p>
+<p>兩者搭配使用，才能對異質性有完整的理解。</p>
+<hr />
+<h3 id="實務警告">實務警告</h3>
+<p>最後，因果森林在使用上有幾個重要的注意事項：</p>
+<ol type="1">
+<li><strong>沒有可信的識別策略，CATE 就沒有因果解釋。</strong>
+這是最重要的一點。</li>
+<li><strong>不要過度解讀單一個體的估計值</strong>，要以「相似群體的平均」來思考。</li>
+<li><strong>檢查重疊（overlap）</strong>：<span
+class="math inline">\(X\)</span>
+的每個區域都要有處理組和對照組，否則效果估計沒有意義。</li>
+<li><strong>用因果森林探索和目標設計，然後用簡單的摘要統計謹慎報告</strong>。不要報告太多細節，選幾個有意義的異質性發現即可。</li>
+<li><strong>在小樣本中，異質性估計可能很不精確</strong>，要謹慎。</li>
+</ol>
+<hr />
+<h2 id="第五部分r-實作範例就業訓練計劃">【第五部分：R
+實作範例：就業訓練計劃】</h2>
+<hr />
+<h3 id="lalonde-就業訓練資料">LaLonde 就業訓練資料</h3>
+<p>我們用
+LaLonde（1986）的就業訓練資料做實作範例。這個資料集在勞動經濟學中非常經典。</p>
+<ul>
+<li><strong>處理 <span
+class="math inline">\(D_i\)</span></strong>：是否參與訓練計劃</li>
+<li><strong>結果 <span class="math inline">\(Y_i\)</span></strong>：1978
+年的薪資所得</li>
+<li><strong>共變數 <span
+class="math inline">\(X_i\)</span></strong>：年齡、教育年數、種族（黑人、西班牙裔）、婚姻狀況、無學位、1974
+和 1975 年的過去所得</li>
+</ul>
+<p><strong>核心問題</strong>：哪類工作者從訓練中獲益最多？</p>
+<p>R 的工作流程分為八個步驟： 1. 安裝套件和載入資料 2. 準備 <span
+class="math inline">\(Y_i\)</span>、<span
+class="math inline">\(D_i\)</span>、<span
+class="math inline">\(X_i\)</span> 3. 估計因果森林 4. 計算 ATE/ATT 5.
+取得個別 CATE 估計值 6. 畫 CATE 分布圖 7. 摘要異質性（BLP 和變數重要性）
+8. 匯出結果</p>
+<hr />
+<h3 id="步驟-1安裝套件和載入資料">步驟 1：安裝套件和載入資料</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;grf&quot;</span>, <span class="st">&quot;Matching&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matching)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lalonde)</span></code></pre></div>
+<p>三個套件的用途： -
+<strong><code>grf</code></strong>：廣義隨機森林，這是我們主要使用的套件，<code>causal_forest()</code>
+在這裡 - <strong><code>Matching</code></strong>：包含 LaLonde 資料集 -
+<strong><code>ggplot2</code></strong>：視覺化</p>
+<hr />
+<h3 id="步驟-2資料準備">步驟 2：資料準備</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>re78</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>treat</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> lalonde[, <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;educ&quot;</span>, <span class="st">&quot;black&quot;</span>, <span class="st">&quot;hisp&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;married&quot;</span>, <span class="st">&quot;nodegree&quot;</span>, <span class="st">&quot;re74&quot;</span>, <span class="st">&quot;re75&quot;</span>)]</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(X)</span></code></pre></div>
+<ul>
+<li><code>Y</code>：觀察到的結果 <span
+class="math inline">\(Y_i\)</span>（1978 年薪資）</li>
+<li><code>D</code>：處理指標 <span
+class="math inline">\(D_i\)</span>（是否接受訓練）</li>
+<li><code>X</code>：前置共變數矩陣，<strong>注意所有變數都要是處理前測量的</strong></li>
+</ul>
+<p><code>X</code> 要轉成矩陣格式，因為 <code>causal_forest()</code>
+要求矩陣輸入。</p>
+<hr />
+<h3 id="步驟-3估計因果森林">步驟 3：估計因果森林</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cf <span class="ot">&lt;-</span> <span class="fu">causal_forest</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> Y,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">W =</span> D,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">2000</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p>幾個說明： - <code>W = D</code>：<code>grf</code> 套件用
+<code>W</code> 代表處理變數，但我們課程符號用 <span
+class="math inline">\(D_i\)</span>，意思一樣 -
+<code>num.trees = 2000</code>：樹的數量，越多通常估計越穩定，但計算時間也越長
+-
+套件<strong>內部自動處理誠實性和森林平均</strong>，我們不用手動設定</p>
+<hr />
+<h3 id="步驟-4估計-ate-和-att">步驟 4：估計 ATE 和 ATT</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ate <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf, <span class="at">target.sample =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>att <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf, <span class="at">target.sample =</span> <span class="st">&quot;treated&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ate</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>att</span></code></pre></div>
+<p>輸出的是估計值和標準誤。</p>
+<ul>
+<li><code>target.sample = "all"</code> 估計 <span
+class="math inline">\(\alpha_{\text{ATE}}\)</span></li>
+<li><code>target.sample = "treated"</code> 估計 <span
+class="math inline">\(\alpha_{\text{ATT}}\)</span></li>
+</ul>
+<p>這樣就把新方法和我們之前學的 ATE、ATT 估計連結起來了。在 LaLonde
+資料中，因果識別的基礎是隨機實驗（RCT），所以條件獨立假設自動成立。</p>
+<hr />
+<h3 id="步驟-5取得個別-cate-估計值">步驟 5：取得個別 CATE 估計值</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tau_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf)<span class="sc">$</span>predictions</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tau_hat)</span></code></pre></div>
+<ul>
+<li><code>tau_hat</code> 包含每個觀察值的 CATE 估計值，一共 <span
+class="math inline">\(N\)</span> 個</li>
+<li>解讀：<span class="math inline">\(\hat{\tau}(x_i)\)</span>
+是和工作者 <span class="math inline">\(i\)</span>
+特徵相似的人的估計訓練效果</li>
+<li>用 <code>summary()</code> 看效果是否分散，或者大家差不多</li>
+</ul>
+<hr />
+<h3 id="步驟-6畫-cate-分布圖">步驟 6：畫 CATE 分布圖</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cate_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">tau_hat =</span> tau_hat)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cate_df, <span class="fu">aes</span>(<span class="at">x =</span> tau_hat)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(tau_hat),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Estimated treatment effect&quot;</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<ul>
+<li>紅色虛線是 CATE 估計值的平均，近似於 ATE</li>
+<li>分布的寬度代表異質性的程度：分布越寬，代表不同人的效果差異越大</li>
+<li>如果分布很集中在一個點，說明大家效果差不多</li>
+</ul>
+<hr />
+<h3 id="步驟-7摘要異質性blp-和變數重要性">步驟 7：摘要異質性（BLP
+和變數重要性）</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 最佳線性投影</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>blp <span class="ot">&lt;-</span> <span class="fu">best_linear_projection</span>(cf, X)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>blp</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 變數重要性</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>vi <span class="ot">&lt;-</span> <span class="fu">variable_importance</span>(cf)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vi) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(vi, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><strong>BLP 解讀</strong>： -
+正係數：該共變數較高的工作者，估計效果較大 -
+負係數：該共變數較高的工作者，估計效果較小 -
+有標準誤，可以看哪些係數顯著</p>
+<p><strong>變數重要性解讀</strong>： -
+分數越高，表示這個變數越常被用來分割 -
+排序後可以知道哪些特徵最有助於區分高效果和低效果群體</p>
+<p>注意：兩者都是描述性摘要，不能直接做因果解釋。</p>
+<hr />
+<h3 id="步驟-8匯出結果給-stata-後續分析">步驟 8：匯出結果給 Stata
+後續分析</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id      =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(X),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_hat =</span> tau_hat,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age     =</span> lalonde<span class="sc">$</span>age,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">educ    =</span> lalonde<span class="sc">$</span>educ,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">D       =</span> lalonde<span class="sc">$</span>treat</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results, <span class="st">&quot;cate_results.csv&quot;</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>這樣可以把 R 估計的 CATE 值匯出為 CSV，然後在 Stata 或 R
+裡做進一步的描述性分析、製表或繪圖。</p>
+<p>實務上的分工：在 R 估計因果森林，匯出
+CATE，在習慣的環境中做摘要分析。</p>
+<hr />
+<h2
+id="第六部分勞動經濟學應用與總結">【第六部分：勞動經濟學應用與總結】</h2>
+<hr />
+<h3 id="勞動經濟學的應用場景">勞動經濟學的應用場景</h3>
+<p>因果森林在勞動經濟學中有很廣泛的應用潛力：</p>
+<ul>
+<li><strong>主動勞動市場計劃</strong>：求職輔助對哪類工作者效果最好？</li>
+<li><strong>青年就業計劃</strong>：哪類年輕人受益最多？</li>
+<li><strong>教育政策</strong>：受教育的回報是否因家庭背景或地區勞動市場條件而異？</li>
+<li><strong>最低工資</strong>：最低工資的就業效果是否因工作者技能、企業規模或地區而不同？</li>
+<li><strong>育嬰假政策</strong>：效果是否因之前的薪資或職業類別而異？</li>
+</ul>
+<p>這些問題的共同點是：我們不只想知道平均效果，更想知道哪類人受益最多，以便設計更精準的政策目標。</p>
+<hr />
+<h3 id="學生應該記住的事">學生應該記住的事</h3>
+<p>讓我來總結這堂課的核心重點：</p>
+<ol type="1">
+<li><p><strong>前幾講</strong>聚焦在 <span
+class="math inline">\(\alpha_{\text{ATE}}\)</span> 和 <span
+class="math inline">\(\alpha_{\text{ATT}}\)</span>，一個平均數。</p></li>
+<li><p><strong>CATE</strong> 問的是效果如何隨 <span
+class="math inline">\(X_i\)</span> 變化：<span
+class="math inline">\(\tau(x) = E[Y^1_i - Y^0_i \mid X_i =
+x]\)</span></p></li>
+<li><p><strong>決策樹</strong>建立資料驅動的分組；<strong>隨機森林</strong>通過平均很多棵樹來穩定估計。</p></li>
+<li><p><strong>因果樹</strong>把目標從「預測結果」改成「找處理效果的異質性」，分割標準完全不同。</p></li>
+<li><p><strong>誠實估計</strong>把分割選擇和效果估計分開，避免雙重使用資料造成的偏差。</p></li>
+<li><p><strong>因果森林</strong>平均很多棵誠實的因果樹，穩定 <span
+class="math inline">\(\hat{\tau}(x)\)</span> 的估計。</p></li>
+</ol>
+<hr />
+<h3 id="使用因果森林的檢查清單">使用因果森林的檢查清單</h3>
+<p>在論文或研究計劃中用到因果森林時，要確認以下幾點：</p>
+<ol type="1">
+<li><p><strong>定義清楚</strong> 結果 <span
+class="math inline">\(Y_i\)</span>、處理 <span
+class="math inline">\(D_i\)</span> 和前置共變數 <span
+class="math inline">\(X_i\)</span></p></li>
+<li><p><strong>說明識別假設</strong>：條件獨立假設如何在你的研究設計中成立？是
+RCT 嗎？還是觀察性資料搭配豐富的共變數？</p></li>
+<li><p><strong>檢查重疊</strong>：<span
+class="math inline">\(X_i\)</span>
+的相關範圍內，處理組和對照組都要有足夠的樣本</p></li>
+<li><p><strong>估計森林，報告</strong> <span
+class="math inline">\(\hat{\alpha}_{\text{ATE}}\)</span> 或 <span
+class="math inline">\(\hat{\alpha}_{\text{ATT}}\)</span></p></li>
+<li><p><strong>用 CATE 分布、BLP
+和變數重要性描述異質性</strong>，並謹慎解讀</p></li>
+</ol>
+<hr />
+<h2 id="推薦文獻">【推薦文獻】</h2>
+<hr />
+<h3 id="推薦資源">推薦資源</h3>
+<p>想深入了解因果森林的同學，推薦以下幾篇文獻：</p>
+<ol type="1">
+<li><p><strong>Wager and Athey (2018)</strong>：「Estimation and
+Inference of Heterogeneous Treatment Effects using Random
+Forests」——因果森林的核心技術論文，建立了誠實估計的理論基礎</p></li>
+<li><p><strong>Athey, Tibshirani, and Wager
+(2019)</strong>：「Generalized Random
+Forests」——廣義隨機森林的完整理論框架，<code>grf</code>
+套件就是基於這篇</p></li>
+<li><p><strong><code>grf</code> 文件</strong>：<a
+href="https://grf-labs.github.io/grf/">https://grf-labs.github.io/grf/</a>——套件的完整說明和範例，很實用</p></li>
+<li><p><strong>Athey and Imbens (2019)</strong>：「Machine Learning
+Methods That Economists Should Know
+About」——一篇很好的綜述，從經濟學家的角度介紹機器學習方法</p></li>
+</ol>
+<hr />
+<h3 id="最終結語">最終結語</h3>
+<p>讓我用這張投影片的話作為結語：</p>
+<blockquote>
+<p>因果森林幫助我們從<br />
+<strong>「政策平均而言是否有效？」</strong><br />
+進步到<br />
+<strong>「政策對哪些人效果最好？」</strong></p>
+</blockquote>
+<p>但要記住：</p>
+<blockquote>
+<p><strong>森林估計的是異質性。因果可信度仍然來自研究設計。</strong></p>
+</blockquote>
+<p>這兩句話是這整堂課最重要的帶走訊息。機器學習讓我們更靈活地描述效果的異質性，但它不能取代識別策略。好的因果森林研究，必須同時有好的研究設計和靈活的估計方法。</p>
+<p>好，今天就上到這裡，謝謝大家。</p>
+<hr />
+<p><em>講稿作者：基於 L13_CausalForest_labor_v4.tex
+投影片撰寫</em><br />
+<em>日期：2026-05-12</em></p>
+</body>
+</html>

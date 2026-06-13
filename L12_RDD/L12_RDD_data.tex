@@ -1,4 +1,5 @@
-\documentclass[dvipsnames,hyperref={pdfpagelabels=false}]{beamer}
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
 % beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
 
 \usepackage{ragged2e} % 文字向兩邊對齊
@@ -32,7 +33,8 @@
 
 \usepackage{booktabs}
 \usepackage{threeparttable}
-\usepackage{colortbl} 
+\usepackage{colortbl}
+\usepackage{comment} 
 \usepackage{xcolor}
 \usetikzlibrary{tikzmark}
 
@@ -42,7 +44,6 @@
 \beamertemplatefootpagenumber
 
 
-\usepackage{listings}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LaTeX snippet: language and style definition of Stata for listings package.
 %                [listings](http://www.ctan.org/pkg/listings) 
@@ -120,12 +121,12 @@
 
 \lstdefinestyle{stata-plain}{
 	language=Stata,
-	basicstyle=\footnotesize\ttfamily,
+	basicstyle=\scriptsize\ttfamily,
 }
 
 \lstdefinestyle{stata-editor}{
 	language=Stata,
-	basicstyle=\footnotesize\ttfamily,  
+	basicstyle=\scriptsize\ttfamily,
 	keywordstyle={\color{NavyBlue}},  
 	keywordstyle=[2]{\color{NavyBlue}},
 	keywordstyle=[3]{\color{NavyBlue}},
@@ -135,15 +136,23 @@
 	stringstyle=\color{Maroon},
 	commentstyle=\color{OliveGreen},
 }
+\lstdefinestyle{r-style}{
+	language=R,
+	basicstyle=\scriptsize\ttfamily,
+	keywordstyle=\color{NavyBlue},
+	commentstyle=\color{OliveGreen},
+	stringstyle=\color{Maroon},
+}
+
 
 \lstset{
 	language=Stata,
-	style=stata-plain,
-	% style=stata-editor,
+	style=stata-editor,
 	style=numbers,
 	showstringspaces=false,
 	breaklines,
 	frame=single,
+	backgroundcolor=\color{gray!5},
 	% To add missing commands
 	% morekeywords={xtreg, xtunitroot},
 }

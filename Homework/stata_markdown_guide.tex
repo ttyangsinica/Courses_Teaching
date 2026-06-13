@@ -1,0 +1,658 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Guide: Creating Stata Markdown Documents
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl}
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+\usepackage{sectsty}
+\allsectionsfont{\normalfont\scshape}
+
+\usepackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, citecolor=blue, urlcolor=blue, pdfborder=000}
+
+\usepackage{fancyhdr}
+\pagestyle{fancyplain}
+\fancyhead{}
+\fancyfoot[L]{}
+\fancyfoot[C]{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\setlength{\headheight}{13.6pt}
+
+\setlength\parindent{0pt}
+
+% Horizontal rule
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}}
+
+% Code styling
+\lstdefinestyle{stata}{
+  backgroundcolor=\color{gray!8},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!40},
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+\lstdefinestyle{shell}{
+  backgroundcolor=\color{black!90},
+  basicstyle=\ttfamily\small\color{white},
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{black},
+  framesep=4pt,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+% Tip / warning box
+\newmdenv[
+  backgroundcolor=blue!5,
+  linecolor=blue!40,
+  linewidth=1pt,
+  leftmargin=0pt,
+  rightmargin=0pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt,
+  innertopmargin=6pt,
+  innerbottommargin=6pt,
+]{tipbox}
+
+\newmdenv[
+  backgroundcolor=orange!8,
+  linecolor=orange!60,
+  linewidth=1pt,
+  leftmargin=0pt,
+  rightmargin=0pt,
+  innerleftmargin=8pt,
+  innerrightmargin=8pt,
+  innertopmargin=6pt,
+  innerbottommargin=6pt,
+]{warnbox}
+
+%----------------------------------------------------------------------------------------
+
+\title{
+\normalfont \normalsize
+\horrule{0.5pt} \\[0.4cm]
+\huge A Step-by-Step Guide to \\[0.2cm] Stata Markdown (\texttt{.stmd}) \\
+\horrule{2pt} \\[0.5cm]
+}
+
+\author{Prof.\ Tzu-Ting Yang}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{What Is Stata Markdown?}
+%----------------------------------------------------------------------------------------
+
+A \textbf{Stata Markdown} file (\texttt{.stmd}) is a plain-text document that mixes
+\textit{narrative text} (written in Markdown) with \textit{Stata code blocks}.
+When you \textit{compile} it, Stata runs the code, captures all output and figures,
+and a program called \textbf{Pandoc} converts the result into a polished
+\textbf{HTML} (or PDF) report --- exactly like R Markdown, but for Stata.
+
+\medskip
+The workflow is:
+\[
+\texttt{.stmd file} \;\xrightarrow{\texttt{markstat}}\; \text{Stata runs code}
+\;\xrightarrow{\texttt{Pandoc}}\; \texttt{.html} \text{ (or } \texttt{.pdf}\text{)}
+\]
+
+\bigskip
+
+\begin{tipbox}
+\textbf{Why use Stata Markdown?}
+\begin{itemize}
+  \item Everything --- code, output, figures, and explanation --- lives in \textit{one}
+        self-contained HTML file.
+  \item Results are fully \textbf{reproducible}: re-running the \texttt{.stmd} file
+        always regenerates the same report.
+  \item Great for homework submissions, research reports, and replication packages.
+\end{itemize}
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Course Templates on Dropbox}
+%----------------------------------------------------------------------------------------
+
+\textbf{Goal:} produce a single \texttt{.html} file that records all your
+code, output, and figures in one document --- so the reader can follow your
+entire empirical workflow from data loading to final results.
+
+\medskip
+To help you get started, complete working templates are available in the
+\textbf{course Dropbox folder}. Two sub-folders are relevant:
+
+\medskip
+\begin{center}
+\begin{tabular}{p{4.2cm} p{9.8cm}}
+\toprule
+\textbf{Folder} & \textbf{Contents} \\
+\midrule
+\texttt{do/} &
+Regular \texttt{.do} files for each method covered in class.
+Use these to understand the Stata code before converting it to \texttt{.stmd}.\\[4pt]
+\texttt{do/Stata\_Markdown/} &
+Ready-to-compile \texttt{.stmd} templates --- one per method.
+These are your \textbf{main reference} when writing your own \texttt{.stmd} file.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+The available templates in \texttt{do/Stata\_Markdown/} are:
+
+\medskip
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{File} & \textbf{Method} \\
+\midrule
+\texttt{regression.stmd}  & OLS regression and controls \\
+\texttt{DID.stmd}         & Difference-in-Differences \\
+\texttt{Stag\_DID.stmd}   & Staggered DID \\
+\texttt{Syn\_DID.stmd}    & Synthetic DID \\
+\texttt{fixed\_effects.stmd} & Fixed effects \\
+\texttt{matching.stmd}    & Matching estimators \\
+\texttt{RDD.stmd}         & Regression Discontinuity Design \\
+\texttt{IV.stmd}          & Instrumental Variables \\
+\texttt{SSIV.stmd}        & Shift-Share IV \\
+\texttt{SCM.stmd}         & Synthetic Control Method \\
+\texttt{ML.stmd}          & Machine Learning \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\begin{tipbox}
+\textbf{Recommended workflow:}
+\begin{enumerate}
+  \item Open the \texttt{.stmd} template closest to your method (e.g.\ \texttt{DID.stmd}).
+  \item Read how the YAML header, markdown sections, and \texttt{```s} code blocks are
+        structured.
+  \item Create your own \texttt{.stmd} file following the same structure, replacing the
+        example data and code with your own.
+  \item Compile with \texttt{markstat using yourfile, bundle} to produce
+        \texttt{yourfile.html}.
+\end{enumerate}
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{What You Need to Install (One-Time Setup)}
+%----------------------------------------------------------------------------------------
+
+You need \textbf{four things} before you can compile your first Stata Markdown document.
+Steps 1--3 are done inside Stata; Step 4 (Pandoc) is done outside Stata.
+
+\medskip
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+\textbf{Step} & \textbf{What} & \textbf{Where to install} & \textbf{Required?} \\
+\midrule
+1 & \texttt{markstat} Stata package & Inside Stata & Yes \\
+2 & \texttt{whereis} Stata package  & Inside Stata & Yes \\
+3 & Pandoc (external program)       & Your operating system & Yes \\
+4 & Register Pandoc with Stata      & Inside Stata (once) & Yes \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 1 \& 2 --- Install Stata Packages}
+%----------------------------------------------------------------------------------------
+
+Open Stata and type the following two commands in the \textbf{Command window}:
+
+\begin{lstlisting}[style=stata]
+ssc install markstat, replace
+ssc install whereis, replace
+\end{lstlisting}
+
+\begin{itemize}
+  \item \texttt{markstat} is the package that reads your \texttt{.stmd} file, runs the
+        Stata code blocks, and calls Pandoc to produce the final HTML.
+  \item \texttt{whereis} is a helper that lets Stata find external programs (like Pandoc)
+        on your computer.
+  \item The \texttt{, replace} option safely re-installs even if the package already
+        exists --- so it is always safe to run.
+\end{itemize}
+
+\begin{tipbox}
+\textbf{Verify the installation:} After running the commands above, type
+\texttt{which markstat} in the Command window. If it prints a file path, the package
+was installed successfully.
+\end{tipbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 3 --- Install Pandoc}
+%----------------------------------------------------------------------------------------
+
+\textbf{Pandoc} is a free, open-source document converter. It is what actually turns
+your Stata output into a formatted HTML (or PDF) file. You must install it
+\textit{outside} Stata, directly on your operating system.
+
+\subsection*{3a. Download Pandoc}
+
+Go to \url{https://pandoc.org/installing.html} and follow the instructions for your
+operating system.
+
+\medskip
+\begin{warnbox}
+\textbf{Important:} Pandoc is \textit{not} a Stata package --- it is a standalone
+program. You install it just like any other application (e.g., Word, Chrome).
+After installation, Stata does not automatically know where it is; you must
+\textit{register} it manually (Step~4).
+\end{warnbox}
+
+\subsection*{3b. Windows Installation}
+
+\begin{enumerate}
+  \item Go to \url{https://pandoc.org/installing.html} and click the
+        \textbf{Windows} installer link (\texttt{pandoc-x.x.x-windows-x86\_64.msi}).
+  \item Run the downloaded \texttt{.msi} file and follow the installer wizard.
+  \item By default, Pandoc installs to one of these locations:
+\begin{lstlisting}[style=stata]
+C:\Program Files\Pandoc\pandoc.exe
+C:\Users\YourName\AppData\Local\Pandoc\pandoc.exe
+\end{lstlisting}
+  \item After installation, open \textbf{Command Prompt} (search ``cmd'' in the
+        Start menu) and type:
+\begin{lstlisting}[style=shell]
+where pandoc
+\end{lstlisting}
+        This prints the exact path where Pandoc was installed.
+        \textbf{Copy this path} --- you will need it in Step~4.
+\end{enumerate}
+
+\subsection*{3c. macOS Installation}
+
+\textbf{Option A --- Homebrew (recommended):}
+\begin{enumerate}
+  \item If you do not have Homebrew, install it from \url{https://brew.sh}.
+  \item Open \textbf{Terminal} and run:
+\begin{lstlisting}[style=shell]
+brew install pandoc
+\end{lstlisting}
+  \item Find the path:
+\begin{lstlisting}[style=shell]
+which pandoc
+\end{lstlisting}
+        Common results: \texttt{/usr/local/bin/pandoc} (Intel Mac) or
+        \texttt{/opt/homebrew/bin/pandoc} (Apple Silicon Mac).
+\end{enumerate}
+
+\textbf{Option B --- Installer package:}
+\begin{enumerate}
+  \item Download the \texttt{.pkg} file from \url{https://pandoc.org/installing.html}.
+  \item Double-click to run the installer.
+  \item Find the path by opening Terminal and typing \texttt{which pandoc}.
+\end{enumerate}
+
+\subsection*{3d. Verify the Installation}
+
+Regardless of your operating system, confirm Pandoc is installed by running in a
+terminal / command prompt:
+
+\begin{lstlisting}[style=shell]
+pandoc --version
+\end{lstlisting}
+
+You should see something like \texttt{pandoc 3.x.x}. If you see an error, the
+installation did not succeed --- repeat the steps above.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 4 --- Register Pandoc with Stata}
+%----------------------------------------------------------------------------------------
+
+This is the step most students miss. Even after installing Pandoc, Stata does not
+automatically know where it is. You must tell Stata the full path using the
+\texttt{whereis} command.
+
+\medskip
+\begin{warnbox}
+\textbf{Run this command directly in the Stata Command window --- NOT inside a
+\texttt{.do} file.} The registration is saved permanently on your machine, so you
+only need to do this \textit{once} per computer.
+\end{warnbox}
+
+\subsection*{4a. Windows}
+
+Using the path you found in Step 3b (adjust if yours differs):
+
+\begin{lstlisting}[style=stata]
+whereis pandoc "C:\Users\YourName\AppData\Local\Pandoc\pandoc.exe"
+\end{lstlisting}
+
+Or, if Pandoc was installed system-wide:
+
+\begin{lstlisting}[style=stata]
+whereis pandoc "C:\Program Files\Pandoc\pandoc.exe"
+\end{lstlisting}
+
+\subsection*{4b. macOS (Intel)}
+
+\begin{lstlisting}[style=stata]
+whereis pandoc "/usr/local/bin/pandoc"
+\end{lstlisting}
+
+\subsection*{4c. macOS (Apple Silicon)}
+
+\begin{lstlisting}[style=stata]
+whereis pandoc "/opt/homebrew/bin/pandoc"
+\end{lstlisting}
+
+\subsection*{4d. How to Verify}
+
+After running \texttt{whereis pandoc}, type the same command again without the path
+argument:
+
+\begin{lstlisting}[style=stata]
+whereis pandoc
+\end{lstlisting}
+
+If it prints the path you registered, you are good to go.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 5 --- Write Your \texttt{.stmd} File}
+%----------------------------------------------------------------------------------------
+
+A \texttt{.stmd} file is a plain text file. You can write it in any text editor
+(Notepad, VS Code, Stata's Do-file editor, etc.) and save it with the
+\texttt{.stmd} extension.
+
+\subsection*{5a. Overall Structure}
+
+Every \texttt{.stmd} file has three parts:
+
+\begin{enumerate}
+  \item \textbf{YAML header} --- document title, author, date (between \texttt{-{}-{}-} lines).
+  \item \textbf{Markdown text} --- plain English narrative, formatted with Markdown syntax.
+  \item \textbf{Stata code blocks} --- fenced with backticks, executed when compiled.
+\end{enumerate}
+
+\subsection*{5b. Minimal Example}
+
+\begin{lstlisting}[style=stata]
+---
+title: "My First Stata Markdown"
+author: "Your Name"
+date: "2025"
+---
+
+## 1. Load Data
+
+Here I load the dataset and display summary statistics.
+
+```s
+use "mydata.dta", clear
+summarize
+```
+
+## 2. A Simple Graph
+
+```s
+histogram income, xtitle("Income") ytitle("Density")
+graph export "income_hist.png", replace
+```
+\end{lstlisting}
+
+\subsection*{5c. Types of Code Blocks}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Syntax} & \textbf{Code shown?} & \textbf{Output shown?} \\
+\midrule
+\texttt{```s}   & Yes & Yes \\
+\texttt{```s/q} & No  & No  \quad (silent / quiet) \\
+\texttt{```}    & Yes & Not executed \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+Use \texttt{```s/q} for setup code (path definitions, \texttt{ssc install}) that you
+want to run silently without cluttering the report. Use \texttt{```s} for all
+analysis steps whose output you want displayed.
+
+\subsection*{5d. Path Setup (Portability Tip)}
+
+Hard-coded file paths break when the file is opened on another computer. Use
+\texttt{c(username)} to set paths conditionally:
+
+\begin{lstlisting}[style=stata]
+```s/q
+if "`c(username)'" == "alice" {
+    global rawdata = "C:\Users\alice\Desktop\data"
+}
+if "`c(username)'" == "bob" {
+    global rawdata = "/Users/bob/Documents/data"
+}
+```
+\end{lstlisting}
+
+Then use \texttt{\$rawdata} throughout your code:
+
+\begin{lstlisting}[style=stata]
+```s
+use "$rawdata/myfile.dta", clear
+```
+\end{lstlisting}
+
+Find your username by typing \texttt{display "`c(username)'"} in the Stata Command
+window.
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Step 6 --- Compile the Document}
+%----------------------------------------------------------------------------------------
+
+Once your \texttt{.stmd} file is saved, compile it from the Stata Command window.
+
+\subsection*{6a. Change to the Correct Directory}
+
+Stata must be in the \textit{same folder} as your \texttt{.stmd} file when you compile:
+
+\begin{lstlisting}[style=stata]
+cd "C:\Users\YourName\Desktop\MyProject"
+\end{lstlisting}
+
+Or, if you defined \texttt{\$s\_markdown} in your path setup block:
+
+\begin{lstlisting}[style=stata]
+cd "$s_markdown"
+\end{lstlisting}
+
+\subsection*{6b. Compile to HTML}
+
+\begin{lstlisting}[style=stata]
+markstat using myfile, bundle
+\end{lstlisting}
+
+\begin{itemize}
+  \item Replace \texttt{myfile} with the name of your \texttt{.stmd} file
+        \textbf{without} the \texttt{.stmd} extension.
+  \item The \texttt{bundle} option embeds all figures directly into the HTML file as
+        Base64 data, producing a single self-contained file that you can share or
+        submit without attaching any image files separately.
+  \item Output: \texttt{myfile.html} in the same folder.
+\end{itemize}
+
+\subsection*{6c. Compile to PDF (Optional)}
+
+\begin{lstlisting}[style=stata]
+markstat using myfile, pdf
+\end{lstlisting}
+
+\begin{warnbox}
+\textbf{PDF requires a \LaTeX{} distribution.} Install either
+\href{https://miktex.org}{MiKTeX} (Windows) or
+\href{https://tug.org/mactex/}{MacTeX} (macOS) before using the \texttt{pdf} option.
+For homework submission, \textbf{HTML} (\texttt{bundle}) is simpler and recommended.
+\end{warnbox}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Troubleshooting Common Errors}
+%----------------------------------------------------------------------------------------
+
+\begin{center}
+\begin{tabular}{p{5.2cm} p{8.8cm}}
+\toprule
+\textbf{Error message} & \textbf{Cause and fix} \\
+\midrule
+\texttt{pandoc not found} &
+Pandoc is not registered. Run \texttt{whereis pandoc "/full/path/to/pandoc"}
+in the Stata Command window (see Step~4). \\[6pt]
+
+\texttt{command markstat is unrecognized} &
+\texttt{markstat} is not installed. Run \texttt{ssc install markstat, replace}. \\[6pt]
+
+\texttt{command whereis is unrecognized} &
+\texttt{whereis} is not installed. Run \texttt{ssc install whereis, replace}. \\[6pt]
+
+\texttt{file not found} (at compile) &
+Stata is not in the folder containing your \texttt{.stmd} file.
+Run \texttt{cd "correct/path"} first. \\[6pt]
+
+Image missing in HTML &
+Use the \texttt{bundle} option: \texttt{markstat using myfile, bundle}.
+Without it, images are external files that may not transfer. \\[6pt]
+
+Variable already defined &
+A code block ran twice. Add \texttt{capture drop varname} before \texttt{gen}. \\
+
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{Quick Reference: Complete Setup Checklist}
+%----------------------------------------------------------------------------------------
+
+\begin{enumerate}
+  \item[\(\square\)] \textbf{Install \texttt{markstat}} --- in Stata: \texttt{ssc install markstat, replace}
+  \item[\(\square\)] \textbf{Install \texttt{whereis}} --- in Stata: \texttt{ssc install whereis, replace}
+  \item[\(\square\)] \textbf{Install Pandoc} --- download from \url{https://pandoc.org/installing.html}
+        (Windows installer or \texttt{brew install pandoc} on macOS)
+  \item[\(\square\)] \textbf{Find the Pandoc path}
+        \begin{itemize}
+          \item Windows --- open Command Prompt, type \texttt{where pandoc}
+          \item macOS --- open Terminal, type \texttt{which pandoc}
+        \end{itemize}
+  \item[\(\square\)] \textbf{Register Pandoc with Stata} (once per machine, in Command window):
+\begin{lstlisting}[style=stata]
+whereis pandoc "full\path\to\pandoc.exe"
+\end{lstlisting}
+  \item[\(\square\)] \textbf{Write} your \texttt{.stmd} file (YAML header + Markdown + \texttt{```s} blocks)
+  \item[\(\square\)] \textbf{Compile} (in Stata Command window):
+\begin{lstlisting}[style=stata]
+cd "folder\containing\your\stmd\file"
+markstat using yourfilename, bundle
+\end{lstlisting}
+  \item[\(\square\)] \textbf{Open} \texttt{yourfilename.html} in any web browser --- done!
+\end{enumerate}
+
+\bigskip\horrule{0.4pt}\bigskip
+
+%----------------------------------------------------------------------------------------
+\section{A Complete \texttt{.stmd} Template}
+%----------------------------------------------------------------------------------------
+
+Copy and save the following as \texttt{myreport.stmd}.
+Edit the YAML header and add your own username block.
+
+\begin{lstlisting}[style=stata]
+---
+title: "Your Report Title"
+author: "Your Name"
+date: "2025"
+---
+
+## 1. Setup
+
+```s/q
+clear all
+set more off
+
+* --- Set paths (add your username block here) ---
+* Type  display "`c(username)'"  in Stata to find your username.
+
+if "`c(username)'" == "alice" {
+    global rawdata    = "C:\Users\alice\Desktop\data"
+    global s_markdown = "C:\Users\alice\Desktop\data"
+}
+if "`c(username)'" == "bob" {
+    global rawdata    = "/Users/bob/Documents/data"
+    global s_markdown = "/Users/bob/Documents/data"
+}
+```
+
+## 2. Load Data
+
+```s
+use "$rawdata/mydata.dta", clear
+describe
+summarize
+```
+
+## 3. Visualize
+
+```s
+histogram income, xtitle("Income") ytitle("Density")
+graph export "$s_markdown/income_hist.png", replace
+```
+
+## 4. Regression
+
+```s
+reg outcome treatment control1 control2, r
+```
+\end{lstlisting}
+
+\medskip
+Compile with:
+
+\begin{lstlisting}[style=stata]
+cd "$s_markdown"
+markstat using myreport, bundle
+\end{lstlisting}
+
+\end{document}

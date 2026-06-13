@@ -1,0 +1,1460 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{space}{xeCJK}
+\documentclass[
+  chinese,
+  11pt,
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Noto Sans}
+  \setsansfont[]{Noto Sans}
+  \setmonofont[]{Consolas}
+  \ifXeTeX
+    \usepackage{xeCJK}
+    \setCJKmainfont[]{Noto Sans TC}
+  \fi
+  \ifLuaTeX
+    \usepackage[]{luatexja-fontspec}
+    \setmainjfont[]{Noto Sans TC}
+  \fi
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off,provide=*]{babel}
+\else
+\usepackage[bidi=default,shorthands=off,provide=*]{babel}
+\fi
+\ifPDFTeX
+\else
+\babelfont{rm}[]{Noto Sans}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans TC}
+\setCJKsansfont{Noto Sans TC}
+\setCJKmonofont{Noto Sans TC}
+\usepackage{amsmath,amssymb}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={L13 Causal Forest 講稿},
+  pdfauthor={Prof.~Tzu-Ting Yang},
+  pdflang={zh-TW},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{L13 Causal Forest 講稿}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Causal Machine Learning (III): Causal Forest}
+\author{Prof.~Tzu-Ting Yang}
+\date{2026-05-12}
+
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{目錄}
+{
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{L13 Causal Forest 講稿}\label{l13-causal-forest-ux8b1bux7a3f}
+
+這份講稿對應
+\texttt{L13\_CausalForest\_labor\_v4.tex}。目標不是把每張投影片逐字念出來，而是提供一個上課時可以自然講解的版本：先接回前面課程的
+ATE/ATT，再一步一步建立 decision tree、random forest、causal
+tree、causal forest 的直覺，最後示範 R code。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{開場}\label{ux958bux5834}
+
+這一講是 causal machine learning
+系列的第三部分。我們前面花了很多時間在平均處理效果，也就是
+ATE，或是處理組平均處理效果，也就是 ATT。這些 estimand
+都很重要，因為它們回答的是「政策平均來說有沒有用」。
+
+不過，很多政策問題其實不只想知道平均效果。我們還會想知道：這個政策對誰比較有效？對誰幾乎沒有效？如果資源有限，我們要優先服務哪一群人？今天的
+causal forest，就是為了處理這種 treatment effect
+heterogeneity，也就是處理效果異質性。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Main Idea}\label{main-idea}
+
+\subsection{Today's Goal}\label{todays-goal}
+
+今天的目標有五個。
+
+第一，我們要了解 causal forest 要解決什麼問題。它不是一般的 prediction
+model，而是要估計不同人、不同 subgroup 的 treatment effect。
+
+第二，我們要補足 decision tree 和 random forest
+的基本直覺。這部分不用講得太技術，但如果不知道 tree 怎麼切資料、forest
+為什麼要平均很多棵樹，後面 causal forest 會很難懂。
+
+第三，我們會強調 causal interpretation 需要什麼假設。Causal forest 是
+estimator，不是 identification strategy。這一點很重要。
+
+第四，我們要學會看 causal forest 的輸出，包括 ATE、ATT、CATE
+distribution、BLP、variable importance。
+
+第五，最後會用 R 的 \texttt{grf} package 跑一個 job training
+的例子，讓大家看到實作流程。
+
+\subsection{One-Sentence Summary}\label{one-sentence-summary}
+
+如果用一句話總結 causal forest：它是用很多棵 honest causal trees
+的平均，去估計 treatment effect 如何隨著 covariates \(X\) 改變。
+
+請注意這裡有三個關鍵字。
+
+第一是 treatment effect，不是 outcome prediction。第二是 varies with
+\(X\)，也就是我們關心異質性。第三是 averaging many honest causal
+trees，所以它結合了 tree、forest、honesty 這三個想法。
+
+今天整堂課其實就是把這句話拆開來說清楚。
+
+\subsection{Connection to Earlier
+Lectures}\label{connection-to-earlier-lectures}
+
+先接回前面課程的符號。
+
+我們以前最常看的，是 average treatment effect：
+
+\[
+\alpha_{\text{ATE}} =
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\right].
+\]
+
+這代表整個 population 平均來說，接受 treatment 和不接受 treatment 的
+potential outcome 差多少。
+
+另外一個常見的 estimand 是 ATT：
+
+\[
+\alpha_{\text{ATT}} =
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid D_i=1\right].
+\]
+
+也就是在實際接受 treatment 的人當中，平均 treatment effect 是多少。
+
+今天我們要往更細的層次走。CATE 是：
+
+\[
+\alpha_{\text{CATE}}(x) =
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
+\]
+
+意思是：對於特徵是 \(x\) 的人，平均 treatment effect 是多少。
+
+\subsection{Running Example: Job
+Training}\label{running-example-job-training}
+
+今天的例子是 job training program。
+
+我們可以想像政府提供一個職業訓練計畫，希望提高勞工未來收入。這裡的
+outcome \(\mathrm{Y}_i\) 是訓練後的 earnings；treatment \(D_i\)
+是有沒有參加訓練；covariates \(X_i\)
+包括年齡、教育程度、種族、婚姻狀態、過去收入等等。
+
+傳統的政策評估會問：這個訓練計畫平均來說有沒有提高收入？這是 ATE 或 ATT
+的問題。
+
+但 causal forest
+要問的是：這個訓練計畫是不是對某些人特別有效？例如年輕、教育程度低、過去收入低的人，會不會受益更多？
+
+\subsection{From ATE to CATE}\label{from-ate-to-cate}
+
+ATE 是一個數字：
+
+\[
+\alpha_{\text{ATE}} =
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\right].
+\]
+
+它很好理解，也很容易放進政策討論裡。但是它會把所有人的異質性壓成一個平均。
+
+CATE 則是一個 function：
+
+\[
+\tau(x) =
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
+\]
+
+在 causal forest 文獻裡，通常用 \(\tau(x)\) 代表 CATE。這裡的 \(x\)
+可以是一組特徵，例如年齡 25、教育 12 年、過去收入很低。
+
+所以從 ATE 到 CATE
+的轉變，就是從「政策平均有效嗎？」轉到「政策對哪一類人有效？」。
+
+\subsection{How ATE and ATT Relate to
+CATE}\label{how-ate-and-att-relate-to-cate}
+
+很重要的一點是，CATE 不是要取代 ATE 或 ATT。反而可以說，ATE 和 ATT 是
+CATE 的平均。
+
+如果我們知道每一種 \(X_i\) 對應的 \(\tau(X_i)\)，那麼：
+
+\[
+\alpha_{\text{ATE}} =
+\mathrm{E}\left[\tau(X_i)\right].
+\]
+
+也就是把所有人的 CATE 平均起來。
+
+如果我們只在 treated group 裡平均：
+
+\[
+\alpha_{\text{ATT}} =
+\mathrm{E}\left[\tau(X_i)\mid D_i=1\right].
+\]
+
+這就是 ATT。
+
+所以 causal forest 的邏輯是：先估計比較豐富的
+\(\tau(x)\)，再根據政策問題把它平均成 ATE、ATT，或是其他 subgroup
+effect。
+
+\subsection{Why Heterogeneity Matters}\label{why-heterogeneity-matters}
+
+為什麼 treatment effect heterogeneity 很重要？
+
+假設 job training 對年輕低教育勞工的效果是 3000
+美元，對年紀較大且經驗豐富的勞工只有 500
+美元，對原本與勞動市場連結很弱的人有 4000 美元。
+
+如果只看平均，我們可能會說「這個政策平均有效」。可是政策資源通常有限，我們還需要知道誰最需要、誰最受益。
+
+因此，heterogeneity 不只是統計上的細節，它直接影響
+targeting、預算分配、政策設計。
+
+\subsection{The Fundamental Causal
+Problem}\label{the-fundamental-causal-problem}
+
+不過我們要先回到因果推論的基本問題。
+
+每個人都有兩個 potential outcomes：
+
+\[
+\mathrm{Y}^{1}_{i}
+\quad \text{和} \quad
+\mathrm{Y}^{0}_{i}.
+\]
+
+\(\mathrm{Y}^{1}_{i}\) 是如果接受 treatment
+的結果，\(\mathrm{Y}^{0}_{i}\) 是如果沒有接受 treatment 的結果。個人的
+treatment effect 是：
+
+\[
+\tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}.
+\]
+
+但現實中，我們只觀察到其中一個：
+
+\[
+\mathrm{Y}_i =
+D_i\mathrm{Y}^{1}_{i}
+(1-D_i)\mathrm{Y}^{0}_{i}.
+\]
+
+所以 causal forest 並沒有神奇地看到每個人的 true individual
+effect。它估計的是「跟這個人特徵相似的一群人」的平均 treatment effect。
+
+\subsection{Identification Assumption}\label{identification-assumption}
+
+要把 causal forest 的結果解讀成 causal effect，我們還是需要
+identification assumption。
+
+這裡的核心假設是 conditional independence：
+
+\[
+\left(\mathrm{Y}^{1}_{i},\mathrm{Y}^{0}_{i}\right)
+\indep D_i \mid X_i.
+\]
+
+意思是，在控制 \(X_i\) 之後，treatment assignment 可以視為 as good as
+random。
+
+如果資料來自 randomized experiment，這個假設通常比較可信。如果是
+observational data，就需要非常小心：我們必須相信重要的 confounders 都在
+\(X_i\) 裡面。
+
+所以我要強調：causal forest 是很強的 estimator，但它不是 identification
+strategy。研究設計的可信度還是最重要。
+
+\subsection{Identification of CATE}\label{identification-of-cate}
+
+在 conditional independence 成立時，CATE 可以寫成：
+
+\[
+\tau(x)
+=
+\mathrm{E}\left[\mathrm{Y}_i\mid X_i=x,D_i=1\right]
+-
+\mathrm{E}\left[\mathrm{Y}_i\mid X_i=x,D_i=0\right].
+\]
+
+也就是說，在同樣 \(X_i=x\) 的人當中，比較 treated 和 control 的平均
+outcome。
+
+這跟我們前面學過的 treated-control comparison
+是同一個精神，只是現在比較是在 conditional on \(X_i=x\) 的小群體裡做。
+
+困難在於，\(X_i\) 可能有很多變數。如果我們用手動分組，很快就會遇到 cell
+太小、沒有足夠 treated 或 control 的問題。
+
+Causal forest 的貢獻，就是用 tree-based 方法自動找出有用的 local
+comparison。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Decision Tree and Random
+Forest}\label{decision-tree-and-random-forest}
+
+\subsection{Why We Need a Flexible
+Method}\label{why-we-need-a-flexible-method}
+
+一個很自然的想法是用 regression interaction。
+
+例如：
+
+\[
+\mathrm{Y}_i
+=
+\delta+\alpha D_i+X_i\beta+(D_i\times X_i)\gamma+\epsilon_i.
+\]
+
+這個模型允許 treatment effect 隨著 \(X_i\) 改變。
+
+但問題是，它通常還是很依賴線性結構，而且我們要事先決定哪些 interaction
+要放進去。實際上 treatment effect 可能是 nonlinear 的，也可能有很多
+interaction，例如「年輕且低教育」或「過去收入低且未婚」。
+
+Tree-based methods 的優點，是可以用 data-driven 的方式找出這些 subgroup
+pattern。
+
+\subsection{What Is a Decision Tree?}\label{what-is-a-decision-tree}
+
+Decision tree 的基本想法很簡單：一直問 yes/no questions。
+
+例如：年齡是否小於 25？教育年數是否小於 12？過去收入是否小於 5000？
+
+每問一個問題，就把樣本切成兩群。一直切下去，最後形成一些 terminal
+nodes，也就是 leaves。
+
+在 prediction tree 裡，每個 leaf 裡面通常放一個簡單的平均：
+
+\[
+\hat{m}(\ell)=\frac{1}{N_\ell}\sum_{i:X_i\in \ell}\mathrm{Y}_i.
+\]
+
+所以 tree 可以想成是：用資料自動創造 subgroup，然後在每個 subgroup
+裡做很簡單的估計。
+
+\subsection{Decision Tree: The Prediction
+Version}\label{decision-tree-the-prediction-version}
+
+這張圖是一棵 prediction tree。
+
+從最上面開始，如果年齡小於
+25，就往左；否則往右。到了下一層，再看教育或過去收入。最後每個人都會落到某一個
+leaf。
+
+在 prediction tree 裡，leaf 裡面的數字是 outcome 的預測值，例如
+\(\hat{\mathrm{Y}}=9000\) 或 \(\hat{\mathrm{Y}}=18000\)。
+
+換句話說，tree 把 covariate space 切成幾塊，然後每一塊用一個平均 outcome
+代表。
+
+\subsection{Decision Tree: Partition of Covariate
+Space}\label{decision-tree-partition-of-covariate-space}
+
+這張圖用二維空間說明 tree 在做什麼。
+
+橫軸是 age，縱軸是 education。每一次 split
+都是在這個空間裡畫一條垂直線或水平線。切到最後，就得到幾個 rectangular
+regions。
+
+每個 region 就是一個 leaf。落在同一個 leaf 的人，會得到同一個
+prediction。
+
+Tree 越深，region 越小，模型越 flexible；但同時也越容易 overfit。
+
+\subsection{How a Prediction Tree Chooses
+Splits}\label{how-a-prediction-tree-chooses-splits}
+
+Prediction tree 怎麼決定要切哪裡？
+
+它會試很多 candidate splits，然後看哪一個 split 可以讓 outcome
+prediction error 最小。
+
+常見的準則是 residual sum of squares：
+
+\[
+\sum_{i\in R_1}\left(\mathrm{Y}_i-\bar{Y}_{R_1}\right)^2
++
+\sum_{i\in R_2}\left(\mathrm{Y}_i-\bar{Y}_{R_2}\right)^2.
+\]
+
+直覺是：把 outcome 類似的人放在同一個 leaf 裡，這樣 leaf mean
+就可以比較準確地預測 outcome。
+
+這裡要注意，prediction tree 的目標是預測 \(\mathrm{Y}_i\)，還不是估
+treatment effect。
+
+\subsection{Why a Single Tree Is Not
+Enough}\label{why-a-single-tree-is-not-enough}
+
+單棵 tree 的優點是好解釋。但缺點是非常不穩定。
+
+如果資料稍微變動，第一個 split 可能就變了。第一個 split 一變，後面的所有
+split 都會跟著變，最後得到的 prediction 也會差很多。
+
+這叫 high variance。
+
+在 causal inference 裡，這個問題會更嚴重，因為 treatment effect 本來就比
+outcome mean 更難估、更 noisy。
+
+所以我們通常不會只依賴一棵 tree，而是會用 forest。
+
+\subsection{Random Forest: Stabilize Trees by
+Averaging}\label{random-forest-stabilize-trees-by-averaging}
+
+Random forest 的想法是：不要只長一棵樹，而是長很多棵樹。
+
+每棵樹都用不同的 random
+subsample，所以每棵樹看到的資料略有不同，也會學到略不同的 pattern。
+
+最後對很多棵樹的 prediction 取平均：
+
+\[
+\hat{m}(x)=\frac{1}{B}\sum_{b=1}^B \hat{m}_b(x).
+\]
+
+單棵樹可能很 noisy，但很多棵樹平均後，prediction 會穩定很多。
+
+\subsection{Random Forest: Two Sources of
+Diversity}\label{random-forest-two-sources-of-diversity}
+
+Random forest 為什麼會有幫助？關鍵是讓每棵樹「有用，但不要太像」。
+
+第一個來源是 subsampling。每棵樹用不同的 observations，所以學到的 split
+會不完全一樣。
+
+第二個來源是 random split variables。在每一次 split 時，不是考慮所有
+covariates，而是只隨機考慮一部分
+covariates。這樣可以避免每棵樹都用同一個最強的變數做第一個 split，讓
+forest 裡的樹更多樣。
+
+當樹之間有差異，但每棵樹都有一定資訊，平均才會有效降低 variance。
+
+\subsection{Bridge to Causal Forest}\label{bridge-to-causal-forest}
+
+現在我們可以把 prediction forest 接到 causal forest。
+
+Prediction forest 裡，tree 的 leaf 是為了把 outcome
+類似的人分在一起，leaf estimate 是 \(\bar{Y}_{\ell}\)，最後 forest
+average 給我們 \(\hat{m}(x)\)。
+
+Causal forest 則把目標換掉。它希望 leaf 裡面的人有類似 treatment
+effect。leaf estimate 不再是 outcome mean，而是 treated mean 減 control
+mean：
+
+\[
+\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}.
+\]
+
+最後 forest average 給我們 \(\hat{\tau}(x)\)。
+
+所以 causal forest 不是全新的魔法，而是把 tree-and-forest machinery
+改成用來估 treatment effect heterogeneity。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Causal Tree}\label{causal-tree}
+
+\subsection{From Prediction Tree to Causal
+Tree}\label{from-prediction-tree-to-causal-tree}
+
+Causal tree 和 prediction tree 的差別在於目標。
+
+Prediction tree 問的是：誰的 outcome 比較高？所以 split criterion 是讓
+outcome prediction error 下降。
+
+Causal tree 問的是：誰的 treatment effect 比較大？所以 split criterion
+是要找出 treatment effect 不同的 subgroups。
+
+這是最重要的轉換。不是把 treatment \(D_i\) 當成另一個 predictor 丟進
+random forest，而是直接把目標改成 \(\tau(x)\)。
+
+\subsection{Causal Tree: Leaf-Level
+Intuition}\label{causal-tree-leaf-level-intuition}
+
+在 causal tree 的每個 leaf 裡，我們做一個 local comparison。
+
+例如，在「年輕、低教育」這個 leaf 裡，treated 的平均收入是
+11000，control 的平均收入是 8000，那麼 leaf-level treatment effect 是
+3000。
+
+在另一個 leaf，「年紀較大、經驗較多」的 worker，treated 平均
+18500，control 平均 18000，那麼效果只有 500。
+
+一般寫法是：
+
+\[
+\hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}.
+\]
+
+這裡的 \(\ell\) 是 leaf。
+
+\subsection{Causal Tree: Finding a
+Split}\label{causal-tree-finding-a-split}
+
+Causal tree 怎麼找 split？
+
+對每個變數 \(X^j\) 和每個 candidate split point \(s\)，先把資料切成兩個
+region：
+
+\[
+R_1(j,s)=\{i:X_i^j<s\},
+\qquad
+R_2(j,s)=\{i:X_i^j\geq s\}.
+\]
+
+然後在每個 region 裡估 treatment effect：
+
+\[
+\hat{\tau}(R)=\bar{Y}^{1}_{R}-\bar{Y}^{0}_{R}.
+\]
+
+最後看兩邊 treatment effect 差多少：
+
+\[
+\Delta(j,s)=
+\left|\hat{\tau}(R_1)-\hat{\tau}(R_2)\right|.
+\]
+
+直覺是：好的 split 不是讓 outcome 差很多，而是讓 treatment effect
+差很多。
+
+\subsection{Causal Tree: A Small Split
+Example}\label{causal-tree-a-small-split-example}
+
+這張表是一個 toy example。
+
+如果用 age 小於 30 來切，兩邊 treatment effect 差 2400。如果用 education
+小於 12 來切，差 700。如果用 prior earnings 小於 5000 來切，差 1600。
+
+在這個例子裡，tree 會先選 age 小於 30，因為它最能分出高效果和低效果的
+group。
+
+當然，這不是說 age 永遠最重要。這只是說，tree
+會根據資料自動選出目前最能解釋 treatment effect heterogeneity 的 split。
+
+\subsection{The Main Problem: Double
+Dipping}\label{the-main-problem-double-dipping}
+
+但 causal tree 有一個問題：double dipping。
+
+如果我們用同一份資料做兩件事：第一，找 split；第二，在選好的 leaf 裡估
+treatment effect。那麼 leaf effect 可能會被高估。
+
+原因是 tree 搜尋了很多 possible splits，最後選到的 split
+可能只是剛好在這份樣本裡看起來效果差很大。
+
+這有點像做了很多次 hypothesis
+testing，最後只報最顯著的結果。這個結果看起來漂亮，但可能只是 noise。
+
+所以我們需要 honest estimation。
+
+\subsection{Honest Estimation}\label{honest-estimation}
+
+Honest estimation 的解法是 sample splitting。
+
+對每一棵 causal tree，我們把 subsample 分成兩部分。
+
+第一部分叫 splitting sample，用來決定 tree
+structure，也就是要切哪些變數、切在哪裡。
+
+第二部分叫 estimation sample，用來在最後的 leaves 裡估 treatment
+effect。
+
+這樣做的好處是，估 treatment effect 的資料沒有參與選 split，因此可以降低
+adaptive bias，也比較能支持 inference。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Causal Forest}\label{causal-forest}
+
+\subsection{Causal Forest Algorithm}\label{causal-forest-algorithm}
+
+Causal forest 就是把很多 honest causal trees 平均起來。
+
+流程如下。
+
+第一，抽一個 random subsample。
+
+第二，把這個 subsample 分成 splitting sample 和 estimation sample。
+
+第三，長一棵 honest causal tree。
+
+第四，重複很多次，例如 2000 棵樹。
+
+第五，對每個 observation，把所有 tree 給的 treatment effect estimate
+平均：
+
+\[
+\hat{\tau}(x_i)=\frac{1}{B}\sum_{b=1}^B \hat{\tau}_b(x_i).
+\]
+
+這就是 causal forest 的核心。
+
+\subsection{Causal Forest as Adaptive
+Weighting}\label{causal-forest-as-adaptive-weighting}
+
+另一個很有用的理解方式，是把 causal forest 想成 adaptive weighting。
+
+對某個目標 worker \(x\)，forest 會看哪些 observations 經常和 \(x\)
+落在同一個 leaf。這些 observations 就被視為和 \(x\)
+比較相似，因此給比較大的 weight。
+
+概念上可以寫成：
+
+\[
+\hat{\tau}(x)
+\approx
+\sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
+-
+\sum_{i:D_i=0} a_i(x)\mathrm{Y}_i.
+\]
+
+這裡 \(a_i(x)\) 是 observation \(i\) 對 target \(x\) 的權重。
+
+所以 causal forest 可以想成是：用 forest
+自動學習誰跟誰相似，然後在相似的人之間做 treated-control comparison。
+
+\subsection{Why Averaging Helps}\label{why-averaging-helps}
+
+單棵 causal tree 很容易受 sample noise 影響。
+
+我們可以把第 \(b\) 棵樹的估計想成：
+
+\[
+\hat{\tau}_b(x)=\tau(x)+\varepsilon_b.
+\]
+
+如果每棵樹的誤差 \(\varepsilon_b\) 不是完全一樣，那平均很多棵樹時，noise
+會互相抵消一部分：
+
+\[
+\frac{1}{B}\sum_{b=1}^B\hat{\tau}_b(x)
+=
+\tau(x)+\frac{1}{B}\sum_{b=1}^B\varepsilon_b.
+\]
+
+所以 forest 的目的就是讓估計更穩定。
+
+\subsection{Random Forest vs.~Causal
+Forest}\label{random-forest-vs.-causal-forest}
+
+這張表幫我們避免一個常見誤解。
+
+Random forest 的目標是 predict outcome，input 是
+\((\mathrm{Y},X)\)，output 是 \(\hat{m}(x)\)。
+
+Causal forest 的目標是 estimate treatment effect，input 是
+\((\mathrm{Y},D,X)\)，output 是 \(\hat{\tau}(x)\)。
+
+最重要的差別是 split criterion 和 leaf value。Random forest 的 leaf
+value 是 mean outcome；causal forest 的 leaf value 是 treated-control
+difference。
+
+所以 causal forest 不是「把 treatment 放進 random forest 裡當
+covariate」。它的目標函數不同。
+
+\subsection{Statistical Properties: What to
+Know}\label{statistical-properties-what-to-know}
+
+Honest causal forest 的設計，是希望同時做到 estimation 和 inference。
+
+在一些 regularity conditions 下：
+
+\[
+\hat{\tau}(x)\xrightarrow{p}\tau(x)
+\quad \text{as } N\to\infty.
+\]
+
+實作上，\texttt{grf} package 可以提供 ATE 和一些 summary 的 standard
+errors。
+
+對這門課來說，最重要的不是證明定理，而是理解三個直覺：honesty 降低
+adaptive bias；averaging many trees 降低 variance；causal interpretation
+仍然依賴 research design。
+
+\subsection{\texorpdfstring{What Does \(\hat{\tau}(x_i)\)
+Mean?}{What Does \textbackslash hat\{\textbackslash tau\}(x\_i) Mean?}}\label{what-does-hattaux_i-mean}
+
+\(\hat{\tau}(x_i)\) 不是 worker \(i\) 真正的 individual treatment
+effect。
+
+我們永遠不會同時觀察同一個人 treated 和 untreated 的結果。
+
+所以比較好的解讀是：\(\hat{\tau}(x_i)\) 是「跟 worker \(i\)
+特徵相似的人」的平均 treatment effect。
+
+例如 \(\hat{\tau}(x_i)=2000\)，意思是類似 worker \(i\) 的人，參加
+training 估計平均可以增加約 2000 美元的 earnings。
+
+\subsection{What Causal Forest Gives
+Us}\label{what-causal-forest-gives-us}
+
+估完 causal forest 後，我們通常會看幾種輸出。
+
+第一是 ATE，也就是 \(\hat{\alpha}_{\text{ATE}}\)。
+
+第二是 ATT，也就是 \(\hat{\alpha}_{\text{ATT}}\)。
+
+第三是每個 observation 的 CATE estimate，\(\hat{\tau}(x_i)\)。
+
+第四是 CATE distribution，幫我們看 heterogeneity 是大還是小。
+
+第五是 BLP 和 variable importance，用來摘要哪些 covariates 和 treatment
+effect heterogeneity 有關。
+
+\subsection{How to Read the CATE
+Distribution}\label{how-to-read-the-cate-distribution}
+
+CATE distribution 是很直覺的圖。
+
+橫軸是 \(\hat{\tau}(x_i)\)，縱軸是人數。紅線通常代表平均值，也就是類似
+ATE 的位置。
+
+如果 distribution 很窄，表示大部分人的 treatment effect 差不多。
+
+如果 distribution 很寬，表示 treatment effect heterogeneity 很大。這時候
+targeting 就變得很重要，因為同一個政策對不同人可能效果差很多。
+
+\subsection{BLP: A Simple Summary of
+Heterogeneity}\label{blp-a-simple-summary-of-heterogeneity}
+
+BLP 是 best linear projection。
+
+因為每個人都有一個
+\(\hat{\tau}(x_i)\)，但一個一個看很難整理。所以我們可以把 estimated CATE
+投影到 covariates 上：
+
+\[
+\hat{\tau}(x_i)
+=
+\beta_0+\beta_1\,\text{age}_i+\beta_2\,\text{educ}_i+\beta_3\,\text{re74}_i+\cdots+\varepsilon_i.
+\]
+
+如果 age 的 coefficient 是負的，可以說較年長的 workers tend to benefit
+less。
+
+如果 prior earnings 的 coefficient
+是負的，可以說過去收入較高的人，訓練效果可能比較小。
+
+但要記得，BLP 是對 forest estimated heterogeneity 的 summary，不是新的
+identification strategy。
+
+\subsection{Variable Importance}\label{variable-importance}
+
+Variable importance 問的是：forest 在分 split 時，哪些 variables
+常常被用到？
+
+如果某個變數 importance 很高，表示 forest 常常用它來找 treatment effect
+不同的 subgroup。
+
+它的好處是可以捕捉 nonlinear pattern 和 interactions。
+
+但它不能告訴我們方向。例如 variable importance
+高，只代表這個變數有助於分出不同效果，不代表這個變數增加時 treatment
+effect 一定上升或下降。
+
+所以 BLP 和 variable importance 是互補的。BLP 比較容易看方向，variable
+importance 比較能看 nonlinear 和 interaction 的重要性。
+
+\subsection{Practical Warnings}\label{practical-warnings}
+
+最後給幾個實務提醒。
+
+第一，不要在沒有 credible identification strategy 的情況下，把 CATE
+estimate 解讀成 causal。
+
+第二，不要過度解讀單一個人的 estimate。比較安全的說法是「類似這個人的
+subgroup」有多大的 estimated effect。
+
+第三，要注意 overlap。對每個 relevant region of \(X\)，都需要有 treated
+和 control observations。
+
+第四，小樣本下 heterogeneity estimate 可能很
+noisy。這時候要更依賴簡單、穩健的 summary，而不是過度追逐很細的
+subgroup。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{R Example: Job Training
+Program}\label{r-example-job-training-program}
+
+\subsection{LaLonde Job Training Data: R
+Implementation}\label{lalonde-job-training-data-r-implementation}
+
+接下來進到 R implementation。
+
+我們使用 LaLonde job training data。Treatment \(D_i\) 是是否參加 job
+training；outcome \(\mathrm{Y}_i\) 是 1978 年 earnings；covariates
+\(X_i\) 包括 age、education、race、marital status、nodegree、1974 和
+1975 的 pre-treatment earnings。
+
+這個 R exercise 的流程是：
+
+第一，安裝 packages 和載入資料。
+
+第二，準備 \(\mathrm{Y}_i\)、\(D_i\)、\(X_i\)。
+
+第三，估 causal forest。
+
+第四，報告 ATE/ATT 和 CATE heterogeneity。
+
+\subsection{Step 1: Package Installation and Data
+Loading}\label{step-1-package-installation-and-data-loading}
+
+第一步是安裝並載入 packages。
+
+\texttt{grf} 是 generalized random forests package，今天主要用它來估
+causal forest。
+
+\texttt{Matching} package 裡有 LaLonde data。
+
+\texttt{ggplot2} 用來畫圖。
+
+載入 data 後，可以先用 \texttt{summary(lalonde)} 看一下變數的分布，確認
+outcome、treatment、covariates 都在資料裡。
+
+這一步的重點是先建立工作環境，確認資料可以正常讀取。
+
+\subsection{Step 2: Data Preparation}\label{step-2-data-preparation}
+
+第二步是準備資料。
+
+我們把 \texttt{re78} 設成 outcome \texttt{Y}，把 \texttt{treat} 設成
+treatment \texttt{D}。這裡用 \texttt{D} 是為了和課程符號 \(D_i\) 一致。
+
+接著選 pre-treatment covariates 做成 \texttt{X} matrix，包括
+age、educ、black、hisp、married、nodegree、re74、re75。
+
+注意，\texttt{X} 裡面應該放 treatment 前就已經決定的變數。不要把
+post-treatment variables 放進去，否則 interpretation 會有問題。
+
+\subsection{Step 3: Causal Forest
+Estimation}\label{step-3-causal-forest-estimation}
+
+第三步估 causal forest。
+
+我們先設定 random seed，讓結果可以重現。
+
+接著使用：
+
+\texttt{causal\_forest(X\ =\ X,\ Y\ =\ Y,\ W\ =\ D,\ num.trees\ =\ 2000)}
+
+在 \texttt{grf} 裡，treatment argument 叫做
+\texttt{W}，但我們課程的符號是 \(D_i\)，所以 code 裡寫
+\texttt{W\ =\ D}。
+
+\texttt{num.trees\ =\ 2000} 表示長 2000
+棵樹。樹越多，結果通常越穩定，但計算時間也會增加。
+
+\subsection{Step 4: Estimate ATE and
+ATT}\label{step-4-estimate-ate-and-att}
+
+第四步估 ATE 和 ATT。
+
+\texttt{average\_treatment\_effect(cf,\ target.sample\ =\ "all")} 估的是
+\(\alpha_{\text{ATE}}\)。
+
+\texttt{average\_treatment\_effect(cf,\ target.sample\ =\ "treated")}
+估的是 \(\alpha_{\text{ATT}}\)。
+
+這一步很重要，因為它把 causal forest 和前面課程熟悉的 estimands 接起來。
+
+我們不是只做 machine learning
+exploration，而是先回到傳統政策評估問題：平均來說有沒有效？對 treated
+group 有沒有效？
+
+\subsection{What ATE and ATT Mean
+Here}\label{what-ate-and-att-mean-here}
+
+這張投影片補充 ATE 和 ATT 在 causal forest 裡的概念。
+
+Forest 先估每個人的 \(\hat{\tau}(x_i)\)，然後根據不同 target sample
+做平均。
+
+概念上：
+
+\[
+\hat{\alpha}_{\text{ATE}}
+\approx
+\frac{1}{N}\sum_{i=1}^N\hat{\tau}(x_i),
+\]
+
+\[
+\hat{\alpha}_{\text{ATT}}
+\approx
+\frac{1}{N_1}\sum_{i:D_i=1}\hat{\tau}(x_i).
+\]
+
+實務上，我們應該用 \texttt{grf} package 的輸出，因為它有使用 forest
+weights 和 influence-function adjustments，standard error 也比較正確。
+
+\subsection{Step 5: Get CATE Estimates}\label{step-5-get-cate-estimates}
+
+第五步取得每個 observation 的 CATE estimate。
+
+\texttt{predict(cf)\$predictions} 會輸出 \(\hat{\tau}(x_i)\)。
+
+接著用 \texttt{summary(tau\_hat)} 看最小值、四分位數、平均數、最大值。
+
+這可以讓我們初步判斷 treatment effect heterogeneity 大不大。如果 summary
+顯示範圍很寬，就表示不同人的 estimated effect 差異可能很大。
+
+\subsection{Step 6: Plot CATE
+Distribution}\label{step-6-plot-cate-distribution}
+
+第六步畫 CATE distribution。
+
+我們把 \texttt{tau\_hat} 做成 data frame，然後用 \texttt{ggplot} 畫
+histogram。
+
+圖上的紅線是 \texttt{mean(tau\_hat)}，代表 estimated CATE 的平均。
+
+看這張圖時，要問三個問題。
+
+第一，distribution 集中在哪裡？第二，spread 大不大？第三，有沒有很多人
+estimated effect 接近零，或甚至是負的？
+
+這些問題可以幫助我們把 forest output 轉成政策語言。
+
+\subsection{Step 7: Summarize
+Heterogeneity}\label{step-7-summarize-heterogeneity}
+
+第七步用 BLP 和 variable importance 摘要 heterogeneity。
+
+\texttt{best\_linear\_projection(cf,\ X)} 會把 estimated heterogeneity
+用線性方式摘要。它回答的是：哪些 covariates 和較大的 treatment effect
+有關？
+
+\texttt{variable\_importance(cf)} 則回答：哪些 covariates 常被 forest
+用來切出不同 treatment effect 的 subgroup？
+
+兩者都不是 identification strategy，而是幫我們理解 forest 估出來的
+heterogeneity。
+
+\subsection{Step 8: Export for Stata
+Post-Analysis}\label{step-8-export-for-stata-post-analysis}
+
+最後，如果同學比較習慣用 Stata 做後續表格或圖形，可以把
+\texttt{tau\_hat} export 成 CSV。
+
+這裡我們 export id、tau\_hat、age、educ、treatment indicator \(D\)。
+
+之後可以在 Stata 裡畫 histogram、做 subgroup
+summary，或整理成報告裡的表格。
+
+但要記得，forest estimation 本身是在 R 裡做。Stata 這裡比較像是
+post-analysis 和整理輸出。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Labor Economics Application}\label{labor-economics-application}
+
+\subsection{Labor Economics
+Applications}\label{labor-economics-applications}
+
+Causal forest 在 labor economics 裡有很多應用。
+
+例如 active labor market programs：誰最受益於 job search assistance？
+
+Youth employment
+programs：哪些青年因為暑期工作計畫而減少犯罪或暴力行為？
+
+Education policy：大學教育或特定科系的 returns
+是否因家庭背景、地區勞動市場而不同？
+
+Minimum wage：就業效果是否因 firm size、region、worker skill 而不同？
+
+Parental leave：對母親勞動供給的效果，是否因 pre-birth earnings 或
+occupation 而不同？
+
+這些問題共同的特色是：平均效果重要，但異質性可能更能幫助政策設計。
+
+\subsection{What Students Should
+Remember}\label{what-students-should-remember}
+
+這堂課希望大家記住五件事。
+
+第一，前面課程多半聚焦在 \(\alpha_{\text{ATE}}\) 和
+\(\alpha_{\text{ATT}}\)。
+
+第二，CATE 問的是 treatment effect 如何隨 \(X_i\) 改變：
+
+\[
+\tau(x)=
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
+\]
+
+第三，decision tree 是 data-driven subgroup method；random forest 透過
+averaging 讓 tree 更穩定。
+
+第四，causal tree 把 target 從 outcome prediction 改成 treatment-effect
+heterogeneity。
+
+第五，causal forest 用很多 honest causal trees 的平均，穩定地估
+\(\hat{\tau}(x)\)。
+
+\subsection{Checklist for Using Causal
+Forest}\label{checklist-for-using-causal-forest}
+
+如果未來要在自己的研究裡使用 causal forest，可以用這個 checklist。
+
+第一，清楚定義 outcome \(\mathrm{Y}_i\)、treatment
+\(D_i\)、pre-treatment covariates \(X_i\)。
+
+第二，說明 causal identification assumption。資料是 randomized
+experiment 嗎？如果不是，為什麼 conditional independence 合理？
+
+第三，檢查 overlap。不同 \(X_i\) region 裡是否都有 treated 和 control
+observations？
+
+第四，估 causal forest 並報告 \(\hat{\alpha}_{\text{ATE}}\) 或
+\(\hat{\alpha}_{\text{ATT}}\)。
+
+第五，用 CATE distribution、BLP、variable importance 描述
+heterogeneity。
+
+這樣報告會比較完整，也比較不會讓 causal forest 變成只是一個黑箱工具。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Recommended Resources}\label{recommended-resources}
+
+\subsection{Recommended Resources}\label{recommended-resources-1}
+
+如果同學想深入閱讀，可以從幾個方向開始。
+
+Wager and Athey (2018) 是 causal forest 的重要論文，主題是 heterogeneous
+treatment effects 的 estimation and inference。
+
+Athey, Tibshirani, and Wager (2019) 的 generalized random
+forests，提供更一般的架構。
+
+\texttt{grf} package documentation 很適合實作時查詢，網址是：
+
+\url{https://grf-labs.github.io/grf/}
+
+另外，Athey and Imbens (2019) 的 Machine Learning Methods That
+Economists Should Know About，是經濟學者理解 machine learning 和 causal
+inference 很好的 overview。
+
+\subsection{Final Takeaway}\label{final-takeaway}
+
+最後用一句話收尾。
+
+Causal forest 幫助我們從：
+
+「這個政策平均來說有沒有效？」
+
+轉到：
+
+「這個政策對誰最有效？」
+
+但要記得，forest 負責估計 heterogeneity；causal credibility 仍然來自
+research design。
+
+所以好的 causal forest application，不只是跑一個 machine learning
+package，而是把可信的研究設計和清楚的 heterogeneity analysis 結合起來。
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{詳細補充講解版}\label{ux8a73ux7d30ux88dcux5145ux8b1bux89e3ux7248}
+
+以下是可以穿插在課堂中的詳細說明。前面的講稿已經可以照投影片順序講完；這一段則把學生最容易卡住的地方再講白一點。若課堂時間充裕，可以直接把這些段落放進口頭講解；若時間較短，可以把它當作備課筆記或課後講義。
+
+\subsection{1. 為什麼前面課程重視 ATE/ATT，這一講要轉到
+CATE？}\label{ux70baux4ec0ux9ebcux524dux9762ux8ab2ux7a0bux91cdux8996-ateattux9019ux4e00ux8b1bux8981ux8f49ux5230-cate}
+
+前面課程的核心問題大多是：「這個政策或 treatment
+平均來說有沒有效？」例如 job training
+平均是否提高收入、教育政策平均是否提升就業、某個制度改變平均是否影響結果。這些問題通常對應到
+ATE 或 ATT。
+
+ATE 的優點是清楚、好報告、也很適合政策討論。假設我們估到一個 job
+training program 的 ATE 是 1500
+美元，政策制定者很容易理解：平均來說，參加訓練讓收入增加約 1500 美元。
+
+但平均數會隱藏差異。可能有些人增加 4000
+美元，有些人幾乎沒有變化，也可能有些人效果是負的。當政策資源有限時，平均效果不足以回答「應該優先幫助誰」。所以這一講轉到
+CATE，也就是 conditional average treatment effect。
+
+可以對學生說：ATE 是「整班平均進步幾分」，CATE
+是「不同程度、不同背景的學生各自平均進步幾分」。如果老師要調整教學策略，後者通常更有幫助。
+
+\subsection{2. CATE
+不是個人效果，而是相似人的平均效果}\label{cate-ux4e0dux662fux500bux4ebaux6548ux679cux800cux662fux76f8ux4f3cux4ebaux7684ux5e73ux5747ux6548ux679c}
+
+學生看到 \(\hat{\tau}(x_i)\) 時，常會以為這就是 individual treatment
+effect。這裡要非常小心。
+
+真正的 individual treatment effect 是：
+
+\[
+\tau_i=\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}.
+\]
+
+但對同一個人，我們永遠只觀察到 \(\mathrm{Y}^{1}_{i}\) 或
+\(\mathrm{Y}^{0}_{i}\) 其中一個。如果 worker \(i\)
+參加訓練，我們看到的是參加後收入；但看不到同一個 worker
+如果沒有參加訓練會怎樣。
+
+因此 causal forest 不能真的告訴我們「這個人本人」的 treatment
+effect。它能估的是：
+
+\[
+\tau(x)=
+\mathrm{E}\left[\mathrm{Y}^{1}_{i}-\mathrm{Y}^{0}_{i}\mid X_i=x\right].
+\]
+
+也就是特徵等於 \(x\) 的這類人，平均 treatment effect 是多少。當我們寫
+\(\hat{\tau}(x_i)\)，比較精確的解讀是「和 worker \(i\)
+有相似特徵的人，平均效果是多少」。
+
+上課時可以反覆用這句話：\textbf{一人一個
+estimate，不代表它是個人真實效果；它是個人特徵所對應的 conditional
+average effect。}
+
+\subsection{3. 為什麼不能只用 regression
+interaction？}\label{ux70baux4ec0ux9ebcux4e0dux80fdux53eaux7528-regression-interaction}
+
+一個自然方法是寫：
+
+\[
+\mathrm{Y}_i
+=
+\delta+\alpha D_i+X_i\beta+(D_i\times X_i)\gamma+\epsilon_i.
+\]
+
+這樣 treatment effect 可以隨著 \(X_i\)
+改變。這是很好的起點，也和前面課程的 regression framework 連得上。
+
+問題是，如果 covariates 很多，interactions 會爆炸。假設有 20 個
+covariates，除了 \(D_i\times X_i\)，我們可能還想要
+\(D_i\times X_i^1\times X_i^2\)，或 threshold effect，例如 age 小於 25
+才有很大效果。這些東西若全部手動放進
+regression，模型會很龐大，也很依賴研究者事先猜對 functional form。
+
+Causal forest 的直覺是：不要事先指定所有 interactions，讓 tree
+自己從資料中找出哪些切法會產生 treatment effect heterogeneity。
+
+但也要提醒學生：彈性不是免費的。越彈性的模型越需要防止
+overfitting，所以後面才需要 honesty 和 forest averaging。
+
+\subsection{4. Decision tree
+到底在做什麼？}\label{decision-tree-ux5230ux5e95ux5728ux505aux4ec0ux9ebc}
+
+Decision tree 可以想成自動分組工具。
+
+假設我們想預測 earnings。Tree 可能先問：age 是否小於 25？如果是，再問
+education 是否小於 12；如果不是，可能問 previous earnings 是否小於
+5000。每一個問題都把人分成兩群。
+
+切到最後，每個人落在一個 leaf 裡。Prediction tree 在 leaf
+裡做的事情其實很簡單：算這個 leaf 的平均 outcome。
+
+所以 tree 的複雜性不是 leaf 裡的模型很複雜，而是它用 data-driven
+的方式決定怎麼切 \(X\)-space。
+
+可以用這句話幫學生記：\textbf{Tree 是複雜的分組，簡單的估計。}
+
+\subsection{5. Prediction tree 和 causal tree
+的差別}\label{prediction-tree-ux548c-causal-tree-ux7684ux5deeux5225}
+
+Prediction tree 的目標是預測 \(\mathrm{Y}_i\)。它會偏好找出 outcome
+level 很不同的 groups。
+
+Causal tree 的目標是估 treatment effect。它會偏好找出 treatment effect
+很不同的 groups。
+
+這兩件事不一樣。
+
+例如，高教育的人收入可能比較高，低教育的人收入可能比較低。因此
+prediction tree 很可能用 education 來切 earnings。但是 job training 的
+treatment effect 不一定因 education 而不同。也許高教育和低教育的人都增加
+1000 美元，那 education 對 treatment effect heterogeneity 就沒有幫助。
+
+Causal tree 要找的是：
+
+\[
+\hat{\tau}(R_1)-\hat{\tau}(R_2)
+\]
+
+差很多的 split，而不是 \(\bar{Y}_{R_1}-\bar{Y}_{R_2}\) 差很多的 split。
+
+\subsection{6. 為什麼 random forest 有助於理解 causal
+forest？}\label{ux70baux4ec0ux9ebc-random-forest-ux6709ux52a9ux65bcux7406ux89e3-causal-forest}
+
+如果學生沒有理解 random forest，causal forest 會顯得很黑箱。
+
+Random forest 的核心是處理單棵 tree 的 high variance。單棵 tree
+很容易因為資料小變動而改變第一個 split；第一個 split
+一變，後面整棵樹都可能不同。
+
+Random forest 的解法是長很多棵樹，每棵樹看不同 subsample，也在 split
+時看不同 subset of
+variables。這讓每棵樹有一點不同。最後把很多棵樹平均，讓 noise
+抵消掉一些。
+
+可以用這個口語比喻：單棵 tree 像一位判斷很快但有點不穩的評審；forest
+像很多位評審各自看不同資料後投票，平均起來比較穩。
+
+Causal forest 完全沿用這個穩定化邏輯，只是每棵樹估的是 treatment
+effect，而不是 outcome。
+
+\subsection{7. Honesty
+為什麼重要？}\label{honesty-ux70baux4ec0ux9ebcux91cdux8981}
+
+Causal tree 如果用同一份資料做兩件事，就會有 double dipping 問題。
+
+第一件事是找 split：在很多 candidate splits 中，選出 treatment effect
+差異最大的切法。
+
+第二件事是估 leaf effect：在選好的 leaves 裡，計算 treated mean 減
+control mean。
+
+問題是，第一步已經搜尋過很多切法。被選中的 split 可能只是因為 sample
+noise 看起來特別好。如果第二步又用同一份資料估效果，就容易把 noise
+當成真實 heterogeneity。
+
+Honesty 的做法是把資料分成兩部分：
+
+\begin{itemize}
+\tightlist
+\item
+  splitting sample：只負責決定 tree structure。
+\item
+  estimation sample：只負責估 leaf treatment effects。
+\end{itemize}
+
+這樣 leaf effect 的估計資料沒有參與選 split，比較不會過度樂觀。
+
+可以跟學生說：\textbf{Honesty 的精神是，把「找 subgroup」和「估 subgroup
+效果」分開。}
+
+\subsection{8. Causal forest
+的兩層平均}\label{causal-forest-ux7684ux5169ux5c64ux5e73ux5747}
+
+Causal forest 可以拆成兩層來理解。
+
+第一層是在每棵 causal tree 的 leaf 裡比較 treated 和 control：
+
+\[
+\hat{\tau}(\ell)=\bar{Y}^{1}_{\ell}-\bar{Y}^{0}_{\ell}.
+\]
+
+這一層是 causal comparison。
+
+第二層是在很多棵 trees 之間平均：
+
+\[
+\hat{\tau}(x_i)=
+\frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x_i).
+\]
+
+這一層是 variance reduction。
+
+所以學生可以這樣記：\textbf{leaf 裡做因果比較，forest 裡做穩定化。}
+
+\subsection{9. Adaptive weighting
+的直覺}\label{adaptive-weighting-ux7684ux76f4ux89ba}
+
+除了 tree average，也可以把 causal forest 想成一種自動加權方法。
+
+對一個目標 worker \(x\)，forest 會看哪些人常常和他落在同一個
+leaf。常常在同一個 leaf 的人，代表 forest 認為他們在估 treatment effect
+時比較相似，所以給比較大的權重。
+
+概念上：
+
+\[
+\hat{\tau}(x)
+\approx
+\sum_{i:D_i=1} a_i(x)\mathrm{Y}_i
+-
+\sum_{i:D_i=0} a_i(x)\mathrm{Y}_i.
+\]
+
+這和 matching 的精神很接近：都在找相似的人做比較。差別是 matching
+通常要先定義距離，causal forest 則透過很多 trees 自動學習 similarity。
+
+\subsection{10. 如何解讀 CATE
+distribution？}\label{ux5982ux4f55ux89e3ux8b80-cate-distribution}
+
+CATE distribution 是學生最容易看懂、也最容易過度解讀的輸出。
+
+看圖時，可以引導學生問三個問題：
+
+第一，中心在哪裡？也就是大部分 estimated effects 大概多大。
+
+第二，分布寬不寬？如果很寬，表示 heterogeneity 大，targeting
+可能有價值。
+
+第三，有沒有很多人接近零或小於零？如果有，代表不是所有人都受益。但這裡要小心，負的
+CATE estimate 可能是 noise，也可能是真的 subgroup difference，需要搭配
+standard errors、sample size 和 substantive knowledge 判斷。
+
+不要只挑最大或最小的幾個 \(\hat{\tau}(x_i)\)
+講故事。比較好的做法是看分位數、subgroup
+average、BLP，或用外部資料驗證。
+
+\subsection{11. BLP 和 variable importance
+要怎麼教？}\label{blp-ux548c-variable-importance-ux8981ux600eux9ebcux6559}
+
+BLP 可以說成：把複雜的 forest output 翻譯成 regression language。
+
+Forest 估出很多 \(\hat{\tau}(x_i)\)，但很難直接報告。BLP 做的是把這些
+estimated CATE 和 covariates 做線性摘要：
+
+\[
+\hat{\tau}(x_i)
+=
+\beta_0+\beta_1\,\text{age}_i+\beta_2\,\text{educ}_i+\cdots+\varepsilon_i.
+\]
+
+如果 \(\beta_1<0\)，可以說 older workers tend to have lower estimated
+treatment effects。
+
+Variable importance 則回答不同問題：哪些 variables 常常被 forest 用來
+split？它能捕捉 nonlinearities 和 interactions，但不告訴我們方向。
+
+因此：
+
+\begin{itemize}
+\tightlist
+\item
+  BLP：比較容易解釋方向。
+\item
+  Variable importance：比較能看哪些變數在 nonlinear heterogeneity
+  中重要。
+\end{itemize}
+
+兩者都只是 heterogeneity 的摘要，不是新的 causal identification。
+
+\subsection{12. R Example
+怎麼講才清楚？}\label{r-example-ux600eux9ebcux8b1bux624dux6e05ux695a}
+
+R code 不要只逐行念。建議每一步都用「這一步的目的」來講。
+
+Step 1 的目的：建立環境，載入 data。
+
+Step 2 的目的：把 causal inference 的三個元素準備好，也就是 outcome
+\(\mathrm{Y}_i\)、treatment \(D_i\)、pre-treatment covariates \(X_i\)。
+
+Step 3 的目的：估 causal forest。這裡提醒 \texttt{grf} 裡 treatment
+argument 叫 \texttt{W}，但課程符號是 \(D_i\)，所以寫 \texttt{W\ =\ D}。
+
+Step 4 的目的：先回到熟悉的 ATE 和 ATT，讓學生知道 machine learning
+output 仍然可以服務傳統政策問題。
+
+Step 5 和 Step 6 的目的：看 heterogeneity 是否存在、分布長什麼樣子。
+
+Step 7 的目的：用 BLP 和 variable importance 摘要 heterogeneity。
+
+Step 8 的目的：把估計結果輸出，方便在 Stata 或其他工具做後續整理。
+
+\subsection{13.
+實證應用時的報告順序}\label{ux5be6ux8b49ux61c9ux7528ux6642ux7684ux5831ux544aux9806ux5e8f}
+
+如果學生未來要在 paper 或作業中使用 causal
+forest，可以建議他們用這個順序報告：
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  先說明研究設計和 identification assumption。
+\item
+  定義 \(\mathrm{Y}_i\)、\(D_i\)、\(X_i\)。
+\item
+  報告 ATE 或 ATT，回答平均效果。
+\item
+  報告 CATE distribution，說明 heterogeneity 大小。
+\item
+  用 BLP 或 variable importance 說明哪些 covariates 和 heterogeneity
+  有關。
+\item
+  用 substantive knowledge 解釋結果，不要只做 data mining。
+\end{enumerate}
+
+這樣學生會知道 causal forest 不是一個單獨的黑箱按鈕，而是一套完整
+empirical workflow 的一部分。
+
+\subsection{14.
+最後可以用的總結說法}\label{ux6700ux5f8cux53efux4ee5ux7528ux7684ux7e3dux7d50ux8aaaux6cd5}
+
+可以用下面這段話收尾：
+
+「今天我們從 ATE 和 ATT 出發，進一步問 treatment effect
+是否因人而異。Decision tree 幫我們理解如何自動分 subgroup，random forest
+幫我們理解為什麼要平均很多棵樹，causal tree 把 subgroup 的目標從 outcome
+prediction 改成 treatment effect heterogeneity，而 causal forest
+則把很多 honest causal trees 平均起來，穩定地估計
+\(\tau(x)\)。但是，所有這些方法都建立在可信的 causal comparison
+上；如果研究設計不可信，forest 再複雜也不能把 correlation 變成
+causation。」
+
+\end{document}

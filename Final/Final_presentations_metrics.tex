@@ -1,0 +1,248 @@
+\documentclass[dvipsnames,hyperref={pdfpagelabels=false}]{beamer}
+% beamer already loads hyperref; do NOT load \usepackage{hyperref} again.
+
+\usepackage{ragged2e} % 文字向兩邊對齊
+\renewcommand{\raggedright}{\leftskip=0pt \rightskip=0pt plus 0cm}
+
+\usepackage{listings}
+\usepackage{lmodern}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Sans CJK TC}
+\setCJKsansfont{Noto Sans CJK TC}
+\setCJKmonofont{Noto Sans Mono CJK TC}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+
+% hyperref settings (since beamer already loads hyperref)
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  citecolor=blue,
+  pdfborder={0 0 0}
+}
+
+
+\usepackage{accsupp}% http://ctan.org/pkg/accsupp
+\newcommand{\emptyaccsupp}[1]{\BeginAccSupp{ActualText={}}#1\EndAccSupp{}}
+
+
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{threeparttable}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit,positioning,shapes.symbols,chains}
+\usetikzlibrary{tikzmark}
+
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\nindep}{\not\!\perp\!\!\!\perp}
+
+\beamertemplatefootpagenumber
+
+
+
+\title[]  
+{Guidelines for Final Presentations}
+
+%\subtitle
+%{免除部分負擔對幼兒醫療利用與健康的影響:斷點迴歸分析}
+
+%\author 
+ %{Tzu-Ting Yang\inst{1} \and Hsing-Wen Han\inst{2} \and Hsien-Ming Lien\inst{3}}
+
+%\institute[short]{\inst{1} Academia Sinica \and \inst{2} Tamkang University \and \inst{3} National Chengchi University}
+
+
+\author 
+{Prof. Tzu-Ting Yang  \\ 楊子霆}
+
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+\institute{Institute of Economics, Academia Sinica  \\ 中央研究院經濟研究所}
+%\institute{Institute of Economics, Academia Sinica  \\ Econ, NTU}
+%\institute{Institute of Economics, Academia Sinica  \\ IMES/IDAS, NCCU}
+
+%\author 
+%{楊子霆 \\ 中研院經濟所}
+
+%\institute 
+%{中正大學國際經濟專題研討}
+
+
+
+
+\date
+{\today}
+
+
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\setbeamertemplate{footline}{%
+	\hfill\usebeamercolor[fg]{page number in head/foot}%
+	\usebeamerfont{page number in head/foot}%
+	\insertframenumber\,/\,\inserttotalframenumber\hspace{1em}\vspace{2pt}%
+}
+\beamersetuncovermixins{\opaqueness<1>{25}}{\opaqueness<2->{15}}
+
+\begin{document}
+
+
+\begin{frame}{}
+ \titlepage
+\end{frame}
+
+
+\begin{frame}{Final Presentation: 6/10}
+	\begin{itemize}
+		
+		\item The final presentation will be hold on 6/10
+		\vspace{0.2cm} 
+%			\begin{itemize}
+%				
+%		\item Please choose the presentation date using the following link:
+%				  	   \vspace{0.2cm} 
+%				  	 			\begin{itemize}  
+%		\item \url{https://forms.gle/AcKCm5RMUFXKXyx3A}	
+%					   \end{itemize}
+%				   				  	   \vspace{0.2cm} 	  	   		
+%		\item I will randomly decide the presentation order
+%			   \end{itemize}
+%		  	   \vspace{0.2cm} 
+%	 \item Please choose the presentation date you prefer using the following link:
+%	 		\vspace{0.2cm} 
+%	 	\begin{itemize}
+%	 	   	\item \url{https://docs.google.com/spreadsheets/d/1TCnOfEHGjPbQJvzMPjE7IpxmvZC3XpEiVtssqcTbki4/edit?usp=sharing}
+%			\vspace{0.2cm} 
+%	 \item I will randomly decide the presentation order
+%	 			\vspace{0.2cm} 
+%	 \item 請在12/6上課前選好報告日期
+%	 	 			\vspace{0.2cm} 			
+%	 		   \end{itemize}		
+	   \item \textbf{Please upload your slides before 2:30pm 6/10  using the following link}
+	   \vspace{0.2cm}
+	   \begin{itemize}
+	   	\item \url{https://www.dropbox.com/request/C3Xtp5Cll79MpoPPjDDY}
+	   	\vspace{0.2cm}
+	   	\item Format of file name: present\_order+studentID+name
+	   	\vspace{0.2cm}
+	   	\item Example: 1\_r09323010\_TzuTingYang
+	   		   	\vspace{0.2cm}
+	   \end{itemize}
+	   %\item Please let me know which date you want to present using the following link:	   
+	   	%   	\vspace{0.2cm}
+	   %\begin{itemize}
+	   % \item \url{https://reurl.cc/yEg0Xl}
+	   %\end{itemize}	
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Content}
+\begin{itemize} 
+	\item  5-10 minutes presentation
+	\vspace{0.2cm}
+	\begin{itemize} 
+		\item My suggestion: around 5-7 slides
+		\vspace{0.2cm}
+	\end{itemize}
+	\item To control time, audiences can only ask questions after presentation (2-minutes Q\&A).
+	\vspace{0.2cm}
+	
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Content}{Page 1}
+	\begin{itemize} 
+		\item Introduce your research topic 
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item What is the causal relationship you want to estimate
+			\vspace{0.2cm}
+			\item Briefly discuss why it is interesting
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}{Content}{Page 2}
+	\begin{itemize} 
+		\item Discuss your data and sample
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Introduce the datasets you use
+			\vspace{0.2cm} 
+			\item Discuss how your sample selection criteria
+			\vspace{0.2cm} 	
+			\begin{itemize}
+				\item Sample period
+				\vspace{0.2cm}
+				\item Impose any restrictions on the estimation sample
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}{Content}{Page 3}
+	\begin{itemize} 
+		\item Discuss your empirical method
+		\vspace{0.2cm}
+		\begin{itemize}
+			\item Write down your estimated equations
+			\vspace{0.2cm} 
+			\item Define the variable and notations used in your estimation equation
+			\vspace{0.2cm} 	
+			\begin{itemize}
+				\item The outcome variable
+				\vspace{0.2cm}
+				\item The treatment variable
+				\vspace{0.2cm} 
+				\item Important covariates or fixed effects
+			\end{itemize}
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Content}{Page 4 - 5}
+	\begin{itemize} 
+		\item Show and discuss summary statistics of your sample
+		\vspace{0.2cm}
+	    \item Present the preliminary results
+	    		\vspace{0.2cm}
+	    	\begin{itemize} 
+	    	\item If possible, present the preliminary results
+	    \vspace{0.2cm} 
+	    	    \item Use tables or figures		
+	    	    	    	    \vspace{0.2cm} 	
+	    \item Interpret your estimates	
+
+
+	    			\end{itemize}
+    		\vspace{0.2cm}
+    	\item Finally, you can discuss what will you do before you submitting your term paper (future work)		
+	\end{itemize}
+\end{frame}
+
+		
+
+	
+
+
+
+
+\end{document} 

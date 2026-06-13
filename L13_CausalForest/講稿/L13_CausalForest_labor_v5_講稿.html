@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-TW" xml:lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Prof. Tzu-Ting Yang" />
+  <meta name="dcterms.date" content="2026-05-13" />
+  <title>L13 Causal Forest 講稿（v5）</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">body {
+font-family: "Noto Sans TC", "Microsoft JhengHei", "Noto Sans", sans-serif;
+font-size: 11.5pt;
+line-height: 1.65;
+color: #222;
+}
+h1 { font-size: 22pt; margin-top: 1.2em; border-bottom: 1px solid #aaa; padding-bottom: 0.15em; }
+h2 { font-size: 16pt; margin-top: 1.1em; color: #123b63; }
+h3 { font-size: 13pt; margin-top: 1em; }
+p { margin: 0.45em 0; }
+li { margin: 0.25em 0; }
+code { font-family: "Noto Sans Mono", Consolas, monospace; background: #f2f2f2; padding: 0.05em 0.2em; }
+pre { font-family: "Noto Sans Mono", Consolas, monospace; background: #f7f7f7; padding: 0.8em; border: 1px solid #ddd; white-space: pre-wrap; }
+blockquote { border-left: 4px solid #aaa; padding-left: 1em; color: #444; }
+.math, math { font-family: "Noto Serif TC", "Cambria Math", serif; }
+@page { size: A4; margin: 18mm 18mm 20mm 18mm; @bottom-center { content: counter(page); font-size: 9pt; color: #666; } }</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">L13 Causal Forest 講稿（v5）</h1>
+<p class="subtitle">Causal Machine Learning (III): Causal Forest</p>
+<p class="author">Prof. Tzu-Ting Yang</p>
+<p class="date">2026-05-13</p>
+</header>
+<h1 id="l13-causal-forest-講稿v5">L13 Causal Forest 講稿（v5）</h1>
+<p>這份講稿對應
+<code>L13_CausalForest_labor_v5.tex</code>。目標不是逐字唸投影片，而是提供一個在課堂上可以流暢講解的版本：先從為什麼
+ATE 不夠出發，一步步建立 decision tree、random forest、causal
+tree、causal forest 的直覺，最後示範 R code。</p>
+<hr />
+<h1 id="第一部分main-idea">第一部分：Main Idea</h1>
+<h2 id="投影片標題頁">【投影片】標題頁</h2>
+<p>各位好。這一講是 causal machine learning 系列的第三堂課，主題是
+causal forest。前面兩講分別是 LASSO 和 double machine learning，今天的
+causal forest 是這個系列的壓軸。</p>
+<hr />
+<h2 id="投影片treatment-effect-heterogeneity">【投影片】Treatment Effect
+Heterogeneity</h2>
+<p>前面幾講我們花了很多時間估計 ATE，也就是：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mtext mathvariant="normal">ATE</mtext></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false" form="prefix">[</mo><msubsup><mi>Y</mi><mi>i</mi><mn>1</mn></msubsup><mo>−</mo><msubsup><mi>Y</mi><mi>i</mi><mn>0</mn></msubsup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\alpha_{\text{ATE}} = \mathrm{E}[Y_i^1 - Y_i^0]</annotation></semantics></math></p>
+<p>這個數字代表整個 population 平均來說，treatment 的效果有多大。ATE
+很好用，它告訴我們「這個政策平均來說有沒有效」。</p>
+<p>但是，ATE
+有一個根本的限制：它把所有人的異質性壓縮成一個數字。而實際上，treatment
+effect 可能因人而異。</p>
+<p>以職業訓練為例。一個年輕、低教育程度的工人，訓練可能對他的幫助非常大；但一個有豐富經驗的中年工人，訓練對他的邊際效果可能很小。如果我們只看
+ATE，這兩群人的效果就被平均掉了。</p>
+<p>Causal forest 要估計的是 CATE：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false" form="prefix">[</mo><msubsup><mi>Y</mi><mi>i</mi><mn>1</mn></msubsup><mo>−</mo><msubsup><mi>Y</mi><mi>i</mi><mn>0</mn></msubsup><mo>∣</mo><msub><mi>X</mi><mi>i</mi></msub><mo>=</mo><mi>x</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\tau(x) = \mathrm{E}[Y_i^1 - Y_i^0 \mid X_i = x]</annotation></semantics></math></p>
+<p>也就是：對於特徵為
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+的人，treatment effect
+平均是多少。這讓我們可以問一個更細的政策問題：誰受益最多？</p>
+<hr />
+<h2 id="投影片motivating-example-job-training">【投影片】Motivating
+Example: Job Training</h2>
+<p>今天的例子就是政府的職業訓練計畫。</p>
+<ul>
+<li>Outcome
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Y_i</annotation></semantics></math>：訓練後的收入</li>
+<li>Treatment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>i</mi></msub><annotation encoding="application/x-tex">D_i</annotation></semantics></math>：有沒有參加訓練</li>
+<li>Covariates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>i</mi></msub><annotation encoding="application/x-tex">X_i</annotation></semantics></math>：年齡、教育程度、種族、婚姻狀態、過去收入</li>
+</ul>
+<p>傳統的政策評估問：訓練計畫平均來說有效嗎？這是 ATE 或 ATT
+的問題。</p>
+<p>Causal forest
+要問的是：這個訓練計畫對哪些人特別有效？哪些人幾乎沒有幫助？</p>
+<hr />
+<h2 id="投影片why-heterogeneity-matters表格">【投影片】Why Heterogeneity
+Matters（表格）</h2>
+<p>投影片上這個表格是一個簡單的例子。</p>
+<ul>
+<li>年輕、低教育程度的工人：訓練讓收入從 8,000 增加到 11,000，效果是
+3,000 美元。</li>
+<li>年長、有豐富經驗的工人：收入從 18,000 增加到 18,500，效果只有 500
+美元。</li>
+<li>與社會脫節的工人（disconnected worker）：效果最大，4,000 美元。</li>
+</ul>
+<p>如果我們只看平均，可能會說這個計畫平均效果是 2,500
+美元，結論是「有效」。但這掩蓋了一個很重要的資訊：第三群工人的效果是第二群的八倍。</p>
+<p>如果政府的資源有限，知道這一點非常重要。Causal forest
+的輸出就是要告訴我們：<strong>哪些人應該被優先服務？</strong></p>
+<hr />
+<h2 id="投影片why-heterogeneity-matters政策問題">【投影片】Why
+Heterogeneity Matters（政策問題）</h2>
+<p>這裡列了幾個典型的勞動經濟學例子，說明為什麼 heterogeneity
+在政策上很重要：</p>
+<ul>
+<li><strong>青年就業計畫</strong>：哪些青年受益最多？是教育程度較低的，還是家庭背景較弱的？</li>
+<li><strong>教育政策</strong>：教育投資的報酬，是否因學生背景或地區勞動市場不同而有差異？</li>
+<li><strong>最低工資</strong>：最低工資的就業效果，是否因勞工技術、廠商規模或地區而不同？</li>
+<li><strong>育嬰假</strong>：育嬰假政策的效果，是否因收入水準或職業類型而有差異？</li>
+</ul>
+<p>這四個例子都是用 CATE 可以回答、但用 ATE 無法充分回答的問題。</p>
+<hr />
+<h2 id="投影片treatment-effect-heterogeneity-traditional-approaches">【投影片】Treatment
+Effect Heterogeneity: Traditional Approaches</h2>
+<p>在 causal forest 出現之前，研究者探索 heterogeneity
+的方法主要有兩種。</p>
+<p>第一種是<strong>理論驅動的分組分析（theory-based subgroup
+analysis）</strong>。做法是根據經濟理論預先決定要按哪個
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+來分組，例如分男女、分年齡組、分教育程度，然後在每個 subgroup
+裡面分別估計 ATE。這個方法直觀，但問題是研究者必須事先知道「哪個
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+重要」。如果猜錯了，就看不到真正的 heterogeneity。</p>
+<p>第二種是<strong>迴歸的交乘項（interaction terms）</strong>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mi>i</mi></msub><mo>=</mo><mi>α</mi><mo>+</mo><mi>β</mi><msub><mi>D</mi><mi>i</mi></msub><mo>+</mo><mi>γ</mi><msub><mi>X</mi><mi>i</mi></msub><mo>+</mo><mi>δ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>D</mi><mi>i</mi></msub><mo>×</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>ε</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">Y_i = \alpha + \beta D_i + \gamma X_i + \delta (D_i \times X_i) + \varepsilon_i</annotation></semantics></math></p>
+<p>係數
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+捕捉
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>i</mi></msub><annotation encoding="application/x-tex">D_i</annotation></semantics></math>
+的效果如何隨
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>i</mi></msub><annotation encoding="application/x-tex">X_i</annotation></semantics></math>
+變化。這個方法也很常見，但它假設 heterogeneity
+是<strong>線性</strong>的——也就是說，效果隨
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+的變化是直線的、是 parametric 的形式。</p>
+<p>這兩種傳統方法都有同一個缺點：研究者必須<strong>事先指定</strong>哪個
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+重要，並且假設一個<strong>線性、parametric 的異質性形式</strong>。</p>
+<hr />
+<h2 id="投影片causal-forest-a-data-driven-approach第一張">【投影片】Causal
+Forest: A Data-Driven Approach（第一張）</h2>
+<p>Causal forest 的出發點是：我不想事先指定 heterogeneity
+的形式。我要讓<strong>資料告訴我</strong>哪個
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+重要、效果如何隨
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+變化。</p>
+<p>直觀來說，causal forest 的流程是：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mtext mathvariant="normal">Data </mtext><mspace width="0.333em"></mspace></mrow><mo stretchy="false" form="prefix">(</mo><mi>Y</mi><mo>,</mo><mi>D</mi><mo>,</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.278em"></mspace><mo>→</mo><mspace width="0.278em"></mspace><mtext mathvariant="normal">Many honest causal trees</mtext><mspace width="0.278em"></mspace><mo>→</mo><mspace width="0.278em"></mspace><mrow><mtext mathvariant="normal">CATE </mtext><mspace width="0.333em"></mspace></mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\text{Data } (Y, D, X) \;\longrightarrow\; \text{Many honest causal trees} \;\longrightarrow\; \text{CATE } \hat{\tau}(x)</annotation></semantics></math></p>
+<p>它把 random forest 的概念延伸到因果推論的脈絡下。每一棵樹用一個隨機的
+subsample 來估計 CATE；然後把很多棵樹的估計平均起來，得到穩定的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x)</annotation></semantics></math>。</p>
+<p><strong>Random subset
+這一點很重要</strong>：讓每棵樹看到不同版本的資料，可以讓各棵樹有所不同，平均之後才能消除噪音。</p>
+<hr />
+<h2 id="投影片causal-forest-a-data-driven-approach第二張">【投影片】Causal
+Forest: A Data-Driven Approach（第二張）</h2>
+<p>這一頁有一個非常重要的概念釐清：<strong>Causal forest
+不是一種識別策略（identification strategy）。</strong></p>
+<p>它不解決 selection bias 的問題。它不是 RCT、DID 或 RDD。</p>
+<p>Causal forest 是一種<strong>彈性的 data-driven
+估計量（estimator）</strong>，用來估計
+CATE。但要讓這些估計有因果意義，你需要搭配一個識別策略：</p>
+<ul>
+<li>搭配 <strong>RCT</strong>：資料已經是隨機分配，CATE
+就是「哪些人從隨機 treatment 中受益更多？」</li>
+<li>搭配 <strong>DID</strong>：「treatment effect
+是否因群體而有差異？」</li>
+<li>搭配 <strong>RDD</strong>：「在 cutoff 附近，哪些人受益最多？」</li>
+</ul>
+<p>和傳統方法相比，causal forest
+的優點是：它自動從資料中搜尋哪些特徵驅動
+heterogeneity，<strong>不需要研究者事先指定</strong>。</p>
+<hr />
+<h2 id="投影片how-ate-and-att-relate-to-cate">【投影片】How ATE and ATT
+Relate to CATE</h2>
+<p>一旦我們知道 CATE 函數
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math>，ATE
+和 ATT 其實只是它的不同加總：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mtext mathvariant="normal">ATE</mtext></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false" form="prefix">[</mo><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>α</mi><mtext mathvariant="normal">ATT</mtext></msub><mo>=</mo><mi mathvariant="normal">E</mi><mo stretchy="false" form="prefix">[</mo><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>X</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>∣</mo><msub><mi>D</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">\alpha_{\text{ATE}} = \mathrm{E}[\tau(X_i)], \qquad \alpha_{\text{ATT}} = \mathrm{E}[\tau(X_i) \mid D_i = 1]</annotation></semantics></math></p>
+<p>所以 causal forest 並不是要<strong>取代</strong> ATE 或
+ATT，而是估計一個更豐富的物件
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math>，然後再從中還原
+ATE 或 ATT。</p>
+<p>另外，這也意味著：如果 heterogeneity
+很小，<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>≈</mo><msub><mi>α</mi><mtext mathvariant="normal">ATE</mtext></msub></mrow><annotation encoding="application/x-tex">\tau(x) \approx \alpha_{\text{ATE}}</annotation></semantics></math>
+對所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+都成立，causal forest 的輸出就會接近 ATE。</p>
+<hr />
+<h1 id="第二部分decision-tree-and-random-forest">第二部分：Decision Tree
+and Random Forest</h1>
+<hr />
+<h2 id="投影片decision-trees-main-idea">【投影片】Decision Trees: Main
+Idea</h2>
+<p>現在要從頭開始建立 decision tree 的直覺。因為 causal forest 是建立在
+causal tree 上，causal tree 又是建立在 decision tree
+上，所以這部分很基礎，但非常重要。</p>
+<p>Decision tree 的核心想法是：把 covariate space
+切成一塊一塊的矩形區域，在每一塊內用一個簡單模型（例如均值）來預測
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>。</p>
+<p>演算法有三個步驟： 1. 找一個變數
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>X</mi><mi>j</mi></msup><annotation encoding="application/x-tex">X^j</annotation></semantics></math>
+和切點
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>，使得切割後的預測誤差最小。
+2.
+把資料分成兩個區域：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msup><mi>X</mi><mi>j</mi></msup><mo>&lt;</mo><mi>s</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{X^j &lt; s\}</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msup><mi>X</mi><mi>j</mi></msup><mo>≥</mo><mi>s</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{X^j \geq s\}</annotation></semantics></math>。
+3. 在每個區域內遞迴地重複這個過程，直到滿足停止條件。</p>
+<p>最後，每個 <strong>leaf（葉節點）</strong> 裡的預測值，就是這個 leaf
+裡所有觀測值的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+的均值。</p>
+<hr />
+<h2 id="投影片decision-trees-finding-the-best-split">【投影片】Decision
+Trees: Finding the Best Split</h2>
+<p>那要怎麼找最好的切割點？</p>
+<p>方法是計算 <strong>RSS（residual sum of squares）</strong>：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">RSS</mtext><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><msub><mi>R</mi><mn>1</mn></msub></mrow></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>Y</mi><mo accent="true">‾</mo></mover><msub><mi>R</mi><mn>1</mn></msub></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup><mo>+</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>∈</mo><msub><mi>R</mi><mn>2</mn></msub></mrow></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>Y</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi>Y</mi><mo accent="true">‾</mo></mover><msub><mi>R</mi><mn>2</mn></msub></msub><msup><mo stretchy="false" form="postfix">)</mo><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\text{RSS}(j, s) = \sum_{i \in R_1}(Y_i - \bar{Y}_{R_1})^2 + \sum_{i \in R_2}(Y_i - \bar{Y}_{R_2})^2</annotation></semantics></math></p>
+<p>也就是：切割後，兩個區域內的殘差平方和加總。</p>
+<p>我們的目標是找
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>j</mi><mo>*</mo></msup><mo>,</mo><msup><mi>s</mi><mo>*</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(j^*, s^*)</annotation></semantics></math>，讓
+RSS 最小。這個思路類似 OLS 的直覺：RSS 小，代表切割後每個區域內的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+更整齊、更容易預測。</p>
+<p>找到最好的切割點之後，再對每個子區域遞迴執行同樣的步驟。</p>
+<hr />
+<h2 id="投影片decision-trees-when-to-stop-splitting第一張">【投影片】Decision
+Trees: When to Stop Splitting（第一張）</h2>
+<p>如果我們一直切下去，最終每個 leaf 只有一個觀測值，RSS
+降到零，但完全沒有預測能力——這是 overfitting。</p>
+<p>所以需要<strong>停止規則</strong>來控制樹的複雜度：</p>
+<ul>
+<li><strong>Minimum leaf
+size（最小葉片大小）</strong>：如果一個區域的觀測值數量小於
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>（例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">k = 5</annotation></semantics></math>），就不繼續切。這確保每個
+leaf 有足夠的資料來可靠地估計均值。</li>
+<li><strong>Maximum tree depth（最大樹深）</strong>：最多切
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>
+層（例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">d = 5</annotation></semantics></math>），leaf
+的數量上限為
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mi>d</mi></msup><annotation encoding="application/x-tex">2^d</annotation></semantics></math>。</li>
+</ul>
+<hr />
+<h2 id="投影片decision-trees-when-to-stop-splitting第二張">【投影片】Decision
+Trees: When to Stop Splitting（第二張）</h2>
+<p>另一個停止規則：</p>
+<ul>
+<li><strong>Minimum RSS reduction（最小 RSS
+降幅）</strong>：如果最好的切割點只能讓 RSS 降低不到
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ε</mi><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math>，就停止。這跳過了「花很大力氣但改善很小」的切割。</li>
+</ul>
+<p>為什麼必須有停止規則？一棵完全不停止的樹，會把每個觀測值都切成獨立的
+leaf，完美擬合訓練資料，但對新資料的預測完全失效。這就是
+<strong>overfitting</strong>。</p>
+<p>所有的停止規則都是在控制「樹的彈性」和「過度擬合的風險」之間的
+trade-off。</p>
+<hr />
+<h2 id="投影片decision-trees-illustration">【投影片】Decision Trees:
+Illustration</h2>
+<p>用一個例子說明。假設我們要用年齡和教育程度來預測薪資
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>：</p>
+<ul>
+<li><strong>第一次切割</strong>：age &lt; 30 vs. age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+30</li>
+<li><strong>第二次切割</strong>（在 age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+30 的子樣本內）：educ &lt; 12 vs. educ
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+12</li>
+</ul>
+<p>每個 leaf 包含「特徵相似、預測
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Y</mi><annotation encoding="application/x-tex">Y</annotation></semantics></math>
+也相似」的觀測值。這就是 decision tree 把 covariate space
+分割成矩形區域的概念。</p>
+<hr />
+<h2 id="投影片decision-trees-tree-structure-example樹狀結構圖">【投影片】Decision
+Trees: Tree Structure Example（樹狀結構圖）</h2>
+<p>投影片左側是樹的結構圖：</p>
+<ul>
+<li><strong>橘色節點（internal nodes）</strong>：分裂規則，例如「age
+&lt; 30？」</li>
+<li><strong>綠色葉節點（leaves）</strong>：最終預測值，等於該 leaf
+內所有觀測值的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>Y</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{Y}</annotation></semantics></math></li>
+</ul>
+<p>右側的例子：一個年齡 35 歲、教育 14 年的新工人，走過「age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+30」、「educ
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+12」兩個分支，落在 Leaf 3，預測薪資是 11,500 美元。</p>
+<p>預測方式就是這麼簡單：順著樹的分支走，走到一個 leaf，就用那個 leaf
+的均值當預測。</p>
+<hr />
+<h2 id="投影片decision-trees-partition-of-feature-space特徵空間分割圖">【投影片】Decision
+Trees: Partition of Feature Space（特徵空間分割圖）</h2>
+<p>右圖用二維平面來呈現 decision tree 的分割結果：</p>
+<ul>
+<li>垂直線代表 age = 30 的切割</li>
+<li>水平線（在 age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+30 的區域）代表 educ = 12 的切割</li>
+<li>三個矩形區域各自有一個預測值</li>
+</ul>
+<p>重點：每個切割都必須是<strong>矩形</strong>的（axis-aligned），這是
+decision tree 的結構限制。樹越深，區域越多，彈性越大，但也越容易
+overfit。</p>
+<hr />
+<h2 id="投影片why-a-single-decision-tree-is-not-enough導論">【投影片】Why a
+Single Decision Tree Is Not Enough（導論）</h2>
+<p>Decision tree 有一個根本的弱點：<strong>high
+variance（高變異數）</strong>。</p>
+<p>問題在哪裡？</p>
+<ul>
+<li>樹會「記住」訓練資料，而不是學習真實的規律</li>
+<li>資料稍微有一點變動——例如加入或移除幾個觀測值——可能導致整棵樹的結構完全不同</li>
+<li>對新資料的預測因此很不穩定</li>
+</ul>
+<hr />
+<h2 id="投影片high-variance-sample-a-vs.-sample-b對比表格">【投影片】High
+Variance: Sample A vs. Sample B（對比表格）</h2>
+<p>用一個非常具體的例子來說明 high variance。</p>
+<p><strong>Sample A</strong>：5 個工人，age = {20, 25, 40, 45, 50}，educ
+= {9, 9, 9, 9, 12}，wage = {$8, $9, $21, $22, $23}。</p>
+<p>注意到：age &lt; 30 的工人薪資是 $8–$9，age
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+30 的是 $21–$23。所以樹很自然地用 <strong>age &lt; 30</strong>
+來分割。</p>
+<p><strong>Sample B</strong>：只改了一個工人——把第二個人（age=25,
+educ=9, wage=$9）換成（age=25, educ=12, wage=$30）。</p>
+<p>現在 age &lt; 30 的區域有 $8 和 $30，差異很大。用 age
+切割的效果就很差了。樹反而發現：按 educ &lt; 11 切割，低學歷組（$8, $21,
+$22）和高學歷組（$30, $23）的薪資更整齊。所以樹<strong>改成用 Education
+分割</strong>。</p>
+<p>只換了一個人，樹就完全換了一個分割變數。這就是 high variance。</p>
+<hr />
+<h2 id="投影片high-variance-rss-計算表格">【投影片】High Variance: RSS
+計算表格</h2>
+<p>用 RSS 來量化這件事：</p>
+<table>
+<thead>
+<tr>
+<th>候選切割</th>
+<th>Sample A 的 RSS</th>
+<th>Sample B 的 RSS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Age &lt; 30</td>
+<td><strong>2.5</strong></td>
+<td>244</td>
+</tr>
+<tr>
+<td>Educ &lt; 11</td>
+<td>170</td>
+<td><strong>147</strong></td>
+</tr>
+</tbody>
+</table>
+<p>在 Sample A，age &lt; 30 把薪資切得很整齊，RSS 只有 2.5；在 Sample
+B，同樣的切割讓 age &lt; 30 組有 $8 和 $30，RSS 暴增到 244。</p>
+<p>樹永遠選 RSS 最小的切割：換一個工人，age 切割的 RSS 從 2.5 爆到
+244，而 educ 切割的 RSS 從 170 降到 147，所以樹就切換到 educ 了。</p>
+<p>這讓我們看到：<strong>只需要換一個觀測值，RSS
+的排名就改變了，樹的結構也完全不同。</strong> 這就是 high variance
+的核心問題。</p>
+<hr />
+<h2 id="投影片high-variance-tree-a-vs.-tree-b樹狀圖">【投影片】High
+Variance: Tree A vs. Tree B（樹狀圖）</h2>
+<p>把這兩棵樹並排放：</p>
+<ul>
+<li><strong>Tree A</strong>（based on Sample A）：root 是 age &lt;
+30，Yes → $8.5/hr，No → $22/hr</li>
+<li><strong>Tree B</strong>（based on Sample B）：root 是 educ &lt;
+11，Yes → $17/hr，No → $26.5/hr</li>
+</ul>
+<p>完全不同的兩棵樹，只因為訓練資料差一個工人。</p>
+<hr />
+<h2 id="投影片high-variance-對新工人的預測">【投影片】High Variance:
+對新工人的預測</h2>
+<p>假設我們要預測一個新工人的薪資：age = 22，educ = 16。</p>
+<ul>
+<li>Tree A：age &lt; 30 → Yes → 預測 <strong>$8.5/hr</strong></li>
+<li>Tree B：educ &lt; 11 → No（educ=16
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+11）→ 預測 <strong>$26.5/hr</strong></li>
+</ul>
+<p>同樣的特徵，同樣的人，兩棵樹的預測差了 $18/hr。這就是 high variance
+的實際代價：完全換了一個人訓練出來的樹，對新人的預測可以差到這麼多。</p>
+<p><strong>解決方案</strong>：不要只用一棵樹，而是種很多棵樹，每棵樹用不同的
+subsample 訓練，然後平均它們的預測。這就是 <strong>Random
+Forest</strong>。</p>
+<hr />
+<h2 id="投影片random-forest-two-sources-of-randomness兩種隨機性">【投影片】Random
+Forest: Two Sources of Randomness（兩種隨機性）</h2>
+<p>Random Forest 讓各棵樹彼此不同的方法有兩種：</p>
+<p><strong>1. Random
+subsampling（隨機抽樣）</strong>：每棵樹只看全部資料的一個隨機子集。所以每棵樹訓練的資料不一樣，學到的分割也不一樣。</p>
+<p><strong>2. Random feature
+selection（隨機特徵選取）</strong>：在每次切割時，不是考慮所有變數，而是隨機抽取一部分變數（例如
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msqrt><mi>p</mi></msqrt><annotation encoding="application/x-tex">\sqrt{p}</annotation></semantics></math>
+個），從這個子集中找最好的切割。</p>
+<p>這兩種隨機性讓每棵樹有所不同，確保平均之後的效果是真正的去噪，而不是把同樣的錯誤重複
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+次。</p>
+<hr />
+<h2 id="投影片random-forest-algorithm">【投影片】Random Forest:
+Algorithm</h2>
+<p>Random Forest 的演算法：</p>
+<ol type="1">
+<li>從全部資料中隨機抽取一個 subsample</li>
+<li>在這個 subsample 上，每次切割時隨機選取一部分變數</li>
+<li>生長一棵完整的 decision tree（通常不剪枝）</li>
+<li>重複步驟 1–3，生長
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+棵樹</li>
+<li>對新的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，把所有樹的預測平均：</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><munderover><mo>∑</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><msub><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{Y}(x) = \frac{1}{B}\sum_{b=1}^{B} \hat{Y}_b(x)</annotation></semantics></math></p>
+<p>直覺：每棵樹都有噪音，但如果各棵樹的噪音是相互獨立的，平均後噪音就會消失，剩下的是訊號。</p>
+<hr />
+<h2 id="投影片random-forest-illustration多棵樹示意圖">【投影片】Random
+Forest: Illustration（多棵樹示意圖）</h2>
+<p>投影片的圖示呈現了 Random Forest 的核心想法：</p>
+<ul>
+<li>全部資料進去</li>
+<li>每棵樹用不同的 subsample 和特徵子集訓練，學到不同的分割</li>
+<li>對同一個
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，不同的樹可能走不同的路徑，落在不同的
+leaf，給出不同的預測值</li>
+<li>最後把所有樹的預測平均，得到更穩定的結果</li>
+</ul>
+<hr />
+<h1 id="第三部分causal-tree">第三部分：Causal Tree</h1>
+<hr />
+<h2 id="投影片from-prediction-tree-to-causal-tree從預測樹到因果樹">【投影片】From
+Prediction Tree to Causal Tree（從預測樹到因果樹）</h2>
+<p>現在把 decision tree 的邏輯延伸到因果推論。</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Prediction Tree</th>
+<th>Causal Tree</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>目標</strong></td>
+<td>預測 outcome
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Y_i</annotation></semantics></math></td>
+<td>估計 treatment effect
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><strong>切割規則</strong></td>
+<td>找讓 outcome level 最不同的分割</td>
+<td>找讓 treatment effect 最不同的分割</td>
+</tr>
+<tr>
+<td><strong>葉節點的值</strong></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi></msub></mrow><annotation encoding="application/x-tex">\hat{Y}(\ell) = \bar{Y}_\ell</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>1</mn></msubsup><mo>−</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>0</mn></msubsup></mrow><annotation encoding="application/x-tex">\hat{\tau}(\ell) = \bar{Y}^1_\ell - \bar{Y}^0_\ell</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p><strong>關鍵類比</strong>：prediction tree 在找 outcome
+的異質性；causal tree 在找 treatment effect 的異質性。</p>
+<p>切割的邏輯一樣，但目標變了。</p>
+<hr />
+<h2 id="投影片causal-tree-what-does-a-leaf-estimate">【投影片】Causal
+Tree: What Does a Leaf Estimate?</h2>
+<p>在 causal tree 的每個 leaf 裡，我們比較<strong>同一個 leaf
+內</strong>的 treated 和 control 觀測值的均值差：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>1</mn></msubsup><mo>−</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>0</mn></msubsup></mrow><annotation encoding="application/x-tex">\hat{\tau}(\ell) = \bar{Y}^1_\ell - \bar{Y}^0_\ell</annotation></semantics></math></p>
+<p>投影片的例子：</p>
+<ul>
+<li>Leaf 1（年輕、低教育程度工人）：treated 均值 $11,000，control 均值
+$8,000，效果 = $3,000</li>
+<li>Leaf 2（年長、有豐富經驗工人）：treated 均值 $18,500，control 均值
+$18,000，效果 = $500</li>
+</ul>
+<p>對一個新工人，根據他的特徵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>，讓他落在某一個
+leaf
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\ell(x)</annotation></semantics></math>，然後：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x) = \hat{\tau}(\ell(x))</annotation></semantics></math></p>
+<p>也就是說，我們的預測是：跟你特徵相似的人，treatment effect
+是多少。</p>
+<hr />
+<h2 id="投影片causal-tree-finding-the-best-split">【投影片】Causal Tree:
+Finding the Best Split</h2>
+<p>Causal tree 的切割標準和 prediction tree 不一樣：</p>
+<ul>
+<li><strong>Prediction tree</strong>：找讓兩個 leaf 內的
+<strong>outcome</strong> 最整齊的切割（RSS 最小）</li>
+<li><strong>Causal tree</strong>：找讓兩個 leaf 的 <strong>treatment
+effect</strong> 差異最大的切割</li>
+</ul>
+<p>具體做法：對候選切割
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>X</mi><mi>j</mi></msup><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(X^j, s)</annotation></semantics></math>，分成
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mn>1</mn></msub><annotation encoding="application/x-tex">R_1</annotation></semantics></math>
+和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mn>2</mn></msub><annotation encoding="application/x-tex">R_2</annotation></semantics></math>
+兩個區域，分別估計：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><msub><mi>R</mi><mi>k</mi></msub><mn>1</mn></msubsup><mo>−</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><msub><mi>R</mi><mi>k</mi></msub><mn>0</mn></msubsup></mrow><annotation encoding="application/x-tex">\hat{\tau}(R_k) = \bar{Y}^1_{R_k} - \bar{Y}^0_{R_k}</annotation></semantics></math></p>
+<p>然後計算：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mo stretchy="false" form="prefix">(</mo><mi>j</mi><mo>,</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mo stretchy="false" form="prefix">|</mo><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>−</mo><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">\Delta(j, s) = |\hat{\tau}(R_1) - \hat{\tau}(R_2)|</annotation></semantics></math></p>
+<p>選
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math>
+最大的切割——也就是讓兩個葉節點的 treatment effect 差最多的那個。</p>
+<hr />
+<h2 id="投影片causal-tree-a-small-split-example小型分割例子">【投影片】Causal
+Tree: A Small Split Example（小型分割例子）</h2>
+<p>投影片的表格：</p>
+<table>
+<thead>
+<tr>
+<th>切割</th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(R_1)</annotation></semantics></math></th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>R</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(R_2)</annotation></semantics></math></th>
+<th><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Δ</mi><annotation encoding="application/x-tex">\Delta</annotation></semantics></math></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Age &lt; 30</td>
+<td>$3,000</td>
+<td>$600</td>
+<td><strong>$2,400</strong></td>
+</tr>
+<tr>
+<td>Educ &lt; 12</td>
+<td>$2,100</td>
+<td>$1,400</td>
+<td>$700</td>
+</tr>
+<tr>
+<td>Prior earn. &lt; 5,000</td>
+<td>$2,600</td>
+<td>$1,000</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<p>在這個例子中，causal tree 選擇<strong>age &lt; 30</strong>
+作為第一個切割點。</p>
+<p>注意：這不是因為年輕人和年長工人的<strong>薪資水準</strong>差最多，而是因為他們的<strong>training
+效果</strong>差最多——年輕人效果 $3,000，年長工人只有 $600。</p>
+<p>這是和 prediction tree 最本質的差異：causal tree
+追的是效果的差異，而不是水準的差異。</p>
+<hr />
+<h2 id="投影片causal-tree-honest-estimation誠實估計">【投影片】Causal
+Tree: Honest Estimation（誠實估計）</h2>
+<p>Causal tree
+有一個非常重要的設計：<strong>honesty（誠實性）</strong>。</p>
+<p>問題在哪裡？如果我們用<strong>同一批資料</strong>來決定切割點，又用來估計葉節點的效果，會產生
+double-dipping（雙重使用資料）的問題：我們是在用同樣的資料「發現規律」又「報告規律的大小」，這會導致估計值過度樂觀。</p>
+<p>解決方法是把一個隨機 subsample 分成兩半：</p>
+<ul>
+<li><strong>Splitting
+sample（切割樣本）</strong>：用來學習要在哪裡切——找哪個分割讓 treatment
+effect 差最多</li>
+<li><strong>Estimation sample（估計樣本）</strong>：用全新的資料計算每個
+leaf 的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(\ell)</annotation></semantics></math></li>
+</ul>
+<p>這樣，決定切割點的資料，和估計 leaf
+效果的資料，是相互獨立的。這就是「honesty」——就像你不能既當原告又當法官，切割和估計要用不同的資料。</p>
+<hr />
+<h1 id="第四部分causal-forest">第四部分：Causal Forest</h1>
+<hr />
+<h2 id="投影片from-random-forest-to-causal-forest類比從隨機森林到因果森林">【投影片】From
+Random Forest to Causal Forest（類比：從隨機森林到因果森林）</h2>
+<p>這張投影片的目的是展示 random forest 和 causal forest
+的結構完全類比：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Random Forest</th>
+<th>Causal Forest</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>建立什麼</strong></td>
+<td>很多棵 prediction trees</td>
+<td>很多棵 honest causal trees</td>
+</tr>
+<tr>
+<td><strong>每棵樹估計</strong></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{Y}_b(x)</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}_b(x)</annotation></semantics></math></td>
+</tr>
+<tr>
+<td><strong>平均</strong></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><msub><mo>∑</mo><mi>b</mi></msub><msub><mover><mi>Y</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{Y}(x) = \frac{1}{B}\sum_b \hat{Y}_b(x)</annotation></semantics></math></td>
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><msub><mo>∑</mo><mi>b</mi></msub><msub><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x) = \frac{1}{B}\sum_b \hat{\tau}_b(x)</annotation></semantics></math></td>
+</tr>
+</tbody>
+</table>
+<p><strong>核心句：Random forest 穩定化 outcome 的預測；causal forest
+穩定化 CATE 的估計。</strong></p>
+<hr />
+<h2 id="投影片causal-forest-algorithm演算法">【投影片】Causal Forest:
+Algorithm（演算法）</h2>
+<p>Causal forest 的演算法：</p>
+<ol type="1">
+<li>從全部資料隨機抽取一個 subsample</li>
+<li>把這個 subsample 分成兩半：splitting sample 和 estimation
+sample</li>
+<li>用 splitting sample 學習切割點，讓 treatment effect
+的差異最大化</li>
+<li>用 estimation sample 在每個 leaf 裡估計
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>ℓ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>1</mn></msubsup><mo>−</mo><msubsup><mover><mi>Y</mi><mo accent="true">‾</mo></mover><mi>ℓ</mi><mn>0</mn></msubsup></mrow><annotation encoding="application/x-tex">\hat{\tau}(\ell) = \bar{Y}^1_\ell - \bar{Y}^0_\ell</annotation></semantics></math></li>
+<li>得到一棵 honest causal tree</li>
+<li>重複以上步驟，生長
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+棵樹</li>
+<li>對一個有特徵
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+的工人，平均所有樹的估計：</li>
+</ol>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><munderover><mo>∑</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><msub><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x) = \frac{1}{B}\sum_{b=1}^{B}\hat{\tau}_b(x)</annotation></semantics></math></p>
+<hr />
+<h2 id="投影片causal-forest-illustration多棵因果樹示意圖">【投影片】Causal
+Forest: Illustration（多棵因果樹示意圖）</h2>
+<p>這張投影片用圖來呈現 causal forest 的流程。</p>
+<p>對一個特徵為
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+的工人（例如 age = 25，educ = 10）：</p>
+<ul>
+<li>把他放進每一棵 honest causal tree</li>
+<li>每棵樹把他分到某個 leaf，給出一個 CATE
+估計：$2,800、$2,200、$3,100、$2,500……</li>
+<li>把所有樹的估計平均，得到最終的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x)</annotation></semantics></math></li>
+</ul>
+<p>平均的功能是<strong>消除每棵樹因為用不同 subsample
+而引入的噪音</strong>。如果每棵樹的估計誤差是獨立的，平均後的誤差會縮小；如果每棵樹的誤差是正相關的（因為它們都來自同一個資料），就不會完全消除，但還是能降低變異。</p>
+<hr />
+<h2 id="投影片why-does-causal-forest-help為什麼有用">【投影片】Why Does
+Causal Forest Help?（為什麼有用？）</h2>
+<p>數學上，可以把 causal forest 的估計拆解成：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>+</mo><mfrac><mn>1</mn><mi>B</mi></mfrac><munderover><mo>∑</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><msub><mi>ε</mi><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x) = \tau(x) + \frac{1}{B}\sum_{b=1}^{B}\varepsilon_b(x)</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math>
+是真實的
+CATE；<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ε</mi><mi>b</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\varepsilon_b(x)</annotation></semantics></math>
+是第
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>b</mi><annotation encoding="application/x-tex">b</annotation></semantics></math>
+棵樹的估計誤差。</p>
+<p>如果各棵樹的誤差部分相互抵消，平均後的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x)</annotation></semantics></math>
+就會比任何一棵樹的估計更接近
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math>。</p>
+<p><strong>Random forest</strong> 用這個方法穩定 outcome
+的預測；<strong>Causal forest</strong> 用同樣的方法穩定 treatment effect
+的估計。</p>
+<hr />
+<h2 id="投影片causal-forest-adaptive-matching-intuition自適應配對直覺">【投影片】Causal
+Forest: Adaptive Matching Intuition（自適應配對直覺）</h2>
+<p>Causal forest
+有一個很好的直覺解釋：它像是一種<strong>自適應配對（adaptive
+matching）</strong>。</p>
+<p>對一個目標工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>：
+- 每棵樹把他分到某個 leaf - 在這個 leaf 裡，其他工人（不管是 treated
+還是 control）都被認為「跟他相似」 - 跨所有樹，常常和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+在同一個 leaf 的工人，就得到更大的權重
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_i(x)</annotation></semantics></math></p>
+<p>最終估計近似於：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>≈</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>D</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow></munder><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>Y</mi><mi>i</mi></msub><mo>−</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>D</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn></mrow></munder><msub><mi>a</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>Y</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\hat{\tau}(x) \approx \sum_{i: D_i=1} a_i(x) Y_i - \sum_{i: D_i=0} a_i(x) Y_i</annotation></semantics></math></p>
+<p>這就是一個加權版本的比較：用和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+相似的 treated 工人，減去和
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+相似的 control 工人。</p>
+<p>和傳統的 nearest-neighbor matching
+不同的是：「相似」的定義不是事先固定的，而是<strong>由 forest
+從資料中學習</strong>來的。</p>
+<hr />
+<h2 id="投影片causal-forest-what-do-we-get-after-estimation估計之後得到什麼">【投影片】Causal
+Forest: What Do We Get After Estimation?（估計之後得到什麼？）</h2>
+<p>跑完 causal forest 之後，我們可以得到幾個東西：</p>
+<ol type="1">
+<li><p><strong>Individual CATE
+estimates</strong>：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>，每個工人一個估計值。這是最精細的輸出。</p></li>
+<li><p><strong>ATE</strong>：把所有人的 CATE 平均起來：
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>α</mi><mo accent="true">̂</mo></mover><mtext mathvariant="normal">ATE</mtext></msub><mo>≈</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\alpha}_{\text{ATE}} \approx \frac{1}{N}\sum_{i=1}^{N}\hat{\tau}(x_i)</annotation></semantics></math></p></li>
+<li><p><strong>ATT</strong>：只對 treated 工人的 CATE 求平均：
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>α</mi><mo accent="true">̂</mo></mover><mtext mathvariant="normal">ATT</mtext></msub><mo>≈</mo><mfrac><mn>1</mn><msub><mi>N</mi><mn>1</mn></msub></mfrac><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>D</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow></munder><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\alpha}_{\text{ATT}} \approx \frac{1}{N_1}\sum_{i: D_i=1}\hat{\tau}(x_i)</annotation></semantics></math></p></li>
+<li><p><strong>Heterogeneity summaries</strong>：CATE
+的分佈、BLP、variable importance——用來描述和解釋 heterogeneity
+的模式。</p></li>
+</ol>
+<hr />
+<h2 id="投影片causal-forest-how-to-interpret-hattaux_i如何解讀-cate-估計值">【投影片】Causal
+Forest: How to Interpret
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>（如何解讀
+CATE 估計值？）</h2>
+<p>一個很重要的概念釐清：<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>
+<strong>不是</strong>工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+的「真實個人 treatment effect」。</p>
+<p>為什麼？因為因果推論的根本問題（fundamental problem of causal
+inference）還在：我們永遠只能觀察到一個 potential outcome。工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+如果接受了訓練，我們就沒有他不接受訓練的
+outcome；如果他沒接受訓練，我們就沒有他接受訓練的 outcome。</p>
+<p>正確的解讀是：</p>
+<blockquote>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>
+是跟工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+特徵相似的人，平均 treatment effect 的估計值。</p>
+</blockquote>
+<p>例子：如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>$</mi><mn>2</mn><mo>,</mo><mn>500</mn></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i) = \$2,500</annotation></semantics></math>，意思是「跟工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+類似的工人，平均來說，參加訓練大約可以多賺 2,500 美元」。</p>
+<p><strong>Causal forest 估計的是 CATE，不是每個人的真實反事實
+outcome。</strong></p>
+<hr />
+<h2 id="投影片after-causal-forest-cate-distributioncate-分佈">【投影片】After
+Causal Forest: CATE Distribution（CATE 分佈）</h2>
+<p>估計 causal forest 之後，第一件事是看 CATE 的分佈。</p>
+<p>把所有觀測值的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>
+畫成直方圖：</p>
+<ul>
+<li>分佈的<strong>中心</strong>接近 ATE</li>
+<li>分佈的<strong>寬度</strong>代表 heterogeneity 的大小
+<ul>
+<li><strong>寬</strong>：不同工人的 treatment effect
+差異很大，政策針對性（targeting）可能很有價值</li>
+<li><strong>窄</strong>：大多數工人的 treatment effect 相似，ATE
+已經是一個很好的摘要</li>
+</ul></li>
+</ul>
+<p>這張圖的<strong>紅色虛線</strong>標示 CATE 的均值，和 ATE
+估計值很接近。</p>
+<hr />
+<h2 id="投影片after-causal-forest-best-linear-projection-blp最佳線性投影">【投影片】After
+Causal Forest: Best Linear Projection (BLP)（最佳線性投影）</h2>
+<p>CATE 分佈告訴我們「有沒有 heterogeneity」；BLP 告訴我們「哪些特徵跟
+CATE 的大小有關」。</p>
+<p>BLP 的做法是把估計出來的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i)</annotation></semantics></math>
+當 dependent variable，然後迴歸在 covariates 上：</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>τ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mspace width="0.167em"></mspace><msub><mtext mathvariant="normal">age</mtext><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>2</mn></msub><mspace width="0.167em"></mspace><msub><mtext mathvariant="normal">educ</mtext><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mn>3</mn></msub><mspace width="0.167em"></mspace><msub><mtext mathvariant="normal">re74</mtext><mi>i</mi></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>ε</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\hat{\tau}(x_i) = \beta_0 + \beta_1\,\text{age}_i + \beta_2\,\text{educ}_i + \beta_3\,\text{re74}_i + \cdots + \varepsilon_i</annotation></semantics></math></p>
+<p>解讀： - 如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mn>1</mn></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_1 &lt; 0</annotation></semantics></math>：年齡越大，估計的
+training 效果越小 - 如果
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>β</mi><mo accent="true">̂</mo></mover><mn>3</mn></msub><mo>&lt;</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\hat{\beta}_3 &lt; 0</annotation></semantics></math>：過去收入越高，估計的訓練效果越小</p>
+<p>BLP 的優點是把複雜的 CATE
+估計翻譯成大家熟悉的迴歸語言，方便解釋和溝通。</p>
+<hr />
+<h2 id="投影片after-causal-forest-variable-importance變數重要性">【投影片】After
+Causal Forest: Variable Importance（變數重要性）</h2>
+<p>Variable importance 回答的問題是：<strong>哪些變數，forest
+最常用來分割？</strong></p>
+<p>計算方式：統計每個 covariate 在所有
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>
+棵樹的所有切割中被使用的頻率。</p>
+<p>解讀：</p>
+<ul>
+<li>重要性高的變數，代表 forest
+認為這個變數很有用來分辨高效果和低效果的工人</li>
+<li>可以捕捉非線性效果和交叉項（interaction effects）</li>
+<li>但<strong>不告訴我們方向</strong>——一個變數重要，不代表它越大效果越大或越小；方向的資訊要去看
+BLP</li>
+</ul>
+<p>在 LaLonde 的例子裡，age 和
+re74（1974年的收入）是最重要的兩個變數，和直覺一致：年輕、過去收入低的工人，訓練效果最大。</p>
+<hr />
+<h1 id="第五部分r-example">第五部分：R Example</h1>
+<hr />
+<h2 id="投影片r-example章節標題">【投影片】R Example（章節標題）</h2>
+<p>好，現在進入 R code 的示範部分。這部分的目的是讓大家看到，從資料到
+causal forest 輸出的完整流程。</p>
+<hr />
+<h2 id="投影片lalonde-job-training-data資料介紹">【投影片】LaLonde Job
+Training Data（資料介紹）</h2>
+<p>我們用的是 LaLonde（1986）的 job training
+資料。這是因果推論領域的一個經典資料集，Dehejia &amp;
+Wahba（1999）後來也用它來示範 propensity score matching。</p>
+<ul>
+<li><strong>Treatment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>i</mi></msub><annotation encoding="application/x-tex">D_i</annotation></semantics></math></strong>：有沒有參加職業訓練</li>
+<li><strong>Outcome
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>Y</mi><mi>i</mi></msub><annotation encoding="application/x-tex">Y_i</annotation></semantics></math></strong>：1978
+年的實際收入（訓練計畫在 1970 年代末期執行）</li>
+<li><strong>Covariates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>X</mi><mi>i</mi></msub><annotation encoding="application/x-tex">X_i</annotation></semantics></math></strong>：年齡、教育年數、種族（black,
+hispanic）、婚姻狀態、是否沒有高中文憑（nodegr）、1974 和 1975
+年的收入（re74, re75）</li>
+</ul>
+<p>這個資料集的 treatment 是隨機分配的，所以 ATE 可以直接用 difference
+in means 來估計。這對 causal forest
+很重要，因為隨機化提供了識別策略，causal forest 再告訴我們
+heterogeneity。</p>
+<hr />
+<h2 id="投影片data-and-program資料與程式">【投影片】Data and
+Program（資料與程式）</h2>
+<p>這部分對應的程式碼檔案是
+<strong><code>causal_forest.R</code></strong>。</p>
+<p>不需要另外下載資料——<code>lalonde</code> 資料集內建在
+<code>Matching</code>
+套件裡，<code>library(Matching); data(lalonde)</code> 就可以載入。</p>
+<p>需要安裝的套件： - <strong><code>grf</code></strong>：核心套件，提供
+<code>causal_forest()</code>、<code>variable_importance()</code>、<code>best_linear_projection()</code>
+等函數 - <strong><code>Matching</code></strong>：提供 LaLonde 資料集 -
+<strong><code>ggplot2</code></strong>：畫 CATE 分佈圖和 variable
+importance 圖 - <strong><code>dplyr</code></strong>：做 subgroup
+的分組摘要</p>
+<p>完整流程：準備
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>Y</mi><mo>,</mo><mi>D</mi><mo>,</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(Y, D, X)</annotation></semantics></math>
+→ 估計 causal forest → 計算 ATE/ATT → 取出 CATE 估計 →
+畫圖、BLP、variable importance → 匯出資料</p>
+<hr />
+<h2 id="投影片step-1-package-installation-and-data-loading">【投影片】Step
+1: Package Installation and Data Loading</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;grf&quot;</span>, <span class="st">&quot;Matching&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matching)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(lalonde)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lalonde)</span></code></pre></div>
+<p>安裝和載入套件，然後載入 LaLonde 資料。<code>summary()</code>
+讓我們先看資料的基本統計量。</p>
+<p>注意：<code>grf</code> 代表「generalized random forests」，是實作
+causal forest 最主流的 R 套件，由 Athey、Tibshirani、Wager
+的研究團隊維護。</p>
+<hr />
+<h2 id="投影片step-2-data-preparation">【投影片】Step 2: Data
+Preparation</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>re78</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>D <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>treat</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> lalonde[, <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;educ&quot;</span>, <span class="st">&quot;black&quot;</span>, <span class="st">&quot;hisp&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;married&quot;</span>, <span class="st">&quot;nodegr&quot;</span>, <span class="st">&quot;re74&quot;</span>, <span class="st">&quot;re75&quot;</span>)]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(X)</span></code></pre></div>
+<p>把 outcome、treatment 和 covariates 分別抽出來。<code>grf</code> 要求
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+是 matrix 格式，所以要用 <code>as.matrix()</code> 轉換。</p>
+<p>注意：<code>grf</code> 的函數把 treatment 叫做
+<code>W</code>，這是它的命名習慣，但概念上就是我們課程記號裡的
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mi>i</mi></msub><annotation encoding="application/x-tex">D_i</annotation></semantics></math>。</p>
+<hr />
+<h2 id="投影片step-3-causal-forest-estimation">【投影片】Step 3: Causal
+Forest Estimation</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2026</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>cf <span class="ot">&lt;-</span> <span class="fu">causal_forest</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y =</span> Y,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">W =</span> D,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">num.trees =</span> <span class="dv">2000</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>set.seed(2026)</code>
+是為了讓結果可以重現（reproducible）。因為 causal forest
+用的是隨機抽樣，每次跑的結果會稍有不同；設定 seed
+之後，每次跑出來的結果都一樣。</p>
+<p><code>num.trees = 2000</code> 代表生長 2000
+棵樹。樹越多，估計越穩定，但計算時間也越長。2000
+是一個不錯的起點；在正式研究中通常用 4000 棵或更多。</p>
+<hr />
+<h2 id="投影片step-4-estimate-ate-and-att">【投影片】Step 4: Estimate
+ATE and ATT</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ate <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf, <span class="at">target.sample =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>att <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf, <span class="at">target.sample =</span> <span class="st">&quot;treated&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ate</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>att</span></code></pre></div>
+<p><code>average_treatment_effect()</code> 從 causal forest 的輸出計算
+ATE 和 ATT，並提供標準誤。</p>
+<ul>
+<li><code>target.sample = &quot;all&quot;</code>：對全部樣本求平均，估計 ATE</li>
+<li><code>target.sample = &quot;treated&quot;</code>：只對 treated
+樣本求平均，估計 ATT</li>
+</ul>
+<hr />
+<h2 id="投影片what-ate-and-att-mean-here">【投影片】What ATE and ATT
+Mean Here</h2>
+<p>這頁解釋估計出來的數字意義。</p>
+<p>在這個例子中，ATE 大約是 1,583
+美元，代表職業訓練計畫平均讓工人一年多賺約 1,583 美元。ATT 約 1,792
+美元，代表在實際接受訓練的工人中，訓練效果平均更高一點。</p>
+<p>注意：即使 ATE 和 ATT
+都是正的，並不意味著對每個人都有同樣的效果。接下來的 CATE
+分析才能告訴我們誰受益更多。</p>
+<hr />
+<h2 id="投影片step-5-get-cate-estimates">【投影片】Step 5: Get CATE
+Estimates</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tau_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf)<span class="sc">$</span>predictions</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tau_hat)</span></code></pre></div>
+<p><code>predict(cf)$predictions</code> 取出每個觀測值的 CATE
+估計值。</p>
+<p><code>tau_hat</code> 是一個長度為
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+的向量，<code>tau_hat[i]</code> 是工人
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+的 CATE 估計值。</p>
+<p><code>summary()</code> 告訴我們 CATE
+分佈的基本資訊：最小值、中位數、均值、最大值。在這個例子中，CATE
+的範圍大約從 -$110 到 $4,043，標準差約 $1,022，顯示確實存在相當程度的
+heterogeneity。</p>
+<hr />
+<h2 id="投影片step-6-plot-cate-distributioncode">【投影片】Step 6: Plot
+CATE Distribution（code）</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cate_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">tau_hat =</span> tau_hat)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cate_df, <span class="fu">aes</span>(<span class="at">x =</span> tau_hat)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>, <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(tau_hat),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Estimated treatment effect&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p>把 CATE 估計值存成 data frame，然後用 <code>ggplot2</code>
+畫直方圖。紅色虛線標示 CATE 的均值，大約等於 ATE 估計值。</p>
+<hr />
+<h2 id="投影片step-6-cate-distribution圖">【投影片】Step 6: CATE
+Distribution（圖）</h2>
+<p>這就是跑出來的圖。</p>
+<p>可以看到 CATE 的分佈呈右偏，大多數工人的 treatment effect 在 0 到
+3,000 美元之間，少數工人的估計效果很高（接近 4,000 美元）。</p>
+<p>紅色虛線（均值）接近 ATE 的估計值，和預期一致。</p>
+<p>分佈的寬度告訴我們：heterogeneity
+確實存在，治療計畫對不同工人的幫助差異很大。這意味著如果資源有限，針對性的政策設計可能比普遍式的計畫更有效率。</p>
+<hr />
+<h2 id="投影片step-7-summarize-heterogeneitycode">【投影片】Step 7:
+Summarize Heterogeneity（code）</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Best linear projection</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>blp <span class="ot">&lt;-</span> <span class="fu">best_linear_projection</span>(cf, X)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>blp</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Variable importance</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>vi <span class="ot">&lt;-</span> <span class="fu">variable_importance</span>(cf)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vi) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(X)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(vi, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><code>best_linear_projection()</code> 把 CATE 估計值迴歸在 covariates
+上，提供線性摘要。</p>
+<p><code>variable_importance()</code> 計算每個 covariate
+在所有樹的切割中被使用的頻率，回傳一個重要性分數向量。<code>sort(..., decreasing = TRUE)</code>
+按重要性從高到低排列。</p>
+<hr />
+<h2 id="投影片step-7-variable-importance圖">【投影片】Step 7: Variable
+Importance（圖）</h2>
+<p>這是 variable importance 的橫條圖。</p>
+<p>從圖中可以看到：</p>
+<ol type="1">
+<li><strong>Age（年齡）</strong> 是最重要的變數，重要性接近 0.32</li>
+<li><strong>re74（1974年收入）</strong> 排第二，約 0.21</li>
+<li><strong>educ（教育年數）</strong> 排第三，約 0.17</li>
+<li><strong>re75（1975年收入）</strong> 排第四</li>
+</ol>
+<p>也就是說，forest
+在分割的時候，最常用年齡和過去的收入水準來區分高效果和低效果的工人。這和直覺一致：年輕、過去收入低的工人，訓練效果往往最大。</p>
+<hr />
+<h2 id="投影片step-8-export-for-stata-post-analysis">【投影片】Step 8:
+Export for Stata Post-Analysis</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id      =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(X),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_hat =</span> tau_hat,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age     =</span> lalonde<span class="sc">$</span>age,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">educ    =</span> lalonde<span class="sc">$</span>educ,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">D       =</span> lalonde<span class="sc">$</span>treat</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(results, <span class="st">&quot;cate_results.csv&quot;</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>把 CATE 估計值和原始資料欄位合在一起，匯出成 CSV 檔。</p>
+<p>這讓你可以把 R 的估計結果帶回 Stata，做進一步的分析：例如用 Stata
+的表格套件報告各 subgroup 的平均 CATE，或是做 heterogeneity
+的驗證測試。</p>
+<p>在研究流程中，R 負責計算 causal forest，Stata
+負責最後的整理和報告，是很常見的搭配。</p>
+<hr />
+<h2 id="投影片recommended-resources">【投影片】Recommended
+Resources</h2>
+<p>最後推薦幾個參考資料：</p>
+<ol type="1">
+<li><p><strong>Wager &amp; Athey (2018)</strong>，《Estimation and
+Inference of Heterogeneous Treatment Effects using Random
+Forests》，<em>JASA</em> — Causal forest
+的原始論文，推導了漸近常態性和有效標準誤</p></li>
+<li><p><strong>Athey, Tibshirani &amp; Wager
+(2019)</strong>，《Generalized Random Forests》，<em>Annals of
+Statistics</em> — 把 causal forest 推廣到更一般的 framework</p></li>
+<li><p><strong><code>grf</code> 套件文件</strong>：<a href="https://grf-labs.github.io/grf/">grf-labs.github.io/grf</a> —
+最實用的參考，包含函數說明、vignettes 和範例</p></li>
+<li><p><strong>Athey &amp; Imbens (2019)</strong>，《Machine Learning
+Methods That Economists Should Know About》，<em>Annual Review of
+Economics</em> — 非技術性的概述，很好讀，適合作為入門閱讀</p></li>
+</ol>
+<hr />
+<h1 id="課程總結">課程總結</h1>
+<p>今天這一講從以下幾個層次建立了 causal forest 的理解：</p>
+<ol type="1">
+<li><p><strong>動機</strong>：ATE 不夠，我們想要 CATE
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau(x)</annotation></semantics></math>，知道誰受益更多</p></li>
+<li><p><strong>工具箱</strong>：Decision tree → Random forest → Causal
+tree → Causal forest，每一步都有明確的類比</p></li>
+<li><p><strong>Causal forest 的核心</strong>：很多棵 honest causal trees
+的平均，每棵樹用 subsample 訓練、用 honesty 保證估計的有效性</p></li>
+<li><p><strong>重要概念</strong>：Causal forest
+<strong>不是</strong>識別策略；它是一個彈性的估計量，需要搭配 RCT、DID
+或 RDD 才有因果詮釋</p></li>
+<li><p><strong>輸出的解讀</strong>：CATE 分佈（有沒有
+heterogeneity）、BLP（哪個方向有關聯）、variable
+importance（哪個變數重要）</p></li>
+<li><p><strong>實作</strong>：用 <code>grf</code> 套件，資料是 LaLonde
+job training 資料，完整流程見 <code>causal_forest.R</code></p></li>
+</ol>
+</body>
+</html>
